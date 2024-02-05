@@ -94,7 +94,13 @@ public class PollutionHelper {
             for (Molecule molecule : mixture.getContents(true)) {
                 float pollutionAmount = mixture.getConcentrationOf(molecule) * fluidStack.getAmount() / 1000; // One mole of polluting Molecule = one point of Pollution
                 for (PollutionType pollutionType : PollutionType.values()) {
-                    if (molecule.hasTag(pollutionType.moleculeTag) && level.random.nextFloat() <= pollutionAmount) changePollution(level, pollutionType, (int)pollutionAmount);
+                    if (molecule.hasTag(pollutionType.moleculeTag)) {
+                        if (pollutionAmount < 1) {
+                            if (level.random.nextFloat() <= pollutionAmount) changePollution(level, pollutionType, 1);
+                        } else {
+                            changePollution(level, pollutionType, (int)pollutionAmount);
+                        };
+                    };
                 };
             };
         };

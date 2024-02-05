@@ -32,7 +32,13 @@ public class RedstoneProgramSyncC2SPacket extends C2SPacket {
     public boolean handle(Supplier<Context> supplier) {
         supplier.get().enqueueWork(() -> {
             AbstractContainerMenu menu = supplier.get().getSender().containerMenu;
-            if (menu instanceof RedstoneProgrammerMenu programMenu) programMenu.contentHolder.copyFrom(program);
+            if (menu instanceof RedstoneProgrammerMenu programMenu) {
+                RedstoneProgram program = programMenu.contentHolder;
+                program.unload();
+                program.copyFrom(this.program);
+                program.load();
+                program.whenChanged();
+            };
         });
         return true;
     };

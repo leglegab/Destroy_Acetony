@@ -1,6 +1,7 @@
 package com.petrolpark.destroy.events;
 
 import java.util.List;
+import java.util.Optional;
 
 import com.petrolpark.destroy.Destroy;
 import com.petrolpark.destroy.MoveToPetrolparkLibrary;
@@ -29,12 +30,14 @@ import com.petrolpark.destroy.config.DestroyAllConfigs;
 import com.petrolpark.destroy.effect.DestroyMobEffects;
 import com.petrolpark.destroy.fluid.DestroyFluids;
 import com.petrolpark.destroy.item.DestroyItems;
+import com.petrolpark.destroy.item.DiscStamperItem;
 import com.petrolpark.destroy.item.RedstoneProgrammerBlockItem;
 import com.petrolpark.destroy.item.SyringeItem;
 import com.petrolpark.destroy.item.TestTubeItem;
 import com.petrolpark.destroy.network.DestroyMessages;
 import com.petrolpark.destroy.network.packet.LevelPollutionS2CPacket;
 import com.petrolpark.destroy.network.packet.SeismometerSpikeS2CPacket;
+import com.petrolpark.destroy.recipe.DiscStampingRecipe;
 import com.petrolpark.destroy.sound.DestroySoundEvents;
 import com.petrolpark.destroy.util.ChemistryDamageHelper;
 import com.petrolpark.destroy.util.DestroyLang;
@@ -54,6 +57,7 @@ import com.simibubi.create.content.equipment.potatoCannon.PotatoProjectileEntity
 import com.simibubi.create.content.fluids.FluidFX;
 import com.simibubi.create.content.fluids.drain.ItemDrainBlockEntity;
 import com.simibubi.create.content.fluids.spout.SpoutBlockEntity;
+import com.simibubi.create.content.kinetics.deployer.DeployerRecipeSearchEvent;
 import com.simibubi.create.content.processing.basin.BasinBlockEntity;
 import com.simibubi.create.content.processing.burner.BlazeBurnerBlockItem;
 import com.simibubi.create.content.redstone.link.LinkBehaviour;
@@ -132,6 +136,7 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
 import net.minecraftforge.forgespi.language.IModFileInfo;
 import net.minecraftforge.forgespi.locating.IModFile;
+import net.minecraftforge.items.wrapper.RecipeWrapper;
 
 @Mod.EventBusSubscriber(modid = Destroy.MOD_ID)
 public class DestroyCommonEvents {
@@ -317,7 +322,7 @@ public class DestroyCommonEvents {
         Level level = player.level();
 
         // Store the positions of this player for use with Chorus Wine
-        player.getCapability(PlayerPreviousPositionsProvider.PLAYER_PREVIOUS_POSITIONS).ifPresent((playerPreviousPositions -> {
+        if (!level.isClientSide()) player.getCapability(PlayerPreviousPositionsProvider.PLAYER_PREVIOUS_POSITIONS).ifPresent((playerPreviousPositions -> {
             playerPreviousPositions.incrementTickCounter();
             if (playerPreviousPositions.hasBeenSecond()) {
                 playerPreviousPositions.recordPosition(player.blockPosition());
@@ -581,7 +586,10 @@ public class DestroyCommonEvents {
                 Couple<Frequency> key = link.getNetworkKey();
                 if (program.getChannels().stream().anyMatch(channel -> channel.getNetworkKey().equals(key))) {
                     event.setCancellationResult(InteractionResult.FAIL);
-                    if (level.isClientSide()) player.displayClientMessage(DestroyLang.translate("tooltip.redstone_programmer.add_frequency.failure").style(ChatFormatting.RED).component(), true); 
+                    if (level.isClientSide()) player.displayClientMessage(DestroyLang.translate("tooltip.redstone_programmer.add_frequency.failure.exists").style(ChatFormatting.RED).component(), true); 
+                } else if (program.getChannels().size() >= DestroyAllConfigs.SERVER.contraptions.maxChannels.get()) {
+                    event.setCancellationResult(InteractionResult.FAIL);
+                    if (level.isClientSide()) player.displayClientMessage(DestroyLang.translate("tooltip.redstone_programmer.add_frequency.failure.full").style(ChatFormatting.RED).component(), true); 
                 } else {
                     program.addBlankChannel(link.getNetworkKey());
                     RedstoneProgrammerBlockItem.setProgram(stack, program);
@@ -595,7 +603,7 @@ public class DestroyCommonEvents {
         // Fill Test Tubes from any Fluid-containing block
         if (stack.getItem() instanceof TestTubeItem && TestTubeItem.isEmpty(stack) && player.isCreative()) {
             BlockEntity be = level.getBlockEntity(pos);
-            if (!(be instanceof VatSideBlockEntity) && !(be instanceof VatControllerBlockEntity) && be.getCapability(ForgeCapabilities.FLUID_HANDLER, event.getFace()).map(handler -> {
+            if (be != null && !(be instanceof VatSideBlockEntity) && !(be instanceof VatControllerBlockEntity) && be.getCapability(ForgeCapabilities.FLUID_HANDLER, event.getFace()).map(handler -> {
                 FluidStack drained = handler.drain(200, FluidAction.SIMULATE);
                 if (DestroyFluids.isMixture(drained)) {
                     player.setItemInHand(event.getHand(), TestTubeItem.of(drained));
@@ -710,7 +718,16 @@ public class DestroyCommonEvents {
 
         // Pollution
         for (PollutionType pollutionType : PollutionType.values()) {
-            if (level.random.nextInt(100) == 0) PollutionHelper.changePollution(event.level, pollutionType, -1);
+            if (level.random.nextInt(500) == 0) PollutionHelper.changePollution(event.level, pollutionType, -1);
+        };
+    };
+
+    @SubscribeEvent
+    public static void onGetDeployerRecipes(DeployerRecipeSearchEvent event) {
+        RecipeWrapper inv = event.getInventory();
+        ItemStack stamper = inv.getItem(1);
+        if (stamper.getItem() instanceof DiscStamperItem && inv.getItem(0).is(DestroyItems.BLANK_MUSIC_DISC.get())) {
+            event.addRecipe(() -> Optional.ofNullable(DiscStampingRecipe.create(stamper)), 75);
         };
     };
 

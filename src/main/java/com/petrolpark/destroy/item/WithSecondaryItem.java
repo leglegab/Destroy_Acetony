@@ -1,7 +1,7 @@
 package com.petrolpark.destroy.item;
 
 import java.util.function.Consumer;
-import java.util.function.Supplier;
+import java.util.function.UnaryOperator;
 
 import com.petrolpark.destroy.item.renderer.WithSecondaryItemRenderer;
 import com.simibubi.create.foundation.item.render.SimpleCustomRenderer;
@@ -18,16 +18,16 @@ import net.minecraftforge.client.extensions.common.IClientItemExtensions;
  */
 public class WithSecondaryItem extends Item {
 
-    private Supplier<ItemStack> secondaryItemSupplier; // The Item Stack to display in the bottom right hand corner of this Item if shift is held down
+    private UnaryOperator<ItemStack> secondaryItemSupplier; // The Item Stack to display in the bottom right hand corner of this Item if shift is held down
 
-    public WithSecondaryItem(@NonnullType Properties properties, Supplier<ItemStack> secondaryItem) {
+    public WithSecondaryItem(@NonnullType Properties properties, UnaryOperator<ItemStack> secondaryItem) {
         super(properties);
         this.secondaryItemSupplier = secondaryItem;
     }
 
     public static ItemStack getSecondaryItem(ItemStack itemStack) {
         if (!(itemStack.getItem() instanceof WithSecondaryItem item)) return ItemStack.EMPTY;
-        return item.secondaryItemSupplier.get();
+        return item.secondaryItemSupplier.apply(itemStack);
     };
 
     @Override

@@ -11,6 +11,7 @@ import com.petrolpark.destroy.block.entity.behaviour.ChargingBehaviour.ChargingB
 import com.petrolpark.destroy.config.DestroyAllConfigs;
 import com.petrolpark.destroy.recipe.ChargingRecipe;
 import com.petrolpark.destroy.recipe.DestroyRecipeTypes;
+import com.petrolpark.destroy.recipe.DiscElectroplatingRecipe;
 import com.petrolpark.destroy.sound.DestroySoundEvents;
 import com.simibubi.create.content.kinetics.belt.transport.TransportedItemStack;
 import com.simibubi.create.content.processing.basin.BasinBlockEntity;
@@ -18,10 +19,12 @@ import com.simibubi.create.content.processing.basin.BasinOperatingBlockEntity;
 import com.simibubi.create.content.processing.sequenced.SequencedAssemblyRecipe;
 import com.simibubi.create.foundation.blockEntity.behaviour.BlockEntityBehaviour;
 import com.simibubi.create.foundation.recipe.RecipeApplier;
+import com.simibubi.create.foundation.recipe.RecipeFinder;
 import com.simibubi.create.foundation.utility.VecHelper;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.tags.ItemTags;
 import net.minecraft.util.Mth;
 import net.minecraft.world.Container;
 import net.minecraft.world.entity.item.ItemEntity;
@@ -32,6 +35,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.fluids.capability.IFluidHandler;
+import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemHandlerHelper;
 import net.minecraftforge.items.ItemStackHandler;
 import net.minecraftforge.items.wrapper.RecipeWrapper;
@@ -39,6 +43,7 @@ import net.minecraftforge.items.wrapper.RecipeWrapper;
 public class DynamoBlockEntity extends BasinOperatingBlockEntity implements ChargingBehaviourSpecifics {
 
     private static final Object electrolysisRecipeKey = new Object();
+    private static final Object discElectroplatingRecipeKey = new Object();
 
     public ChargingBehaviour chargingBehaviour;
     protected DestroyAdvancementBehaviour advancementBehaviour;
@@ -214,6 +219,23 @@ public class DynamoBlockEntity extends BasinOperatingBlockEntity implements Char
 
     public int getRedstoneSignal() {
         return (int) Mth.lerp(Mth.clamp(Math.abs(getSpeed()) / 256f, 0, 1), 0, 15);
+    };
+
+    @Override
+    protected List<Recipe<?>> getMatchingRecipes() {
+        List<Recipe<?>> recipes = super.getMatchingRecipes();
+        getBasin().ifPresent(basin -> {
+            IItemHandler availableItems = basin.getCapability(ForgeCapabilities.ITEM_HANDLER).orElse(null);
+            if (availableItems != null) {
+                for (int slot = 0; slot < availableItems.getSlots(); slot++) {
+                    ItemStack stack = availableItems.getStackInSlot(slot);
+                    if (stack.is(ItemTags.MUSIC_DISCS)) RecipeFinder.get(discElectroplatingRecipeKey, level, r -> r.getType() == DestroyRecipeTypes.DISC_ELECTROPLATING.getType() && r instanceof DiscElectroplatingRecipe recipe && recipe.original).forEach(r -> {
+                        if (r instanceof DiscElectroplatingRecipe recipe) recipes.add(recipe.copyWithDisc(stack)); // This cast check should never fail
+                    });
+                };
+            };
+        });
+        return recipes;
     };
 
     @Override

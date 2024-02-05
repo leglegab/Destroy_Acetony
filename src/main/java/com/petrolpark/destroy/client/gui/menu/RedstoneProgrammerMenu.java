@@ -10,7 +10,10 @@ import com.simibubi.create.foundation.gui.menu.GhostItemMenu;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.ClickType;
 import net.minecraft.world.inventory.MenuType;
+import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraftforge.items.ItemStackHandler;
@@ -58,9 +61,16 @@ public class RedstoneProgrammerMenu extends GhostItemMenu<RedstoneProgram> {
         for (int channel = 0; channel < contentHolder.getChannels().size(); channel++) {
             position += channelSpacing;
             if (position < 0 || position > max) continue;
-            addSlot(new FrequencySlotItemHandler(channel * 2, 0, position));
-            addSlot(new FrequencySlotItemHandler(channel * 2 + 1, 18, position));
+            Slot slot1 = addSlot(new FrequencySlotItemHandler(channel * 2, 0, position));
+            Slot slot2 = addSlot(new FrequencySlotItemHandler(channel * 2 + 1, 18, position));
+            slot1.set(contentHolder.getChannels().get(channel).networkKey.getFirst().getStack());
+            slot2.set(contentHolder.getChannels().get(channel).networkKey.getSecond().getStack());
         };
+    };
+
+    @Override
+    public void clicked(int slotId, int dragType, ClickType clickTypeIn, Player player) {
+        // Do nothing
     };
 
     public class FrequencySlotItemHandler extends SlotItemHandler {
@@ -87,6 +97,11 @@ public class RedstoneProgrammerMenu extends GhostItemMenu<RedstoneProgram> {
     };
 
     public static class DummyRedstoneProgram extends RedstoneProgram {
+
+        @Override
+        public void load() {
+            // Do nothing, this should never be on a network
+        };
 
         @Override
         public boolean hasPower() {

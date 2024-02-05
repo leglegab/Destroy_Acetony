@@ -12,6 +12,7 @@ import java.util.function.Supplier;
 import com.petrolpark.destroy.Destroy;
 import com.petrolpark.destroy.block.DestroyBlocks;
 import com.petrolpark.destroy.chemistry.Molecule;
+import com.petrolpark.destroy.client.gui.screen.RedstoneProgrammerScreen;
 import com.petrolpark.destroy.compat.jei.category.AgingCategory;
 import com.petrolpark.destroy.compat.jei.category.CentrifugationCategory;
 import com.petrolpark.destroy.compat.jei.category.ChargingCategory;
@@ -43,6 +44,7 @@ import com.simibubi.create.AllBlocks;
 import com.simibubi.create.compat.jei.CreateJEI;
 import com.simibubi.create.compat.jei.DoubleItemIcon;
 import com.simibubi.create.compat.jei.EmptyBackground;
+import com.simibubi.create.compat.jei.GhostIngredientHandler;
 import com.simibubi.create.compat.jei.ItemIcon;
 import com.simibubi.create.compat.jei.category.CreateRecipeCategory;
 import com.simibubi.create.compat.jei.category.CreateRecipeCategory.Info;
@@ -59,6 +61,7 @@ import mezz.jei.api.helpers.IPlatformFluidHelper;
 import mezz.jei.api.recipe.RecipeType;
 import mezz.jei.api.recipe.category.IRecipeCategory;
 import mezz.jei.api.registration.IAdvancedRegistration;
+import mezz.jei.api.registration.IGuiHandlerRegistration;
 import mezz.jei.api.registration.IModIngredientRegistration;
 import mezz.jei.api.registration.IRecipeCatalystRegistration;
 import mezz.jei.api.registration.IRecipeCategoryRegistration;
@@ -205,6 +208,7 @@ public class DestroyJEI implements IModPlugin {
 	public void registerRecipes(IRecipeRegistration registration) {
         allCategories.forEach(c -> c.registerRecipes(registration));
 
+        // Example crafts
         registration.addRecipes(RecipeTypes.CRAFTING, ExtendedDurationFireworkRocketRecipe.exampleRecipes());
 	};
 
@@ -223,6 +227,12 @@ public class DestroyJEI implements IModPlugin {
         registration.registerSubtypeInterpreter(ForgeTypes.FLUID_STACK, DestroyFluids.MIXTURE.get().getSource(), new MixtureFluidSubtypeInterpreter());
         registration.registerSubtypeInterpreter(ForgeTypes.FLUID_STACK, DestroyFluids.MIXTURE.get().getFlowing(), new MixtureFluidSubtypeInterpreter());
     };
+
+    @SuppressWarnings({"unchecked", "rawtypes"})
+	@Override
+	public void registerGuiHandlers(IGuiHandlerRegistration registration) {
+		registration.addGhostIngredientHandler(RedstoneProgrammerScreen.class, new GhostIngredientHandler());
+	};
 
     @Override
     public void registerAdvanced(IAdvancedRegistration registration) {

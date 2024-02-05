@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.function.Supplier;
 
 import com.google.common.collect.ImmutableList;
-import com.petrolpark.destroy.Destroy;
+import com.petrolpark.destroy.config.DestroyAllConfigs;
 import com.simibubi.create.Create;
 import com.simibubi.create.content.redstone.link.IRedstoneLinkable;
 import com.simibubi.create.content.redstone.link.RedstoneLinkNetworkHandler;
@@ -30,13 +30,17 @@ public abstract class RedstoneProgram {
      */
     public PlayMode mode;
     /**
-     * Length of the program in ticks.
+     * Length of the program in beats.
      */
     protected int length;
     /**
-     * How far through the program we are, in ticks.
+     * How far through the program we are, in beats.
      */
     protected int playtime;
+    /**
+     * How many ticks until the beat gets incremented.
+     */
+    protected int ticksToNextBeat;
     /**
      * If we are paused.
      */
@@ -52,7 +56,20 @@ public abstract class RedstoneProgram {
     /**
      * Each pair of Frequencies, and the list of strengths associated with it.
      */
-    protected List<Channel> channels; 
+    protected List<Channel> channels;
+
+    /**
+     * Channel sequences may not change strength more often than this if edited in the GUI.
+     */
+    protected int ticksPerBeat;
+    /**
+     * Purely visual, informs where lines should be drawn in the GUI.
+     */
+    public int beatsPerLine;
+    /**
+     * Purely visual, informs which lines drawn in the GUI should be thicker.
+     */
+    public int linesPerBar;
 
     /**
      * Whether a the Redstone Link network was notified of a change in the last tick and it needn't be notified again.
@@ -61,19 +78,32 @@ public abstract class RedstoneProgram {
 
     public RedstoneProgram() {
         mode = PlayMode.MANUAL;
+        ticksPerBeat = DestroyAllConfigs.SERVER.contraptions.minTicksPerBeat.get();
         length = 20;
         playtime = 0;
         paused = true;
         pausedLastTick = false;
         poweredLastTick = false;
         channels = new ArrayList<>();
+        beatsPerLine = 2;
+        linesPerBar = 4;
         notifiedChange = false;
+    };
+
+    public int getLength() {
+        return length;
+    };
+
+    public int getTicksPerBeat() {
+        return ticksPerBeat;
+    };
+
+    public void setTicksPerBeat(int value) {
+        ticksPerBeat = Math.max(DestroyAllConfigs.SERVER.contraptions.minTicksPerBeat.get(), value);
     };
 
     public void tick() {
         boolean powered = hasPower();
-
-        if (paused != pausedLastTick) notifiedChange = false; // If we've unpaused, we need to start telling the Redstone Link network about changes again
 
         if (mode.powerRequired) paused = !powered; // If we need power to run, make sure we're doing the right thing
 
@@ -88,7 +118,22 @@ public abstract class RedstoneProgram {
 
         if (!powered && mode == PlayMode.LOOP_WITH_POWER) playtime = 0; // Restart if we should
 
-        if (!paused) playtime++; // Play if not paused
+        if (!paused) { // Play if not paused
+            notifiedChange = false;
+            if (ticksPerBeat == 1) {
+                playtime++;
+            } else {
+                ticksToNextBeat--;
+                if (ticksToNextBeat <= 0) {
+                    ticksToNextBeat = ticksPerBeat;
+                    playtime++;
+                } else {
+                    notifiedChange = true; // If nothing can have changed, there is no need to update again
+                };
+            };
+        };
+
+        if (paused != pausedLastTick) notifiedChange = false; // If we've unpaused, we need to start telling the Redstone Link network about changes again
 
         if (playtime >= length) { // Restart if we've reached the end
             playtime = 0;
@@ -97,7 +142,7 @@ public abstract class RedstoneProgram {
 
         if (!notifiedChange) { // If we need to notify the Redstone Link network of our power change
             channels.forEach(Channel::updateNetwork);
-            if (paused) notifiedChange = false; // If we're paused, don't notify next tick too
+            if (paused) notifiedChange = true; // If we're paused, don't notify next tick too
         };
 
         poweredLastTick = powered;
@@ -112,6 +157,8 @@ public abstract class RedstoneProgram {
 
     public abstract LevelAccessor getWorld();
 
+    public void whenChanged() {};
+
     public ImmutableList<Channel> getChannels() {
         return ImmutableList.copyOf(channels);
     };
@@ -120,12 +167,6 @@ public abstract class RedstoneProgram {
         if (!isValidWorld(getWorld())) return;
         Channel channel = new Channel(frequencies, new int[length]);
         getHandler().addToNetwork(getWorld(), channel);
-
-        // Temporary
-        for (int i = 0; i < length; i++) channel.sequence[i] = 15 * ((i/2) % 2);
-        paused = false;
-        mode = PlayMode.LOOP;
-
         channels.add(channel);
     };
 
@@ -141,7 +182,7 @@ public abstract class RedstoneProgram {
     };
 
     public void load() {
-        if (!isValidWorld(getWorld())) return;
+        if (!isValidWorld(getWorld()) || getBlockPos() == null) return;
         channels.forEach(channel -> getHandler().addToNetwork(getWorld(), channel));
         notifiedChange = false;
     };
@@ -161,10 +202,14 @@ public abstract class RedstoneProgram {
     public CompoundTag write() {
         CompoundTag tag = new CompoundTag();
         tag.putInt("Mode", mode.ordinal());
+        tag.putInt("TicksPerBeat", ticksPerBeat);
         tag.putInt("Length", length);
         tag.putInt("Playtime", playtime);
+        if (ticksPerBeat != 1) tag.putInt("TicksToNextBeat", ticksToNextBeat);
         tag.putBoolean("Paused", paused);
         tag.putBoolean("PoweredLastTick", poweredLastTick);
+        tag.putInt("BeatsPerLine", beatsPerLine);
+        tag.putInt("LinesPerBar", linesPerBar);
 
         ListTag sequencesTag = new ListTag();
 
@@ -184,10 +229,14 @@ public abstract class RedstoneProgram {
     public static <T extends RedstoneProgram> T read(Supplier<T> newProgram, CompoundTag tag) {
         T program = newProgram.get();
         program.mode = PlayMode.values()[tag.getInt("Mode")];
+        program.ticksPerBeat = tag.getInt("TicksPerBeat");
         program.length = tag.getInt("Length");
         program.playtime = tag.getInt("Playtime");
+        if (program.ticksPerBeat != 1) program.ticksToNextBeat = tag.getInt("TicksToNextBeat");
         program.paused = tag.getBoolean("Paused");
         program.poweredLastTick = tag.getBoolean("PoweredLastTick");
+        program.beatsPerLine = tag.getInt("BeatsPerLine");
+        program.linesPerBar = tag.getInt("LinesPerBar");
 
         tag.getList("Sequences", Tag.TAG_COMPOUND).forEach(t -> {
             CompoundTag sequenceTag = (CompoundTag)t;
@@ -208,11 +257,15 @@ public abstract class RedstoneProgram {
     };
 
     public final void write(FriendlyByteBuf buf) {
-        buf.writeInt(mode.ordinal());
+        buf.writeVarInt(mode.ordinal());
+        buf.writeVarInt(ticksPerBeat);
         buf.writeVarInt(length);
         buf.writeVarInt(playtime);
+        buf.writeVarInt(ticksToNextBeat);
         buf.writeBoolean(paused);
         buf.writeBoolean(poweredLastTick);
+        buf.writeVarInt(beatsPerLine);
+        buf.writeVarInt(linesPerBar);
         buf.writeVarInt(channels.size());
         for (Channel channel : channels) {
             buf.writeItem(channel.networkKey.getFirst().getStack());
@@ -222,13 +275,16 @@ public abstract class RedstoneProgram {
     };
 
     public void read(FriendlyByteBuf buf) {
-        mode = PlayMode.values()[buf.readInt()];
+        mode = PlayMode.values()[buf.readVarInt()];
+        ticksPerBeat = buf.readVarInt();
         length = buf.readVarInt();
         playtime = buf.readVarInt();
+        ticksToNextBeat = buf.readVarInt();
         paused = buf.readBoolean();
         poweredLastTick = buf.readBoolean();
+        beatsPerLine = buf.readVarInt();
+        linesPerBar = buf.readVarInt();
         int channels = buf.readVarInt();
-        Destroy.LOGGER.info("Channels");
         for (int i = 0; i < channels; i++) {
             this.channels.add(new Channel(
                 Couple.create(Frequency.of(buf.readItem()), Frequency.of(buf.readItem())),
@@ -239,11 +295,16 @@ public abstract class RedstoneProgram {
 
     public void copyFrom(RedstoneProgram otherProgram) {
         mode = otherProgram.mode;
+        ticksPerBeat = otherProgram.ticksPerBeat;
         length = otherProgram.length;
         playtime = otherProgram.playtime;
+        ticksToNextBeat = otherProgram.ticksToNextBeat;
         paused = otherProgram.paused;
         poweredLastTick = otherProgram.poweredLastTick;
-        channels = otherProgram.channels;
+        channels = otherProgram.channels.stream().map(channel -> new Channel(channel.networkKey, Arrays.copyOf(channel.sequence, length))).toList();
+        beatsPerLine = otherProgram.beatsPerLine;
+        linesPerBar = otherProgram.linesPerBar;
+        notifiedChange = false;
     };
 
     // As redstone powers only go up to 16, we can fit eight of them in one integer. We only fit seven to avoid messing with the sign bit.
@@ -297,14 +358,23 @@ public abstract class RedstoneProgram {
 
         protected void updateNetwork() {
             if (!isValidWorld(getWorld())) return;
-            if (playtime != 0 && sequence[playtime] != sequence[playtime - 1]) getHandler().updateNetworkOf(getWorld(), this); // If we've changed signal, update the Network
+            if (playtime == 0 || sequence[playtime] != sequence[playtime - 1]) getHandler().updateNetworkOf(getWorld(), this); // If we've changed signal, update the Network
+        };
+
+        public int getStrength(int position) {
+            if (position >= sequence.length || position < 0) return 0;
+            return sequence[position];
         };
 
         public void setStrength(int position, int strength) {
             if (position < length) {
-                if (strength <= 16 || strength < 0) strength = 0;
+                if (strength >= 16 || strength < 0) strength = 0;
                 sequence[position] = strength;  
             };
+        };
+
+        public void clear() {
+            sequence = new int[length];
         };
 
         @Override

@@ -23,6 +23,7 @@ public class DestroyMixinPlugin implements IMixinConfigPlugin {
         onlyLoadIfModPresent("com.petrolpark.destroy.mixin.BasinCategoryMixin.java", "jei");
         onlyLoadIfModPresent("com.petrolpark.destroy.mixin.CreateJEIMixin.java", "jei");
         onlyLoadIfModPresent("com.petrolpark.destroy.mixin.CreateRecipeCategoryMixin", "jei");
+        onlyLoadIfModPresent("com.petrolpark.destroy.mixin.DeployingCategoryMixin", "jei");
         onlyLoadIfModPresent("com.petrolpark.destroy.mixin.MixingRecipeCategoryMixin", "jei");
         onlyLoadIfModPresent("com.petrolpark.destroy.mixin.PackingRecipeCategoryMixin", "jei");
         onlyLoadIfModPresent("com.petrolpark.destroy.mixin.ProcessingRecipeMixin", "jei");

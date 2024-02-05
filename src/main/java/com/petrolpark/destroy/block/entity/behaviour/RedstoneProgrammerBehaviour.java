@@ -20,7 +20,6 @@ import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
 
@@ -34,11 +33,7 @@ public class RedstoneProgrammerBehaviour extends BlockEntityBehaviour implements
     public RedstoneProgrammerBehaviour(SmartBlockEntity be, BooleanSupplier powerChecker) {
         super(be);
         this.powerChecker = powerChecker;
-        this.program = new BehaviourRedstoneProgram();
-        program.addBlankChannel(Couple.create(
-            Frequency.of(new ItemStack(Items.DIAMOND)),
-            Frequency.of(new ItemStack(Items.DIAMOND))
-        ));
+        program = new BehaviourRedstoneProgram();
     };
 
     @Override
@@ -105,6 +100,12 @@ public class RedstoneProgrammerBehaviour extends BlockEntityBehaviour implements
         @Override
         public LevelAccessor getWorld() {
             return RedstoneProgrammerBehaviour.super.getWorld();
+        };
+
+        @Override
+        public void whenChanged() {
+            blockEntity.notifyUpdate();
+            program.load();
         };
         
     };

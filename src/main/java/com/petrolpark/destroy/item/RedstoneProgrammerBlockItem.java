@@ -39,26 +39,30 @@ public class RedstoneProgrammerBlockItem extends BlockItem {
     @Override
     public InteractionResult onItemUseFirst(ItemStack stack, UseOnContext context) {
         Player player = context.getPlayer();
-        Level level = context.getLevel();
         if (player.isShiftKeyDown()) return super.onItemUseFirst(stack, context);
-        getProgram(stack, level, player).ifPresent(program -> {
-            if (!level.isClientSide() && player instanceof ServerPlayer serverPlayer) {
-                NetworkHooks.openScreen(serverPlayer, new ItemStackRedstoneProgramMenuOpener(program), program::write);
-            };
-        });
+        openScreen(stack, context.getLevel(), player);
         return InteractionResult.SUCCESS;
     };
 
     @Override
     public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand usedHand) {
-        
+        ItemStack stack = player.getItemInHand(usedHand);
+        openScreen(stack, level, player);
         return new InteractionResultHolder<>(InteractionResult.SUCCESS, player.getItemInHand(usedHand));
+    };
+
+    public static void openScreen(ItemStack stack, Level level, Player player) {
+        getProgram(stack, level, player).ifPresent(program -> {
+            if (!level.isClientSide() && player instanceof ServerPlayer serverPlayer) {
+                NetworkHooks.openScreen(serverPlayer, new ItemStackRedstoneProgramMenuOpener(program), program::write);
+            };
+        });
     };
 
     @Override
     public void inventoryTick(ItemStack stack, Level level, Entity entity, int slotId, boolean isSelected) {
         super.inventoryTick(stack, level, entity, slotId, isSelected);
-        if (entity instanceof LivingEntity player) {
+        if (!level.isClientSide() && entity instanceof LivingEntity player) {
             getProgram(stack, level, player).ifPresent(program -> {
                 program.load(); // This is a set so we're safe to repeatedly load
                 program.tick();
@@ -120,6 +124,11 @@ public class RedstoneProgrammerBlockItem extends BlockItem {
             super();
             this.player = player;
             ttl = RedstoneProgrammerItemHandler.TIMEOUT;
+        };
+
+        @Override
+        public void load() {
+            if (player != null && player.getOnPos() != null) super.load();
         };
 
         @Override

@@ -490,37 +490,37 @@ public class DestroyItems {
 
     public static final ItemEntry<WithSecondaryItem> 
 
-    COAL_INFUSED_BEETROOT = REGISTRATE.item("coal_infused_beetroot", p -> new WithSecondaryItem(p, () -> new ItemStack(Items.COAL)))
+    COAL_INFUSED_BEETROOT = REGISTRATE.item("coal_infused_beetroot", p -> new WithSecondaryItem(p, i -> new ItemStack(Items.COAL)))
         .tag(DestroyItemTags.HEFTY_BEETROOT.tag)
         .register(),
-    COPPER_INFUSED_BEETROOT = REGISTRATE.item("copper_infused_beetroot", p -> new WithSecondaryItem(p, () -> new ItemStack(Items.RAW_COPPER)))
+    COPPER_INFUSED_BEETROOT = REGISTRATE.item("copper_infused_beetroot", p -> new WithSecondaryItem(p, i -> new ItemStack(Items.RAW_COPPER)))
         .tag(DestroyItemTags.HEFTY_BEETROOT.tag)
         .register(),
-    DIAMOND_INFUSED_BEETROOT = REGISTRATE.item("diamond_infused_beetroot", p -> new WithSecondaryItem(p, () -> new ItemStack(Items.DIAMOND)))
+    DIAMOND_INFUSED_BEETROOT = REGISTRATE.item("diamond_infused_beetroot", p -> new WithSecondaryItem(p, i -> new ItemStack(Items.DIAMOND)))
         .tag(DestroyItemTags.HEFTY_BEETROOT.tag)
         .register(),
-    EMERALD_INFUSED_BEETROOT = REGISTRATE.item("emerald_infused_beetroot", p -> new WithSecondaryItem(p, () -> new ItemStack(Items.EMERALD)))
+    EMERALD_INFUSED_BEETROOT = REGISTRATE.item("emerald_infused_beetroot", p -> new WithSecondaryItem(p, i -> new ItemStack(Items.EMERALD)))
         .tag(DestroyItemTags.HEFTY_BEETROOT.tag)
         .register(),
-    FLUORITE_INFUSED_BEETROOT = REGISTRATE.item("fluorite_infused_beetroot", p -> new WithSecondaryItem(p, FLUORITE::asStack))
+    FLUORITE_INFUSED_BEETROOT = REGISTRATE.item("fluorite_infused_beetroot", p -> new WithSecondaryItem(p, i -> FLUORITE.asStack()))
         .tag(DestroyItemTags.HEFTY_BEETROOT.tag)
         .register(),
-    GOLD_INFUSED_BEETROOT = REGISTRATE.item("gold_infused_beetroot", p -> new WithSecondaryItem(p, () -> new ItemStack(Items.RAW_GOLD)))
+    GOLD_INFUSED_BEETROOT = REGISTRATE.item("gold_infused_beetroot", p -> new WithSecondaryItem(p, i -> new ItemStack(Items.RAW_GOLD)))
         .tag(DestroyItemTags.HEFTY_BEETROOT.tag)
         .register(),
-    IRON_INFUSED_BEETROOT = REGISTRATE.item("iron_infused_beetroot", p -> new WithSecondaryItem(p, () -> new ItemStack(Items.RAW_IRON)))
+    IRON_INFUSED_BEETROOT = REGISTRATE.item("iron_infused_beetroot", p -> new WithSecondaryItem(p, i -> new ItemStack(Items.RAW_IRON)))
         .tag(DestroyItemTags.HEFTY_BEETROOT.tag)
         .register(),
-    LAPIS_INFUSED_BEETROOT = REGISTRATE.item("lapis_infused_beetroot", p -> new WithSecondaryItem(p, () -> new ItemStack(Items.LAPIS_LAZULI)))
+    LAPIS_INFUSED_BEETROOT = REGISTRATE.item("lapis_infused_beetroot", p -> new WithSecondaryItem(p, i -> new ItemStack(Items.LAPIS_LAZULI)))
         .tag(DestroyItemTags.HEFTY_BEETROOT.tag)
         .register(),
-    NICKEL_INFUSED_BEETROOT = REGISTRATE.item("nickel_infused_beetroot", p -> new WithSecondaryItem(p, RAW_NICKEL::asStack))
+    NICKEL_INFUSED_BEETROOT = REGISTRATE.item("nickel_infused_beetroot", p -> new WithSecondaryItem(p, i -> RAW_NICKEL.asStack()))
         .tag(DestroyItemTags.HEFTY_BEETROOT.tag)
         .register(),
-    REDSTONE_INFUSED_BEETROOT = REGISTRATE.item("redstone_infused_beetroot", p -> new WithSecondaryItem(p, () -> new ItemStack(Items.REDSTONE)))
+    REDSTONE_INFUSED_BEETROOT = REGISTRATE.item("redstone_infused_beetroot", p -> new WithSecondaryItem(p, i -> new ItemStack(Items.REDSTONE)))
         .tag(DestroyItemTags.HEFTY_BEETROOT.tag)
         .register(),
-    ZINC_INFUSED_BEETROOT = REGISTRATE.item("zinc_infused_beetroot", p -> new WithSecondaryItem(p, AllItems.RAW_ZINC::asStack))
+    ZINC_INFUSED_BEETROOT = REGISTRATE.item("zinc_infused_beetroot", p -> new WithSecondaryItem(p, i -> AllItems.RAW_ZINC.asStack()))
         .tag(DestroyItemTags.HEFTY_BEETROOT.tag)
         .register();
     
@@ -534,37 +534,37 @@ public class DestroyItems {
 
     public static final ItemEntry<WithSecondaryItem> 
 
-    COAL_INFUSED_BEETROOT_ASHES = REGISTRATE.item("coal_infused_beetroot_ashes", p -> new WithSecondaryItem(p, () -> new ItemStack(Items.COAL)))
+    COAL_INFUSED_BEETROOT_ASHES = REGISTRATE.item("coal_infused_beetroot_ashes", p -> new WithSecondaryItem(p, i -> new ItemStack(Items.COAL)))
         .tag(DestroyItemTags.BEETROOT_ASHES.tag)
         .register(),
-    COPPER_INFUSED_BEETROOT_ASHES = REGISTRATE.item("copper_infused_beetroot_ashes", p -> new WithSecondaryItem(p, () -> new ItemStack(Items.RAW_COPPER)))
+    COPPER_INFUSED_BEETROOT_ASHES = REGISTRATE.item("copper_infused_beetroot_ashes", p -> new WithSecondaryItem(p, i -> new ItemStack(Items.RAW_COPPER)))
         .tag(DestroyItemTags.BEETROOT_ASHES.tag)
         .register(),
-    DIAMOND_INFUSED_BEETROOT_ASHES = REGISTRATE.item("diamond_infused_beetroot_ashes", p -> new WithSecondaryItem(p, () -> new ItemStack(Items.DIAMOND)))
+    DIAMOND_INFUSED_BEETROOT_ASHES = REGISTRATE.item("diamond_infused_beetroot_ashes", p -> new WithSecondaryItem(p, i -> new ItemStack(Items.DIAMOND)))
         .tag(DestroyItemTags.BEETROOT_ASHES.tag)
         .register(),
-    EMERALD_INFUSED_BEETROOT_ASHES = REGISTRATE.item("emerald_infused_beetroot_ashes", p -> new WithSecondaryItem(p, () -> new ItemStack(Items.EMERALD)))
+    EMERALD_INFUSED_BEETROOT_ASHES = REGISTRATE.item("emerald_infused_beetroot_ashes", p -> new WithSecondaryItem(p, i -> new ItemStack(Items.EMERALD)))
         .tag(DestroyItemTags.BEETROOT_ASHES.tag)
         .register(),
-    FLUORITE_INFUSED_BEETROOT_ASHES = REGISTRATE.item("fluorite_infused_beetroot_ashes", p -> new WithSecondaryItem(p, FLUORITE::asStack))
+    FLUORITE_INFUSED_BEETROOT_ASHES = REGISTRATE.item("fluorite_infused_beetroot_ashes", p -> new WithSecondaryItem(p, i -> FLUORITE.asStack()))
         .tag(DestroyItemTags.BEETROOT_ASHES.tag)
         .register(),
-    GOLD_INFUSED_BEETROOT_ASHES = REGISTRATE.item("gold_infused_beetroot_ashes", p -> new WithSecondaryItem(p, () -> new ItemStack(Items.RAW_GOLD)))
+    GOLD_INFUSED_BEETROOT_ASHES = REGISTRATE.item("gold_infused_beetroot_ashes", p -> new WithSecondaryItem(p, i -> new ItemStack(Items.RAW_GOLD)))
         .tag(DestroyItemTags.BEETROOT_ASHES.tag)
         .register(),
-    IRON_INFUSED_BEETROOT_ASHES = REGISTRATE.item("iron_infused_beetroot_ashes", p -> new WithSecondaryItem(p, () -> new ItemStack(Items.RAW_IRON)))
+    IRON_INFUSED_BEETROOT_ASHES = REGISTRATE.item("iron_infused_beetroot_ashes", p -> new WithSecondaryItem(p, i -> new ItemStack(Items.RAW_IRON)))
         .tag(DestroyItemTags.BEETROOT_ASHES.tag)
         .register(),
-    LAPIS_INFUSED_BEETROOT_ASHES = REGISTRATE.item("lapis_infused_beetroot_ashes", p -> new WithSecondaryItem(p, () -> new ItemStack(Items.LAPIS_LAZULI)))
+    LAPIS_INFUSED_BEETROOT_ASHES = REGISTRATE.item("lapis_infused_beetroot_ashes", p -> new WithSecondaryItem(p, i -> new ItemStack(Items.LAPIS_LAZULI)))
         .tag(DestroyItemTags.BEETROOT_ASHES.tag)
         .register(),
-    NICKEL_INFUSED_BEETROOT_ASHES = REGISTRATE.item("nickel_infused_beetroot_ashes", p -> new WithSecondaryItem(p, RAW_NICKEL::asStack))
+    NICKEL_INFUSED_BEETROOT_ASHES = REGISTRATE.item("nickel_infused_beetroot_ashes", p -> new WithSecondaryItem(p, i -> RAW_NICKEL.asStack()))
         .tag(DestroyItemTags.BEETROOT_ASHES.tag)
         .register(),
-    REDSTONE_INFUSED_BEETROOT_ASHES = REGISTRATE.item("redstone_infused_beetroot_ashes", p -> new WithSecondaryItem(p, () -> new ItemStack(Items.REDSTONE)))
+    REDSTONE_INFUSED_BEETROOT_ASHES = REGISTRATE.item("redstone_infused_beetroot_ashes", p -> new WithSecondaryItem(p, i -> new ItemStack(Items.REDSTONE)))
         .tag(DestroyItemTags.BEETROOT_ASHES.tag)
         .register(),
-    ZINC_INFUSED_BEETROOT_ASHES = REGISTRATE.item("zinc_infused_beetroot_ashes", p -> new WithSecondaryItem(p, AllItems.RAW_ZINC::asStack))
+    ZINC_INFUSED_BEETROOT_ASHES = REGISTRATE.item("zinc_infused_beetroot_ashes", p -> new WithSecondaryItem(p, i -> AllItems.RAW_ZINC.asStack()))
         .tag(DestroyItemTags.BEETROOT_ASHES.tag)
         .register();
 
@@ -635,6 +635,18 @@ public class DestroyItems {
 
     public static final ItemEntry<HyperaccumulatingFertilizerItem> HYPERACCUMULATING_FERTILIZER = REGISTRATE.item("hyperaccumulating_fertilizer", HyperaccumulatingFertilizerItem::new)
         .tag(Tags.Items.DUSTS)
+        .register();
+
+
+    // MUSIC
+
+    public static final ItemEntry<DiscStamperItem> DISC_STAMPER = REGISTRATE.item("disc_stamper", DiscStamperItem::new)
+        .properties(p -> p
+            .stacksTo(1)
+        ).register();
+
+    public static final ItemEntry<BlankRecordItem> BLANK_MUSIC_DISC = REGISTRATE.item("blank_music_disc", BlankRecordItem::new)
+        .tag(ItemTags.MUSIC_DISCS)
         .register();
 
     public static final ItemEntry<RecordItem> MUSIC_DISC_SPECTRUM = REGISTRATE.item("music_disc_spectrum", p -> new RecordItem(9, () -> DestroySoundEvents.MUSIC_DISC_SPECTRUM.getMainEvent(), p, 3720))

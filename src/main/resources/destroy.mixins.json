@@ -28,6 +28,7 @@
         "ContraptionMixin",
         "CreateRecipeCategoryMixin",
         "CuttingBoardMixin",
+        "DeployingCategoryMixin",
         "DepotBehaviourMixin",
         "CreateJEIMixin",
         "DestroyFrictionModifier",
