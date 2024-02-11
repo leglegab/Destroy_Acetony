@@ -1,6 +1,7 @@
 package com.petrolpark.destroy.block;
 
 import static com.petrolpark.destroy.Destroy.REGISTRATE;
+import static com.simibubi.create.AllTags.forgeItemTag;
 import static com.simibubi.create.foundation.data.ModelGen.customItemModel;
 
 import com.petrolpark.destroy.block.display.PollutometerDisplaySource;
@@ -8,9 +9,11 @@ import com.petrolpark.destroy.block.entity.BubbleCapBlockEntity;
 import com.petrolpark.destroy.block.entity.CentrifugeBlockEntity;
 import com.petrolpark.destroy.block.entity.VatControllerBlockEntity;
 import com.petrolpark.destroy.block.model.CopycatBlockModel;
+import com.petrolpark.destroy.block.spriteshifts.DestroySpriteShifts;
 import com.petrolpark.destroy.entity.PrimedBomb;
 import com.petrolpark.destroy.item.CoaxialGearBlockItem;
 import com.petrolpark.destroy.item.DestroyItems;
+import com.petrolpark.destroy.item.PeriodicTableBlockItem;
 import com.petrolpark.destroy.item.PumpjackBlockItem;
 import com.petrolpark.destroy.item.RedstoneProgrammerBlockItem;
 import com.petrolpark.destroy.sound.DestroySoundTypes;
@@ -18,12 +21,14 @@ import com.petrolpark.destroy.util.DestroyTags.DestroyBlockTags;
 import com.petrolpark.destroy.util.DestroyTags.DestroyItemTags;
 import com.simibubi.create.AllBlocks;
 import com.simibubi.create.AllSpriteShifts;
+import com.simibubi.create.AllTags;
 import com.simibubi.create.content.decoration.encasing.EncasedCTBehaviour;
 import com.simibubi.create.content.kinetics.BlockStressDefaults;
 import com.simibubi.create.content.kinetics.simpleRelays.BracketedKineticBlockModel;
 import com.simibubi.create.content.kinetics.simpleRelays.CogwheelBlockItem;
 import com.simibubi.create.content.processing.AssemblyOperatorBlockItem;
 import com.simibubi.create.content.redstone.displayLink.AllDisplayBehaviours;
+import com.simibubi.create.foundation.block.connected.SimpleCTBehaviour;
 import com.simibubi.create.foundation.data.AssetLookup;
 import com.simibubi.create.foundation.data.BlockStateGen;
 import com.simibubi.create.foundation.data.BuilderTransformers;
@@ -518,7 +523,7 @@ public class DestroyBlocks {
     public static final BlockEntry<Block> DEEPSLATE_NICKEL_ORE = REGISTRATE.block("deepslate_nickel_ore", Block::new)
         .initialProperties(() -> Blocks.DEEPSLATE_GOLD_ORE)
         .properties(p -> p
-            .mapColor(MapColor.COLOR_PURPLE)
+            .mapColor(MapColor.SAND)
             .requiresCorrectToolForDrops()
             .sound(SoundType.DEEPSLATE)
             .strength(4.5f, 3f)
@@ -526,7 +531,22 @@ public class DestroyBlocks {
         .loot((lt, b) -> lt.add(b, RegistrateBlockLootTables.createSilkTouchDispatchTable(b, lt.applyExplosionDecay(b, LootItem.lootTableItem(DestroyItems.RAW_NICKEL.get()).apply(ApplyBonusCount.addOreBonusCount(Enchantments.BLOCK_FORTUNE))))))
         .tag(BlockTags.NEEDS_IRON_TOOL)
         .tag(Tags.Blocks.ORES)
-        .transform(TagGen.tagBlockAndItem("ores/fluorite", "ores_in_ground/deepslate"))
+        .transform(TagGen.tagBlockAndItem("ores/nickel", "ores_in_ground/deepslate"))
+        .tag(Tags.Items.ORES)
+        .build()
+        .register();
+
+    public static final BlockEntry<Block> NETHER_CROCOITE_BLOCK = REGISTRATE.block("nether_crocoite_block", Block::new)
+        .initialProperties(() -> Blocks.NETHER_QUARTZ_ORE)
+        .properties(p -> p
+            .mapColor(MapColor.COLOR_ORANGE)
+            .requiresCorrectToolForDrops()
+        ).onRegister(CreateRegistrate.connectedTextures(() -> new SimpleCTBehaviour(DestroySpriteShifts.NETHER_CROCOITE_BLOCK)))
+        .transform(TagGen.pickaxeOnly())
+        .loot((lt, b) -> lt.add(b, RegistrateBlockLootTables.createSilkTouchDispatchTable(b, lt.applyExplosionDecay(b, LootItem.lootTableItem(DestroyItems.NETHER_CROCOITE.get()).apply(ApplyBonusCount.addOreBonusCount(Enchantments.BLOCK_FORTUNE))))))
+        .tag(BlockTags.NEEDS_IRON_TOOL)
+        .tag(Tags.Blocks.ORES)
+        .item()
         .tag(Tags.Items.ORES)
         .build()
         .register();
@@ -628,6 +648,58 @@ public class DestroyBlocks {
     ZINC_INFUSED_BEETROOT = REGISTRATE.block("zinc_infused_beetroot", p -> new HeftyBeetrootBlock(p, DestroyItems.ZINC_INFUSED_BEETROOT))
         .initialProperties(HEFTY_BEETROOT)
         .tag(DestroyBlockTags.BEETROOTS.tag)
+        .register();
+
+    // Periodic Table blocks
+
+    public static final BlockEntry<PeriodicTableBlock>
+
+    COPPER_PERIODIC_TABLE_BLOCK = REGISTRATE.block("copper_periodic_table_block", PeriodicTableBlock::new)
+        .initialProperties(() -> Blocks.COPPER_BLOCK)
+        .tag(Tags.Blocks.STORAGE_BLOCKS, Tags.Blocks.STORAGE_BLOCKS_COPPER)
+        .item(PeriodicTableBlockItem::new)
+        .tag(Tags.Items.STORAGE_BLOCKS, Tags.Items.STORAGE_BLOCKS_COPPER)
+        .build()
+        .register(),
+
+    GOLD_PERIODIC_TABLE_BLOCK = REGISTRATE.block("gold_periodic_table_block", PeriodicTableBlock::new)
+        .initialProperties(() -> Blocks.GOLD_BLOCK)
+        .tag(Tags.Blocks.STORAGE_BLOCKS, Tags.Blocks.STORAGE_BLOCKS_GOLD)
+        .item(PeriodicTableBlockItem::new)
+        .tag(Tags.Items.STORAGE_BLOCKS, Tags.Items.STORAGE_BLOCKS_GOLD)
+        .build()
+        .register(),
+
+    IRON_PERIODIC_TABLE_BLOCK = REGISTRATE.block("iron_periodic_table_block", PeriodicTableBlock::new)
+        .initialProperties(() -> Blocks.IRON_BLOCK)
+        .tag(Tags.Blocks.STORAGE_BLOCKS, Tags.Blocks.STORAGE_BLOCKS_IRON)
+        .item(PeriodicTableBlockItem::new)
+        .tag(Tags.Items.STORAGE_BLOCKS, Tags.Items.STORAGE_BLOCKS_IRON)
+        .build()
+        .register(),
+
+    NICKEL_PERIODIC_TABLE_BLOCK = REGISTRATE.block("nickel_periodic_table_block", PeriodicTableBlock::new)
+        .initialProperties(NICKEL_BLOCK)
+        .tag(Tags.Blocks.STORAGE_BLOCKS, AllTags.forgeBlockTag("storage_blocks/nickel"))
+        .item(PeriodicTableBlockItem::new)
+        .tag(Tags.Items.STORAGE_BLOCKS, forgeItemTag("storage_blocks/nickel"))
+        .build()
+        .register(),
+
+    PALLADIUM_PERIODIC_TABLE_BLOCK = REGISTRATE.block("palladium_periodic_table_block", PeriodicTableBlock::new)
+        .initialProperties(PALLADIUM_BLOCK)
+        .tag(Tags.Blocks.STORAGE_BLOCKS, AllTags.forgeBlockTag("storage_blocks/palladium"))
+        .item(PeriodicTableBlockItem::new)
+        .tag(Tags.Items.STORAGE_BLOCKS, forgeItemTag("storage_blocks/palladium"))
+        .build()
+        .register(),
+
+    ZINC_PERIODIC_TABLE_BLOCK = REGISTRATE.block("zinc_periodic_table_block", PeriodicTableBlock::new)
+        .initialProperties(AllBlocks.ZINC_BLOCK)
+        .tag(Tags.Blocks.STORAGE_BLOCKS, AllTags.forgeBlockTag("storage_blocks/zinc"))
+        .item(PeriodicTableBlockItem::new)
+        .tag(Tags.Items.STORAGE_BLOCKS, forgeItemTag("storage_blocks/zinc"))
+        .build()
         .register();
 
     // FOOD

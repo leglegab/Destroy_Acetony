@@ -41,6 +41,14 @@ public class MixtureFluid extends VirtualFluid {
         return of(amount, mixture, null);
     };
 
+    public static FluidStack gasOf(FluidStack stack) {
+        if (!DestroyFluids.isMixture(stack)) return FluidStack.EMPTY;
+        ReadOnlyMixture mixture = ReadOnlyMixture.readNBT(ReadOnlyMixture::new, stack.getOrCreateChildTag("Mixture"));
+        FluidStack gasStack = new FluidStack(DestroyFluids.GAS_MIXTURE.get(), stack.getAmount());
+        addMixtureToFluidStack(gasStack, mixture);
+        return gasStack;
+    };
+
     /**
      * Creates a Fluid Stack of the given {@link com.petrolpark.destroy.chemistry.Mixture Mixture}.
      * @param amount How many mB this Fluid Stack is

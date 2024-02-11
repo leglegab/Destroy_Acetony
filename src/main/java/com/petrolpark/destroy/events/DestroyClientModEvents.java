@@ -9,6 +9,7 @@ import com.petrolpark.destroy.capability.level.pollution.ClientLevelPollutionDat
 import com.petrolpark.destroy.capability.level.pollution.LevelPollution;
 import com.petrolpark.destroy.capability.level.pollution.LevelPollution.PollutionType;
 import com.petrolpark.destroy.chemistry.naming.SaltNameOverrides;
+import com.petrolpark.destroy.item.MoleculeDisplayItem.MoleculeTooltip;
 import com.simibubi.create.foundation.utility.Color;
 
 import net.minecraft.client.color.block.BlockColor;
@@ -23,6 +24,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.DoubleBlockHalf;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.RegisterClientReloadListenersEvent;
+import net.minecraftforge.client.event.RegisterClientTooltipComponentFactoriesEvent;
 import net.minecraftforge.client.event.RegisterColorHandlersEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -32,7 +34,7 @@ public class DestroyClientModEvents {
 
     @SubscribeEvent
     public static void registerClientReloadListeners(RegisterClientReloadListenersEvent event) {
-        event.registerReloadListener(SaltNameOverrides.MANAGER);
+        event.registerReloadListener(SaltNameOverrides.RELOAD_LISTENER);
     };
 
 
@@ -90,5 +92,10 @@ public class DestroyClientModEvents {
         LevelPollution levelPollution = ClientLevelPollutionData.getLevelPollution();
         smogProportion = levelPollution == null ? 0f : (float) levelPollution.get(PollutionType.SMOG) / PollutionType.SMOG.max;
         return Color.mixColors(color, brown, smogProportion);
+    };
+
+    @SubscribeEvent
+    public static void onRegisterClientTooltipComponentFactories(RegisterClientTooltipComponentFactoriesEvent event) {
+        event.register(MoleculeTooltip.class, MoleculeTooltip::getClientTooltipComponent);
     };
 };

@@ -28,6 +28,7 @@ public class DestroyTags {
         HEFTY_BEETROOT,
         LIABLE_TO_CHANGE,
         PAPER_PULPABLE,
+        PERIODIC_TABLE_BLOCK,
         PLASTIC,
         PRILL,
         PRIMARY_EXPLOSIVE("explosive/primary"),

@@ -27,7 +27,7 @@ public class SaltNameOverrides {
 
     public static final Map<Molecule, SaltNameOverrides> ALL_OVERRIDES = new HashMap<>();
 
-    public static final Manager MANAGER = new Manager();
+    public static final Listener RELOAD_LISTENER = new Listener();
 
     /**
      * The translation key of the name to be used for this Molecule when it is part of a salt.
@@ -72,7 +72,7 @@ public class SaltNameOverrides {
                 ALL_OVERRIDES.put(molecule, overrides);
             });
         } catch (Throwable e) {
-            Destroy.LOGGER.error("Error loading salt name overrides.", e);
+            Destroy.LOGGER.error("Error loading salt name overrides:", e);
         };
     }
 
@@ -81,7 +81,7 @@ public class SaltNameOverrides {
         ALL_OVERRIDES.clear();
         for (String namespace : resourceManager.getNamespaces()) {
             ResourceLocation location = new ResourceLocation(namespace, "lang/salt_name_overrides/"+minecraft.getLanguageManager().getSelected()+".json");
-            Optional<Resource> resource = resourceManager .getResource(location);
+            Optional<Resource> resource = resourceManager.getResource(location);
             if (resource.isPresent()) {
                 try (InputStream inputStream = resource.get().open()) {
                     loadOverridesFromJson(inputStream);
@@ -92,7 +92,7 @@ public class SaltNameOverrides {
         }; 
     };
 
-    public static class Manager implements ResourceManagerReloadListener {
+    public static class Listener implements ResourceManagerReloadListener {
         
         @Override
         public void onResourceManagerReload(ResourceManager resourceManager) {

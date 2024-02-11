@@ -14,6 +14,10 @@
       },
       {
         "type": "single",
+        "resource": "destroy:fluid/gas"
+      },
+      {
+        "type": "single",
         "resource": "destroy:fluid/mixture_flow"
       },
       {

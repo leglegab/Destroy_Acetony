@@ -127,6 +127,8 @@ public class DestroyItems {
     // ZIRCON = REGISTRATE.item("zircon", Item::new)
     //     .tag(forgeItemTag("raw_materials/zircon"))
     //     .register(),
+    NETHER_CROCOITE = REGISTRATE.item("nether_crocoite", Item::new)
+        .register(),
 
     // DUSTS
 

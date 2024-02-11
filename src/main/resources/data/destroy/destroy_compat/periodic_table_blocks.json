@@ -1,0 +1,26 @@
+{
+    "destroy:iron_periodic_table_block": {
+        "x": 7,
+        "y": 3
+    },
+    "destroy:nickel_periodic_table_block": {
+        "x": 9,
+        "y": 3
+    },
+    "destroy:copper_periodic_table_block": {
+        "x": 10,
+        "y": 3
+    },
+    "destroy:zinc_periodic_table_block": {
+        "x": 11,
+        "y": 3
+    },
+    "destroy:palladium_periodic_table_block": {
+        "x": 9,
+        "y": 4
+    },
+    "destroy:gold_periodic_table_block": {
+        "x": 10,
+        "y": 5
+    }
+}

@@ -1,16 +1,24 @@
 package com.petrolpark.destroy.client.ponder;
 
+import java.util.List;
+
 import com.petrolpark.destroy.Destroy;
 import com.petrolpark.destroy.block.DestroyBlocks;
+import com.petrolpark.destroy.block.PeriodicTableBlock;
 import com.petrolpark.destroy.item.DestroyItems;
 import com.simibubi.create.AllBlocks;
 import com.simibubi.create.Create;
 import com.simibubi.create.foundation.ponder.PonderRegistrationHelper;
+import com.simibubi.create.foundation.ponder.PonderRegistry;
+import com.simibubi.create.foundation.ponder.PonderStoryBoardEntry;
 import com.simibubi.create.infrastructure.ponder.scenes.KineticsScenes;
+
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.resources.ResourceLocation;
 
 public class DestroyPonderIndex {
 
-    private static final PonderRegistrationHelper HELPER = new PonderRegistrationHelper(Destroy.MOD_ID);
+    public static final PonderRegistrationHelper HELPER = new PonderRegistrationHelper(Destroy.MOD_ID);
     private static final PonderRegistrationHelper CREATE_HELPER = new PonderRegistrationHelper(Create.ID);
 
     public static void register() {
@@ -96,5 +104,18 @@ public class DestroyPonderIndex {
             .addStoryBoard("reactions", DestroyScenes::reactions)
             .addStoryBoard("vat/interaction", DestroyScenes::vatInteraction)
             .addStoryBoard("vat/uv", DestroyScenes::uv);
+    };
+
+    private static final ResourceLocation periodicTableSchematicLocation = Destroy.asResource("periodic_table");
+
+    public static void refreshPeriodicTableBlockScenes() {
+        PeriodicTableBlock.ELEMENTS.forEach(entry -> {
+            entry.blocks().forEach(block -> {
+                ResourceLocation rl = BuiltInRegistries.ITEM.getKey(block.asItem());
+                List<PonderStoryBoardEntry> list = PonderRegistry.ALL.get(rl);
+                if (list != null) list.removeIf(storyBoard -> storyBoard.getSchematicLocation().equals(periodicTableSchematicLocation));
+                HELPER.addStoryBoard(rl, periodicTableSchematicLocation, DestroyScenes::periodicTable);
+            });
+        });
     };
 };

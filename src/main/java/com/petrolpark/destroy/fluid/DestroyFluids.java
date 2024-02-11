@@ -29,6 +29,14 @@ public class DestroyFluids {
     )
         .lang("Mixture")
         .register();
+
+    public static final FluidEntry<MixtureFluid> GAS_MIXTURE = REGISTRATE.virtualFluid("gas", // FOr display purposes only
+        new ResourceLocation("destroy", "fluid/gas"),
+        new ResourceLocation("destroy", "fluid/gas"),
+        MixtureFluidType::new,
+        MixtureFluid::new
+    )
+        .register();
         
 
     public static final FluidEntry<VirtualFluid>
@@ -53,7 +61,7 @@ public class DestroyFluids {
         .register(),
     PERFUME = REGISTRATE.virtualFluid("perfume", new ResourceLocation("destroy", "fluid/swirling"), new ResourceLocation("destroy", "fluid/swirling"), (properties, stillTexture, flowingTexture) -> new ColoredFluidType(properties, stillTexture, flowingTexture, 0x80ffcff7), VirtualFluid::new)
         .register(),
-    SKIMMED_MILK = coloredWaterFluid("skimmed_milk", 0xE0FFFFFF)
+    SKIMMED_MILK = coloredWaterFluid("skimmed_milk", 0x00000000)
         .register(),
     THRICE_DISTILLED_MOONSHINE = coloredWaterFluid("thrice_distilled_moonshine", 0xC0A18666)
         .register(),
@@ -71,7 +79,7 @@ public class DestroyFluids {
     };
 
     public static boolean isMixture(FluidStack stack) {
-        return !stack.isEmpty() && isMixture(stack.getFluid()) && stack.getOrCreateTag().contains("Mixture", Tag.TAG_COMPOUND);
+        return stack != null && !stack.isEmpty() && isMixture(stack.getFluid()) && stack.getOrCreateTag().contains("Mixture", Tag.TAG_COMPOUND);
     };
 
     public static boolean isMixture(Fluid fluid) {

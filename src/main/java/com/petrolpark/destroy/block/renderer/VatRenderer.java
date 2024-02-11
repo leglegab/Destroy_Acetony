@@ -9,6 +9,7 @@ import com.petrolpark.destroy.block.entity.DestroyBlockEntityTypes;
 import com.petrolpark.destroy.block.entity.VatControllerBlockEntity;
 import com.petrolpark.destroy.block.entity.VatSideBlockEntity;
 import com.petrolpark.destroy.block.model.DestroyPartials;
+import com.petrolpark.destroy.fluid.MixtureFluid;
 import com.petrolpark.destroy.util.vat.Vat;
 import com.simibubi.create.foundation.blockEntity.renderer.SafeBlockEntityRenderer;
 import com.simibubi.create.foundation.fluid.FluidRenderer;
@@ -114,12 +115,19 @@ public class VatRenderer extends SafeBlockEntityRenderer<VatControllerBlockEntit
             };
         };
 
-        // Fluid
+        // Fluids
         FluidStack fluidStack = controller.getLiquidTank().getFluid();
         if (!fluidStack.isEmpty()) {
             FluidRenderer.renderFluidBox(fluidStack,
                 (float)relativeInternalLowerCorner.x, (float)relativeInternalLowerCorner.y, (float)relativeInternalLowerCorner.z,
                 (float)relativeInternalUpperCorner.x, relativeFluidLevel, (float)relativeInternalUpperCorner.z,
+                bufferSource, ms, light, true);
+        };
+        FluidStack gasStack = MixtureFluid.gasOf(controller.getGasTank().getFluid());
+        if (!gasStack.isEmpty()) {
+            FluidRenderer.renderFluidBox(gasStack,
+                (float)relativeInternalLowerCorner.x, relativeFluidLevel, (float)relativeInternalLowerCorner.z,
+                (float)relativeInternalUpperCorner.x, (float)relativeInternalUpperCorner.y, (float)relativeInternalUpperCorner.z,
                 bufferSource, ms, light, true);
         };
 

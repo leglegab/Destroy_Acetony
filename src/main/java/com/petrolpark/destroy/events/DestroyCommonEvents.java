@@ -8,6 +8,8 @@ import com.petrolpark.destroy.MoveToPetrolparkLibrary;
 import com.petrolpark.destroy.advancement.DestroyAdvancements;
 import com.petrolpark.destroy.badge.BadgeHandler;
 import com.petrolpark.destroy.block.DestroyBlocks;
+import com.petrolpark.destroy.block.PeriodicTableBlock;
+import com.petrolpark.destroy.block.PeriodicTableBlock.PeriodicTableEntry;
 import com.petrolpark.destroy.block.entity.VatControllerBlockEntity;
 import com.petrolpark.destroy.block.entity.VatSideBlockEntity;
 import com.petrolpark.destroy.block.entity.behaviour.ExtendedBasinBehaviour;
@@ -36,6 +38,7 @@ import com.petrolpark.destroy.item.SyringeItem;
 import com.petrolpark.destroy.item.TestTubeItem;
 import com.petrolpark.destroy.network.DestroyMessages;
 import com.petrolpark.destroy.network.packet.LevelPollutionS2CPacket;
+import com.petrolpark.destroy.network.packet.RefreshPeriodicTablePonderSceneS2CPacket;
 import com.petrolpark.destroy.network.packet.SeismometerSpikeS2CPacket;
 import com.petrolpark.destroy.recipe.DiscStampingRecipe;
 import com.petrolpark.destroy.sound.DestroySoundEvents;
@@ -66,10 +69,12 @@ import com.simibubi.create.foundation.ModFilePackResources;
 import com.simibubi.create.foundation.blockEntity.behaviour.BlockEntityBehaviour;
 import com.simibubi.create.foundation.utility.Components;
 import com.simibubi.create.foundation.utility.Couple;
+import com.simibubi.create.foundation.utility.Iterate;
 
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.core.Registry;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.core.registries.Registries;
@@ -110,6 +115,7 @@ import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.capabilities.RegisterCapabilitiesEvent;
 import net.minecraftforge.event.AddPackFindersEvent;
+import net.minecraftforge.event.AddReloadListenerEvent;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.event.PlayLevelSoundEvent;
 import net.minecraftforge.event.RegisterCommandsEvent;
@@ -122,6 +128,7 @@ import net.minecraftforge.event.entity.living.LivingEquipmentChangeEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.event.level.BlockEvent.CropGrowEvent;
+import net.minecraftforge.event.level.BlockEvent.EntityPlaceEvent;
 import net.minecraftforge.event.level.ExplosionEvent;
 import net.minecraftforge.event.level.SaplingGrowTreeEvent;
 import net.minecraftforge.event.level.SleepFinishedTimeEvent;
@@ -202,6 +209,9 @@ public class DestroyCommonEvents {
 
         // Collect the Player's badges
         BadgeHandler.fetchAndAddBadgesIncludingEarlyBird(serverPlayer);
+
+        // Update the Ponders for periodic table blocks
+        DestroyMessages.sendToClient(new RefreshPeriodicTablePonderSceneS2CPacket(), serverPlayer);
     };
 
     /**
@@ -727,6 +737,37 @@ public class DestroyCommonEvents {
         if (stamper.getItem() instanceof DiscStamperItem && inv.getItem(0).is(DestroyItems.BLANK_MUSIC_DISC.get())) {
             event.addRecipe(() -> Optional.ofNullable(DiscStampingRecipe.create(stamper)), 75);
         };
+    };
+
+    /**
+     * Reward the Player with an advancement for assembling a full periodic table.
+     */
+    @SubscribeEvent
+    public static void onPlayerPlacesBlock(EntityPlaceEvent event) {
+        BlockState state = event.getPlacedBlock();
+        if (!(event.getEntity() instanceof ServerPlayer player)) return;
+        Level level = player.level();
+        if (PeriodicTableBlock.isPeriodicTableBlock(state)) {
+            int[] thisPos = PeriodicTableBlock.getXY(state.getBlock());
+            for (Direction direction : Iterate.horizontalDirections) {
+                boolean allPresent = true;
+                checkEachBlock: for (PeriodicTableEntry entry : PeriodicTableBlock.ELEMENTS) {
+                    if (!entry.blocks().contains(level.getBlockState(event.getPos().offset(PeriodicTableBlock.relative(thisPos, new int[]{entry.x(), entry.y()}, direction))).getBlock())) {
+                        allPresent = false;
+                        break checkEachBlock;
+                    };
+                };
+                if (allPresent) {
+                    DestroyAdvancements.PERIODIC_TABLE.award(level, player);
+                    return;
+                };
+            };
+        };
+    };
+
+    @SubscribeEvent
+    public static void registerReloadListeners(AddReloadListenerEvent event) {
+        event.addListener(PeriodicTableBlock.RELOAD_LISTENER);
     };
 
     @EventBusSubscriber(bus = EventBusSubscriber.Bus.MOD)

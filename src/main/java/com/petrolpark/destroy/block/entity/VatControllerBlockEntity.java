@@ -467,6 +467,7 @@ public class VatControllerBlockEntity extends SmartBlockEntity implements IHaveG
 
         ItemHelper.dropContents(getLevel(), posDestroyed, inventory);
         itemCapability.invalidate();
+        removeVent();
         PollutionHelper.pollute(getLevel(), pollutionPos, getLiquidTank().getFluid(), getGasTank().getFluid());
 
         getLiquidTank().setFluid(FluidStack.EMPTY);

@@ -1,0 +1,7 @@
+{
+    "parent": "destroy:block/periodic_table/base",
+    "textures": {
+      "side": "destroy:block/nickel_block",
+      "front": "destroy:block/periodic_table/nickel"
+    }
+  }

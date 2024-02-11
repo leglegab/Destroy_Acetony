@@ -37,6 +37,7 @@ public enum DestroyAdvancements {
     TRY_TO_MAKE_METH("try_to_make_meth"),
     OBLITERATE("detonate_obliteration_explosive"),
     OSTWALD_PROCESS("ostwald_process"),
+    PERIODIC_TABLE("periodic_table"),
     FULLY_POLLUTE("fully_pollute"),
     USE_PUMPJACK("use_pumpjack"),
     JUMP_ON_SAND_CASTLE("jump_on_sand_castle"),
