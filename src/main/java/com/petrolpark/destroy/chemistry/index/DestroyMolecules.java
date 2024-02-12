@@ -659,6 +659,7 @@ public final class DestroyMolecules {
         .boilingPoint(356.73f)
         .density(13534f)
         .molarHeatCapacity(27.98f)
+        .tag(Tags.ACUTELY_TOXIC)
         .color(0xFFB3B3B3)
         .build(),
 

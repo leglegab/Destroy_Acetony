@@ -176,6 +176,10 @@ dependencies {
     compileOnly fg.deobf("com.teamabnormals:blueprint:${minecraft_version}-${blueprint_version}")
     implementation fg.deobf("com.teamabnormals:blueprint:${minecraft_version}-${blueprint_version}")
 
+    // Spark
+    compileOnly fg.deobf("curse.maven:spark-361579:${spark_version}")
+    implementation fg.deobf("curse.maven:spark-361579:${spark_version}")
+
 
     // ANNOTATION PROCESSORS
 
