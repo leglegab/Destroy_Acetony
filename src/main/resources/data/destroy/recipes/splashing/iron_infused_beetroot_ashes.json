@@ -16,7 +16,7 @@
         "chance": 0.5
       },
       {
-        "item": "create:crushed_raw_copper",
+        "item": "destroy:crushed_raw_chromium",
         "count": 1,
         "chance": 0.05
       },

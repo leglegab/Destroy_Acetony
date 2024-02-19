@@ -84,6 +84,12 @@ public class DestroyItems {
     NICKEL_INGOT = REGISTRATE.item("nickel_ingot", Item::new)
         .tag(DestroyItemTags.DESTROY_INGOTS.tag, forgeItemTag("ingots/nickel"), Tags.Items.INGOTS)
         .register(),
+    CHROMIUM_INGOT = REGISTRATE.item("chromium_ingot", Item::new)
+        .tag(DestroyItemTags.DESTROY_INGOTS.tag, forgeItemTag("ingots/chromium"), Tags.Items.INGOTS)
+        .register(),
+    LEAD_INGOT = REGISTRATE.item("lead_ingot", Item::new)
+        .tag(DestroyItemTags.DESTROY_INGOTS.tag, forgeItemTag("ingots/lead"), Tags.Items.INGOTS)
+        .register(),
     PALLADIUM_INGOT = REGISTRATE.item("palladium_ingot", Item::new)
         .tag(DestroyItemTags.DESTROY_INGOTS.tag, forgeItemTag("ingots/palladium"), Tags.Items.INGOTS)
         .register(),
@@ -110,6 +116,9 @@ public class DestroyItems {
 
     RAW_NICKEL = REGISTRATE.item("raw_nickel", Item::new)
         .tag(forgeItemTag("raw_materials/nickel"), Tags.Items.RAW_MATERIALS)
+        .register(),
+    CRUSHED_RAW_CHROMIUM = REGISTRATE.item("crushed_raw_chromium", Item::new)
+        .tag(AllItemTags.CRUSHED_RAW_MATERIALS.tag)
         .register(),
     CRUSHED_RAW_PALLADIUM = REGISTRATE.item("crushed_raw_palladium", Item::new)
         .tag(AllItemTags.CRUSHED_RAW_MATERIALS.tag)
@@ -140,6 +149,12 @@ public class DestroyItems {
         .register(),
     NICKEL_POWDER = REGISTRATE.item("nickel_powder", Item::new)
         .tag(forgeItemTag("dusts/nickel"), Tags.Items.DUSTS)
+        .register(),
+    CHROMIUM_POWDER = REGISTRATE.item("chromium_powder", Item::new)
+        .tag(forgeItemTag("dusts/chromium"), Tags.Items.DUSTS)
+        .register(),
+    LEAD_POWDER = REGISTRATE.item("lead_powder", Item::new)
+        .tag(forgeItemTag("dusts/lead"), Tags.Items.DUSTS)
         .register(),
     PALLADIUM_POWDER = REGISTRATE.item("palladium_powder", Item::new)
         .tag(forgeItemTag("dusts/palladium"), Tags.Items.DUSTS)
@@ -632,8 +647,7 @@ public class DestroyItems {
     public static final ItemEntry<CircuitMaskItem> CIRCUIT_MASK = REGISTRATE.item("circuit_mask", CircuitMaskItem::new)
         .properties(p -> p
             .stacksTo(1)
-        ).removeTab(CreativeModeTabs.SEARCH)
-        .register();
+        ).register();
 
     public static final ItemEntry<HyperaccumulatingFertilizerItem> HYPERACCUMULATING_FERTILIZER = REGISTRATE.item("hyperaccumulating_fertilizer", HyperaccumulatingFertilizerItem::new)
         .tag(Tags.Items.DUSTS)

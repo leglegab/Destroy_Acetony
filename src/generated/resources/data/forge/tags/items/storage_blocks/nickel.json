@@ -1,5 +1,6 @@
 {
   "values": [
-    "destroy:nickel_block"
+    "destroy:nickel_block",
+    "destroy:nickel_periodic_table_block"
   ]
 }

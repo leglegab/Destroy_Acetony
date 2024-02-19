@@ -16,7 +16,12 @@
         "chance": 0.25
       },
       {
-        "item": "minecraft:quartz",
+        "item": "destroy:silica",
+        "count": 1,
+        "chance": 0.2
+      },
+      {
+        "item": "destroy:crushed_raw_chromium",
         "count": 1,
         "chance": 0.2
       }

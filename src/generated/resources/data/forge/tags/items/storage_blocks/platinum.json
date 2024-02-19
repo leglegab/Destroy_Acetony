@@ -1,5 +1,6 @@
 {
   "values": [
-    "destroy:platinum_block"
+    "destroy:platinum_block",
+    "destroy:platinum_periodic_table_block"
   ]
 }

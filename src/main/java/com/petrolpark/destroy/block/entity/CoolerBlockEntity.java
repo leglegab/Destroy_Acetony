@@ -55,7 +55,7 @@ public class CoolerBlockEntity extends SmartBlockEntity implements IHaveGoggleIn
 
     private SmartFluidTankBehaviour tank;
 
-    private int coolingTicks; // How many ticks this Cooler has left of cooling
+    public int coolingTicks; // How many ticks this Cooler has left of cooling
     protected LerpedFloat headAnimation;
 	protected LerpedFloat headAngle;
 

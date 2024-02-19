@@ -1,6 +1,8 @@
 {
   "values": [
     "destroy:raw_nickel_block",
-    "destroy:nickel_block"
+    "destroy:chromium_block",
+    "destroy:nickel_block",
+    "destroy:lead_block"
   ]
 }

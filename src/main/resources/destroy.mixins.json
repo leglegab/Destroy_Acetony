@@ -23,6 +23,7 @@
         "BasinBlockEntityMixin",
         "BasinCategoryMixin",
         "BeltInventoryMixin",
+        "BlazeBurnerBlockEntityMixin",
         "BlockMixin",
         "ConnectivityHandlerMixin",
         "ContraptionMixin",

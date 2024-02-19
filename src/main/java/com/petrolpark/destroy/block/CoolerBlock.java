@@ -5,9 +5,11 @@ import com.petrolpark.destroy.block.entity.CoolerBlockEntity;
 import com.petrolpark.destroy.block.entity.CoolerBlockEntity.ColdnessLevel;
 import com.petrolpark.destroy.block.entity.DestroyBlockEntityTypes;
 import com.petrolpark.destroy.block.shape.DestroyShapes;
+import com.simibubi.create.AllItems;
 import com.simibubi.create.AllShapes;
 import com.simibubi.create.content.processing.basin.BasinBlockEntity;
 import com.simibubi.create.content.processing.burner.BlazeBurnerBlock;
+import com.simibubi.create.content.processing.burner.BlazeBurnerBlockEntity;
 import com.simibubi.create.content.processing.burner.BlazeBurnerBlock.HeatLevel;
 import com.simibubi.create.foundation.block.IBE;
 
@@ -61,6 +63,21 @@ public class CoolerBlock extends Block implements IBE<CoolerBlockEntity> {
 
     @Override
     public InteractionResult use(BlockState state, Level world, BlockPos pos, Player player, InteractionHand hand, BlockHitResult blockRayTraceResult) {
+        ItemStack stack = player.getItemInHand(hand);
+        if (AllItems.CREATIVE_BLAZE_CAKE.isIn(stack)) {
+            withBlockEntityDo(world, pos, cooler -> {
+                if (getColdnessLevelOf(state) == ColdnessLevel.FROSTING) {
+                    cooler.coolingTicks = 0;
+                    cooler.setColdnessOfBlock(ColdnessLevel.IDLE);
+                } else  {
+                    cooler.coolingTicks = Integer.MAX_VALUE;
+                    cooler.setColdnessOfBlock(ColdnessLevel.FROSTING);
+                };
+            });
+            if (!player.isCreative()) stack.shrink(1);
+            player.setItemInHand(hand, stack);
+            return InteractionResult.sidedSuccess(world.isClientSide());
+        };
         return InteractionResult.PASS;
     };
 

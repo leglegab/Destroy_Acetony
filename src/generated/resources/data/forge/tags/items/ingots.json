@@ -1,6 +1,8 @@
 {
   "values": [
     "destroy:nickel_ingot",
+    "destroy:chromium_ingot",
+    "destroy:lead_ingot",
     "destroy:palladium_ingot",
     "destroy:platinum_ingot",
     "destroy:rhodium_ingot",

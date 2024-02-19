@@ -2,7 +2,6 @@ package com.petrolpark.destroy.client.ponder;
 
 import java.util.HashSet;
 import java.util.List;
-import java.util.Optional;
 import java.util.Set;
 
 import com.petrolpark.destroy.block.AgingBarrelBlock;
@@ -669,6 +668,16 @@ public class DestroyScenes {
             .attachKeyFrame()
             .pointAt(util.vector.blockSurface(cooler, Direction.WEST));
         scene.idle(100);
+
+        scene.overlay.showControls(
+            new InputWindowElement(util.vector.topOf(cooler), Pointing.DOWN)
+                .withItem(AllItems.CREATIVE_BLAZE_CAKE.asStack())
+            , 100
+        );
+        scene.overlay.showText(100)
+            .text("This text is defined in a language file.")
+            .attachKeyFrame();
+        scene.idle(120);
 
         scene.markAsFinished();
     };

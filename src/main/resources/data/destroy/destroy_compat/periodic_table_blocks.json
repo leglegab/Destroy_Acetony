@@ -1,4 +1,8 @@
 {
+    "destroy:chromium_periodic_table_block": {
+        "x": 5,
+        "y": 3
+    },
     "destroy:iron_periodic_table_block": {
         "x": 7,
         "y": 3
@@ -15,12 +19,24 @@
         "x": 11,
         "y": 3
     },
+    "destroy:rhodium_periodic_table_block": {
+        "x": 8,
+        "y": 4
+    },
     "destroy:palladium_periodic_table_block": {
         "x": 9,
         "y": 4
     },
     "destroy:gold_periodic_table_block": {
         "x": 10,
+        "y": 5
+    },
+    "destroy:platinum_periodic_table_block": {
+        "x": 9,
+        "y": 5
+    },
+    "destroy:lead_periodic_table_block": {
+        "x": 13,
         "y": 5
     }
 }

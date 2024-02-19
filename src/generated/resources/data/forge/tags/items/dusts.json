@@ -4,6 +4,8 @@
     "destroy:copper_powder",
     "destroy:iron_powder",
     "destroy:nickel_powder",
+    "destroy:chromium_powder",
+    "destroy:lead_powder",
     "destroy:palladium_powder",
     "destroy:platinum_powder",
     "destroy:rhodium_powder",

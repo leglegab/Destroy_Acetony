@@ -15,14 +15,17 @@
     "destroy:vat_side",
     "destroy:fluorite_block",
     "destroy:raw_nickel_block",
+    "destroy:chromium_block",
     "destroy:nickel_block",
     "destroy:palladium_block",
     "destroy:platinum_block",
     "destroy:rhodium_block",
+    "destroy:lead_block",
     "destroy:fluorite_ore",
     "destroy:deepslate_fluorite_ore",
     "destroy:end_fluorite_ore",
     "destroy:nickel_ore",
-    "destroy:deepslate_nickel_ore"
+    "destroy:deepslate_nickel_ore",
+    "destroy:nether_crocoite_block"
   ]
 }

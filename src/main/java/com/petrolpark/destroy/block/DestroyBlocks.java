@@ -51,20 +51,20 @@ import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.material.MapColor;
 import net.minecraft.world.level.storage.loot.entries.LootItem;
 import net.minecraft.world.level.storage.loot.functions.ApplyBonusCount;
+import net.minecraft.world.level.storage.loot.functions.SetItemCountFunction;
+import net.minecraft.world.level.storage.loot.providers.number.UniformGenerator;
 import net.minecraftforge.common.Tags;
 
 public class DestroyBlocks {
 
     // BLOCK ENTITIES
 
-    @SuppressWarnings("removal") // I'll start rendering translucency the proper way once it actually works the proper way
     public static final BlockEntry<AgingBarrelBlock> AGING_BARREL = REGISTRATE.block("aging_barrel", AgingBarrelBlock::new)
         .initialProperties(SharedProperties::stone)
         .properties(p -> p
             .mapColor(MapColor.COLOR_BROWN)
             .noOcclusion()
         ).transform(TagGen.axeOnly())
-        //.addLayer(() -> RenderType::translucent)
         .item()
         .tag(DestroyItemTags.LIABLE_TO_CHANGE.tag)
         .transform(customItemModel())
@@ -195,7 +195,6 @@ public class DestroyBlocks {
         .properties(p -> p
             .noOcclusion()
         ).item(RedstoneProgrammerBlockItem::new)
-        .removeTab(CreativeModeTabs.SEARCH) //TODO remove once finished
         .build()
         .register();
 
@@ -291,16 +290,13 @@ public class DestroyBlocks {
         .tag(BlockTags.CAULDRONS)
         .register();
 
-    @SuppressWarnings("removal") // I'll start rendering translucency the proper way once it actually works the proper way
     public static final BlockEntry<BlacklightBlock> BLACKLIGHT = REGISTRATE.block("blacklight", BlacklightBlock::new)
         .initialProperties(() -> Blocks.LANTERN)
         .properties(p -> p
             .mapColor(MapColor.COLOR_PURPLE)
             .sound(SoundType.GLASS)
             .forceSolidOn()
-        )
-        //.addLayer(() -> RenderType::translucent)
-        .item()
+        ).item()
         .build()
         .register();
 
@@ -383,6 +379,20 @@ public class DestroyBlocks {
         .build()
         .register();
 
+    public static final BlockEntry<Block> CHROMIUM_BLOCK = REGISTRATE.block("chromium_block", Block::new)
+        .initialProperties(() -> Blocks.IRON_BLOCK)
+        .properties(p -> p
+            .requiresCorrectToolForDrops()
+            .strength(5f, 6f)
+        ).transform(TagGen.pickaxeOnly())
+        .tag(BlockTags.NEEDS_STONE_TOOL)
+        .tag(Tags.Blocks.STORAGE_BLOCKS)
+        .tag(BlockTags.BEACON_BASE_BLOCKS)
+        .transform(TagGen.tagBlockAndItem("storage_blocks/chromium"))
+        .tag(Tags.Items.STORAGE_BLOCKS)
+        .build()
+        .register();
+
     public static final BlockEntry<Block> NICKEL_BLOCK = REGISTRATE.block("nickel_block", Block::new)
         .initialProperties(() -> Blocks.IRON_BLOCK)
         .properties(p -> p
@@ -394,7 +404,6 @@ public class DestroyBlocks {
         .tag(Tags.Blocks.STORAGE_BLOCKS)
         .tag(BlockTags.BEACON_BASE_BLOCKS)
         .transform(TagGen.tagBlockAndItem("storage_blocks/nickel"))
-        .tag(DestroyItemTags.LIABLE_TO_CHANGE.tag)
         .tag(Tags.Items.STORAGE_BLOCKS)
         .build()
         .register();
@@ -439,6 +448,20 @@ public class DestroyBlocks {
         .tag(Tags.Blocks.STORAGE_BLOCKS)
         .tag(BlockTags.BEACON_BASE_BLOCKS)
         .transform(TagGen.tagBlockAndItem("storage_blocks/rhodium"))
+        .tag(Tags.Items.STORAGE_BLOCKS)
+        .build()
+        .register();
+
+    public static final BlockEntry<Block> LEAD_BLOCK = REGISTRATE.block("lead_block", Block::new)
+        .initialProperties(() -> Blocks.IRON_BLOCK)
+        .properties(p -> p
+            .requiresCorrectToolForDrops()
+            .strength(7f, 6f)
+        ).transform(TagGen.pickaxeOnly())
+        .tag(BlockTags.NEEDS_STONE_TOOL)
+        .tag(Tags.Blocks.STORAGE_BLOCKS)
+        .tag(BlockTags.BEACON_BASE_BLOCKS)
+        .transform(TagGen.tagBlockAndItem("storage_blocks/lead"))
         .tag(Tags.Items.STORAGE_BLOCKS)
         .build()
         .register();
@@ -545,7 +568,7 @@ public class DestroyBlocks {
             .requiresCorrectToolForDrops()
         ).onRegister(CreateRegistrate.connectedTextures(() -> new SimpleCTBehaviour(DestroySpriteShifts.NETHER_CROCOITE_BLOCK)))
         .transform(TagGen.pickaxeOnly())
-        .loot((lt, b) -> lt.add(b, RegistrateBlockLootTables.createSilkTouchDispatchTable(b, lt.applyExplosionDecay(b, LootItem.lootTableItem(DestroyItems.NETHER_CROCOITE.get()).apply(ApplyBonusCount.addOreBonusCount(Enchantments.BLOCK_FORTUNE))))))
+        .loot((lt, b) -> lt.add(b, RegistrateBlockLootTables.createSilkTouchDispatchTable(b, lt.applyExplosionDecay(b, LootItem.lootTableItem(DestroyItems.NETHER_CROCOITE.get()).apply(SetItemCountFunction.setCount(UniformGenerator.between(2.0f, 5.0f))).apply(ApplyBonusCount.addOreBonusCount(Enchantments.BLOCK_FORTUNE))))))
         .tag(BlockTags.NEEDS_IRON_TOOL)
         .tag(Tags.Blocks.ORES)
         .item()
@@ -656,19 +679,11 @@ public class DestroyBlocks {
 
     public static final BlockEntry<PeriodicTableBlock>
 
-    COPPER_PERIODIC_TABLE_BLOCK = REGISTRATE.block("copper_periodic_table_block", PeriodicTableBlock::new)
-        .initialProperties(() -> Blocks.COPPER_BLOCK)
-        .tag(Tags.Blocks.STORAGE_BLOCKS, Tags.Blocks.STORAGE_BLOCKS_COPPER)
+    CHROMIUM_PERIODIC_TABLE_BLOCK = REGISTRATE.block("chromium_periodic_table_block", PeriodicTableBlock::new)
+        .initialProperties(CHROMIUM_BLOCK)
+        .tag(Tags.Blocks.STORAGE_BLOCKS, AllTags.forgeBlockTag("storage_blocks/chromium"))
         .item(PeriodicTableBlockItem::new)
-        .tag(Tags.Items.STORAGE_BLOCKS, Tags.Items.STORAGE_BLOCKS_COPPER)
-        .build()
-        .register(),
-
-    GOLD_PERIODIC_TABLE_BLOCK = REGISTRATE.block("gold_periodic_table_block", PeriodicTableBlock::new)
-        .initialProperties(() -> Blocks.GOLD_BLOCK)
-        .tag(Tags.Blocks.STORAGE_BLOCKS, Tags.Blocks.STORAGE_BLOCKS_GOLD)
-        .item(PeriodicTableBlockItem::new)
-        .tag(Tags.Items.STORAGE_BLOCKS, Tags.Items.STORAGE_BLOCKS_GOLD)
+        .tag(Tags.Items.STORAGE_BLOCKS, forgeItemTag("storage_blocks/chromium"))
         .build()
         .register(),
 
@@ -688,11 +703,11 @@ public class DestroyBlocks {
         .build()
         .register(),
 
-    PALLADIUM_PERIODIC_TABLE_BLOCK = REGISTRATE.block("palladium_periodic_table_block", PeriodicTableBlock::new)
-        .initialProperties(PALLADIUM_BLOCK)
-        .tag(Tags.Blocks.STORAGE_BLOCKS, AllTags.forgeBlockTag("storage_blocks/palladium"))
+    COPPER_PERIODIC_TABLE_BLOCK = REGISTRATE.block("copper_periodic_table_block", PeriodicTableBlock::new)
+        .initialProperties(() -> Blocks.COPPER_BLOCK)
+        .tag(Tags.Blocks.STORAGE_BLOCKS, Tags.Blocks.STORAGE_BLOCKS_COPPER)
         .item(PeriodicTableBlockItem::new)
-        .tag(Tags.Items.STORAGE_BLOCKS, forgeItemTag("storage_blocks/palladium"))
+        .tag(Tags.Items.STORAGE_BLOCKS, Tags.Items.STORAGE_BLOCKS_COPPER)
         .build()
         .register(),
 
@@ -701,6 +716,46 @@ public class DestroyBlocks {
         .tag(Tags.Blocks.STORAGE_BLOCKS, AllTags.forgeBlockTag("storage_blocks/zinc"))
         .item(PeriodicTableBlockItem::new)
         .tag(Tags.Items.STORAGE_BLOCKS, forgeItemTag("storage_blocks/zinc"))
+        .build()
+        .register(),
+
+    RHODIUM_PERIODIC_TABLE_BLOCK = REGISTRATE.block("rhodium_periodic_table_block", PeriodicTableBlock::new)
+        .initialProperties(RHODIUM_BLOCK)
+        .tag(Tags.Blocks.STORAGE_BLOCKS, AllTags.forgeBlockTag("storage_blocks/rhodium"))
+        .item(PeriodicTableBlockItem::new)
+        .tag(Tags.Items.STORAGE_BLOCKS, forgeItemTag("storage_blocks/rhodium"))
+        .build()
+        .register(),
+
+    PALLADIUM_PERIODIC_TABLE_BLOCK = REGISTRATE.block("palladium_periodic_table_block", PeriodicTableBlock::new)
+        .initialProperties(PALLADIUM_BLOCK)
+        .tag(Tags.Blocks.STORAGE_BLOCKS, AllTags.forgeBlockTag("storage_blocks/palladium"))
+        .item(PeriodicTableBlockItem::new)
+        .tag(Tags.Items.STORAGE_BLOCKS, forgeItemTag("storage_blocks/palladium"))
+        .build()
+        .register(),
+
+    PLATINUM_PERIODIC_TABLE_BLOCK = REGISTRATE.block("platinum_periodic_table_block", PeriodicTableBlock::new)
+        .initialProperties(CHROMIUM_BLOCK)
+        .tag(Tags.Blocks.STORAGE_BLOCKS, AllTags.forgeBlockTag("storage_blocks/platinum"))
+        .item(PeriodicTableBlockItem::new)
+        .tag(Tags.Items.STORAGE_BLOCKS, forgeItemTag("storage_blocks/platinum"))
+        .build()
+        .register(),
+
+    GOLD_PERIODIC_TABLE_BLOCK = REGISTRATE.block("gold_periodic_table_block", PeriodicTableBlock::new)
+        .initialProperties(() -> Blocks.GOLD_BLOCK)
+        .tag(Tags.Blocks.STORAGE_BLOCKS, Tags.Blocks.STORAGE_BLOCKS_GOLD)
+        .item(PeriodicTableBlockItem::new)
+        .tag(Tags.Items.STORAGE_BLOCKS, Tags.Items.STORAGE_BLOCKS_GOLD)
+        .build()
+        .register(),
+
+    LEAD_PERIODIC_TABLE_BLOCK = REGISTRATE.block("lead_periodic_table_block", PeriodicTableBlock::new)
+        .initialProperties(CHROMIUM_BLOCK)
+        .tag(Tags.Blocks.STORAGE_BLOCKS, AllTags.forgeBlockTag("storage_blocks/lead"))
+        .item(PeriodicTableBlockItem::new)
+        .tag(Tags.Items.STORAGE_BLOCKS, forgeItemTag("storage_blocks/lead"))
         .build()
         .register();
 

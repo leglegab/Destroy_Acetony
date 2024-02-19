@@ -1,5 +1,6 @@
 {
   "values": [
-    "destroy:rhodium_block"
+    "destroy:rhodium_block",
+    "destroy:rhodium_periodic_table_block"
   ]
 }
