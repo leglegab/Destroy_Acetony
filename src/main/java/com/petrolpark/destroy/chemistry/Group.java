@@ -33,7 +33,7 @@ public abstract class Group<G extends Group<G>> {
         return groupTypesAndReactions.get(group.getType());
     };
 
-    public abstract GroupType<G> getType();
+    public abstract GroupType<? extends G> getType();
 
     /**
      * Get the {@link GenericReaction Generic Reactions} which the functional Group identified by the given ID participates in.

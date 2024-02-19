@@ -157,7 +157,7 @@ public class DestroyReactions {
     CHLORODIFLUOROMETHANE_PYROLYSIS = builder()
         .id("chlorodifluoromethane_pyrolysis")
         .addReactant(DestroyMolecules.CHLORODIFLUOROMETHANE, 2)
-        .addProduct(DestroyMolecules.HYDROFLUORIC_ACID, 2)
+        .addProduct(DestroyMolecules.HYDROCHLORIC_ACID, 2)
         .addProduct(DestroyMolecules.TETRAFLUOROETHENE)
         .build(),
 

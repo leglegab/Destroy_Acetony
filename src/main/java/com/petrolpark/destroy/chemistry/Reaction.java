@@ -694,8 +694,8 @@ public class Reaction {
             };
 
             if (!hasForcedActivationEnergy) {
-                reaction.activationEnergy = 2.5f;
-                //Destroy.LOGGER.warn("Activation energy of reaction '"+reactionString()+"' was missing or invalid, so estimated as 50kJ.");
+                reaction.activationEnergy = 25f;
+                //Destroy.LOGGER.warn("Activation energy of reaction '"+reactionString()+"' was missing or invalid, so estimated as 25kJ.");
             };
 
             if (!hasForcedPreExponentialFactor || reaction.preexponentialFactor <= 0f) {

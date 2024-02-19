@@ -113,7 +113,7 @@ public class DestroyShapes {
     public static final VoxelShape agingBarrelClosed(int progress) {
         Builder agingBarrel = shape(0,0,0,16,16,16);
         if (progress == 0) {
-            agingBarrel.add(7, 16, 7, 9, 18, 8);
+            agingBarrel.add(7, 16, 7, 9, 18, 9);
         } else if (progress == 1) {
             agingBarrel.add(6, 16, 6, 10, 20, 10);
         } else if (progress == 2) {

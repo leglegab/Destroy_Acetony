@@ -18,6 +18,7 @@ import net.minecraft.core.Direction.AxisDirection;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.AABB;
 
 public class DifferentialBlockEntity extends SplitShaftBlockEntity {
 
@@ -117,6 +118,11 @@ public class DifferentialBlockEntity extends SplitShaftBlockEntity {
     @Override
     public float getRotationSpeedModifier(Direction face) {
         return ratio(getBlockState());
+    };
+
+    @Override
+    protected AABB createRenderBoundingBox() {
+        return new AABB(worldPosition).inflate(1);
     };
     
 };

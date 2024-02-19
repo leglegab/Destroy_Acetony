@@ -13,7 +13,7 @@ import net.minecraft.world.item.ItemStack;
 
 public class BeltChargingCallbacks {
     
-    static ProcessingResult onItemReceived(TransportedItemStack transported, TransportedItemStackHandlerBehaviour handler, ChargingBehaviour behaviour) {
+    public static ProcessingResult onItemReceived(TransportedItemStack transported, TransportedItemStackHandlerBehaviour handler, ChargingBehaviour behaviour) {
         if (behaviour.specifics.getKineticSpeed() == 0) return ProcessingResult.PASS; // If the charger isn't 'on'
 		if (behaviour.running) return ProcessingResult.HOLD; // If the charger is charging an Item Stack so we want to charge this one afterwards
 		if (!behaviour.specifics.tryProcessOnBelt(transported, null, true)) return ProcessingResult.PASS; // If this Item Stack cannot be charged
@@ -22,7 +22,7 @@ public class BeltChargingCallbacks {
 		return ProcessingResult.HOLD;
     };
 
-    static ProcessingResult whenItemHeld(TransportedItemStack transported, TransportedItemStackHandlerBehaviour handler, ChargingBehaviour behaviour) {
+    public static ProcessingResult whenItemHeld(TransportedItemStack transported, TransportedItemStackHandlerBehaviour handler, ChargingBehaviour behaviour) {
         if (behaviour.specifics.getKineticSpeed() == 0) return ProcessingResult.PASS; // If the charger isn't 'on', stop trying to process
 		if (!behaviour.running) return ProcessingResult.PASS; // If the charger isn't charging, stop trying to process
 		if (behaviour.runningTicks != ChargingBehaviour.CHARGING_TIME) return ProcessingResult.HOLD; // If this isn't the tick where the charger should process the Item Stack, stop trying to process

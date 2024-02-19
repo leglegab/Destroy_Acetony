@@ -139,7 +139,6 @@ public class ReactionCategory<T extends ReactionRecipe> extends HoverableTextCat
                     .setBackground(getRenderedSlot(), -1, -1);
                 i++;
             };
-            // TODO display catalysts
         };
 
         List<PrecipitateReactionResult> precipitates = new ArrayList<>();

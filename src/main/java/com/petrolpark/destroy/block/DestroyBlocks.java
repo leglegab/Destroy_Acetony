@@ -64,7 +64,7 @@ public class DestroyBlocks {
             .mapColor(MapColor.COLOR_BROWN)
             .noOcclusion()
         ).transform(TagGen.axeOnly())
-        .addLayer(() -> RenderType::translucent)
+        //.addLayer(() -> RenderType::translucent)
         .item()
         .tag(DestroyItemTags.LIABLE_TO_CHANGE.tag)
         .transform(customItemModel())
@@ -297,7 +297,9 @@ public class DestroyBlocks {
         .properties(p -> p
             .mapColor(MapColor.COLOR_PURPLE)
             .sound(SoundType.GLASS)
-        ).addLayer(() -> RenderType::translucent)
+            .forceSolidOn()
+        )
+        //.addLayer(() -> RenderType::translucent)
         .item()
         .build()
         .register();

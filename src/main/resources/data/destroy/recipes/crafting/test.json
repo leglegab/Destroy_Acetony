@@ -1,0 +1,20 @@
+{
+    "type": "minecraft:crafting_shaped",
+    "pattern": [
+        "1 ",
+        " b"
+    ],
+    "key": {
+        "1": {
+            "type": "destroy:circuit_pattern_item",
+            "item": "destroy:circuit_mask",
+            "pattern": "destroy:smile"
+        },
+        "b": {
+            "item": "minecraft:dirt"
+        }
+    },
+    "result": {
+        "item": "minecraft:diamond"
+    }
+}

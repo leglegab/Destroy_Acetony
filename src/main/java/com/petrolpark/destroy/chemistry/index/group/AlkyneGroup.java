@@ -4,15 +4,15 @@ import com.petrolpark.destroy.chemistry.Atom;
 import com.petrolpark.destroy.chemistry.GroupType;
 import com.petrolpark.destroy.chemistry.index.DestroyGroupTypes;
 
-public class AlkeneGroup extends SaturatedCarbonGroup {
+public class AlkyneGroup extends SaturatedCarbonGroup {
 
-    public AlkeneGroup(Atom highDegreeCarbon, Atom lowDegreeCarbon) {
+    public AlkyneGroup(Atom highDegreeCarbon, Atom lowDegreeCarbon) {
         super(highDegreeCarbon, lowDegreeCarbon);
     };
 
     @Override
     public GroupType<? extends SaturatedCarbonGroup> getType() {
-        return DestroyGroupTypes.ALKENE;
+        return DestroyGroupTypes.ALKYNE;
     };
     
-}
+};

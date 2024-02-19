@@ -569,7 +569,7 @@ public class Mixture extends ReadOnlyMixture {
             reactionResults.replace(entry.getKey(), (float)(entry.getValue() * initialVolumeInBuckets / newVolumeInBuckets));
         };
 
-        return (int)((newVolumeInBuckets * 1000) + 0.5);
+        return (int)((newVolumeInBuckets * 1000));
     };
 
     /**
@@ -670,7 +670,7 @@ public class Mixture extends ReadOnlyMixture {
                 continue addEachProduct;
             };
 
-            if (getConcentrationOf(product) == 0f) { // If we are adding a new product, the possible Reactions will change
+            if (!contents.containsKey(product)) { // If we are adding a new product, the possible Reactions will change
                 shouldRefreshPossibleReactions = true;
             };
             changeConcentrationOf(product, molesPerBucket * reaction.getProductMolarRatio(product), false); // Increase the concentration of the product
@@ -842,7 +842,7 @@ public class Mixture extends ReadOnlyMixture {
     };
 
     private <G extends Group<G>> void addGroupToMixture(Molecule molecule, G group) {
-        GroupType<G> groupType = group.getType();
+        GroupType<? extends G> groupType = group.getType();
         if (!groupIDsAndMolecules.containsKey(groupType)) {
             groupIDsAndMolecules.put(groupType, new ArrayList<>());
         };
@@ -972,9 +972,9 @@ public class Mixture extends ReadOnlyMixture {
      * Given a {@link SingleGroupGenericReaction Generic Reaction} involving only one {@link Group functional Group},
      * generates the specified {@link Reaction Reactions} that apply to this Mixture.
      * 
-     * <p>For example, if the Generic Reaction supplied is the {@link com.petrolpark.destroy.chemistry.index.genericreaction.AlkeneHydrolysis hydration of an alkene},
+     * <p>For example, if the Generic Reaction supplied is the {@link com.petrolpark.destroy.chemistry.index.genericreaction.SaturatedCarbonHydrolysis hydration of an alkene},
      * and <b>reactants</b> includes {@code destroy:ethene}, the returned collection will include a Reaction with {@code destroy:ethene} and {@code destroy:water} as reactants,
-     * {@code destroy:ethanol} as a product, and all the appropriate rate constants and catalysts as defined in the {@link com.petrolpark.destroy.chemistry.index.AlkeneHydrolysis.AlkeneHydration#generateReaction generator}.</p>
+     * {@code destroy:ethanol} as a product, and all the appropriate rate constants and catalysts as defined in the {@link com.petrolpark.destroy.chemistry.index.SaturatedCarbonHydrolysis.AlkeneHydration#generateReaction generator}.</p>
      * 
      * @param <G> <b>G</b> The Group to which this Generic Reaction applies
      * @param genericReaction

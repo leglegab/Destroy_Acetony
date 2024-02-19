@@ -14,6 +14,7 @@ import com.petrolpark.destroy.chemistry.index.group.AcidAnhydrideGroup;
 import com.petrolpark.destroy.chemistry.index.group.AcylChlorideGroup;
 import com.petrolpark.destroy.chemistry.index.group.AlcoholGroup;
 import com.petrolpark.destroy.chemistry.index.group.AlkeneGroup;
+import com.petrolpark.destroy.chemistry.index.group.AlkyneGroup;
 import com.petrolpark.destroy.chemistry.index.group.UnsubstitutedAmideGroup;
 import com.petrolpark.destroy.chemistry.index.group.CarbonylGroup;
 import com.petrolpark.destroy.chemistry.index.group.CarboxylicAcidGroup;
@@ -31,6 +32,7 @@ public class DestroyGroupFinder extends GroupFinder {
 
         List<Atom> carbonsToIgnore = new ArrayList<>();
         List<Atom> carbonsToIgnoreForAlkenes = new ArrayList<>();
+        List<Atom> carbonsToIgnoreForAlkynes = new ArrayList<>();
 
         for (Atom carbon : structure.keySet()) {
 
@@ -47,6 +49,7 @@ public class DestroyGroupFinder extends GroupFinder {
             List<Atom> hydrogens = bondedAtomsOfElementTo(structure, carbon, Element.HYDROGEN, BondType.SINGLE);
             List<Atom> carbons = bondedAtomsOfElementTo(structure, carbon, Element.CARBON, BondType.SINGLE);
             List<Atom> alkeneCarbons = bondedAtomsOfElementTo(structure, carbon, Element.CARBON, BondType.DOUBLE);
+            List<Atom> alkyneCarbons = bondedAtomsOfElementTo(structure, carbon, Element.CARBON, BondType.TRIPLE);
             List<Atom> nitrileNitrogens = bondedAtomsOfElementTo(structure, carbon, Element.NITROGEN, BondType.TRIPLE);
             List<Atom> rGroups = bondedAtomsOfElementTo(structure, carbon, Element.R_GROUP);
 
@@ -118,6 +121,23 @@ public class DestroyGroupFinder extends GroupFinder {
                     groups.add(new AlkeneGroup(alkeneCarbon, carbon));
                 };
                 carbonsToIgnoreForAlkenes.add(carbon);
+            };
+
+            if (alkyneCarbons.size() == 1) { // There can only ever be 1 triple bond on a carbon - check if there is one
+                Atom alkyneCarbon = alkyneCarbons.get(0);
+                if (!carbonsToIgnoreForAlkynes.contains(alkyneCarbon)) {
+                    int firstCarbonDegree = bondedAtomsOfElementTo(structure, carbon, Element.CARBON).size() - 1;
+                    int secondCarbonDegree = bondedAtomsOfElementTo(structure, alkyneCarbon, Element.CARBON).size() - 1;
+                    // If the two Carbons have the same degree, then there are two alkyne Groups
+                    if (firstCarbonDegree >= secondCarbonDegree) {
+                        groups.add(new AlkyneGroup(carbon, alkyneCarbon));
+                    };
+                    if (secondCarbonDegree >= firstCarbonDegree) {
+                        groups.add(new AlkyneGroup(alkyneCarbon, carbon));
+                    };
+                    carbonsToIgnoreForAlkynes.add(carbon);
+                    carbonsToIgnoreForAlkynes.add(alkyneCarbon); // This will only ever be in one alkyne group so we can ignore it the second time
+                };
             };
 
         };

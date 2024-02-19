@@ -65,6 +65,7 @@ public class DestroyPartials {
     REDSTONE_PROGRAMMER_NEEDLE = block("redstone_programmer/needle"),
 
     // Miscellaneous
+    KEYPUNCH_PISTON = block("keypunch/piston"),
     GAS_MASK = block("gas_mask"),
     STRAY_SKULL = block("cooler/skull");
 

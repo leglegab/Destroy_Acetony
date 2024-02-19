@@ -36,6 +36,7 @@ public class VatSideTankCapability extends CombinedTankWrapper {
 
     @Override
     public int fill(FluidStack stack, FluidAction fluidAction) {
+        if (!DestroyFluids.isMixture(stack)) return 0;
         VatControllerBlockEntity controller = vatSide.getController();
         if (controller == null || !controller.canFitFluid()) return 0;
         return getInput().fill(stack, fluidAction);

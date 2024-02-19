@@ -8,33 +8,37 @@ import com.petrolpark.destroy.chemistry.Reaction;
 import com.petrolpark.destroy.chemistry.genericreaction.GenericReactant;
 import com.petrolpark.destroy.chemistry.genericreaction.SingleGroupGenericReaction;
 import com.petrolpark.destroy.chemistry.index.DestroyGroupTypes;
-import com.petrolpark.destroy.chemistry.index.group.AlkeneGroup;
+import com.petrolpark.destroy.chemistry.index.group.SaturatedCarbonGroup;
 
 import net.minecraft.resources.ResourceLocation;
 
-public abstract class AlkeneAddition extends SingleGroupGenericReaction<AlkeneGroup> {
+public abstract class ElectrophilicAddition extends SingleGroupGenericReaction<SaturatedCarbonGroup> {
 
-    public AlkeneAddition(ResourceLocation id) {
-        super(id, DestroyGroupTypes.ALKENE);
+    public final boolean isForAlkynes; // Whether this is a Reaction involving alkynes - if not, it involves alkenes
+
+    public ElectrophilicAddition(String namespace, String name, boolean alkyne) {
+        super(new ResourceLocation(namespace, (alkyne ? "alkyne_" : "alkene_") + name), alkyne ? DestroyGroupTypes.ALKYNE : DestroyGroupTypes.ALKENE);
+        isForAlkynes = alkyne;
     };
 
     @Override
-    public Reaction generateReaction(GenericReactant<AlkeneGroup> reactant) {
-        AlkeneGroup alkeneGroup = reactant.getGroup();
-        Molecule alkene = reactant.getMolecule();
+    public Reaction generateReaction(GenericReactant<SaturatedCarbonGroup> reactant) {
+        SaturatedCarbonGroup group = reactant.getGroup();
+        Molecule substrate = reactant.getMolecule();
         
-        Molecule product = moleculeBuilder().structure(alkene
+        Molecule product = moleculeBuilder().structure(substrate
             .shallowCopyStructure()
-            .moveTo(alkeneGroup.highDegreeCarbon)
-            .replaceBondTo(alkeneGroup.lowDegreeCarbon, BondType.SINGLE)
+            .moveTo(group.highDegreeCarbon)
+            .replaceBondTo(group.lowDegreeCarbon, isForAlkynes ? BondType.DOUBLE : BondType.SINGLE)
             .addGroup(getHighDegreeGroup(), true)
-            .moveTo(alkeneGroup.lowDegreeCarbon)
+            .moveTo(group.lowDegreeCarbon)
             .addGroup(getLowDegreeGroup(), true)
         ).build();
 
         ReactionBuilder builder = reactionBuilder()
-            .addReactant(alkene)
-            .addProduct(product);
+            .addReactant(substrate)
+            .addProduct(product)
+            .activationEnergy(isForAlkynes ? 10f : 25f);
         transform(builder);
         return builder.build();
     };

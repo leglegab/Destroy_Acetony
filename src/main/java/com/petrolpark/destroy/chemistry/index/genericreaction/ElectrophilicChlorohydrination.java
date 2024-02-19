@@ -5,28 +5,26 @@ import com.petrolpark.destroy.chemistry.Element;
 import com.petrolpark.destroy.chemistry.Formula;
 import com.petrolpark.destroy.chemistry.Reaction.ReactionBuilder;
 import com.petrolpark.destroy.chemistry.index.DestroyMolecules;
-import com.simibubi.create.AllTags;
 
-public class AlkeneHydrogenation extends AlkeneAddition {
+public class ElectrophilicChlorohydrination extends ElectrophilicAddition {
 
-    public AlkeneHydrogenation() {
-        super(Destroy.asResource("alkene_hydrogenation"));
+    public ElectrophilicChlorohydrination(boolean alkyne) {
+        super(Destroy.MOD_ID, "chlorohydrination", alkyne);
     };
 
     @Override
     public Formula getLowDegreeGroup() {
-        return Formula.atom(Element.HYDROGEN);
+        return Formula.atom(Element.CHLORINE);
     };
 
     @Override
     public Formula getHighDegreeGroup() {
-        return Formula.atom(Element.HYDROGEN);
+        return Formula.alcohol();
     };
 
     @Override
     public void transform(ReactionBuilder builder) {
-        builder.addReactant(DestroyMolecules.HYDROGEN)
-            .addSimpleItemTagCatalyst(AllTags.forgeItemTag("dusts/nickel"), 1f);
+        builder.addReactant(DestroyMolecules.HYPOCHLOROUS_ACID);
     };
     
 };

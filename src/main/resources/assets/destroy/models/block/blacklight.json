@@ -4,6 +4,7 @@
 		"0": "destroy:block/blacklight",
 		"particle": "destroy:block/blacklight"
 	},
+	"render_type": "minecraft:translucent",
 	"elements": [
 		{
 			"name": "base",

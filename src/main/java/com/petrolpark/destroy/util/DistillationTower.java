@@ -119,13 +119,12 @@ public class DistillationTower {
     };
 
     public void findRecipe(Level level) {
-        if (getControllerBubbleCap() == null) return;
+        if (getControllerBubbleCap() == null || level.isClientSide()) return;
         SmartFluidTank inputTank = getControllerBubbleCap().getTank();
         if (lastRecipe == null || !lastRecipe.getRequiredFluid().test(inputTank.getFluid())) { // If the Recipe has changed
             List<Recipe<?>> possibleRecipes = RecipeFinder.get(distillationRecipeKey, level, r -> r.getType() == DestroyRecipeTypes.DISTILLATION.getType()).stream().filter(r -> {
                 DistillationRecipe recipe = (DistillationRecipe) r;
-                if (!recipe.getRequiredFluid().test(inputTank.getFluid())) return false; // If there is insufficient input Fluid
-                return true;
+                return (recipe.getRequiredFluid().test(inputTank.getFluid())); // If there is insufficient input Fluid
             }).collect(Collectors.toList());
             if (possibleRecipes.size() >= 1) {
                 lastRecipe = (DistillationRecipe)possibleRecipes.get(0);

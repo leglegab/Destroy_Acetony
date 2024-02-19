@@ -6,6 +6,7 @@ import com.petrolpark.destroy.Destroy;
 import com.petrolpark.destroy.network.packet.C2SPacket;
 import com.petrolpark.destroy.network.packet.ChainCogwheelsC2SPacket;
 import com.petrolpark.destroy.network.packet.ChemicalPoisonS2CPacket;
+import com.petrolpark.destroy.network.packet.CircuitPatternsS2CPacket;
 import com.petrolpark.destroy.network.packet.CryingS2CPacket;
 import com.petrolpark.destroy.network.packet.EvaporatingFluidS2CPacket;
 import com.petrolpark.destroy.network.packet.LevelPollutionS2CPacket;
@@ -48,6 +49,7 @@ public class DestroyMessages {
         addS2CPacket(net, SeismometerSpikeS2CPacket.class, SeismometerSpikeS2CPacket::new);
         addS2CPacket(net, ChemicalPoisonS2CPacket.class, ChemicalPoisonS2CPacket::new);
         addS2CPacket(net, RefreshPeriodicTablePonderSceneS2CPacket.class, RefreshPeriodicTablePonderSceneS2CPacket::new);
+        addS2CPacket(net, CircuitPatternsS2CPacket.class, CircuitPatternsS2CPacket::read);
 
         addC2SPacket(net, SwissArmyKnifeToolC2SPacket.class, SwissArmyKnifeToolC2SPacket::new);
         addC2SPacket(net, ChainCogwheelsC2SPacket.class, ChainCogwheelsC2SPacket::new);

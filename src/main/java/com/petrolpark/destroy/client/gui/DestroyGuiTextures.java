@@ -13,6 +13,11 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 
 public enum DestroyGuiTextures implements ScreenElement {
 
+	// CIRCUIT MASK
+	CIRCUIT_MASK_BORDER("circuit_mask", 0, 0, 48, 48),
+	CIRCUIT_MASK_CELL_SHADING("circuit_mask", 48, 0, 10, 10),
+	CIRCUIT_MASK_CELL("circuit_mask", 48, 16, 8, 8),
+
 	// VAT
 	VAT("vat", 0, 0, 256, 226),
 	VAT_CARD_UNSELECTED("vat", 0, 227, 100, 28),

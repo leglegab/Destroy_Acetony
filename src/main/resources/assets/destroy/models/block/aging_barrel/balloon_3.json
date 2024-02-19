@@ -6,6 +6,7 @@
 		"1": "destroy:block/aging_barrel_balloon",
 		"particle": "destroy:block/aging_barrel"
 	},
+	"render_type": "translucent",
 	"elements": [
 		{
 			"name": "balloon",

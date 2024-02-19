@@ -37,12 +37,15 @@ import com.petrolpark.destroy.item.RedstoneProgrammerBlockItem;
 import com.petrolpark.destroy.item.SyringeItem;
 import com.petrolpark.destroy.item.TestTubeItem;
 import com.petrolpark.destroy.network.DestroyMessages;
+import com.petrolpark.destroy.network.packet.CircuitPatternsS2CPacket;
 import com.petrolpark.destroy.network.packet.LevelPollutionS2CPacket;
 import com.petrolpark.destroy.network.packet.RefreshPeriodicTablePonderSceneS2CPacket;
 import com.petrolpark.destroy.network.packet.SeismometerSpikeS2CPacket;
 import com.petrolpark.destroy.recipe.DiscStampingRecipe;
+import com.petrolpark.destroy.recipe.ingredient.CircuitPatternIngredient;
 import com.petrolpark.destroy.sound.DestroySoundEvents;
 import com.petrolpark.destroy.util.ChemistryDamageHelper;
+import com.petrolpark.destroy.util.CircuitPatternHandler;
 import com.petrolpark.destroy.util.DestroyLang;
 import com.petrolpark.destroy.util.DestroyTags.DestroyItemTags;
 import com.petrolpark.destroy.util.InebriationHelper;
@@ -114,6 +117,7 @@ import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.capabilities.RegisterCapabilitiesEvent;
+import net.minecraftforge.common.crafting.CraftingHelper;
 import net.minecraftforge.event.AddPackFindersEvent;
 import net.minecraftforge.event.AddReloadListenerEvent;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
@@ -144,6 +148,8 @@ import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
 import net.minecraftforge.forgespi.language.IModFileInfo;
 import net.minecraftforge.forgespi.locating.IModFile;
 import net.minecraftforge.items.wrapper.RecipeWrapper;
+import net.minecraftforge.registries.ForgeRegistries;
+import net.minecraftforge.registries.RegisterEvent;
 
 @Mod.EventBusSubscriber(modid = Destroy.MOD_ID)
 public class DestroyCommonEvents {
@@ -212,6 +218,9 @@ public class DestroyCommonEvents {
 
         // Update the Ponders for periodic table blocks
         DestroyMessages.sendToClient(new RefreshPeriodicTablePonderSceneS2CPacket(), serverPlayer);
+
+        // Update the circuit pattern crafting recipes
+        DestroyMessages.sendToClient(new CircuitPatternsS2CPacket(CircuitPatternHandler.getAllPatterns()), serverPlayer);
     };
 
     /**
@@ -695,6 +704,7 @@ public class DestroyCommonEvents {
      */
     @SubscribeEvent
     public static void onContaminatedArmorRemoved(LivingEquipmentChangeEvent event) {
+        if (event.getSlot() == EquipmentSlot.MAINHAND || event.getSlot() == EquipmentSlot.OFFHAND || !event.getFrom().hasTag()) return;
         CompoundTag tag = event.getFrom().getOrCreateTag();
         if (tag.contains("ContaminatingFluid", Tag.TAG_COMPOUND)) {
             ChemistryDamageHelper.damage(event.getEntity().level(), event.getEntity(), FluidStack.loadFluidStackFromNBT(tag.getCompound("ContaminatingFluid")), true);
@@ -768,6 +778,7 @@ public class DestroyCommonEvents {
     @SubscribeEvent
     public static void registerReloadListeners(AddReloadListenerEvent event) {
         event.addListener(PeriodicTableBlock.RELOAD_LISTENER);
+        event.addListener(CircuitPatternHandler.RELOAD_LISTENER);
     };
 
     @EventBusSubscriber(bus = EventBusSubscriber.Bus.MOD)
@@ -795,6 +806,14 @@ public class DestroyCommonEvents {
 				});
 			};
 		};
+
+        @SubscribeEvent
+        public static void registerIngredientTypes(RegisterEvent event) {
+            if (event.getRegistryKey().equals(ForgeRegistries.Keys.RECIPE_SERIALIZERS)) {
+                CraftingHelper.register(Destroy.asResource("circuit_pattern_item"), CircuitPatternIngredient.SERIALIZER);
+            };
+        };
+    
 
 	};
 };

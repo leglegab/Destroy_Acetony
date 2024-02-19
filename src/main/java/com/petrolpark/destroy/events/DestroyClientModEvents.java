@@ -9,7 +9,9 @@ import com.petrolpark.destroy.capability.level.pollution.ClientLevelPollutionDat
 import com.petrolpark.destroy.capability.level.pollution.LevelPollution;
 import com.petrolpark.destroy.capability.level.pollution.LevelPollution.PollutionType;
 import com.petrolpark.destroy.chemistry.naming.SaltNameOverrides;
+import com.petrolpark.destroy.item.CircuitMaskItem.CircuitMaskTooltip;
 import com.petrolpark.destroy.item.MoleculeDisplayItem.MoleculeTooltip;
+import com.petrolpark.destroy.util.NameLists;
 import com.simibubi.create.foundation.utility.Color;
 
 import net.minecraft.client.color.block.BlockColor;
@@ -35,6 +37,7 @@ public class DestroyClientModEvents {
     @SubscribeEvent
     public static void registerClientReloadListeners(RegisterClientReloadListenersEvent event) {
         event.registerReloadListener(SaltNameOverrides.RELOAD_LISTENER);
+        event.registerReloadListener(NameLists.RELOAD_LISTENER);
     };
 
 
@@ -97,5 +100,6 @@ public class DestroyClientModEvents {
     @SubscribeEvent
     public static void onRegisterClientTooltipComponentFactories(RegisterClientTooltipComponentFactoriesEvent event) {
         event.register(MoleculeTooltip.class, MoleculeTooltip::getClientTooltipComponent);
+        event.register(CircuitMaskTooltip.class, CircuitMaskTooltip::getClientTooltipComponent);
     };
 };

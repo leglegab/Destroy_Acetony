@@ -6,10 +6,10 @@ import com.petrolpark.destroy.chemistry.Formula;
 import com.petrolpark.destroy.chemistry.Reaction.ReactionBuilder;
 import com.petrolpark.destroy.chemistry.index.DestroyMolecules;
 
-public class AlkeneHydrolysis extends AlkeneAddition {
+public class ElectrophilicHydroiodination extends ElectrophilicAddition {
 
-    public AlkeneHydrolysis() {
-        super(Destroy.asResource("alkene_hydrolysis"));
+    public ElectrophilicHydroiodination(boolean alkyne) {
+        super(Destroy.MOD_ID, "hydroiodination", alkyne);
     };
 
     @Override
@@ -19,16 +19,12 @@ public class AlkeneHydrolysis extends AlkeneAddition {
 
     @Override
     public Formula getHighDegreeGroup() {
-        return Formula.alcohol();
+        return Formula.atom(Element.IODINE);
     };
 
     @Override
     public void transform(ReactionBuilder builder) {
-        builder.addReactant(DestroyMolecules.WATER, 1, 0)
-            .displayAsReversible()
-            .addCatalyst(DestroyMolecules.SULFURIC_ACID, 1)
-            .activationEnergy(200f);
+        builder.addReactant(DestroyMolecules.HYDROGEN_IODIDE);
     };
-
     
 };
