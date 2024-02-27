@@ -1,9 +1,13 @@
 package com.petrolpark.destroy.item;
 
 import java.util.function.Consumer;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 import com.mojang.blaze3d.vertex.PoseStack;
+import com.petrolpark.destroy.Destroy;
 import com.petrolpark.destroy.client.gui.DestroyGuiTextures;
 import com.petrolpark.destroy.item.directional.DirectionalTransportedItemStack;
 import com.petrolpark.destroy.item.renderer.CircuitMaskItemRenderer;
@@ -18,10 +22,15 @@ import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent
 import net.minecraft.core.Direction;
 import net.minecraft.core.Direction.Axis;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
+import net.minecraft.nbt.NbtUtils;
+import net.minecraft.nbt.Tag;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.tooltip.TooltipComponent;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Rotation;
 import net.minecraftforge.api.distmarker.Dist;
@@ -36,6 +45,27 @@ public class CircuitMaskItem extends CircuitPatternItem {
 
     public static final ChatFormatting[] directionColors = new ChatFormatting[]{ChatFormatting.WHITE, ChatFormatting.WHITE, ChatFormatting.RED, ChatFormatting.WHITE, ChatFormatting.YELLOW, ChatFormatting.BLUE};
 
+    public static List<UUID> getContaminants(ItemStack stack) {
+        List<UUID> previousPunches = new ArrayList<>(3);
+        stack.getOrCreateTag().getList("PunchedBy", Tag.TAG_INT_ARRAY).forEach(uuidTag -> {
+            previousPunches.add(NbtUtils.loadUUID(uuidTag));
+        });
+        return previousPunches;
+    };  
+    
+    public static ItemStack contaminate(ItemStack stack, UUID uuid) {
+        stack = stack.copy();
+        CompoundTag tag = stack.getOrCreateTag();
+        List<UUID> previousPunches = getContaminants(stack);
+        if (previousPunches.size() >= 3) return DestroyItems.RUINED_CIRCUIT_MASK.asStack();
+        previousPunches.add(uuid);
+        ListTag newPunches = new ListTag();
+        previousPunches.forEach(id -> newPunches.add(NbtUtils.createUUID(id)));
+        tag.put("PunchedBy", newPunches);
+        stack.setTag(tag);
+        return stack;
+    };
+    
     @Override
     public void launch(DirectionalTransportedItemStack stack, Direction launchDirection) {
         // If it is 'flipped', the Item has been rotated around 180 the north-south axis before being rotated around the up-down axis
@@ -64,6 +94,20 @@ public class CircuitMaskItem extends CircuitPatternItem {
         if (level.isClientSide() && isSelected && entity instanceof Player player && player.isCrouching()) {
             Direction direction = player.getDirection();
             player.displayClientMessage(DestroyLang.translate("tooltip.circuit_mask.facing_direction", DestroyLang.direction(direction).style(directionColors[direction.ordinal()])).component(), true);
+        };
+    };
+
+    @Override
+    public void appendHoverText(ItemStack stack, Level level, List<Component> tooltipComponents, TooltipFlag isAdvanced) {
+        super.appendHoverText(stack, level, tooltipComponents, isAdvanced);
+        List<UUID> previousPunchers = getContaminants(stack);
+        tooltipComponents.add(Component.literal(" "));
+        tooltipComponents.add(DestroyLang.translate("tooltip.circuit_mask.punched_by", previousPunchers.size()).style(ChatFormatting.GRAY).component());
+        for (UUID uuid : previousPunchers) {
+            tooltipComponents.add(DestroyLang.translate("tooltip.circuit_mask.puncher", Destroy.CIRCUIT_PUNCHER_HANDLER.getPuncher(level, uuid).getName()).style(ChatFormatting.GRAY).component());
+        };
+        for (int i = 0; i < 3 - previousPunchers.size(); i++) {
+            tooltipComponents.add(DestroyLang.translate("tooltip.circuit_mask.puncher_free").style(ChatFormatting.GRAY).component());
         };
     };
 

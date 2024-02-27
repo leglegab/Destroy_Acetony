@@ -2,10 +2,15 @@ package com.petrolpark.destroy.client.gui.menu;
 
 import org.jetbrains.annotations.NotNull;
 
+import com.petrolpark.destroy.client.gui.screen.RedstoneProgrammerScreen;
+import com.petrolpark.destroy.config.DestroyAllConfigs;
+import com.petrolpark.destroy.network.DestroyMessages;
+import com.petrolpark.destroy.network.packet.RedstoneProgramSyncC2SPacket;
 import com.petrolpark.destroy.util.RedstoneProgram;
 import com.petrolpark.destroy.util.RedstoneProgram.Channel;
 import com.simibubi.create.content.redstone.link.RedstoneLinkNetworkHandler.Frequency;
 import com.simibubi.create.foundation.gui.menu.GhostItemMenu;
+import com.simibubi.create.foundation.utility.Couple;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.FriendlyByteBuf;
@@ -20,6 +25,8 @@ import net.minecraftforge.items.ItemStackHandler;
 import net.minecraftforge.items.SlotItemHandler;
 
 public class RedstoneProgrammerMenu extends GhostItemMenu<RedstoneProgram> {
+
+    private int offset = 0;
 
     protected RedstoneProgrammerMenu(MenuType<?> type, int id, Inventory inv, FriendlyByteBuf buf) {
         super(type, id, inv, buf);
@@ -42,7 +49,7 @@ public class RedstoneProgrammerMenu extends GhostItemMenu<RedstoneProgram> {
 
     @Override
     protected ItemStackHandler createGhostInventory() {
-        return new ItemStackHandler(contentHolder.getChannels().size() * 2);
+        return new ItemStackHandler(maxSlots(contentHolder));
     };
 
     @Override
@@ -51,20 +58,35 @@ public class RedstoneProgrammerMenu extends GhostItemMenu<RedstoneProgram> {
     };
 
     @Override
-    protected void addSlots() {
-        refreshSlots(0, 100, 19); //TODO determine actual max and channel spacing
+    public boolean canDragTo(Slot slotIn) {
+        return true;
     };
 
-    public void refreshSlots(int offset, int max, int channelSpacing) {
+    @Override
+    protected void addSlots() {
+        refreshSlots(0); //TODO determine actual max and channel spacing
+    };
+
+    public void refreshSlots() {
+        refreshSlots(this.offset);
+    };
+
+    public void refreshSlots(int offset) {
         ghostInventory = createGhostInventory();
-        int position = -offset;
-        for (int channel = 0; channel < contentHolder.getChannels().size(); channel++) {
-            position += channelSpacing;
-            if (position < 0 || position > max) continue;
-            Slot slot1 = addSlot(new FrequencySlotItemHandler(channel * 2, 0, position));
-            Slot slot2 = addSlot(new FrequencySlotItemHandler(channel * 2 + 1, 18, position));
-            slot1.set(contentHolder.getChannels().get(channel).networkKey.getFirst().getStack());
-            slot2.set(contentHolder.getChannels().get(channel).networkKey.getSecond().getStack());
+        this.offset = offset;
+        slots.clear();
+        lastSlots.clear();
+        remoteSlots.clear();
+        int i = 0;
+        int position = RedstoneProgrammerScreen.ITEM_AREA.getY() - 16 - this.offset;
+        for (int channel = 0; channel < Math.min(contentHolder.getChannels().size() + 1, DestroyAllConfigs.SERVER.contraptions.maxChannels.get()); channel++) {
+            position += RedstoneProgrammerScreen.distanceBetweenChannels;
+            Slot slot1 = addSlot(new FrequencySlotItemHandler(i++, RedstoneProgrammerScreen.ITEM_AREA.getX() + 32, position, channel, true));
+            Slot slot2 = addSlot(new FrequencySlotItemHandler(i++, RedstoneProgrammerScreen.ITEM_AREA.getX() + 50, position, channel, false));
+            if (channel < contentHolder.getChannels().size()) {
+                slot1.set(contentHolder.getChannels().get(channel).networkKey.getFirst().getStack());
+                slot2.set(contentHolder.getChannels().get(channel).networkKey.getSecond().getStack());
+            };
         };
     };
 
@@ -73,27 +95,70 @@ public class RedstoneProgrammerMenu extends GhostItemMenu<RedstoneProgram> {
         // Do nothing
     };
 
-    public class FrequencySlotItemHandler extends SlotItemHandler {
+    public class FrequencySlotItemHandler extends SlotItemHandler implements IConditionalGhostSlot {
 
-        public FrequencySlotItemHandler(int index, int xPosition, int yPosition) {
+        public final int channelIndex;
+        public final boolean first;
+
+        public FrequencySlotItemHandler(int index, int xPosition, int yPosition, int channelIndex, boolean first) {
             super(ghostInventory, index, xPosition, yPosition);
+            this.channelIndex = channelIndex;
+            this.first = first;
         };
 
         @Override
         public void set(@NotNull ItemStack stack) {
-            if (stack != null) {
-                Channel channel = contentHolder.getChannels().get(getSlotIndex() / 2);
-                channel.networkKey.set(getSlotIndex() % 2 == 0, Frequency.of(stack));
-                if (channel.networkKey.both(f -> f.getStack().isEmpty())) contentHolder.remove(channel);
+            boolean sync = true;
+            if (channelIndex >= contentHolder.getChannels().size()) { // Add a new channel
+                if (stack.isEmpty()) {
+                    sync = false; 
+                } else {
+                    Couple<Frequency> networkKey = Couple.create(Frequency.of(ItemStack.EMPTY), Frequency.of(ItemStack.EMPTY));
+                    networkKey.set(first, Frequency.of(stack));
+                    contentHolder.addBlankChannel(networkKey);
+                };
+            } else if (!contentHolder.getChannels().isEmpty()) {
+                Channel channel = contentHolder.getChannels().get(channelIndex);
+                if (channel.networkKey.get(first).getStack().equals(stack)) {
+                    sync = false;
+                } else {
+                    channel.networkKey.set(first, Frequency.of(stack));
+                    if (channel.networkKey.both(f -> f.getStack().isEmpty())) contentHolder.remove(channel);                    
+                };
+            } else {
+                sync = false;
+            };
+            if (sync) {
+                sync();
+                refreshSlots();
             };
             super.set(stack);
         };
 
+        @Override
+        public boolean isActive() {
+            return false;
+        }
+
+        @Override
+        public boolean isValid() {
+            int position = RedstoneProgrammerScreen.distanceBetweenChannels * channelIndex - offset;
+            return position > -1 && position < RedstoneProgrammerScreen.ITEM_AREA.getHeight() - RedstoneProgrammerScreen.distanceBetweenChannels;
+        };
+
+    };
+
+    public void sync() {
+        DestroyMessages.sendToServer(new RedstoneProgramSyncC2SPacket(contentHolder));
     };
 
     @Override
     protected void saveData(RedstoneProgram contentHolder) {
 
+    };
+
+    public static int maxSlots(RedstoneProgram program) {
+        return 2 * Math.min(program.getChannels().size() + 1, DestroyAllConfigs.SERVER.contraptions.maxChannels.get());
     };
 
     public static class DummyRedstoneProgram extends RedstoneProgram {

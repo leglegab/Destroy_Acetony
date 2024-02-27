@@ -2,11 +2,14 @@ package com.petrolpark.destroy.compat.jei;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.function.Consumer;
+import java.util.function.Function;
+import java.util.function.Predicate;
 import java.util.function.Supplier;
 
 import com.petrolpark.destroy.Destroy;
@@ -25,6 +28,7 @@ import com.petrolpark.destroy.compat.jei.category.ITickableCategory;
 import com.petrolpark.destroy.compat.jei.category.MutationCategory;
 import com.petrolpark.destroy.compat.jei.category.ObliterationCategory;
 import com.petrolpark.destroy.compat.jei.category.ReactionCategory;
+import com.petrolpark.destroy.effect.potion.PotionSeparationRecipes;
 import com.petrolpark.destroy.fluid.DestroyFluids;
 import com.petrolpark.destroy.item.DestroyItems;
 import com.petrolpark.destroy.recipe.AgingRecipe;
@@ -44,12 +48,14 @@ import com.simibubi.create.AllBlocks;
 import com.simibubi.create.compat.jei.CreateJEI;
 import com.simibubi.create.compat.jei.DoubleItemIcon;
 import com.simibubi.create.compat.jei.EmptyBackground;
-import com.simibubi.create.compat.jei.GhostIngredientHandler;
 import com.simibubi.create.compat.jei.ItemIcon;
 import com.simibubi.create.compat.jei.category.CreateRecipeCategory;
 import com.simibubi.create.compat.jei.category.CreateRecipeCategory.Info;
 import com.simibubi.create.content.processing.basin.BasinRecipe;
+import com.simibubi.create.foundation.config.ConfigBase.ConfigBool;
 import com.simibubi.create.foundation.recipe.IRecipeTypeInfo;
+import com.simibubi.create.infrastructure.config.AllConfigs;
+import com.simibubi.create.infrastructure.config.CRecipes;
 
 import mezz.jei.api.IModPlugin;
 import mezz.jei.api.JeiPlugin;
@@ -70,6 +76,7 @@ import mezz.jei.api.registration.ISubtypeRegistration;
 import mezz.jei.api.runtime.IJeiRuntime;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.level.ItemLike;
 import net.minecraftforge.event.TickEvent;
@@ -124,6 +131,14 @@ public class DestroyJEI implements IModPlugin {
             .itemIcon(DestroyBlocks.CENTRIFUGE.get())
             .emptyBackground(120, 115)
             .build("centrifugation", CentrifugationCategory::new),
+
+        potion_centrifugation = builder(CentrifugationRecipe.class)
+            .addRecipes(() -> PotionSeparationRecipes.ALL.values())
+            .enableIfCreateConfig(c -> c.allowBrewingInMixer)
+            .catalyst(DestroyBlocks.CENTRIFUGE::get)
+            .doubleItemIcon(DestroyBlocks.CENTRIFUGE.get(), Items.BREWING_STAND)
+            .emptyBackground(120, 115)
+            .build("potion_centrifugation", CentrifugationCategory::new),
 
         charging = builder(ChargingRecipe.class)
 			.addTypedRecipes(DestroyRecipeTypes.CHARGING)
@@ -231,7 +246,7 @@ public class DestroyJEI implements IModPlugin {
     @SuppressWarnings({"unchecked", "rawtypes"})
 	@Override
 	public void registerGuiHandlers(IGuiHandlerRegistration registration) {
-		registration.addGhostIngredientHandler(RedstoneProgrammerScreen.class, new GhostIngredientHandler());
+		registration.addGhostIngredientHandler(RedstoneProgrammerScreen.class, new DestroyGhostIngredientHandler());
 	};
 
     @Override
@@ -268,8 +283,11 @@ public class DestroyJEI implements IModPlugin {
         private final List<Consumer<List<T>>> recipeListConsumers = new ArrayList<>();
 		private final List<Supplier<? extends ItemStack>> catalysts = new ArrayList<>();
 
+        private Predicate<CRecipes> createConfigPredicate;
+
         public CategoryBuilder(Class<? extends T> recipeClass) {
 			this.recipeClass = recipeClass;
+            createConfigPredicate = c -> true;
 		};
 
         /**
@@ -364,19 +382,32 @@ public class DestroyJEI implements IModPlugin {
         };
 
         /**
+         * Only enable this Recipe Category if the given test of Create's config options are true.
+         * @return This Category Builder
+         */
+        public CategoryBuilder<T> enableIfCreateConfig(Function<CRecipes, ConfigBool> configValue) {
+			createConfigPredicate = c -> configValue.apply(c).get();
+			return this;
+		};
+
+        /**
          * Builds this Category.
          * @param name The Resource Location (e.g. for use in language file)
          * @param factory Initializer of the Category class
          * @return This Category
          */
         public CreateRecipeCategory<T> build(String name, DestroyRecipeCategory.Factory<T> factory) {
-            Supplier<List<T>> recipesSupplier = () -> {
-                List<T> recipes = new ArrayList<>();
-                for (Consumer<List<T>> consumer : recipeListConsumers) {
-                    consumer.accept(recipes);
-                };
-                return recipes;
-            };
+            Supplier<List<T>> recipesSupplier;
+			if (createConfigPredicate.test(AllConfigs.server().recipes)) {
+				recipesSupplier = () -> {
+					List<T> recipes = new ArrayList<>();
+					for (Consumer<List<T>> consumer : recipeListConsumers)
+						consumer.accept(recipes);
+					return recipes;
+				};
+			} else {
+				recipesSupplier = () -> Collections.emptyList();
+			};
 
             mezz.jei.api.recipe.RecipeType<T> type = new mezz.jei.api.recipe.RecipeType<T>(Destroy.asResource(name), recipeClass);
 

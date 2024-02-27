@@ -98,6 +98,10 @@ public abstract class RedstoneProgram {
         return ticksPerBeat;
     };
 
+    public int getAbsolutePlaytime() {
+        return playtime + (ticksPerBeat - ticksToNextBeat);
+    };
+
     public void setTicksPerBeat(int value) {
         ticksPerBeat = Math.max(DestroyAllConfigs.SERVER.contraptions.minTicksPerBeat.get(), value);
     };
@@ -149,6 +153,11 @@ public abstract class RedstoneProgram {
         pausedLastTick = paused;
     };
 
+    public void restart() {
+        playtime = 0;
+        ticksToNextBeat = 0;
+    };
+
     public abstract boolean hasPower();
 
     public abstract BlockPos getBlockPos();
@@ -164,16 +173,15 @@ public abstract class RedstoneProgram {
     };
 
     public void addBlankChannel(Couple<Frequency> frequencies) {
-        if (!isValidWorld(getWorld())) return;
         Channel channel = new Channel(frequencies, new int[length]);
-        getHandler().addToNetwork(getWorld(), channel);
         channels.add(channel);
+        if (!isValidWorld(getWorld())) return;
+        getHandler().addToNetwork(getWorld(), channel);
     };
 
     public boolean remove(Channel channel) {
-        if (!isValidWorld(getWorld())) return false;
         boolean removed = channels.remove(channel);
-        if (removed) getHandler().removeFromNetwork(getWorld(), channel);
+        if (removed && isValidWorld(getWorld())) getHandler().removeFromNetwork(getWorld(), channel);
         return removed;
     };
 
@@ -301,7 +309,7 @@ public abstract class RedstoneProgram {
         ticksToNextBeat = otherProgram.ticksToNextBeat;
         paused = otherProgram.paused;
         poweredLastTick = otherProgram.poweredLastTick;
-        channels = otherProgram.channels.stream().map(channel -> new Channel(channel.networkKey, Arrays.copyOf(channel.sequence, length))).toList();
+        channels = new ArrayList<>(otherProgram.channels.stream().map(channel -> new Channel(channel.networkKey, Arrays.copyOf(channel.sequence, length))).toList());
         beatsPerLine = otherProgram.beatsPerLine;
         linesPerBar = otherProgram.linesPerBar;
         notifiedChange = false;

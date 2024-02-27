@@ -1,0 +1,23 @@
+{
+    "type": "minecraft:crafting_shaped",
+    "pattern": [
+      "E",
+      "C",
+      "S"
+    ],
+    "key": {
+      "E": {
+        "item": "create:electron_tube"
+      },
+      "S": {
+        "item": "create:shaft"
+      },
+      "C": {
+        "item": "create:brass_casing"
+      }
+    },
+    "result": {
+      "item": "destroy:keypunch",
+      "count": 1
+    }
+  }

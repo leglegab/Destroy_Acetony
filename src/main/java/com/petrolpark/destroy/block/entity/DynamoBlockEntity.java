@@ -32,6 +32,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.fluids.capability.IFluidHandler;
@@ -246,6 +247,11 @@ public class DynamoBlockEntity extends BasinOperatingBlockEntity implements Char
     @Override
     protected Object getRecipeCacheKey() {
         return electrolysisRecipeKey;
+    };
+
+    @Override
+    protected AABB createRenderBoundingBox() {
+        return new AABB(worldPosition).expandTowards(0d, -2d, 0d);
     };
     
 };

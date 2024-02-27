@@ -28,6 +28,8 @@ import com.petrolpark.destroy.capability.player.previousposition.PlayerPreviousP
 import com.petrolpark.destroy.commands.BabyBlueAddictionCommand;
 import com.petrolpark.destroy.commands.CrudeOilCommand;
 import com.petrolpark.destroy.commands.PollutionCommand;
+import com.petrolpark.destroy.commands.RegenerateCircuitPatternCommand;
+import com.petrolpark.destroy.commands.RegenerateCircuitPatternCommand.CircuitPatternIdArgument;
 import com.petrolpark.destroy.config.DestroyAllConfigs;
 import com.petrolpark.destroy.effect.DestroyMobEffects;
 import com.petrolpark.destroy.fluid.DestroyFluids;
@@ -45,7 +47,6 @@ import com.petrolpark.destroy.recipe.DiscStampingRecipe;
 import com.petrolpark.destroy.recipe.ingredient.CircuitPatternIngredient;
 import com.petrolpark.destroy.sound.DestroySoundEvents;
 import com.petrolpark.destroy.util.ChemistryDamageHelper;
-import com.petrolpark.destroy.util.CircuitPatternHandler;
 import com.petrolpark.destroy.util.DestroyLang;
 import com.petrolpark.destroy.util.DestroyTags.DestroyItemTags;
 import com.petrolpark.destroy.util.InebriationHelper;
@@ -53,6 +54,7 @@ import com.petrolpark.destroy.util.PollutionHelper;
 import com.petrolpark.destroy.util.RedstoneProgrammerItemHandler;
 import com.petrolpark.destroy.world.damage.DestroyDamageSources;
 import com.petrolpark.destroy.world.entity.goal.BuildSandCastleGoal;
+import com.petrolpark.destroy.world.explosion.ExplosiveProperties;
 import com.petrolpark.destroy.world.village.DestroyTrades;
 import com.petrolpark.destroy.world.village.DestroyVillageAddition;
 import com.petrolpark.destroy.world.village.DestroyVillagers;
@@ -76,6 +78,8 @@ import com.simibubi.create.foundation.utility.Iterate;
 
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import net.minecraft.ChatFormatting;
+import net.minecraft.commands.synchronization.ArgumentTypeInfos;
+import net.minecraft.commands.synchronization.SingletonArgumentInfo;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Registry;
@@ -134,6 +138,7 @@ import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.event.level.BlockEvent.CropGrowEvent;
 import net.minecraftforge.event.level.BlockEvent.EntityPlaceEvent;
 import net.minecraftforge.event.level.ExplosionEvent;
+import net.minecraftforge.event.level.LevelEvent;
 import net.minecraftforge.event.level.SaplingGrowTreeEvent;
 import net.minecraftforge.event.level.SleepFinishedTimeEvent;
 import net.minecraftforge.event.server.ServerAboutToStartEvent;
@@ -220,7 +225,7 @@ public class DestroyCommonEvents {
         DestroyMessages.sendToClient(new RefreshPeriodicTablePonderSceneS2CPacket(), serverPlayer);
 
         // Update the circuit pattern crafting recipes
-        DestroyMessages.sendToClient(new CircuitPatternsS2CPacket(CircuitPatternHandler.getAllPatterns()), serverPlayer);
+        DestroyMessages.sendToClient(new CircuitPatternsS2CPacket(Destroy.CIRCUIT_PATTERN_HANDLER.getAllPatterns()), serverPlayer);
     };
 
     /**
@@ -273,6 +278,7 @@ public class DestroyCommonEvents {
         new CrudeOilCommand(event.getDispatcher());
         new BabyBlueAddictionCommand(event.getDispatcher());
         new PollutionCommand(event.getDispatcher());
+        new RegenerateCircuitPatternCommand(event.getDispatcher());
     };
 
     @SubscribeEvent
@@ -620,7 +626,8 @@ public class DestroyCommonEvents {
         // Fill Test Tubes from any Fluid-containing block
         if (stack.getItem() instanceof TestTubeItem && TestTubeItem.isEmpty(stack) && player.isCreative()) {
             BlockEntity be = level.getBlockEntity(pos);
-            if (be != null && !(be instanceof VatSideBlockEntity) && !(be instanceof VatControllerBlockEntity) && be.getCapability(ForgeCapabilities.FLUID_HANDLER, event.getFace()).map(handler -> {
+            if (be == null) return;
+            if (!(be instanceof VatSideBlockEntity) && !(be instanceof VatControllerBlockEntity) && be.getCapability(ForgeCapabilities.FLUID_HANDLER, event.getFace()).map(handler -> {
                 FluidStack drained = handler.drain(200, FluidAction.SIMULATE);
                 if (DestroyFluids.isMixture(drained)) {
                     player.setItemInHand(event.getHand(), TestTubeItem.of(drained));
@@ -755,21 +762,24 @@ public class DestroyCommonEvents {
     @SubscribeEvent
     public static void onPlayerPlacesBlock(EntityPlaceEvent event) {
         BlockState state = event.getPlacedBlock();
-        if (!(event.getEntity() instanceof ServerPlayer player)) return;
-        Level level = player.level();
-        if (PeriodicTableBlock.isPeriodicTableBlock(state)) {
-            int[] thisPos = PeriodicTableBlock.getXY(state.getBlock());
-            for (Direction direction : Iterate.horizontalDirections) {
-                boolean allPresent = true;
-                checkEachBlock: for (PeriodicTableEntry entry : PeriodicTableBlock.ELEMENTS) {
-                    if (!entry.blocks().contains(level.getBlockState(event.getPos().offset(PeriodicTableBlock.relative(thisPos, new int[]{entry.x(), entry.y()}, direction))).getBlock())) {
-                        allPresent = false;
-                        break checkEachBlock;
+        Level level = event.getEntity().level();
+
+        // Periodic Table advancement
+        if (event.getEntity() instanceof ServerPlayer serverPlayer) {
+            if (PeriodicTableBlock.isPeriodicTableBlock(state)) {
+                int[] thisPos = PeriodicTableBlock.getXY(state.getBlock());
+                for (Direction direction : Iterate.horizontalDirections) {
+                    boolean allPresent = true;
+                    checkEachBlock: for (PeriodicTableEntry entry : PeriodicTableBlock.ELEMENTS) {
+                        if (!entry.blocks().contains(level.getBlockState(event.getPos().offset(PeriodicTableBlock.relative(thisPos, new int[]{entry.x(), entry.y()}, direction))).getBlock())) {
+                            allPresent = false;
+                            break checkEachBlock;
+                        };
                     };
-                };
-                if (allPresent) {
-                    DestroyAdvancements.PERIODIC_TABLE.award(level, player);
-                    return;
+                    if (allPresent) {
+                        DestroyAdvancements.PERIODIC_TABLE.award(level, serverPlayer);
+                        return;
+                    };
                 };
             };
         };
@@ -777,9 +787,22 @@ public class DestroyCommonEvents {
 
     @SubscribeEvent
     public static void registerReloadListeners(AddReloadListenerEvent event) {
-        event.addListener(PeriodicTableBlock.RELOAD_LISTENER);
-        event.addListener(CircuitPatternHandler.RELOAD_LISTENER);
+        event.addListener(new PeriodicTableBlock.Listener(event.getConditionContext()));
+        event.addListener(Destroy.CIRCUIT_PATTERN_HANDLER.RELOAD_LISTENER);
+        event.addListener(new ExplosiveProperties.Listener(event.getConditionContext()));
     };
+
+    @SubscribeEvent
+	public static void onLoadWorld(LevelEvent.Load event) {
+		Destroy.CIRCUIT_PUNCHER_HANDLER.onLoadWorld(event.getLevel());
+        Destroy.CIRCUIT_PATTERN_HANDLER.onLevelLoaded(event.getLevel());
+	};
+
+	@SubscribeEvent
+	public static void onUnloadWorld(LevelEvent.Unload event) {
+		Destroy.CIRCUIT_PUNCHER_HANDLER.onUnloadWorld(event.getLevel());
+        Destroy.CIRCUIT_PATTERN_HANDLER.onLevelUnloaded(event.getLevel());
+	};
 
     @EventBusSubscriber(bus = EventBusSubscriber.Bus.MOD)
 	public static class ModBusEvents {
@@ -813,7 +836,12 @@ public class DestroyCommonEvents {
                 CraftingHelper.register(Destroy.asResource("circuit_pattern_item"), CircuitPatternIngredient.SERIALIZER);
             };
         };
-    
 
+        @SubscribeEvent
+        public static void registerArgumentTypes(RegisterEvent event) {
+            event.register(Registries.COMMAND_ARGUMENT_TYPE, Destroy.asResource("circuit_pattern_resource_location"), () -> {
+                return ArgumentTypeInfos.registerByClass(CircuitPatternIdArgument.class, SingletonArgumentInfo.contextFree(CircuitPatternIdArgument::create));
+            });
+	    };
 	};
 };

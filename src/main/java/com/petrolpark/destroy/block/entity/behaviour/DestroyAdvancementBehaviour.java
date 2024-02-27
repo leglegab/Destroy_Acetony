@@ -55,13 +55,13 @@ public class DestroyAdvancementBehaviour extends BlockEntityBehaviour {
     @Override
     public void read(CompoundTag nbt, boolean clientPacket) {
         super.read(nbt, clientPacket);
-        if (playerUUID != null) nbt.putUUID("Owner", playerUUID);
+        if (nbt.contains("Owner")) playerUUID = nbt.getUUID("Owner");
     };
 
     @Override
     public void write(CompoundTag nbt, boolean clientPacket) {
         super.write(nbt, clientPacket);
-        if (nbt.contains("Owner")) playerUUID = nbt.getUUID("Owner");
+        if (playerUUID != null) nbt.putUUID("Owner", playerUUID);
     };
 
     @Override

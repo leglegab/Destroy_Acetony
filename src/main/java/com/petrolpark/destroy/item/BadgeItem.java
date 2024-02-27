@@ -18,6 +18,7 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.Style;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -28,6 +29,8 @@ import net.minecraft.world.level.Level;
 public class BadgeItem extends Item {
 
     protected static final DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+    protected static final Style PRIMARY = Style.EMPTY.withColor(0xC9974C);
+    protected static final Style HIGHLIGHT = Style.EMPTY.withColor(0xF1DD79);
 
     public final Supplier<Badge> badge;
 
@@ -59,7 +62,7 @@ public class BadgeItem extends Item {
             return;
         };
         tooltipComponents.addAll(TooltipHelper.cutTextComponent(badge.getDescription(), Palette.STANDARD_CREATE));
-        tooltipComponents.add(DestroyLang.translate("tooltip.badge", tag.getString("Player"), df.format(new Date(tag.getLong("Date")))).component());
+        tooltipComponents.add(DestroyLang.translate("tooltip.badge", Component.literal(tag.getString("Player")).setStyle(HIGHLIGHT), Component.literal(df.format(new Date(tag.getLong("Date")))).setStyle(HIGHLIGHT)).component().setStyle(PRIMARY));
     };
 
     @Override

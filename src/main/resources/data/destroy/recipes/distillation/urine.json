@@ -2,7 +2,7 @@
     "type": "destroy:distillation",
     "ingredients": [
         {
-            "fluid": "destroy:urine",
+            "fluidTag": "forge:urine",
             "amount": 500
         }
     ],

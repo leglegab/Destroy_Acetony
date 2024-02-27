@@ -9,14 +9,17 @@ import com.petrolpark.destroy.chemistry.index.DestroyMolecules;
 import com.petrolpark.destroy.client.gui.DestroyIcons;
 import com.petrolpark.destroy.config.DestroyAllConfigs;
 import com.petrolpark.destroy.util.PollutionHelper;
+import com.petrolpark.destroy.util.DestroyTags.DestroyFluidTags;
 import com.simibubi.create.foundation.blockEntity.behaviour.scrollValue.INamedIconOptions;
 import com.simibubi.create.foundation.gui.AllIcons;
 import com.simibubi.create.foundation.utility.Lang;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.tags.TagKey;
 import net.minecraft.util.Mth;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.material.Fluid;
 
 public class LevelPollution {
 
@@ -155,25 +158,27 @@ public class LevelPollution {
 
     public enum PollutionType implements INamedIconOptions {
 
-        GREENHOUSE(DestroyIcons.GREENHOUSE, 65536, DestroyMolecules.Tags.GREENHOUSE),
+        GREENHOUSE(DestroyIcons.GREENHOUSE, 65536, DestroyMolecules.Tags.GREENHOUSE, DestroyFluidTags.GREENHOUSE_GAS.tag),
 
-        OZONE_DEPLETION(DestroyIcons.OZONE_DEPLETION, 65536, DestroyMolecules.Tags.OZONE_DEPLETER),
+        OZONE_DEPLETION(DestroyIcons.OZONE_DEPLETION, 65536, DestroyMolecules.Tags.OZONE_DEPLETER, DestroyFluidTags.DEPLETES_OZONE.tag),
 
-        SMOG(DestroyIcons.SMOG, 65536, DestroyMolecules.Tags.SMOG),
+        SMOG(DestroyIcons.SMOG, 65536, DestroyMolecules.Tags.SMOG, DestroyFluidTags.AMPLIFIES_SMOG.tag),
 
-        ACID_RAIN(DestroyIcons.ACID_RAIN, 65536, DestroyMolecules.Tags.ACID_RAIN),
+        ACID_RAIN(DestroyIcons.ACID_RAIN, 65536, DestroyMolecules.Tags.ACID_RAIN, DestroyFluidTags.ACIDIFIES_RAIN.tag),
 
-        RADIOACTIVITY(DestroyIcons.RADIOACTIVITY, 65536, null);
+        RADIOACTIVITY(DestroyIcons.RADIOACTIVITY, 65536, null, DestroyFluidTags.RADIOACTIVE.tag);
 
         private final AllIcons icon;
         // Min is always 0
         public final int max;
         public final MoleculeTag moleculeTag;
+        public final TagKey<Fluid> fluidTag;
 
-        PollutionType(AllIcons icon, int max, MoleculeTag moleculeTag) {
+        PollutionType(AllIcons icon, int max, MoleculeTag moleculeTag, TagKey<Fluid> fluidTag) {
             this.icon = icon;
             this.max = max;
             this.moleculeTag = moleculeTag;
+            this.fluidTag = fluidTag;
         }
 
         @Override

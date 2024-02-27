@@ -71,7 +71,6 @@ public class ReadOnlyMixture {
      */
     protected Map<Molecule, Float> contents;
 
-
     /**
      * The {@link Molecule Molecules} in this Mixture, mapped to the proportion of which are gaseous. For example, {@code 0}
      * means this Molecule is entirely liquid or aqueous, {@code 0.5} means they are half liquid and half gaseous, and {@code 1}
@@ -80,13 +79,15 @@ public class ReadOnlyMixture {
     protected Map<Molecule, Float> states;
 
     public ReadOnlyMixture() {
-        translationKey = "";
-    
-        contents = new HashMap<>();
-        
-        temperature = 298f;
+        this(298f);
+    };
 
-        states = new HashMap<>();
+    public ReadOnlyMixture(float temperature) {
+        translationKey = "";
+        contents = new HashMap<>();
+        if (temperature < 0f) throw new IllegalStateException("Mixtures cannot be below 0K");
+        this.temperature = temperature;
+        states = new HashMap<>();  
     };
 
     /**

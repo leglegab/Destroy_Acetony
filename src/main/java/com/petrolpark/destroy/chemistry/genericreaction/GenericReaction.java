@@ -37,6 +37,7 @@ public abstract class GenericReaction {
 
     public Reaction getExampleReaction() {
         if (exampleReaction == null) exampleReaction = generateExampleReaction();
+        if (exampleReaction == null) throw new GenericReactionGenerationException("Could not generate example reaction for Generic Reaction '"+ id.toString() + "'- reaction generator returned null, which is only allowed in Mixtures.");
         return exampleReaction;
     };
 

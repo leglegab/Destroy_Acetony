@@ -49,6 +49,9 @@ public class DestroyShapes {
 
     REDSTONE_PROGRAMMER = shape(1, 0, 1, 15, 3, 15)
         .add(2, 3, 2, 14, 10, 14)
+        .build(),
+
+    MOLTEN_STAINLESS_STEEL_COLLISION = shape(0, 0, 0, 16, 14, 16)
         .build();
 
     public static final VoxelShaper COAXIAL_GEAR = shape(2, 6, 2, 14, 10, 14)

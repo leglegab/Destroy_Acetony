@@ -27,10 +27,11 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.HorizontalDirectionalBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition.Builder;
+import net.minecraftforge.common.crafting.CraftingHelper;
+import net.minecraftforge.common.crafting.conditions.ICondition.IContext;
 
 public class PeriodicTableBlock extends HorizontalDirectionalBlock {
 
-    public static Listener RELOAD_LISTENER = new Listener();
     public static Set<PeriodicTableEntry> ELEMENTS = new HashSet<>();
 
     protected PeriodicTableBlock(Properties properties) {
@@ -76,6 +77,13 @@ public class PeriodicTableBlock extends HorizontalDirectionalBlock {
 
     public static class Listener extends DestroyReloadListener {
 
+        public final IContext context;
+
+        public Listener(IContext context) {
+            super();
+            this.context = context;
+        };
+
         @Override
         public String getPath() {
             return "destroy_compat/periodic_table_blocks";
@@ -90,6 +98,8 @@ public class PeriodicTableBlock extends HorizontalDirectionalBlock {
         @SuppressWarnings("deprecation")
         public void forEachNameSpaceJsonFile(JsonObject jsonObject) {
             jsonObject.entrySet().forEach(entry -> {
+                if (!CraftingHelper.processConditions(entry.getValue().getAsJsonObject(), "conditions", this.context)) return;
+
                 Optional<? extends Holder<Block>> blockOptional = BuiltInRegistries.BLOCK.asLookup().get(ResourceKey.create(Registries.BLOCK, new ResourceLocation(entry.getKey())));
                 if (blockOptional.isEmpty()) throw new IllegalStateException("Invalid block ID: "+entry.getKey());
                 JsonObject pos = entry.getValue().getAsJsonObject();

@@ -57,11 +57,6 @@ public class DestroyCreativeModeTabs {
 				DestroyItems.UNPROCESSED_NAPALM_SUNDAE,
 				DestroyItems.UNFINISHED_CARD_STOCK,
 
-				// Unfinished
-				DestroyItems.CIRCUIT_MASK,
-				DestroyBlocks.KEYPUNCH,
-				DestroyBlocks.REDSTONE_PROGRAMMER,
-
 				// Removal
 				DestroyItems.BIFURICATED_CARROT,
 				DestroyItems.POTATE_O,

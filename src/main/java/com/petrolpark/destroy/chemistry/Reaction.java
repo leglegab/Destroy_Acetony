@@ -611,7 +611,7 @@ public class Reaction {
             Reaction dissociationReaction = this
                 .id(acid.getFullID().split(":")[1] + ".dissociation")
                 .addReactant(acid)
-                .addCatalyst(DestroyMolecules.WATER, 0)
+                .addCatalyst(DestroyMolecules.WATER, 1)
                 .addProduct(DestroyMolecules.PROTON)
                 .addProduct(conjugateBase)
                 .activationEnergy(GAS_CONSTANT * 0.298f) // Makes the pKa accurate at room temperature

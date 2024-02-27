@@ -5,7 +5,7 @@ import java.util.Map.Entry;
 import java.util.HashMap;
 import java.util.function.Supplier;
 
-import com.petrolpark.destroy.util.CircuitPatternHandler;
+import com.petrolpark.destroy.Destroy;
 
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
@@ -40,7 +40,7 @@ public class CircuitPatternsS2CPacket extends S2CPacket {
     @Override
     public boolean handle(Supplier<Context> supplier) {
         supplier.get().enqueueWork(() -> {
-            CircuitPatternHandler.setPatterns(patterns);
+            Destroy.CIRCUIT_PATTERN_HANDLER.setPatterns(patterns);
         });
         return true;
     };

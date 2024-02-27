@@ -5,10 +5,12 @@ import com.simibubi.create.foundation.utility.Lang;
 
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.BlockTags;
+import net.minecraft.tags.FluidTags;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.material.Fluid;
 
 public class DestroyTags {
 
@@ -81,7 +83,26 @@ public class DestroyTags {
         public boolean matches(Block block) {
             return block.builtInRegistryHolder().containsTag(tag);
         };
-    }
+    };
+
+    public enum DestroyFluidTags {
+        AMPLIFIES_SMOG,
+        ACIDIFIES_RAIN,
+        DEPLETES_OZONE,
+        GREENHOUSE_GAS,
+        RADIOACTIVE;
+
+        public final TagKey<Fluid> tag;
+
+        DestroyFluidTags() {
+			tag = FluidTags.create(Destroy.asResource(Lang.asId(name())));
+        };
+
+        @SuppressWarnings("deprecation") // Create does it therefore so can I
+        public boolean matches(Fluid fluid) {
+            return fluid.builtInRegistryHolder().is(tag);
+        };
+    };
 
     public static void register() {
         DestroyItemTags.init();

@@ -2,12 +2,12 @@
     "type": "create:milling",
     "ingredients": [
       {
-        "tag": "forge:raw_materials/sulfur"
+        "item": "destroy:circuit_mask"
       }
     ],
     "results": [
       {
-        "item": "minecraft:yellow_dye"
+        "item": "destroy:ruined_circuit_mask"
       }
     ],
     "processingTime": 150

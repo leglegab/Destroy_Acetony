@@ -2,7 +2,7 @@
     "type": "create:mixing",
     "ingredients": [
       {
-        "fluid": "destroy:urine",
+        "fluidTag": "forge:urine",
         "amount": 250
       },
       {

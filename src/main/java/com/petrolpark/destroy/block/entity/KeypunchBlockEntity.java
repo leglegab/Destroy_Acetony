@@ -4,30 +4,39 @@ import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.atomic.AtomicReference;
 
+import com.petrolpark.destroy.Destroy;
+import com.petrolpark.destroy.block.KeypunchBlock;
 import com.petrolpark.destroy.block.entity.behaviour.CircuitPunchingBehaviour;
 import com.petrolpark.destroy.block.entity.behaviour.DestroyAdvancementBehaviour;
+import com.petrolpark.destroy.block.entity.behaviour.ICircuitPuncher;
 import com.petrolpark.destroy.block.entity.behaviour.CircuitPunchingBehaviour.CircuitPunchingSpecifics;
 import com.petrolpark.destroy.item.CircuitMaskItem;
 import com.petrolpark.destroy.item.CircuitPatternItem;
 import com.petrolpark.destroy.item.directional.DirectionalTransportedItemStack;
-import com.simibubi.create.content.contraptions.ITransformableBlockEntity;
-import com.simibubi.create.content.contraptions.StructureTransform;
+import com.petrolpark.destroy.item.directional.IDirectionalOnBelt;
+import com.petrolpark.destroy.network.DestroyMessages;
+import com.petrolpark.destroy.network.packet.RequestKeypunchNamePacket;
+import com.petrolpark.destroy.util.circuit.CircuitPuncherHandler;
 import com.simibubi.create.content.kinetics.base.KineticBlockEntity;
+import com.simibubi.create.content.kinetics.belt.transport.TransportedItemStack;
 import com.simibubi.create.foundation.blockEntity.behaviour.BlockEntityBehaviour;
 
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction.Axis;
+import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
 
-public class KeypunchBlockEntity extends KineticBlockEntity implements CircuitPunchingSpecifics, ITransformableBlockEntity {
+public class KeypunchBlockEntity extends KineticBlockEntity implements ICircuitPuncher, CircuitPunchingSpecifics {
 
     public int pistonPosition;
 
-    protected String name;
+    protected boolean namedYet;
+    public String name;
     protected UUID uuid;
 
     public CircuitPunchingBehaviour punchingBehaviour;
@@ -37,6 +46,13 @@ public class KeypunchBlockEntity extends KineticBlockEntity implements CircuitPu
         super(typeIn, pos, state);
         pistonPosition = 0;
         uuid = UUID.randomUUID();
+        name = "";
+    };
+
+    @Override
+    public void initialize() {
+        super.initialize();
+        Destroy.CIRCUIT_PUNCHER_HANDLER.addPuncher(getLevel(), this);
     };
 
     @Override
@@ -51,12 +67,12 @@ public class KeypunchBlockEntity extends KineticBlockEntity implements CircuitPu
     };
 
     @Override
-    public boolean tryProcessOnBelt(DirectionalTransportedItemStack input, AtomicReference<DirectionalTransportedItemStack> output, boolean simulate) {
+    public boolean tryProcessOnBelt(DirectionalTransportedItemStack input, AtomicReference<TransportedItemStack> output, boolean simulate) {
         ItemStack stack = input.stack;
         if (!(stack.getItem() instanceof CircuitMaskItem)) return false;
         int pattern = CircuitPatternItem.getPattern(stack);
 
-        int positionToPunch = pistonPosition;
+        int positionToPunch = getActualPosition();
         if (stack.getOrCreateTag().contains("Flipped")) positionToPunch = CircuitPatternItem.flipped[positionToPunch];
         for (int i = 0; i < input.getRotation().ordinal(); i++) {
             positionToPunch = CircuitPatternItem.rotated90[positionToPunch];
@@ -64,19 +80,56 @@ public class KeypunchBlockEntity extends KineticBlockEntity implements CircuitPu
 
         if (CircuitPatternItem.isPunched(pattern, positionToPunch)) return false;
 
-        //TODO contaminate
-
         if (!simulate) {
+            ItemStack resultStack = CircuitMaskItem.contaminate(input.stack, uuid);
+            if (!(resultStack.getItem() instanceof IDirectionalOnBelt)) {
+                output.set(new TransportedItemStack(resultStack));
+                return true;
+            };
+            CircuitPatternItem.putPattern(resultStack, CircuitPatternItem.punch(pattern, positionToPunch));
             DirectionalTransportedItemStack result = DirectionalTransportedItemStack.copy(input);
-            CircuitPatternItem.putPattern(result.stack, CircuitPatternItem.punch(pattern, positionToPunch));
+            result.stack = resultStack;
             output.set(result);
+            punchingBehaviour.particleItem = resultStack;
         };
         return true;
+    };
+
+    public int getActualPosition() {
+        Direction facing = getBlockState().getValue(KeypunchBlock.HORIZONTAL_FACING);
+        int rot;
+        switch (facing) {
+            case WEST: {
+                rot = 3;
+                break;
+            } case SOUTH: {
+                rot = 2;
+                break;
+            } case EAST: {
+                rot = 1;
+                break;
+            } default: rot = 0;
+        };
+        int pos = pistonPosition;
+        for (int i = 0; i < rot; i++) {
+            pos = CircuitPatternItem.rotated90[pos];
+        };
+        return pos;
     };
 
     @Override
     public void tick() {
         super.tick();
+        if (Destroy.CIRCUIT_PUNCHER_HANDLER.getPuncher(getLevel(), uuid) == CircuitPuncherHandler.UNKNOWN) Destroy.CIRCUIT_PUNCHER_HANDLER.addPuncher(level, this);
+        if (!namedYet && !getLevel().isClientSide()) {
+            Player player = advancementBehaviour.getPlayer();
+            if (player != null && player instanceof ServerPlayer serverPlayer) {
+                DestroyMessages.sendToClient(new RequestKeypunchNamePacket(getBlockPos()), serverPlayer);
+            } else {
+                name = "Unnamed";
+            };
+            namedYet = true;
+        };
     };
 
     @Override
@@ -100,6 +153,7 @@ public class KeypunchBlockEntity extends KineticBlockEntity implements CircuitPu
         pistonPosition = compound.getInt("PunchPosition");
         uuid = compound.getUUID("UUID");
         name = compound.getString("Name");
+        namedYet = !compound.contains("NamedYet");
     };
 
     @Override
@@ -108,14 +162,23 @@ public class KeypunchBlockEntity extends KineticBlockEntity implements CircuitPu
         compound.putInt("PunchPosition", pistonPosition);
         compound.putUUID("UUID", uuid);
         if (name != null) compound.putString("Name", name);
-    }
+        if (!namedYet) compound.putBoolean("NamedYet", false);
+    };
 
     @Override
-    public void transform(StructureTransform transform) {
-        if (transform.rotationAxis == Axis.Y) {
-            for (int i = 0; i < transform.rotation.ordinal(); i++) pistonPosition = CircuitMaskItem.rotated90[pistonPosition];
-            notifyUpdate();
-        };
+    public UUID getUUID() {
+        return uuid;
+    };
+
+    @Override
+    public String getName() {
+        return name;
+    };
+
+    @Override
+    public void invalidate() {
+        Destroy.CIRCUIT_PUNCHER_HANDLER.removePuncher(getLevel(), this);
+        super.invalidate();
     };
     
 };

@@ -3,8 +3,8 @@ package com.petrolpark.destroy.recipe.ingredient;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonSyntaxException;
+import com.petrolpark.destroy.Destroy;
 import com.petrolpark.destroy.item.CircuitPatternItem;
-import com.petrolpark.destroy.util.CircuitPatternHandler;
 
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
@@ -32,13 +32,13 @@ public class CircuitPatternIngredient extends AbstractIngredient {
     @Override
     public boolean test(ItemStack stack) {
         if (!stack.getItem().equals(item)) return false;
-        Integer pattern = CircuitPatternHandler.getPattern(patternRL);
+        Integer pattern = Destroy.CIRCUIT_PATTERN_HANDLER.getPattern(patternRL);
         return (pattern != null && pattern == CircuitPatternItem.getPattern(stack));
     };
 
     @Override
     public ItemStack[] getItems() {
-        Integer pattern = CircuitPatternHandler.getPattern(patternRL);
+        Integer pattern = Destroy.CIRCUIT_PATTERN_HANDLER.getPattern(patternRL);
         if (pattern == null) return new ItemStack[]{};
         ItemStack stack = new ItemStack(item);
         CircuitPatternItem.putPattern(stack, pattern);

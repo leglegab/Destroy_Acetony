@@ -9,16 +9,23 @@ import com.simibubi.create.content.kinetics.belt.behaviour.TransportedItemStackH
 import com.simibubi.create.content.kinetics.belt.behaviour.TransportedItemStackHandlerBehaviour.TransportedResult;
 import com.simibubi.create.content.kinetics.belt.transport.TransportedItemStack;
 import com.simibubi.create.foundation.blockEntity.SmartBlockEntity;
+import com.simibubi.create.foundation.utility.VecHelper;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.particles.ItemParticleOption;
+import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.Mth;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.SoundType;
+import net.minecraft.world.phys.Vec3;
 
 public class CircuitPunchingBehaviour extends BeltProcessingBehaviour {
 
-    public static final int CYCLE = 240; // The total length of time it takes to punch
+    public static final int CYCLE = 120; // The total length of time it takes to punch
+
+    public ItemStack particleItem = ItemStack.EMPTY;
 
     public CircuitPunchingSpecifics specifics; // The punching Block Entity ("puncher"), usually a Keypunch
 	public int runningTicks; // How long the puncher has been punching
@@ -42,7 +49,7 @@ public class CircuitPunchingBehaviour extends BeltProcessingBehaviour {
          * @param simulate
          * @return Whether this Item can be or was punched
          */
-		public boolean tryProcessOnBelt(DirectionalTransportedItemStack input, AtomicReference<DirectionalTransportedItemStack> output, boolean simulate);
+		public boolean tryProcessOnBelt(DirectionalTransportedItemStack input, AtomicReference<TransportedItemStack> output, boolean simulate);
 
 		public void onPunchingCompleted();
 
@@ -65,7 +72,7 @@ public class CircuitPunchingBehaviour extends BeltProcessingBehaviour {
 		if (!behaviour.running) return ProcessingResult.PASS; // If the puncher isn't punching, stop trying to process
 		if (behaviour.runningTicks != CYCLE / 2) return ProcessingResult.HOLD; // If this isn't the tick where the puncher should process the Item Stack, stop trying to process
 
-        AtomicReference<DirectionalTransportedItemStack> result = new AtomicReference<>();
+        AtomicReference<TransportedItemStack> result = new AtomicReference<>();
 
         if (!behaviour.specifics.tryProcessOnBelt(directionalTransported, result, false)) return ProcessingResult.PASS; // If the Item Stack cannot be punched, let it pass on
 
@@ -84,6 +91,10 @@ public class CircuitPunchingBehaviour extends BeltProcessingBehaviour {
         running = tag.getBoolean("Running");
         finished = tag.getBoolean("Finished");
         runningTicks = prevRunningTicks = tag.getInt("Ticks");
+        if (clientPacket) {
+            particleItem = ItemStack.of(tag.getCompound("ParticleItem"));
+            spawnParticles();
+        };
         super.read(tag, clientPacket);
     };
 
@@ -92,12 +103,14 @@ public class CircuitPunchingBehaviour extends BeltProcessingBehaviour {
         tag.putBoolean("Running", running);
         tag.putBoolean("Finished", finished);
         tag.putInt("Ticks", runningTicks);
+        if (clientPacket && !particleItem.isEmpty()) tag.put("ParticleItem", particleItem.serializeNBT());
         super.write(tag, clientPacket);
     }
 
     public void start() {
 		running = true;
 		runningTicks = 0;
+        particleItem = ItemStack.EMPTY;
 		blockEntity.sendData();
 	};
 
@@ -128,6 +141,7 @@ public class CircuitPunchingBehaviour extends BeltProcessingBehaviour {
 			finished = true;
 			running = false;
 			specifics.onPunchingCompleted();
+            particleItem = ItemStack.EMPTY;
 			blockEntity.sendData();
 			return;
 		};
@@ -139,6 +153,21 @@ public class CircuitPunchingBehaviour extends BeltProcessingBehaviour {
 			// Pause the ticks until a packet is received
 			if (level.isClientSide() && !blockEntity.isVirtual()) runningTicks = -(CYCLE / 2);
 		};
+	};
+
+    protected void spawnParticles() {
+        Level level = getWorld();
+		if (particleItem.isEmpty() || level == null || !level.isClientSide()) return;
+
+		Vec3 pos = VecHelper.getCenterOf(getPos().below(2));
+
+		for (int i = 0; i < 15; i++) {
+			Vec3 motion = VecHelper.offsetRandomly(Vec3.ZERO, level.random, .125f).multiply(1, 0, 1);
+			motion = motion.add(0, 0.125f, 0);
+			level.addParticle(new ItemParticleOption(ParticleTypes.ITEM, particleItem), pos.x, pos.y - .25f, pos.z, motion.x, motion.y, motion.z);
+		};
+
+		particleItem = ItemStack.EMPTY;
 	};
 
     /**

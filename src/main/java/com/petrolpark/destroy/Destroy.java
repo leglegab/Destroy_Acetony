@@ -19,6 +19,7 @@ import com.petrolpark.destroy.client.ponder.DestroyPonderTags;
 import com.petrolpark.destroy.compat.jei.DestroyJEI;
 import com.petrolpark.destroy.config.DestroyAllConfigs;
 import com.petrolpark.destroy.effect.DestroyMobEffects;
+import com.petrolpark.destroy.effect.potion.DestroyPotions;
 import com.petrolpark.destroy.entity.DestroyEntityTypes;
 import com.petrolpark.destroy.fluid.DestroyFluids;
 import com.petrolpark.destroy.fluid.pipeEffectHandler.DestroyOpenEndedPipeEffects;
@@ -37,6 +38,8 @@ import com.petrolpark.destroy.recipe.DestroyRecipeTypes;
 import com.petrolpark.destroy.registrate.DestroyRegistrate;
 import com.petrolpark.destroy.sound.DestroySoundEvents;
 import com.petrolpark.destroy.util.DestroyTags;
+import com.petrolpark.destroy.util.circuit.CircuitPatternHandler;
+import com.petrolpark.destroy.util.circuit.CircuitPuncherHandler;
 import com.petrolpark.destroy.util.vat.VatMaterial;
 import com.petrolpark.destroy.world.damage.DestroyDamageTypes;
 import com.petrolpark.destroy.world.loot.DestroyLoot;
@@ -78,6 +81,9 @@ public class Destroy {
 
     public static final DestroyRegistrate REGISTRATE = new DestroyRegistrate(MOD_ID);
 
+    public static final CircuitPuncherHandler CIRCUIT_PUNCHER_HANDLER = new CircuitPuncherHandler();
+    public static final CircuitPatternHandler CIRCUIT_PATTERN_HANDLER = new CircuitPatternHandler();
+
     public static ResourceLocation asResource(String path) {
         return new ResourceLocation(MOD_ID, path);
     };
@@ -113,6 +119,7 @@ public class Destroy {
         DestroyBlockEntityTypes.register();
         DestroyBlocks.register();
         DestroyMobEffects.register(modEventBus);
+        DestroyPotions.register(modEventBus);
         DestroyItems.register();
         DestroyMenuTypes.register();
         DestroyRecipeTypes.register(modEventBus);

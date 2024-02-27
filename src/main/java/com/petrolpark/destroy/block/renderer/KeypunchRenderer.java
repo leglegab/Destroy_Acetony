@@ -32,8 +32,9 @@ public class KeypunchRenderer extends KineticBlockEntityRenderer<KeypunchBlockEn
         CircuitPunchingBehaviour behaviour = be.punchingBehaviour;
         float renderedHeadOffset = behaviour.getRenderedPistonOffset(partialTicks);
 
+        int pistonPos = be.getActualPosition();
         SuperByteBuffer headRender = CachedBufferer.partial(DestroyPartials.KEYPUNCH_PISTON, blockState);
-        headRender.translate((4 + 2 * (be.pistonPosition % 4)) / 16f, - (6.1f + (renderedHeadOffset * 12.5f)) / 16f, (4 + 2 * (be.pistonPosition / 4)) / 16f)
+        headRender.translate((4 + 2 * (pistonPos % 4)) / 16f, - (6.1f + (renderedHeadOffset * 12.5f)) / 16f, (4 + 2 * (pistonPos / 4)) / 16f)
             .light(light)
             .renderInto(ms, buffer.getBuffer(RenderType.solid()));
             

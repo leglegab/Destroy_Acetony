@@ -601,6 +601,7 @@ public final class DestroyMolecules {
     HYDROXIDE = builder()
         .id("hydroxide")
         .structure(Formula.atom(Element.OXYGEN).addAtom(Element.HYDROGEN))
+        .density(900f) // Not accurate but allows separation of mercury and sodium hydroxide solution by Centrifugation
         .charge(-1)
         .build(),
 
@@ -959,6 +960,7 @@ public final class DestroyMolecules {
     SODIUM_ION = builder()
         .id("sodium_ion")
         .structure(Formula.atom(Element.SODIUM))
+        .density(900f) // Not accurate but allows separation of Mercury and sodium hydroxide solution by Centrifugation
         .charge(1)
         .build(),
 
@@ -1137,6 +1139,12 @@ public final class DestroyMolecules {
             .withColor(ChatFormatting.DARK_GREEN.getColor()),
 
         /**
+         * This Molecule can be used to make glue.
+         */
+        ADHESIVE = new MoleculeTag("destroy", "adhesive")
+            .withColor(0x6FEF40),
+
+        /**
          * This Molecule can be used as a bleach in recipes.
          */
         BLEACH = new MoleculeTag("destroy", "bleach")
@@ -1149,10 +1157,28 @@ public final class DestroyMolecules {
             .withColor(0xFF85EB),
 
         /**
+         * This Molecule induces estris in players.
+         */
+        ESTROGEN = new MoleculeTag("destroy", "estrogen")
+            .withColor(0xFF96F6),
+
+        /**
+         * This Molecule is resistant to burning.
+         */
+        FLAME_RETARDANT = new MoleculeTag("destroy", "flame_retardant")
+            .withColor(0xF7AD0E),
+
+        /**
          * This Molecule can be used to make perfume.
          */
         FRAGRANT = new MoleculeTag("destroy", "fragrant")
             .withColor(0xF01D63),
+
+        /**
+         * This Molecule makes fuel give more energy.
+         */
+        FUEL_ADDITIVE = new MoleculeTag("destroy", "fuel_additive")
+            .withColor(0x89541B),
     
         /**
          * This Molecule will increase the world's greenhouse gas level if released into the atmosphere.
@@ -1165,6 +1191,12 @@ public final class DestroyMolecules {
          */
         HYPOTHETICAL = new MoleculeTag("destroy", "hypothetical")
             .withColor(0xFAFFC4),
+
+        /**
+         * This Molecule will make entities exposed to it cry.
+         */
+        LACRIMATOR = new MoleculeTag("destroy", "lacrimator")
+            .withColor(0xCBF2F0),
 
         /**
          * This Molecule will increase the world's ozone depletion level if released into the atmosphere.

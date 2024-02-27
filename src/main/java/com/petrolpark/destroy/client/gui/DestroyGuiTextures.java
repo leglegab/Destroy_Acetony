@@ -17,6 +17,9 @@ public enum DestroyGuiTextures implements ScreenElement {
 	CIRCUIT_MASK_BORDER("circuit_mask", 0, 0, 48, 48),
 	CIRCUIT_MASK_CELL_SHADING("circuit_mask", 48, 0, 10, 10),
 	CIRCUIT_MASK_CELL("circuit_mask", 48, 16, 8, 8),
+	
+	// KEYPUNCH
+	KEYPUNCH("keypunch", 0, 0, 187, 169),
 
 	// VAT
 	VAT("vat", 0, 0, 256, 226),
@@ -26,30 +29,34 @@ public enum DestroyGuiTextures implements ScreenElement {
 	VAT_SCROLL_DOT("vat", 100, 226, 7, 8),
 
 	// REDSTONE PROGRAMMER
-	REDSTONE_PROGRAMMER_LEFT("redstone_programmer_1", 0, 0, 256, 256),
-	REDSTONE_PROGRAMMER_RIGHT("redstone_programmer_2", 0, 0, 178, 256),
-	NOTE_BORDER_MIDDLE("redstone_programmer_2", 192, 0, 4, 18),
-	NOTE_BORDER_LEFT("redstone_programmer_2", 196, 0, 4, 18),
-	NOTE_BORDER_LONE("redstone_programmer_2", 200, 0, 4, 18),
-	NOTE_BORDER_RIGHT("redstone_programmer_2", 204, 0, 4, 18),
-	NOTE_0("redstone_programmer_2", 192, 18, 4, 18),
-	NOTE_1("redstone_programmer_2", 196, 18, 4, 18),
-	NOTE_2("redstone_programmer_2", 200, 18, 4, 18),
-	NOTE_3("redstone_programmer_2", 204, 18, 4, 18),
-	NOTE_4("redstone_programmer_2", 208, 18, 4, 18),
-	NOTE_5("redstone_programmer_2", 212, 18, 4, 18),
-	NOTE_6("redstone_programmer_2", 216, 18, 4, 18),
-	NOTE_7("redstone_programmer_2", 220, 18, 4, 18),
-	NOTE_8("redstone_programmer_2", 224, 18, 4, 18),
-	NOTE_9("redstone_programmer_2", 228, 18, 4, 18),
-	NOTE_10("redstone_programmer_2", 232, 18, 4, 18),
-	NOTE_11("redstone_programmer_2", 236, 18, 4, 18),
-	NOTE_12("redstone_programmer_2", 240, 18, 4, 18),
-	NOTE_13("redstone_programmer_2", 244, 18, 4, 18),
-	NOTE_14("redstone_programmer_2", 248, 18, 4, 18),
-	NOTE_15("redstone_programmer_2", 252, 18, 4, 18),
+	REDSTONE_PROGRAMMER("redstone_programmer_1", 0, 0, 256, 226),
+	REDSTONE_PROGRAMMER_NOTE_BORDER_MIDDLE("redstone_programmer_2", 192, 0, 4, 18),
+	REDSTONE_PROGRAMMER_NOTE_BORDER_LEFT("redstone_programmer_2", 196, 0, 4, 18),
+	REDSTONE_PROGRAMMER_NOTE_BORDER_LONE("redstone_programmer_2", 200, 0, 4, 18),
+	REDSTONE_PROGRAMMER_NOTE_BORDER_RIGHT("redstone_programmer_2", 204, 0, 4, 18),
+	REDSTONE_PROGRAMMER_NOTE_0("redstone_programmer_2", 192, 18, 4, 18),
+	REDSTONE_PROGRAMMER_NOTE_1("redstone_programmer_2", 196, 18, 4, 18),
+	REDSTONE_PROGRAMMER_NOTE_2("redstone_programmer_2", 200, 18, 4, 18),
+	REDSTONE_PROGRAMMER_NOTE_3("redstone_programmer_2", 204, 18, 4, 18),
+	REDSTONE_PROGRAMMER_NOTE_4("redstone_programmer_2", 208, 18, 4, 18),
+	REDSTONE_PROGRAMMER_NOTE_5("redstone_programmer_2", 212, 18, 4, 18),
+	REDSTONE_PROGRAMMER_NOTE_6("redstone_programmer_2", 216, 18, 4, 18),
+	REDSTONE_PROGRAMMER_NOTE_7("redstone_programmer_2", 220, 18, 4, 18),
+	REDSTONE_PROGRAMMER_NOTE_8("redstone_programmer_2", 224, 18, 4, 18),
+	REDSTONE_PROGRAMMER_NOTE_9("redstone_programmer_2", 228, 18, 4, 18),
+	REDSTONE_PROGRAMMER_NOTE_10("redstone_programmer_2", 232, 18, 4, 18),
+	REDSTONE_PROGRAMMER_NOTE_11("redstone_programmer_2", 236, 18, 4, 18),
+	REDSTONE_PROGRAMMER_NOTE_12("redstone_programmer_2", 240, 18, 4, 18),
+	REDSTONE_PROGRAMMER_NOTE_13("redstone_programmer_2", 244, 18, 4, 18),
+	REDSTONE_PROGRAMMER_NOTE_14("redstone_programmer_2", 248, 18, 4, 18),
+	REDSTONE_PROGRAMMER_NOTE_15("redstone_programmer_2", 252, 18, 4, 18),
 	REDSTONE_PROGRAMMER_LINE("redstone_programmer_2", 179, 16, 2, 199),
 	REDSTONE_PROGRAMMER_BARLINE("redstone_programmer_2", 181, 16, 2, 199),
+	REDSTONE_PROGRAMMER_ITEM_SLOTS("redstone_programmer_2", 192, 36, 36, 18),
+	REDSTONE_PROGRAMMER_DELETE_CHANNEL("redstone_programmer_2", 244, 36, 12, 18),
+	REDSTONE_PROGRAMMER_MOVE_CHANNEL_UP("redstone_programmer_2", 228, 36, 12, 9),
+	REDSTONE_PROGRAMMER_MOVE_CHANNEL_DOWN("redstone_programmer_2", 228, 45, 12, 9),
+	REDSTONE_PROGRAMMER_PLAYHEAD("redstone_programmer_2", 185,16, 7, 199),
 
     // JEI
     JEI_SHORT_DOWN_ARROW("jei/widgets", 0, 64, 18, 18),
@@ -78,11 +85,11 @@ public enum DestroyGuiTextures implements ScreenElement {
 		this.height = height;
 	};
 
-	private static final DestroyGuiTextures[] notes = new DestroyGuiTextures[]{NOTE_0, NOTE_1, NOTE_2, NOTE_3, NOTE_4, NOTE_5, NOTE_6, NOTE_7, NOTE_8, NOTE_9, NOTE_10, NOTE_11, NOTE_12, NOTE_13, NOTE_14, NOTE_15};
+	private static final DestroyGuiTextures[] notes = new DestroyGuiTextures[]{REDSTONE_PROGRAMMER_NOTE_0, REDSTONE_PROGRAMMER_NOTE_1, REDSTONE_PROGRAMMER_NOTE_2, REDSTONE_PROGRAMMER_NOTE_3, REDSTONE_PROGRAMMER_NOTE_4, REDSTONE_PROGRAMMER_NOTE_5, REDSTONE_PROGRAMMER_NOTE_6, REDSTONE_PROGRAMMER_NOTE_7, REDSTONE_PROGRAMMER_NOTE_8, REDSTONE_PROGRAMMER_NOTE_9, REDSTONE_PROGRAMMER_NOTE_10, REDSTONE_PROGRAMMER_NOTE_11, REDSTONE_PROGRAMMER_NOTE_12, REDSTONE_PROGRAMMER_NOTE_13, REDSTONE_PROGRAMMER_NOTE_14, REDSTONE_PROGRAMMER_NOTE_15};
 
 	public static DestroyGuiTextures getRedstoneProgrammerNote(int strength) {
 		if (strength > 0 && strength <= 15) return notes[strength];
-		return NOTE_0;
+		return REDSTONE_PROGRAMMER_NOTE_0;
 	};
 
     @OnlyIn(Dist.CLIENT)

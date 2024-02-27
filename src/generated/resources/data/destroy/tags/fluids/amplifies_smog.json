@@ -1,0 +1,9 @@
+{
+    "replace": false,
+    "values": [
+        "destroy:crude_oil",
+        "destroy:flowing_crude_oil",
+        "destroy:napalm_sundae",
+        "destroy:flowing_napalm_sundae"
+    ]
+}

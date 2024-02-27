@@ -70,4 +70,9 @@ public class DynamoRenderer extends KineticBlockEntityRenderer<DynamoBlockEntity
         return CachedBufferer.partial(DestroyPartials.DYNAMO_COG, state);
     };
 
+    @Override
+    public boolean shouldRenderOffScreen(DynamoBlockEntity pBlockEntity) {
+        return true;
+    };
+
 }

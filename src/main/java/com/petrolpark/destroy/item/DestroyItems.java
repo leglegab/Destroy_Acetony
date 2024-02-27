@@ -12,7 +12,6 @@ import com.petrolpark.destroy.util.DestroyTags.DestroyItemTags;
 import com.simibubi.create.AllItems;
 import com.simibubi.create.AllTags.AllItemTags;
 import com.simibubi.create.content.processing.sequenced.SequencedAssemblyItem;
-import com.simibubi.create.foundation.data.AssetLookup;
 import com.simibubi.create.foundation.data.CreateRegistrate;
 import com.simibubi.create.foundation.item.CombustibleItem;
 import com.tterrag.registrate.util.entry.ItemEntry;
@@ -99,6 +98,9 @@ public class DestroyItems {
     RHODIUM_INGOT = REGISTRATE.item("rhodium_ingot", Item::new)
         .tag(DestroyItemTags.DESTROY_INGOTS.tag, forgeItemTag("ingots/rhodium"), Tags.Items.INGOTS)
         .register(),
+    STAINLESS_STEEL_INGOT = REGISTRATE.item("stainless_steel_ingot", Item::new)
+        .tag(DestroyItemTags.DESTROY_INGOTS.tag, forgeItemTag("ingots/steel"), forgeItemTag("ingots/stainless_steel"))
+        .register(),
     PURE_GOLD_INGOT = REGISTRATE.item("pure_gold_ingot", Item::new)
         .tag(DestroyItemTags.DESTROY_INGOTS.tag, Tags.Items.INGOTS, ItemTags.PIGLIN_LOVED)
         .register(),
@@ -122,10 +124,6 @@ public class DestroyItems {
         .register(),
     CRUSHED_RAW_PALLADIUM = REGISTRATE.item("crushed_raw_palladium", Item::new)
         .tag(AllItemTags.CRUSHED_RAW_MATERIALS.tag)
-        .register(),
-    CRUSHED_RAW_PLATINUM = REGISTRATE.item("crushed_raw_platinum", Item::new)
-        .tag(AllItemTags.CRUSHED_RAW_MATERIALS.tag)
-        .model(AssetLookup.existingItemModel())
         .register(),
     CRUSHED_RAW_RHODIUM = REGISTRATE.item("crushed_raw_rhodium", Item::new)
         .tag(AllItemTags.CRUSHED_RAW_MATERIALS.tag)
@@ -648,6 +646,9 @@ public class DestroyItems {
         .properties(p -> p
             .stacksTo(1)
         ).register();
+
+    public static final ItemEntry<Item> RUINED_CIRCUIT_MASK = REGISTRATE.item("ruined_circuit_mask", Item::new)
+        .register();
 
     public static final ItemEntry<HyperaccumulatingFertilizerItem> HYPERACCUMULATING_FERTILIZER = REGISTRATE.item("hyperaccumulating_fertilizer", HyperaccumulatingFertilizerItem::new)
         .tag(Tags.Items.DUSTS)

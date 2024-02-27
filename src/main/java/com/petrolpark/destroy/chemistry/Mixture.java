@@ -86,18 +86,13 @@ public class Mixture extends ReadOnlyMixture {
 
     public Mixture() {
         super();
-
         reactionResults = new HashMap<>();
-
         novelMolecules = new ArrayList<>();
-
         possibleReactions = new ArrayList<>();
         groupIDsAndMolecules = new HashMap<>();
-
         nextHigherBoilingPoint = Pair.of(Float.MAX_VALUE, null);
         nextLowerBoilingPoint = Pair.of(0f, null);
         moleculesToRemove = new HashMap<>();
-
         equilibrium = false;
     };
 
@@ -187,7 +182,7 @@ public class Mixture extends ReadOnlyMixture {
      */
     public Mixture setTemperature(float temperature) {
         this.temperature = temperature;
-        // Ensure everything has the right temperature
+        // Ensure everything has the right state
         for (Molecule molecule : contents.keySet()) {
             if (molecule.getBoilingPoint() < temperature) {
                 states.put(molecule, 1f);
@@ -196,6 +191,16 @@ public class Mixture extends ReadOnlyMixture {
             };
         };
         return this; 
+    };
+
+    /**
+     * Set the state of a {@link com.petrolpark.destroy.chemistry.Molecule Molecule}.
+     * @param molecule The Molecule to set the state of. If not present in this Mixture, nothing happens
+     * @param state A number from {@code 0} (entirely liquid) to {@code 1} (entirely gaseous). If out of this range, an exception will be thrown
+     */
+    public void setState(Molecule molecule, float state) {
+        if (state < 0f || state > 1f) throw new IllegalStateException("Molecules can range from entirely liquid (state = 0) to entirely gas (state = 1)");
+        if (getConcentrationOf(molecule) > 0f) states.put(molecule, state);
     };
 
     /**

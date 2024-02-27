@@ -88,6 +88,7 @@ public class PollutionHelper {
      * @param fluidStack
      * @see PollutionHelper#pollute(Level, BlockPos, int, FluidStack...) Harming Entities and showing evaporation particles too
      */
+    @SuppressWarnings("deprecation")
     public static void pollute(Level level, FluidStack fluidStack) {
         if (DestroyFluids.isMixture(fluidStack) && fluidStack.getOrCreateTag().contains("Mixture", Tag.TAG_COMPOUND)) {
             ReadOnlyMixture mixture = ReadOnlyMixture.readNBT(ReadOnlyMixture::new, fluidStack.getOrCreateTag().getCompound("Mixture"));
@@ -100,6 +101,17 @@ public class PollutionHelper {
                         } else {
                             changePollution(level, pollutionType, (int)pollutionAmount);
                         };
+                    };
+                };
+            };
+        } else {
+            for (PollutionType pollutionType : PollutionType.values()) {
+                if (fluidStack.getFluid().is(pollutionType.fluidTag)) {
+                    float pollutionAmount = (float)fluidStack.getAmount() / 250f;
+                    if (pollutionAmount < 1f) {
+                        if (level.random.nextFloat() <= pollutionAmount) changePollution(level, pollutionType, 1);
+                    } else {
+                        changePollution(level, pollutionType, (int)pollutionAmount);
                     };
                 };
             };

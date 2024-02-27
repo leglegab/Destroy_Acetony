@@ -9,7 +9,7 @@ import net.minecraft.world.effect.MobEffectInstance;
 public class DestroyOpenEndedPipeEffects {
   
     public static final void register() {
-        OpenEndedPipe.registerEffectHandler(new MixtureOpenEndedPipeEffectHandler());
+        OpenEndedPipe.registerEffectHandler(new PollutingOpenEndedPipeEffect());
         OpenEndedPipe.registerEffectHandler(new BurningOpenEndedPipeEffectHandler(DestroyFluids.NAPALM_SUNDAE.get()));
         OpenEndedPipe.registerEffectHandler(new BurningOpenEndedPipeEffectHandler(DestroyFluids.MOLTEN_CINNABAR.get()));
         OpenEndedPipe.registerEffectHandler(new EffectApplyingOpenEndedPipeEffect(new MobEffectInstance(DestroyMobEffects.FRAGRANCE.get(), 21, 0, false, false, true), DestroyFluids.PERFUME.get()));

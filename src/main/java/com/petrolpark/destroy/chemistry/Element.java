@@ -16,7 +16,7 @@ public enum Element {
     CARBON("C", 12.01f, 2.5f, new double[]{4}),
     HYDROGEN("H", 1.01f, 2.1f, new double[]{1}),
     SULFUR("S", 32.07f, 2.5f, new double[]{2, 0, 4, 6}),
-    NITROGEN("N", 14.01f, 3.0f, new double[]{3, 4, 5}, ((i) -> {return i == 3 ? Geometry.TRIGONAL_PYRAMIDAL : null;})),
+    NITROGEN("N", 14.01f, 3.0f, new double[]{3, 4}, ((i) -> {return i == 3 ? Geometry.TRIGONAL_PYRAMIDAL : null;})),
     OXYGEN("O", 16.00f, 3.5f, new double[]{1.5d, 2}, ((i) -> {return i == 2 ? Geometry.V_SHAPE : null;})),
     FLUORINE("F", 19.00f, 4.0f, new double[]{1}),
     SODIUM("Na", 23.00f, 0.9f, new double[]{1}),
@@ -34,7 +34,7 @@ public enum Element {
     PLATINUM("Pt", 195.08f, 2.2f, new double[]{1}),
     GOLD("Au", 196.97f, 2.4f, new double[]{0, 4}),
     MERCURY("Hg", 200.59f, 1.9f, new double[]{2}),
-    //LEAD("Pb", 207.20f, 1.8f)
+    LEAD("Pb", 207.20f, 1.8f, new double[]{2, 4})
     ;
 
     private String symbol;

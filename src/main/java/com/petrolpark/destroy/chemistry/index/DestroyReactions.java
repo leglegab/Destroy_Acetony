@@ -47,7 +47,8 @@ public class DestroyReactions {
         .addSimpleItemTagCatalyst(AllTags.forgeItemTag("dusts/platinum"), 1f)
         .addProduct(DestroyMolecules.HYDROGEN_CYANIDE, 2)
         .addProduct(DestroyMolecules.WATER, 6)
-        .activationEnergy(1000) //TODO tweak to make Reaction require very high temperatures
+        .activationEnergy(50) //TODO tweak to make Reaction require very high temperatures
+        .preexponentialFactor(1e10f)
         .build(),
 
     ANTHRAQUINONE_PROCESS = builder()
@@ -601,6 +602,7 @@ public class DestroyReactions {
         .addProduct(DestroyMolecules.SODIUM_ION, 2)
         .addProduct(DestroyMolecules.HYDROXIDE, 2)
         .addProduct(DestroyMolecules.HYDROGEN)
+        .activationEnergy(1f)
         .build(),
 
     STEAM_REFORMATION = builder()

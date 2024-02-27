@@ -181,7 +181,6 @@ public class DestroyBlocks {
         .properties(p -> p
             .noOcclusion()
         ).item()
-        .removeTab(CreativeModeTabs.SEARCH)
         .transform(customItemModel())
         .register();
 
@@ -782,6 +781,13 @@ public class DestroyBlocks {
     //     .register();
 
     // UNCATEGORISED
+
+    public static final BlockEntry<MoltenStainlessSteelBlock> MOLTEN_STAINLESS_STEEL = REGISTRATE.block("molten_stainless_steel", MoltenStainlessSteelBlock::new)
+        .properties(p -> p
+            .mapColor(MapColor.COLOR_ORANGE)
+            .lightLevel(state -> 15)
+            .dynamicShape()
+        ).register();
 
     public static final BlockEntry<Block> CORDITE_BLOCK = REGISTRATE.block("cordite_block", Block::new)
         .initialProperties(() -> Blocks.CLAY)

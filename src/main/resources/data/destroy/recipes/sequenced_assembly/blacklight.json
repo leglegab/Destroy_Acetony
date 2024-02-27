@@ -17,7 +17,7 @@
             "mixtureFluidWithMolecule": "destroy:mixture",
             "amount": 250,
             "molecule": "destroy:mercury",
-            "concentration": 67.5
+            "concentration": 67.47096
           }
         ],
         "results": [
