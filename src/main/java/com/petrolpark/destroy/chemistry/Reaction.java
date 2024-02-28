@@ -270,6 +270,16 @@ public class Reaction {
     };
 
     /**
+     * Return the Reaction which has an indexed Reaction Recipe that is displayed in JEI.
+     * Usually, that will be this Reaction. Sometimes it will be the reverse, and sometimes it will be {@code null}.
+     * @return The Reaction which appears in JEI, or {@code null}
+     */
+    public Reaction getReactionDisplayedInJEI() {
+        if (includeInJei) return this;
+        return getReverseReactionForDisplay().map(reaction -> reaction.includeInJei ? reaction : null).orElse(null);
+    };
+
+    /**
      * The name space of the mod by which this Reaction was defined.
      * @return {@code "novel"} if this was generated automatically by a {@link com.petrolpark.destroy.chemistry.genericreaction.GenericReaction Reaction generator}.
      */

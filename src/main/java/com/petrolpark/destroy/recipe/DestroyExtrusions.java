@@ -15,5 +15,6 @@ public class DestroyExtrusions {
 
         // Destroy
         BlockExtrusion.register(DestroyBlocks.CORDITE_BLOCK.get(), (state, direction) -> DestroyBlocks.EXTRUDED_CORDITE_BLOCK.getDefaultState().setValue(BlockStateProperties.AXIS, direction.getAxis()));
+        BlockExtrusion.register(DestroyBlocks.MOLTEN_STAINLESS_STEEL.get(), (state, direction) -> DestroyBlocks.STAINLESS_STEEL_RODS.getDefaultState().setValue(BlockStateProperties.AXIS, direction.getAxis()));
     };
 };

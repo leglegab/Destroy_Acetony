@@ -1,12 +1,9 @@
 package com.petrolpark.destroy.fluid;
 
-import com.petrolpark.destroy.block.DestroyBlocks;
+import com.petrolpark.destroy.item.DestroyItems;
 import com.simibubi.create.content.fluids.VirtualFluid;
 
-import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.block.state.StateDefinition.Builder;
-import net.minecraft.world.level.material.Fluid;
-import net.minecraft.world.level.material.FluidState;
+import net.minecraft.world.item.Item;
 
 public class MoltenStainlessSteelFluid extends VirtualFluid {
 
@@ -15,24 +12,8 @@ public class MoltenStainlessSteelFluid extends VirtualFluid {
     };
 
     @Override
-    protected void createFluidStateDefinition(Builder<Fluid, FluidState> builder) {
-        super.createFluidStateDefinition(builder);
-        builder.add(LEVEL); // Not used
-    };
-
-    @Override
-    public Fluid getSource() {
-        return this;
-    };
-
-    @Override
-    protected BlockState createLegacyBlock(FluidState state) {
-        return DestroyBlocks.MOLTEN_STAINLESS_STEEL.getDefaultState();
-    };
-
-    @Override
-    public boolean isSource(FluidState state) {
-        return true;
+    public Item getBucket() {
+        return DestroyItems.MOLTEN_STAINLESS_STEEL_BUCKET.get();
     };
     
 };

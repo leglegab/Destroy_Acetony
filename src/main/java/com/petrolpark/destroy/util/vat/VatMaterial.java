@@ -39,9 +39,10 @@ public record VatMaterial(float maxPressure, float thermalConductivity, boolean 
     public static void registerDestroyVatMaterials() {
 
         BLOCK_MATERIALS.put(DestroyBlocks.VAT_CONTROLLER.get(), UNBREAKABLE);
-        BLOCK_MATERIALS.put(AllBlocks.COPPER_CASING.get(), new VatMaterial(1000000f, 400f, false));
-        BLOCK_MATERIALS.put(Blocks.IRON_BLOCK, new VatMaterial(500000f, 50f, false));
+        BLOCK_MATERIALS.put(AllBlocks.COPPER_CASING.get(), new VatMaterial(500000f, 400f, false));
+        BLOCK_MATERIALS.put(Blocks.IRON_BLOCK, new VatMaterial(250000f, 50f, false));
         BLOCK_MATERIALS.put(Blocks.GLASS, GLASS);
         BLOCK_MATERIALS.put(Blocks.TINTED_GLASS, new VatMaterial(100000f, 12f, false));
+        BLOCK_MATERIALS.put(DestroyBlocks.STAINLESS_STEEL_BLOCK.get(), new VatMaterial(1000000f, 25f, false));
     };
 };

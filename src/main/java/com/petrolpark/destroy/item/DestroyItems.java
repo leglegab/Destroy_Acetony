@@ -16,6 +16,7 @@ import com.simibubi.create.foundation.data.CreateRegistrate;
 import com.simibubi.create.foundation.item.CombustibleItem;
 import com.tterrag.registrate.util.entry.ItemEntry;
 
+import net.minecraft.sounds.SoundEvents;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.item.BowlFoodItem;
@@ -26,6 +27,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.RecordItem;
 import net.minecraft.world.item.SimpleFoiledItem;
+import net.minecraft.world.item.SolidBucketItem;
 import net.minecraft.world.item.Tiers;
 import net.minecraft.world.item.ArmorItem.Type;
 import net.minecraftforge.common.Tags;
@@ -99,7 +101,7 @@ public class DestroyItems {
         .tag(DestroyItemTags.DESTROY_INGOTS.tag, forgeItemTag("ingots/rhodium"), Tags.Items.INGOTS)
         .register(),
     STAINLESS_STEEL_INGOT = REGISTRATE.item("stainless_steel_ingot", Item::new)
-        .tag(DestroyItemTags.DESTROY_INGOTS.tag, forgeItemTag("ingots/steel"), forgeItemTag("ingots/stainless_steel"))
+        .tag(DestroyItemTags.DESTROY_INGOTS.tag, forgeItemTag("ingots/steel"), forgeItemTag("ingots/stainless_steel"), Tags.Items.INGOTS)
         .register(),
     PURE_GOLD_INGOT = REGISTRATE.item("pure_gold_ingot", Item::new)
         .tag(DestroyItemTags.DESTROY_INGOTS.tag, Tags.Items.INGOTS, ItemTags.PIGLIN_LOVED)
@@ -112,6 +114,9 @@ public class DestroyItems {
     //     .register(),
     ZINC_SHEET = REGISTRATE.item("zinc_sheet", Item::new)
         .tag(forgeItemTag("plates/zinc"))
+        .register(),
+    STAINLESS_STEEL_ROD = REGISTRATE.item("stainless_steel_rod", Item::new)
+        .tag(forgeItemTag("rods/steel"), forgeItemTag("rods/stainless_steel"), Tags.Items.RODS)
         .register(),
 
     // RAW MATERIALS
@@ -135,9 +140,14 @@ public class DestroyItems {
     //     .tag(forgeItemTag("raw_materials/zircon"))
     //     .register(),
     NETHER_CROCOITE = REGISTRATE.item("nether_crocoite", Item::new)
-        .register(),
+        .register();
+
+    public static final ItemEntry<SolidBucketItem> MOLTEN_STAINLESS_STEEL_BUCKET = REGISTRATE.item("molten_stainless_steel_bucket", p -> new SolidBucketItem(DestroyBlocks.MOLTEN_STAINLESS_STEEL.get(), SoundEvents.BUCKET_EMPTY_LAVA, p))
+        .register();
 
     // DUSTS
+
+    public static final ItemEntry<Item>
 
     COPPER_POWDER = REGISTRATE.item("copper_powder", Item::new)
         .tag(forgeItemTag("dusts/copper"), Tags.Items.DUSTS)

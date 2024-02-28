@@ -8,6 +8,7 @@ import java.util.function.UnaryOperator;
 import com.petrolpark.destroy.Destroy;
 import com.petrolpark.destroy.MoveToPetrolparkLibrary;
 import com.petrolpark.destroy.block.DestroyBlocks;
+import com.petrolpark.destroy.chemistry.Reaction;
 import com.petrolpark.destroy.config.DestroyAllConfigs;
 import com.petrolpark.destroy.fluid.ingredient.MixtureFluidIngredient;
 import com.petrolpark.destroy.fluid.ingredient.mixturesubtype.MixtureFluidIngredientSubType;
@@ -249,7 +250,7 @@ public class DestroyLang {
     };
 
     /**
-     * Converts a number to Unicode superscript.
+     * Converts a number to Unicode superscript.D
      * @param value Should only be passed strings containing numbers, {@code +} and {@code -}.
      */
     public static String toSuperscript(String value) {
@@ -262,6 +263,18 @@ public class DestroyLang {
             } catch (Throwable e) {};
         };
         return string;
+    };
+
+    public static Component preexponentialFactor(Reaction reaction) {
+        int totalOrder = 0;
+        for (int order : reaction.getOrders().values()) totalOrder += order;
+        if (totalOrder == 1) return translate("tooltip.reaction.preexponential_factor.frequency_factor", reaction.getPreexponentialFactor()).component();
+        return translate("tooltip.reaction.preexponential_factor", reaction.getPreexponentialFactor(), toSuperscript("" + nothingIfOne(1 - totalOrder)), toSuperscript("" + nothingIfOne(totalOrder - 1))).component();
+    };
+
+    public static String nothingIfOne(int n) {
+        if (n == 1) return "";
+        return ""+n;
     };
 
     public static enum TemperatureUnit {

@@ -28,24 +28,22 @@ public class DestroyFluids {
         new ResourceLocation("destroy", "fluid/mixture_flow"),
         MixtureFluidType::new,
         MixtureFluid::new
-    )
-        .lang("Mixture")
+        ).lang("Mixture")
         .register();
 
-    public static final FluidEntry<MixtureFluid> GAS_MIXTURE = REGISTRATE.virtualFluid("gas", // FOr display purposes only
+    public static final FluidEntry<MixtureFluid> GAS_MIXTURE = REGISTRATE.virtualFluid("gas", // For display purposes only
         new ResourceLocation("destroy", "fluid/gas"),
         new ResourceLocation("destroy", "fluid/gas"),
         MixtureFluidType::new,
         MixtureFluid::new
-    )
-        .register();
-        
-    public static final FluidEntry<MoltenStainlessSteelFluid> MOLTEN_STAINLESS_STEEL = REGISTRATE.fluid("molten_stainless_steel", Destroy.asResource("block/molten_stainless_steel"), Destroy.asResource("block/molten_stainless_steel"), CreateRegistrate::defaultFluidType, MoltenStainlessSteelFluid::new)
-    .properties(p -> p
-        .lightLevel(15)
-    )
-    //TODO tags and bucket
-    .register();
+        ).register();
+
+    public static final FluidEntry<MoltenStainlessSteelFluid> MOLTEN_STAINLESS_STEEL = REGISTRATE.virtualFluid("molten_stainless_steel",
+        Destroy.asResource("block/molten_stainless_steel"),
+        Destroy.asResource("block/molten_stainless_steel"),
+        CreateRegistrate::defaultFluidType,
+        MoltenStainlessSteelFluid::new
+        ).register();
 
     public static final FluidEntry<VirtualFluid>
     

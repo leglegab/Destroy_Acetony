@@ -10,6 +10,7 @@ import com.simibubi.create.foundation.item.TooltipHelper;
 import com.simibubi.create.foundation.item.TooltipHelper.Palette;
 
 import mezz.jei.api.gui.ingredient.IRecipeSlotTooltipCallback;
+import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 
 public class ReactionTooltipHelper {
@@ -71,10 +72,19 @@ public class ReactionTooltipHelper {
     public static IRecipeSlotTooltipCallback nerdModeTooltip(Reaction reaction) {
         return (view, tooltip) -> {
             tooltip.clear();
+            boolean reversible = reaction.getReverseReactionForDisplay().isPresent();
             tooltip.add(DestroyLang.translate("tooltip.reaction.kinetics_information").component());
-            tooltip.add(DestroyLang.translate("tooltip.reaction.activation_energy", reaction.getActivationEnergy()).component());
-            tooltip.add(DestroyLang.translate("tooltip.reaction.enthalpy_change", reaction.getEnthalpyChange()).component());
-            tooltip.add(DestroyLang.translate("tooltip.reaction.preexponential_factor", reaction.getPreexponentialFactor()).component());
+            if (reversible) tooltip.add(DestroyLang.translate("tooltip.reaction.forward").component());
+            tooltip.add(Component.literal(reversible ? "  " : "").append(DestroyLang.translate("tooltip.reaction.activation_energy", reaction.getActivationEnergy()).style(ChatFormatting.GRAY).component()));
+            tooltip.add(Component.literal(reversible ? "  " : "").append(DestroyLang.translate("tooltip.reaction.enthalpy_change", reaction.getEnthalpyChange()).style(ChatFormatting.GRAY).component()));
+            tooltip.add(Component.literal(reversible ? "  " : "").append(DestroyLang.preexponentialFactor(reaction)).withStyle(ChatFormatting.GRAY));
+            if (reversible) {
+                tooltip.add(DestroyLang.translate("tooltip.reaction.reverse").component());
+                Reaction reverseReaction = reaction.getReverseReactionForDisplay().get();
+                tooltip.add(Component.literal("  ").append(DestroyLang.translate("tooltip.reaction.activation_energy", reverseReaction.getActivationEnergy()).style(ChatFormatting.GRAY).component()));
+                tooltip.add(Component.literal("  ").append(DestroyLang.translate("tooltip.reaction.enthalpy_change", reverseReaction.getEnthalpyChange()).style(ChatFormatting.GRAY).component()));
+                tooltip.add(Component.literal("  ").append(DestroyLang.preexponentialFactor(reverseReaction)).withStyle(ChatFormatting.GRAY));
+            };
         };
     };
     

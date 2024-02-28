@@ -3,22 +3,32 @@ package com.petrolpark.destroy.block;
 import java.util.Optional;
 
 import com.petrolpark.destroy.block.shape.DestroyShapes;
-import com.petrolpark.destroy.fluid.DestroyFluids;
+import com.petrolpark.destroy.item.DestroyItems;
+import com.simibubi.create.foundation.utility.Iterate;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.tags.BlockTags;
+import net.minecraft.tags.FluidTags;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.item.FallingBlockEntity;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.BucketPickup;
+import net.minecraft.world.level.block.IceBlock;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.level.material.Fluids;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.CollisionContext;
@@ -40,6 +50,18 @@ public class MoltenStainlessSteelBlock extends Block implements BucketPickup {
     @Override
     public VoxelShape getOcclusionShape(BlockState state, BlockGetter level, BlockPos pos) {
         return Shapes.empty();
+    };
+
+    @Override
+    @SuppressWarnings("deprecation")
+    public BlockState updateShape(BlockState state, Direction direction, BlockState neighborState, LevelAccessor level, BlockPos currentPos, BlockPos neighborPos) {
+        level.scheduleTick(currentPos, this, 1);
+        return super.updateShape(state, direction, neighborState, level, currentPos, neighborPos);
+    };
+
+    @Override
+    public void tick(BlockState state, ServerLevel level, BlockPos pos, RandomSource random) {
+        trySolidify(level, pos, random);
     };
 
     @Override
@@ -75,12 +97,40 @@ public class MoltenStainlessSteelBlock extends Block implements BucketPickup {
 
     @Override
     public ItemStack pickupBlock(LevelAccessor level, BlockPos pos, BlockState state) {
-        return new ItemStack(DestroyFluids.MOLTEN_STAINLESS_STEEL.getBucket().get());
+        return DestroyItems.MOLTEN_STAINLESS_STEEL_BUCKET.asStack();
     };
 
     @Override
     public Optional<SoundEvent> getPickupSound() {
         return Optional.of(SoundEvents.BUCKET_FILL_LAVA);
+    };
+
+    @Override
+    public Item asItem() {
+        return DestroyItems.MOLTEN_STAINLESS_STEEL_BUCKET.get();
+    };
+
+    public static final void trySolidify(Level level, BlockPos pos, RandomSource random) {
+        boolean success = false;
+        for (Direction direction : Iterate.directions) {
+            BlockPos adjPos = pos.relative(direction);
+            BlockState state = level.getBlockState(adjPos);
+            FluidState fluidState = level.getFluidState(adjPos);
+            if (state.is(BlockTags.ICE)) {
+                success = true;
+                if (state.getBlock() instanceof IceBlock) {
+                    if (level.dimensionType().ultraWarm()) {
+                        level.removeBlock(adjPos, false);
+                    } else {
+                        level.setBlockAndUpdate(adjPos, IceBlock.meltsInto());
+                    };
+                };
+            } else if (fluidState.is(FluidTags.WATER)) success = true;
+        };
+        if (!success) return;
+        level.setBlockAndUpdate(pos, DestroyBlocks.STAINLESS_STEEL_BLOCK.getDefaultState());
+        level.playSound(null, pos, SoundEvents.LAVA_EXTINGUISH, SoundSource.BLOCKS);
+        if (level instanceof ServerLevel serverLevel) for (int i = 0; i < 8; i++) serverLevel.sendParticles(ParticleTypes.LARGE_SMOKE, (double)pos.getX() + random.nextDouble(), (double)pos.getY() + 1.2d, (double)pos.getZ() + random.nextDouble(), 1,0d, 0d, 0d, 0d);
     };
     
 };

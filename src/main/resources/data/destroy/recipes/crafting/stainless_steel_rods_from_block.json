@@ -1,0 +1,12 @@
+{
+    "type": "minecraft:crafting_shapeless",
+    "ingredients": [
+      {
+        "item": "destroy:stainless_steel_rods_block"
+      }
+    ],
+    "result": {
+      "item": "destroy:stainless_steel_rod",
+      "count": 16
+    }
+  }

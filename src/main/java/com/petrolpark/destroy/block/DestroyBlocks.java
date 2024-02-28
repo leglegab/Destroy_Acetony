@@ -465,6 +465,19 @@ public class DestroyBlocks {
         .build()
         .register();
 
+    public static final BlockEntry<Block> STAINLESS_STEEL_BLOCK = REGISTRATE.block("stainless_steel_block", Block::new)
+        .initialProperties(() -> Blocks.IRON_BLOCK)
+        .properties(p -> p
+            .strength(7f, 8f)
+        ).transform(TagGen.pickaxeOnly())
+        .tag(BlockTags.NEEDS_STONE_TOOL)
+        .tag(Tags.Blocks.STORAGE_BLOCKS)
+        .tag(BlockTags.BEACON_BASE_BLOCKS)
+        .transform(TagGen.tagBlockAndItem("storage_blocks/steel", "storage_blocks/stainless_steel"))
+        .tag(Tags.Items.STORAGE_BLOCKS)
+        .build()
+        .register();
+
     // public static final BlockEntry<Block> ZIRCONIUM_BLOCK = REGISTRATE.block("zirconium_block", Block::new)
     //     .initialProperties(() -> Blocks.NETHERITE_BLOCK)
     //     .properties(p -> p
@@ -788,6 +801,15 @@ public class DestroyBlocks {
             .lightLevel(state -> 15)
             .dynamicShape()
         ).register();
+
+    public static final BlockEntry<StainlessSteelRodsBlock> STAINLESS_STEEL_RODS = REGISTRATE.block("stainless_steel_rods_block", StainlessSteelRodsBlock::new)
+        .intialProperties(STAINLESS_STEEL_BLOCK)
+        .properties(p -> p
+            .mapColor(state -> state.getValue(StainlessSteelRodsBlock.MOLTEN) ? MapColor.COLOR_ORANGE : MapColor.METAL) //TODO change if cooled down
+            .lightLevel(state -> state.getValue(StainlessSteelRodsBlock.MOLTEN) ? 15 : 0) //change this also
+        ).item()
+        .build()
+        .register();
 
     public static final BlockEntry<Block> CORDITE_BLOCK = REGISTRATE.block("cordite_block", Block::new)
         .initialProperties(() -> Blocks.CLAY)
