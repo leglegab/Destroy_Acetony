@@ -39,6 +39,9 @@ public class Node {
         if (atom.rGroupNumber != 0 && atom.getElement() == Element.R_GROUP) {
             string += atom.rGroupNumber;
         };
+        if (atom.formalCharge != 0) {
+            string += "^"+((atom.formalCharge % 1.0 != 0) ? String.format("%s", atom.formalCharge) :String.format("%.0f", atom.formalCharge));
+        };
         if (!isTerminal && nextEdge != null) { // Also checking if the next edge is null is sort of redundant, but at least it gets rid of that nasty yellow squiggly line
             string += nextEdge.bondType.getFROWNSCode(); // It thinks 'nextEdge' can be null
         };

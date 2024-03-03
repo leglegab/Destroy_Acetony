@@ -204,7 +204,7 @@ public class VatControllerBlockEntity extends SmartBlockEntity implements IHaveG
                 if (!stack.isEmpty()) availableItemStacks.add(stack.copy());
             };
 
-            ReactionContext context = new ReactionContext(availableItemStacks, UVPower);
+            ReactionContext context = new ReactionContext(availableItemStacks, UVPower, false);
 
             // Dissolve new Items
             if (inventoryChanged) {
@@ -215,7 +215,7 @@ public class VatControllerBlockEntity extends SmartBlockEntity implements IHaveG
 
             // Reacting
             if (!cachedMixture.isAtEquilibrium()) {
-                context = new ReactionContext(availableItemStacks, UVPower); // Update the context
+                context = new ReactionContext(availableItemStacks, UVPower, false); // Update the context
                 cachedMixture.reactForTick(context, getSimulationLevel());
                 shouldUpdateFluidMixture = true;
 

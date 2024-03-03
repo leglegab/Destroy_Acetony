@@ -143,7 +143,17 @@ public class Formula implements Cloneable {
      * @return A new Formula instance
      */
     public static Formula atom(Element element) {
-        return new Formula(new Atom(element));
+        return Formula.atom(element, 0);
+    };
+
+    /**
+     * Generates an {@link Atom} of the {@link Element} as the starting point for a Formula.
+     * @param element
+     * @param charge Formal charge of the starting Atom
+     * @return A new Formula instance
+     */
+    public static Formula atom(Element element, double charge) {
+        return new Formula(new Atom(element, charge));
     };
 
     /**
@@ -466,7 +476,7 @@ public class Formula implements Cloneable {
             List<Bond> bonds = entry.getValue();
             double totalBonds = getTotalBonds(bonds);
 
-            for (int i = 0; i < atom.getElement().getNextLowestValency(totalBonds) - totalBonds; i++) {
+            for (int i = 0; i < atom.getElement().getNextLowestValency(totalBonds) - Math.abs(atom.formalCharge) - totalBonds; i++) {
                 Atom hydrogen = new Atom(Element.HYDROGEN);
                 addAtomToStructure(newStructure, atom, hydrogen, BondType.SINGLE);
             };
@@ -581,7 +591,7 @@ public class Formula implements Cloneable {
 
             if (topology.getConnections() > 0) for (int i = 0; i < topology.getConnections(); i++) {
                 Formula sideChain = sideChains.get(i).getSecond();
-                if (sideChain.getAllAtoms().size() == 0 || (sideChain.startingAtom.isHydrogen())) { // If there is nothing or just a hydrogen
+                if (sideChain.getAllAtoms().size() == 0 || (sideChain.startingAtom.isNeutralHydrogen())) { // If there is nothing or just a hydrogen
                     identity.add(new Branch(new Node(new Atom(Element.HYDROGEN))));
                 } else {
                     identity.add(sideChain.getStrippedBranchStartingWithAtom(sideChain.startingAtom));
@@ -606,7 +616,7 @@ public class Formula implements Cloneable {
             List<Branch> bestReflection = possibleReflections.get(0);
             if (bestReflection.size() > 0) for (int i = 0; i < topology.getConnections(); i++) {
                 Branch branch = bestReflection.get(i);
-                if (!branch.getStartNode().getAtom().isHydrogen()) { // If there's actually a chain to add and not just a hydrogen
+                if (!branch.getStartNode().getAtom().isNeutralHydrogen()) { // If there's actually a chain to add and not just a hydrogen
                     body += branch.serialize();
                 };
                 body += ",";
@@ -985,6 +995,14 @@ public class Formula implements Cloneable {
             };
             if (stripBond) symbol = symbol.substring(0, symbol.length() - 1);
 
+            // Check for charge
+            double charge = 0;
+            String[] symbolAndCharge = symbol.split("\\^");
+            if (symbolAndCharge.length != 1) {
+                symbol = symbolAndCharge[0];
+                charge = Double.valueOf(symbolAndCharge[1]);
+            };
+
             // Check if this is a numbered R-Group
             char lastChar = symbol.charAt(symbol.length() - 1);
             int rGroupNumber = 0;
@@ -992,7 +1010,7 @@ public class Formula implements Cloneable {
                 symbol = symbol.substring(0, symbol.length() - 1);
                 rGroupNumber = Integer.valueOf(lastChar - '0');
             };
-            Atom atom = new Atom(Element.fromSymbol(symbol));
+            Atom atom = new Atom(Element.fromSymbol(symbol), charge); 
             atom.rGroupNumber = rGroupNumber;
 
             // Add the Atom to the Formula
@@ -1022,21 +1040,24 @@ public class Formula implements Cloneable {
     };
 
     /**
-     * Removes all non-{@link Atom#isAcidicProton acidic} hydrogen {@link Atom Atoms} from a {@link Formula#startingAtom structure}. This is mutative.
+     * Removes all {@link Atom#formalCharge neutral} hydrogen {@link Atom Atoms} from a {@link Formula#startingAtom structure}. This is mutative.
      * @param structure The structure from which to remove the hydrogen Atoms
      * @return The original structure, now with its non-acidic hydrogen Atoms removed
      */
     private static Map<Atom, List<Bond>> stripHydrogens(Map<Atom, List<Bond>> structure) {
         Map<Atom, List<Bond>> newStructure = new HashMap<>();
-        for (Atom atom : structure.keySet()) {
-            List<Bond> bondsToAdd = new ArrayList<>();
-            for (Bond bond : structure.get(atom)) {
-                if (!bond.getDestinationAtom().isHydrogen()) {
-                    bondsToAdd.add(bond);
+        for (Entry<Atom, List<Bond>> entry : structure.entrySet()) {
+            Atom atom = entry.getKey();
+            List<Bond> bondsToInclude = new ArrayList<>();
+            boolean includeAtom = !atom.isNeutralHydrogen(); // Include all non-hydrogen Atoms
+            for (Bond bond : entry.getValue()) {
+                if (atom.formalCharge != 0 || bond.getDestinationAtom().formalCharge != 0 || !bond.getDestinationAtom().isNeutralHydrogen()) {
+                    bondsToInclude.add(bond);
+                    if (bond.getDestinationAtom().formalCharge != 0) includeAtom = true; // If we're a hydrogen bonded to a charged Atom, include
                 };
             };
-            if (!atom.isHydrogen()) {
-                newStructure.put(atom, bondsToAdd);
+            if (includeAtom) {
+                newStructure.put(atom, bondsToInclude);
             };
         };
         return newStructure;

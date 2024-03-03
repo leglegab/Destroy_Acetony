@@ -21,8 +21,18 @@ public class Atom {
      */
     public int rGroupNumber;
 
+    /**
+     * The charge of this Atom, relative to a proton.
+     */
+    public final double formalCharge;
+
     public Atom(Element element) {
+        this(element, 0);
+    };
+
+    public Atom(Element element, double formalCharge) {
         this.element = element;
+        this.formalCharge = formalCharge;
     };
 
     /**
@@ -44,10 +54,10 @@ public class Atom {
     };
 
     /**
-     * Whether this is Atom is a {@link Element#HYDROGEN Hydrogen}.
+     * Whether this is Atom is a {@link Element#HYDROGEN Hydrogen} with no {@link Atom#formalCharge formal charge}.
      */
-    public Boolean isHydrogen() {
-        return element == Element.HYDROGEN;
+    public Boolean isNeutralHydrogen() {
+        return element == Element.HYDROGEN && formalCharge == 0;
     };
 
 };

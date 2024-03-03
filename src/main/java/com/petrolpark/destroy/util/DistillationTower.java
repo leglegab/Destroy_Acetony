@@ -10,6 +10,7 @@ import com.petrolpark.destroy.capability.level.pollution.LevelPollution;
 import com.petrolpark.destroy.chemistry.Mixture;
 import com.petrolpark.destroy.chemistry.Molecule;
 import com.petrolpark.destroy.chemistry.ReadOnlyMixture;
+import com.petrolpark.destroy.compat.tfmg.SharedDistillationRecipes;
 import com.petrolpark.destroy.fluid.DestroyFluids;
 import com.petrolpark.destroy.fluid.MixtureFluid;
 import com.petrolpark.destroy.recipe.DestroyRecipeTypes;
@@ -126,6 +127,7 @@ public class DistillationTower {
                 DistillationRecipe recipe = (DistillationRecipe) r;
                 return (recipe.getRequiredFluid().test(inputTank.getFluid())); // If there is insufficient input Fluid
             }).collect(Collectors.toList());
+            possibleRecipes.addAll(SharedDistillationRecipes.getTFMGToDestroyRecipes(level));
             if (possibleRecipes.size() >= 1) {
                 lastRecipe = (DistillationRecipe)possibleRecipes.get(0);
             } else {

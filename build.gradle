@@ -180,6 +180,9 @@ dependencies {
     compileOnly fg.deobf("curse.maven:spark-361579:${spark_version}")
     implementation fg.deobf("curse.maven:spark-361579:${spark_version}")
 
+    // TFMG
+    implementation fg.deobf("curse.maven:create-industry-693815:5079967")
+
 
     // ANNOTATION PROCESSORS
 

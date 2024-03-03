@@ -107,5 +107,5 @@
             }
         }
     ],
-    "heatRequirement": "cooled"
+    "heatRequirement": "heated"
 }

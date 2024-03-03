@@ -1,6 +1,7 @@
 package com.petrolpark.destroy.chemistry.index;
 
 import com.petrolpark.destroy.Destroy;
+import com.petrolpark.destroy.chemistry.Atom;
 import com.petrolpark.destroy.chemistry.Element;
 import com.petrolpark.destroy.chemistry.Formula;
 import com.petrolpark.destroy.chemistry.Molecule;
@@ -28,15 +29,7 @@ public final class DestroyMolecules {
 
     ACETATE = builder()
         .id("acetate")
-        .structure(Formula.atom(Element.CARBON)
-            .addAtom(Element.HYDROGEN)
-            .addAtom(Element.HYDROGEN)
-            .addAtom(Element.HYDROGEN)
-            .addGroup(Formula.atom(Element.CARBON)
-                .addGroup(Formula.atom(Element.OXYGEN), true, BondType.DOUBLE)
-                .addAtom(Element.OXYGEN)
-            , false)
-        ).charge(-1)
+        .structure(Formula.deserialize("destroy:linear:CC~(~O^-0.5)O^-0.5"))
         .tag(Tags.SMELLY)
         .tag(Tags.SMOG)
         .build(),
@@ -132,8 +125,7 @@ public final class DestroyMolecules {
 
     AMMONIUM = builder()
         .id("ammonium")
-        .structure(Formula.atom(Element.NITROGEN).addAtom(Element.HYDROGEN).addAtom(Element.HYDROGEN).addAtom(Element.HYDROGEN).addAtom(Element.HYDROGEN))
-        .charge(1)
+        .structure(Formula.atom(Element.NITROGEN, 1).addAtom(Element.HYDROGEN).addAtom(Element.HYDROGEN).addAtom(Element.HYDROGEN).addAtom(Element.HYDROGEN))
         .build(),
 
     ASPIRIN = builder()
@@ -180,8 +172,7 @@ public final class DestroyMolecules {
     CALCIUM_ION = builder()
         .id("calcium_ion")
         .translationKey("calcium")
-        .structure(Formula.atom(Element.CALCIUM))
-        .charge(2)
+        .structure(Formula.atom(Element.CALCIUM, 2))
         .build(),
 
     CARBON_DIOXIDE = builder()
@@ -218,8 +209,7 @@ public final class DestroyMolecules {
 
     CHLORIDE = builder()
         .id("chloride")
-        .structure(Formula.atom(Element.CHLORINE))
-        .charge(-1)
+        .structure(Formula.atom(Element.CHLORINE, -1))
         .build(),
 
     CHLORINE = builder()
@@ -236,9 +226,8 @@ public final class DestroyMolecules {
 
     CHLOROAURATE = builder()
         .id("chloroaurate")
-        .structure(Formula.deserialize("destroy:linear:ClAu(Cl)(Cl)Cl"))
+        .structure(Formula.deserialize("destroy:linear:ClAu^-1(Cl)(Cl)Cl"))
         .color(0x7FEDCA4A)
-        .charge(-1)
         .build(),
 
     CHLORODIFLUOROMETHANE = builder()
@@ -285,16 +274,14 @@ public final class DestroyMolecules {
 
     COPPER_I = builder()
         .id("copper_i")
-        .structure(Formula.atom(Element.COPPER))
+        .structure(Formula.atom(Element.COPPER, 1))
         .color(0xE0D30823)
-        .charge(1)
         .build(),
 
     COPPER_II = builder()
         .id("copper_ii")
-        .structure(Formula.atom(Element.COPPER))
+        .structure(Formula.atom(Element.COPPER, 2))
         .color(0xE00FFCA1)
-        .charge(2)
         .build(),
 
     CUBANE = builder()
@@ -316,10 +303,9 @@ public final class DestroyMolecules {
 
     CYANIDE = builder()
         .id("cyanide")
-        .structure(Formula.atom(Element.CARBON)
+        .structure(Formula.atom(Element.CARBON, -1)
             .addAtom(Element.NITROGEN, BondType.TRIPLE)
-        ).charge(-1)
-        .tag(Tags.ACUTELY_TOXIC)
+        ).tag(Tags.ACUTELY_TOXIC)
         .build(),
 
     CYCLOHEXENE = builder()
@@ -335,12 +321,12 @@ public final class DestroyMolecules {
 
     // TODO cyclopentadiene
 
-    CYCLOPENTADIENIDE = builder()
-        .id("cyclopentadienide")
-        .structure(Formula.deserialize("destroy:cyclopentadienide:,,,,"))
-        .charge(-1)
-        .tag(Tags.SMOG)
-        .build(),
+    // CYCLOPENTADIENIDE = builder()
+    //     .id("cyclopentadienide")
+    //     .structure(Formula.deserialize("destroy:cyclopentadienide:,,,,"))
+    //     .charge(-1)
+    //     .tag(Tags.SMOG)
+    //     .build(),
 
     DICHLORODIFLUOROMETHANE = builder()
         .id("dichlorodifluoromethane")
@@ -403,8 +389,7 @@ public final class DestroyMolecules {
     
     FLUORIDE = builder()
         .id("fluoride")
-        .structure(Formula.atom(Element.FLUORINE))
-        .charge(-1)
+        .structure(Formula.atom(Element.FLUORINE, -1))
         .build(),
 
     GENERIC_ACID_ANHYDRIDE = builder()
@@ -587,22 +572,14 @@ public final class DestroyMolecules {
 
     HYDROGENSULFATE = builder()
         .id("hydrogensulfate")
-        .structure(Formula.atom(Element.SULFUR)
-            .addAtom(Element.OXYGEN, BondType.DOUBLE)
-            .addAtom(Element.OXYGEN, BondType.DOUBLE)
-            .addAtom(Element.OXYGEN, BondType.SINGLE)
-            .addGroup(Formula.atom(Element.OXYGEN)
-                .addAtom(Element.HYDROGEN)
-            )
-        ).charge(-1)
+        .structure(Formula.deserialize("destroy:linear:O=S(=O)(OH)O^-1"))
         .tag(Tags.ACID_RAIN)
         .build(),
 
     HYDROXIDE = builder()
         .id("hydroxide")
-        .structure(Formula.atom(Element.OXYGEN).addAtom(Element.HYDROGEN))
+        .structure(Formula.atom(Element.HYDROGEN).addAtom(new Atom(Element.OXYGEN, -1)))
         .density(900f) // Not accurate but allows separation of mercury and sodium hydroxide solution by Centrifugation
-        .charge(-1)
         .build(),
 
     HYPOCHLOROUS_ACID = builder()
@@ -616,16 +593,14 @@ public final class DestroyMolecules {
 
     HYPOCHLORITE = builder()
         .id("hypochlorite")
-        .structure(Formula.atom(Element.OXYGEN).addAtom(Element.CHLORINE))
-        .charge(-1)
+        .structure(Formula.atom(Element.OXYGEN, -1).addAtom(Element.CHLORINE))
         .tag(Tags.ACUTELY_TOXIC)
         .tag(Tags.OZONE_DEPLETER)
         .build(),
 
     IODIDE = builder()
         .id("iodide")
-        .structure(Formula.atom(Element.IODINE))
-        .charge(-1)
+        .structure(Formula.atom(Element.IODINE, -1))
         .build(),
 
     IODINE = builder()
@@ -649,16 +624,14 @@ public final class DestroyMolecules {
 
     IRON_II = builder()
         .id("iron_ii")
-        .structure(Formula.atom(Element.IRON))
+        .structure(Formula.atom(Element.IRON, 2))
         .color(0x80A9C92A)
-        .charge(2)
         .build(),
 
     IRON_III = builder()
         .id("iron_iii")
-        .structure(Formula.atom(Element.IRON))
+        .structure(Formula.atom(Element.IRON, 3))
         .color(0x80F94939)
-        .charge(3)
         .build(),
 
     MERCURY = builder()
@@ -734,19 +707,18 @@ public final class DestroyMolecules {
     NICKEL_ION = builder()
         .id("nickel_ion")
         .translationKey("nickel")
-        .structure(Formula.atom(Element.NICKEL))
+        .structure(Formula.atom(Element.NICKEL, 2))
         .color(0xE09BEAAB)
-        .charge(2)
         .tag(Tags.CARCINOGEN)
         .build(),
 
     NITRATE = builder()
         .id("nitrate")
-        .structure(Formula.atom(Element.NITROGEN)
+        .structure(Formula.atom(Element.NITROGEN, 1)
             .addAtom(Element.OXYGEN, BondType.DOUBLE)
-            .addAtom(Element.OXYGEN, BondType.AROMATIC)
-            .addAtom(Element.OXYGEN, BondType.AROMATIC)
-        ).charge(-1)
+            .addAtom(new Atom(Element.OXYGEN, -1))
+            .addAtom(new Atom(Element.OXYGEN, -1))
+        )
         .tag(Tags.ACID_RAIN)
         .build(),
 
@@ -799,11 +771,10 @@ public final class DestroyMolecules {
 
     NITRONIUM = builder()
         .id("nitronium")
-        .structure(Formula.atom(Element.NITROGEN)
+        .structure(Formula.atom(Element.NITROGEN, 1)
             .addAtom(Element.OXYGEN, BondType.DOUBLE)
             .addAtom(Element.OXYGEN, BondType.DOUBLE)
-        ).charge(1)
-        .build(),
+        ).build(),
 
     OCTASULFUR = builder()
         .id("octasulfur")
@@ -838,8 +809,7 @@ public final class DestroyMolecules {
 
     OXIDE = builder()
         .id("oxide")
-        .structure(Formula.atom(Element.OXYGEN))
-        .charge(-2)
+        .structure(Formula.atom(Element.OXYGEN, -2))
         .build(),
 
     OXYGEN = builder()
@@ -925,8 +895,7 @@ public final class DestroyMolecules {
     POTASSIUM_ION = builder()
         .id("potassium_ion")
         .translationKey("potassium")
-        .structure(Formula.atom(Element.POTASSIUM))
-        .charge(1)
+        .structure(Formula.atom(Element.POTASSIUM, 1))
         .build(),
 
     PROPENE = builder()
@@ -959,9 +928,8 @@ public final class DestroyMolecules {
 
     SODIUM_ION = builder()
         .id("sodium_ion")
-        .structure(Formula.atom(Element.SODIUM))
+        .structure(Formula.atom(Element.SODIUM, 1))
         .density(900f) // Not accurate but allows separation of Mercury and sodium hydroxide solution by Centrifugation
-        .charge(1)
         .build(),
 
     STYRENE = builder()
@@ -975,19 +943,17 @@ public final class DestroyMolecules {
 
     SULFATE = builder()
         .id("sulfate")
-        .structure(Formula.atom(Element.SULFUR)
-            .addAtom(Element.OXYGEN, BondType.DOUBLE)
-            .addAtom(Element.OXYGEN, BondType.DOUBLE)
-            .addAtom(Element.OXYGEN, BondType.SINGLE)
-            .addAtom(Element.OXYGEN, BondType.SINGLE)
-        ).charge(-2)
-        .tag(Tags.ACID_RAIN)
+        .structure(Formula.atom(Element.SULFUR, 2)
+            .addAtom(new Atom(Element.OXYGEN, -1))
+            .addAtom(new Atom(Element.OXYGEN, -1))
+            .addAtom(new Atom(Element.OXYGEN, -1))
+            .addAtom(new Atom(Element.OXYGEN, -1))
+        ).tag(Tags.ACID_RAIN)
         .build(),
 
     SULFIDE = builder()
         .id("sulfide")
-        .structure(Formula.atom(Element.SULFUR))
-        .charge(-2)
+        .structure(Formula.atom(Element.SULFUR, -2))
         .build(),
 
     SULFUR_DIOXIDE = builder()
@@ -1100,14 +1066,12 @@ public final class DestroyMolecules {
     ZINC_ION = builder()
         .id("zinc_ion")
         .translationKey("zinc")
-        .structure(Formula.atom(Element.ZINC))
-        .charge(2)
+        .structure(Formula.atom(Element.ZINC, 2))
         .build(),
 
     PROTON = builder()
         .id("proton")
-        .structure(Formula.atom(Element.HYDROGEN))
-        .charge(1)
+        .structure(Formula.atom(Element.HYDROGEN, 1))
         .build();
 
     private static final MoleculeBuilder builder() {

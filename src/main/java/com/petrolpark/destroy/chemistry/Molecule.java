@@ -616,19 +616,6 @@ public class Molecule implements INameableProduct {
         };
 
         /**
-         * Set the overall {@link Molecule#charge charge} of this Molecule.
-         * @param charge
-         * @return This Molecule Builder
-         */
-        public MoleculeBuilder charge(int charge) {
-            molecule.charge = charge;
-            if (charge != 0) {
-                boilingPointInKelvins(Float.MAX_VALUE);
-            };
-            return this;
-        };
-
-        /**
          * Set the {@link Molecule#boilingPoint boiling point} in degrees Celsius.
          * If not supplied, the boiling point will be very loosely {@link MoleculeBuilder#calculateBoilingPoint estimated}, but setting one is recommended.
          * @param boilingPoint In degrees Celcius
@@ -763,11 +750,19 @@ public class Molecule implements INameableProduct {
                 };
             };
 
+            double charge = 0d;
+            for (Atom atom : molecule.getAtoms()) charge += atom.formalCharge;
+            molecule.charge = (int)charge;
+
             if (molecule.getMolecularFormula().containsKey(Element.R_GROUP)) tag(DestroyMolecules.Tags.HYPOTHETICAL);
 
             if (!hasForcedDensity && molecule.charge != 0) molecule.density = estimateDensity(molecule);
             
-            if (!hasForcedBoilingPoint) molecule.boilingPoint = estimateBoilingPoint(molecule);
+            if (!hasForcedBoilingPoint && molecule.charge == 0) molecule.boilingPoint = estimateBoilingPoint(molecule);
+
+            if (molecule.charge != 0) {
+                boilingPointInKelvins(Float.MAX_VALUE);
+            };
 
             if (!hasForcedDipoleMoment) molecule.dipoleMoment = estimateDipoleMoment(molecule);
 

@@ -36,6 +36,7 @@ public class DestroyPartials {
     VAT_SIDE_PIPE = block("vat_side/pipe"),
     VAT_SIDE_BAROMETER = block("vat_side/barometer"),
     VAT_SIDE_BAROMETER_DIAL = block("vat_side/barometer_dial"),
+    VAT_SIDE_REDSTONE_INTERFACE = block("vat_side/redstone_interface"),
     VAT_SIDE_THERMOMETER = block("vat_side/thermometer"),
     VAT_SIDE_VENT = block("vat_side/vent"),
     VAT_SIDE_VENT_BAR = block("vat_side/vent_bar"),

@@ -1,6 +1,5 @@
 {
 	"credit": "Made with Blockbench",
-	"parent": "minecraft:cube",
 	"textures": {
 		"0": "destroy:block/molten_stainless_steel_rods_end",
 		"1": "destroy:block/molten_stainless_steel_rods_side",

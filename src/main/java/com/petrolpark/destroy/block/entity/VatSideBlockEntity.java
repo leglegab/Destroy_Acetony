@@ -3,6 +3,7 @@ package com.petrolpark.destroy.block.entity;
 import java.text.DecimalFormat;
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Function;
 
 import javax.annotation.Nullable;
 
@@ -37,7 +38,9 @@ import net.minecraft.core.Direction;
 import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtUtils;
+import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.util.Mth;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
@@ -66,6 +69,8 @@ public class VatSideBlockEntity extends CopycatBlockEntity implements IHaveGoggl
 
     protected LazyOptional<IItemHandler> itemCapability;
 
+    protected int initializationTicks;
+
     /**
      * The power in/output from a {@link com.petrolpark.destroy.util.vat.IVatHeaterBlock heater or cooler} this
      * Vat Side had last time its adjacent block was changed.
@@ -84,6 +89,10 @@ public class VatSideBlockEntity extends CopycatBlockEntity implements IHaveGoggl
     public FluidStack spoutingFluid;
     public LerpedFloat ventOpenness = LerpedFloat.linear().startWithValue(0f);
 
+    public float lowerThreshold;
+    public float upperThreshold;
+    protected int oldStrength;
+
     public VatSideBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState state) {
         super(type, pos, state);
         displayType = DisplayType.NORMAL;
@@ -93,6 +102,7 @@ public class VatSideBlockEntity extends CopycatBlockEntity implements IHaveGoggl
         oldUV = 0f;
         fluidCapability = LazyOptional.empty();
         itemCapability = LazyOptional.empty();
+        initializationTicks = 3;
         refreshItemCapability();
         refreshFluidCapability();
     };
@@ -190,7 +200,23 @@ public class VatSideBlockEntity extends CopycatBlockEntity implements IHaveGoggl
     @SuppressWarnings("null")
     public void tick() {
         super.tick();
+        if (!hasLevel()) return;
+
+        // Update connected pipes
+        if (initializationTicks > 0) {
+            initializationTicks--;
+            if (initializationTicks <= 0) getBlockState().updateNeighbourShapes(getLevel(), getBlockPos(), 3);
+        };
+
+        // Redstone monitoring
+        int strength = 0;
+        if (displayType.quantityObserved.isPresent() && getVatOptional().isPresent()) strength = (int)(Mth.clamp((displayType.quantityObserved.get().apply(getController()) - lowerThreshold) / (upperThreshold - lowerThreshold), 0f, 1f) * 15f);
+        if (strength != oldStrength) {
+            oldStrength = strength;
+            updateRedstoneOutput();
+        };
  
+        // Animation
         if (getLevel().isClientSide()) { // It thinks getLevel() might be null (it's not)
             ventOpenness.tickChaser();
             if (spoutingTicks > 0) {
@@ -213,6 +239,12 @@ public class VatSideBlockEntity extends CopycatBlockEntity implements IHaveGoggl
         displayType = DisplayType.values()[tag.getInt("DisplayType")];
         oldPower = tag.getFloat("OldHeatingPower");
         oldUV = tag.getFloat("OldUVPower");
+        if (tag.contains("InitializationTicks", Tag.TAG_INT)) initializationTicks = tag.getInt("InitializationTicks");
+        if (displayType.quantityObserved.isPresent()) {
+            oldStrength = tag.getInt("OldRedstoneStrength");
+            lowerThreshold = tag.getFloat("LowerObservedQuantityThreshold");
+            upperThreshold = tag.getFloat("UpperObservedQuantityThreshold");
+        };
         if (clientPacket) {
             spoutingTicks = tag.getInt("SpoutingTicks");
             spoutingFluid = FluidStack.loadFluidStackFromNBT(tag.getCompound("SpoutingFluid"));
@@ -228,6 +260,12 @@ public class VatSideBlockEntity extends CopycatBlockEntity implements IHaveGoggl
         tag.putInt("DisplayType", displayType.ordinal());
         tag.putFloat("OldHeatingPower", oldPower);
         tag.putFloat("OldUVPower", oldUV);
+        if (initializationTicks > 0) tag.putInt("InitializationTicks", initializationTicks);
+        if (displayType.quantityObserved.isPresent()) {
+            tag.putInt("OldRedstoneStrength", oldStrength);
+            tag.putFloat("LowerObservedQuantityThreshold", lowerThreshold);
+            tag.putFloat("UpperObservedQuantityThreshold", upperThreshold);
+        };
         if (clientPacket) {
             tag.putInt("SpoutingTicks", spoutingTicks);
             if (!spoutingFluid.isEmpty()) tag.put("SpoutingFluid", spoutingFluid.writeToNBT(new CompoundTag()));
@@ -311,28 +349,45 @@ public class VatSideBlockEntity extends CopycatBlockEntity implements IHaveGoggl
         sendData();
     };
 
-    public static enum DisplayType {
-        NORMAL,
-        BAROMETER,
-        THERMOMETER,
-        PIPE,
-        CLOSED_VENT,
-        OPEN_VENT;
+    public int getRedstoneOutputStrength() {
+        if (displayType.quantityObserved.isPresent()) return oldStrength;
+        return 0;
+    };
 
-        public boolean validForTop() {
-            return this != BAROMETER && this != THERMOMETER;
+    public void updateRedstoneOutput() {
+        BlockPos adjacentPos = getBlockPos().relative(direction);
+        level.blockUpdated(getBlockPos(), getBlockState().getBlock());
+		level.blockUpdated(adjacentPos, level.getBlockState(adjacentPos).getBlock());
+    };
+
+    public static final Optional<Function<VatControllerBlockEntity, Float>> pressureObserved = Optional.of(VatControllerBlockEntity::getPressure);
+    public static final Optional<Function<VatControllerBlockEntity, Float>> temperatureObserved = Optional.of(VatControllerBlockEntity::getTemperature);
+
+    public static enum DisplayType {
+
+        NORMAL(true, true, false, false, false, Optional.empty()),
+        BAROMETER(false, true, false, true, false, pressureObserved),
+        BAROMETER_BLOCKED(false, true, false, true, false, pressureObserved),
+        THERMOMETER(false, true, false, false, true, temperatureObserved),
+        THERMOMETER_BLOCKED(false, true, false, false, true, temperatureObserved),
+        PIPE(true, true, false, false, false, Optional.empty()),
+        CLOSED_VENT(true, false, true, false, false, Optional.empty()),
+        OPEN_VENT(true, false, true, false, false, Optional.empty());
+
+        public final boolean validForTop, validForSide, isVent, showsPressure, showsTemperature;
+        public final Optional<Function<VatControllerBlockEntity, Float>> quantityObserved;
+
+        private DisplayType(boolean validForTop, boolean validForSide, boolean isVent, boolean showsPressure, boolean showsTemperature, Optional<Function<VatControllerBlockEntity, Float>> quantityObserved) {
+            this.validForTop = validForTop;
+            this.validForSide = validForSide;
+            this.isVent = isVent;
+            this.showsPressure = showsPressure;
+            this.showsTemperature = showsTemperature;
+            this.quantityObserved = quantityObserved;
         };
 
         public boolean validForBottom() {
-            return validForTop() && this != CLOSED_VENT && this != OPEN_VENT;
-        };
-
-        public boolean validForSide() {
-            return this != OPEN_VENT && this != CLOSED_VENT;
-        };
-
-        public boolean isVent() {
-            return this == CLOSED_VENT || this == OPEN_VENT;
+            return validForTop && !isVent;
         };
     };
 
@@ -342,8 +397,9 @@ public class VatSideBlockEntity extends CopycatBlockEntity implements IHaveGoggl
 
     @SuppressWarnings("null") // It thinks getLevel() might be null (it's not)
     public void setDisplayType(DisplayType displayType) {
-        if (this.displayType == displayType) return;
-        boolean updateVent = this.displayType == DisplayType.OPEN_VENT;
+        DisplayType oldDisplayType = this.displayType;
+        if (oldDisplayType == displayType) return;
+        boolean updateVent = oldDisplayType == DisplayType.OPEN_VENT;
         this.displayType = displayType;
         if (!hasLevel()) return;
 
@@ -359,6 +415,21 @@ public class VatSideBlockEntity extends CopycatBlockEntity implements IHaveGoggl
         if (displayType == DisplayType.OPEN_VENT) {
             if (controller.cachedMixture != null) controller.cachedMixture.disturbEquilibrium();
             if (controller.openVentPos == null) controller.openVentPos = getBlockPos();
+        };
+
+        // If the observer has been switched, create new bounds
+        if (oldDisplayType.quantityObserved != this.displayType.quantityObserved) {
+            if (this.displayType.showsPressure) {
+                lowerThreshold = 0f;
+                upperThreshold = getVatOptional().isPresent() ? getVatOptional().get().getMaxPressure() : 100000f;
+            } else if (this.displayType.showsTemperature) {
+                lowerThreshold = 273f;
+                upperThreshold = 373f;
+            } else {
+                lowerThreshold = 0f;
+                upperThreshold = 1f;
+            };
+            updateRedstoneOutput();
         };
     };
 
@@ -376,27 +447,36 @@ public class VatSideBlockEntity extends CopycatBlockEntity implements IHaveGoggl
         if (nextToPipe) {
             setDisplayType(DisplayType.PIPE);
         } else if (!nextToAir) {
-            setDisplayType(DisplayType.NORMAL);
+            if (getDisplayType().showsPressure) {
+                setDisplayType(DisplayType.BAROMETER_BLOCKED);
+            } else if (getDisplayType().showsTemperature) {
+                setDisplayType(DisplayType.THERMOMETER_BLOCKED);
+            } else {
+                setDisplayType(DisplayType.NORMAL);
+            };
         } else {
             if (getDisplayType() == DisplayType.PIPE) setDisplayType(DisplayType.NORMAL);
+            if (getDisplayType() == DisplayType.THERMOMETER_BLOCKED) setDisplayType(DisplayType.THERMOMETER);
+            if (getDisplayType() == DisplayType.BAROMETER_BLOCKED) setDisplayType(DisplayType.BAROMETER);
             switch (direction) {
                 case UP: {
-                    if (!getDisplayType().validForTop()) setDisplayType(DisplayType.NORMAL);
+                    if (!getDisplayType().validForTop) setDisplayType(DisplayType.NORMAL);
                     break;
                 } case DOWN: {
                     if (!getDisplayType().validForBottom()) setDisplayType(DisplayType.NORMAL);
                     break;
                 } default: {
-                    if (!getDisplayType().validForSide()) setDisplayType(DisplayType.NORMAL);
-                }
+                    if (!getDisplayType().validForSide) setDisplayType(DisplayType.NORMAL);
+                };
             };
         };
 
+        updateRedstoneOutput();
         invalidateRenderBoundingBox();
     };
 
     @SuppressWarnings("null")
-    public void updateRedstone() {
+    public void updateRedstoneInput() {
         if (!hasLevel()) return;
         boolean hasPower = getLevel().hasNeighborSignal(getBlockPos()); // It thinks getLevel() might be null
         if (getDisplayType() == DisplayType.OPEN_VENT && hasPower) setDisplayType(DisplayType.CLOSED_VENT);
@@ -418,21 +498,17 @@ public class VatSideBlockEntity extends CopycatBlockEntity implements IHaveGoggl
     public boolean addToGoggleTooltip(List<Component> tooltip, boolean isPlayerSneaking) {
         VatControllerBlockEntity controller = getController();
         if (!getVatOptional().isPresent() || controller == null) return false;
-        switch (getDisplayType()) {
-            case THERMOMETER: {
-                TemperatureUnit unit = DestroyAllConfigs.CLIENT.chemistry.temperatureUnit.get();
-                DestroyLang.translate("tooltip.vat.temperature", unit.of(controller.getTemperature(), df)).style(ChatFormatting.WHITE).forGoggles(tooltip);
-                if (DestroyAllConfigs.CLIENT.chemistry.nerdMode.get()) DestroyLang.translate("tooltip.vat.power", df.format(controller.heatingPower / 1000f)).forGoggles(tooltip);
-                break;
-            } case BAROMETER: {
-                Vat vat = getVatOptional().get();
-                DestroyLang.translate("tooltip.vat.pressure.header").style(ChatFormatting.WHITE).forGoggles(tooltip);
-                DestroyLang.translate("tooltip.vat.pressure.current", df.format(controller.getPressure() / 1000f)).style(ChatFormatting.GRAY).forGoggles(tooltip, 1);
-                DestroyLang.translate("tooltip.vat.pressure.max", df.format(vat.getMaxPressure() / 1000f), vat.getWeakestBlock().getBlock().getName().getString()).style(ChatFormatting.GRAY).forGoggles(tooltip, 1);
-                break;
-            } default: {
-                VatControllerBlockEntity.vatFluidTooltip(getController(), tooltip);
-            };
+        if (getDisplayType().showsTemperature) {
+            TemperatureUnit unit = DestroyAllConfigs.CLIENT.chemistry.temperatureUnit.get();
+            DestroyLang.translate("tooltip.vat.temperature", unit.of(controller.getTemperature(), df)).style(ChatFormatting.WHITE).forGoggles(tooltip);
+            if (DestroyAllConfigs.CLIENT.chemistry.nerdMode.get()) DestroyLang.translate("tooltip.vat.power", df.format(controller.heatingPower / 1000f)).forGoggles(tooltip);
+        } else if (getDisplayType().showsPressure) {
+            Vat vat = getVatOptional().get();
+            DestroyLang.translate("tooltip.vat.pressure.header").style(ChatFormatting.WHITE).forGoggles(tooltip);
+            DestroyLang.translate("tooltip.vat.pressure.current", df.format(controller.getPressure() / 1000f)).style(ChatFormatting.GRAY).forGoggles(tooltip, 1);
+            DestroyLang.translate("tooltip.vat.pressure.max", df.format(vat.getMaxPressure() / 1000f), vat.getWeakestBlock().getBlock().getName().getString()).style(ChatFormatting.GRAY).forGoggles(tooltip, 1);
+        } else {
+            VatControllerBlockEntity.vatFluidTooltip(getController(), tooltip);
         };
         return true;
     };

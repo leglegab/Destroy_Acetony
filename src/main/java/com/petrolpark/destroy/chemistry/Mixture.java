@@ -711,7 +711,7 @@ public class Mixture extends ReadOnlyMixture {
         float volumeInBuckets = (float)volume / 1000f;
         int ticks = 0;
 
-        ReactionContext context = new ReactionContext(availableStacks, 0f); 
+        ReactionContext context = new ReactionContext(availableStacks, 0f, false); 
         dissolveItems(context, volumeInBuckets); // Dissolve all Items
         while (!equilibrium && ticks < 600) { // React the Mixture
             float energyChange = heatingPower / TICKS_PER_SECOND;
@@ -1044,10 +1044,12 @@ public class Mixture extends ReadOnlyMixture {
 
         public final ImmutableList<ItemStack> availableItemStacks;
         public final float UVPower;
+        public final boolean electrolysing;
 
-        public ReactionContext(List<ItemStack> availableItemStacks, float UVPower) {
+        public ReactionContext(List<ItemStack> availableItemStacks, float UVPower, boolean electrolysing) {
             this.availableItemStacks = ImmutableList.copyOf(availableItemStacks);
             this.UVPower = UVPower;
+            this.electrolysing = electrolysing;
         };
     };
 };

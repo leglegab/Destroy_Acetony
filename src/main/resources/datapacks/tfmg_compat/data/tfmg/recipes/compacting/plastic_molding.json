@@ -1,0 +1,8 @@
+{
+    "type": "create:compacting",
+    "conditions": [
+        {
+            "type": "forge:false"
+        }
+    ]
+}

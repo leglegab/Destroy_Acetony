@@ -15,6 +15,7 @@ public class DestroyMysteriousItemConversions {
         MysteriousItemConversionCategory.RECIPES.add(ConversionRecipe.create(AllItems.EMPTY_BLAZE_BURNER.asStack(), DestroyBlocks.COOLER.asStack()));
         MysteriousItemConversionCategory.RECIPES.add(ConversionRecipe.create(DestroyItems.IODINE.asStack(), new ItemStack(Items.DRAGON_BREATH)));
         MysteriousItemConversionCategory.RECIPES.add(ConversionRecipe.create(DestroyItems.BUCKET_AND_SPADE.asStack(), DestroyItems.TEAR_BOTTLE.asStack()));
+        MysteriousItemConversionCategory.RECIPES.add(ConversionRecipe.create(DestroyItems.MOLTEN_STAINLESS_STEEL_BUCKET.asStack(), DestroyBlocks.STAINLESS_STEEL_BLOCK.asStack()));
     };
 
     public static void register() {};

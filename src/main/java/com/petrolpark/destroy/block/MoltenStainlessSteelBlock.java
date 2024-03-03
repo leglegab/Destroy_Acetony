@@ -53,10 +53,9 @@ public class MoltenStainlessSteelBlock extends Block implements BucketPickup {
     };
 
     @Override
-    @SuppressWarnings("deprecation")
-    public BlockState updateShape(BlockState state, Direction direction, BlockState neighborState, LevelAccessor level, BlockPos currentPos, BlockPos neighborPos) {
-        level.scheduleTick(currentPos, this, 1);
-        return super.updateShape(state, direction, neighborState, level, currentPos, neighborPos);
+    public void neighborChanged(BlockState pState, Level pLevel, BlockPos pPos, Block pBlock, BlockPos pFromPos, boolean pIsMoving) {
+        if (pLevel.isClientSide()) return;
+        pLevel.scheduleTick(pPos, this, 1);
     };
 
     @Override

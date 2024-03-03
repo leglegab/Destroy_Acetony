@@ -94,8 +94,13 @@ public class VatRenderer extends SafeBlockEntityRenderer<VatControllerBlockEntit
                         .light(light)
                         .renderInto(ms, vbCutout);
                     break;
-                } case OPEN_VENT:
-                case CLOSED_VENT: {
+                } case BAROMETER_BLOCKED: case THERMOMETER_BLOCKED: {
+                    CachedBufferer.partialFacing(DestroyPartials.VAT_SIDE_REDSTONE_INTERFACE, state, facing)
+                        .translate(sidePos.subtract(controller.getBlockPos()))
+                        .light(light)
+                        .renderInto(ms, vbCutout);
+                    break;
+                } case OPEN_VENT: case CLOSED_VENT: {
                     CachedBufferer.partial(DestroyPartials.VAT_SIDE_VENT, state)
                         .translate(sidePos.subtract(controller.getBlockPos()))
                         .light(light)

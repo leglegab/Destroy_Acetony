@@ -1,5 +1,6 @@
 package com.petrolpark.destroy.util.circuit;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
@@ -120,7 +121,7 @@ public class CircuitPatternHandler extends SavedData {
          */
         public static class Easy implements CircuitPatternGenerator {
 
-            public static List<Integer> positions = List.of(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15);
+            public List<Integer> positions = new ArrayList<>(List.of(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15));
 
             @Override
             public int generatePattern() {

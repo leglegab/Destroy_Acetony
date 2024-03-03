@@ -18,8 +18,8 @@ import com.petrolpark.destroy.chemistry.reactionresult.PrecipitateReactionResult
 import com.petrolpark.destroy.fluid.DestroyFluids;
 import com.petrolpark.destroy.fluid.MixtureFluid;
 import com.petrolpark.destroy.util.vat.IVatHeaterBlock;
-import com.simibubi.create.content.kinetics.mixer.MixingRecipe;
 import com.simibubi.create.content.processing.basin.BasinBlockEntity;
+import com.simibubi.create.content.processing.basin.BasinRecipe;
 import com.simibubi.create.content.processing.recipe.ProcessingRecipeBuilder;
 import com.simibubi.create.content.processing.recipe.ProcessingRecipeBuilder.ProcessingRecipeParams;
 import com.simibubi.create.foundation.fluid.FluidIngredient;
@@ -32,7 +32,7 @@ import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.fluids.FluidStack;
 
-public class ReactionInBasinRecipe extends MixingRecipe {
+public class ReactionInBasinRecipe extends BasinRecipe {
 
     private static final int BASIN_MAX_OUTPUT = 1000;
 

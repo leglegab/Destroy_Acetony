@@ -28,6 +28,7 @@ import com.petrolpark.destroy.compat.jei.category.ITickableCategory;
 import com.petrolpark.destroy.compat.jei.category.MutationCategory;
 import com.petrolpark.destroy.compat.jei.category.ObliterationCategory;
 import com.petrolpark.destroy.compat.jei.category.ReactionCategory;
+import com.petrolpark.destroy.compat.tfmg.SharedDistillationRecipes;
 import com.petrolpark.destroy.effect.potion.PotionSeparationRecipes;
 import com.petrolpark.destroy.fluid.DestroyFluids;
 import com.petrolpark.destroy.item.DestroyItems;
@@ -74,6 +75,7 @@ import mezz.jei.api.registration.IRecipeCategoryRegistration;
 import mezz.jei.api.registration.IRecipeRegistration;
 import mezz.jei.api.registration.ISubtypeRegistration;
 import mezz.jei.api.runtime.IJeiRuntime;
+import net.minecraft.client.Minecraft;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -89,7 +91,7 @@ public class DestroyJEI implements IModPlugin {
 
     /**
      * All Create and Destroy {@link mezz.jei.api.recipe.RecipeType Recipe Types} which can produce or consume Mixtures, mapped to the class of Recipe which those Recipe Types describe.
-     * Create's Recipe Types are not exposed by default, meaning we have to access them through a {@link com.petrolpark.destroy.mixin.CreateRecipeCategoryMixin mixin} and store them here.
+     * Create's Recipe Types are not exposed by default, meaning we have to access them through a {@link com.petrolpark.destroy.mixin.compat.jei.CreateRecipeCategoryMixin mixin} and store them here.
      */ 
     public static final Map<RecipeType<?>, Class<? extends Recipe<?>>> RECIPE_TYPES = new HashMap<>();
     /**
@@ -149,6 +151,7 @@ public class DestroyJEI implements IModPlugin {
 
         distillation = builder(DistillationRecipe.class)
             .addTypedRecipes(DestroyRecipeTypes.DISTILLATION)
+            .addRecipes(() -> SharedDistillationRecipes.getTFMGToDestroyRecipes(Minecraft.getInstance().level))
             .acceptsMixtures()
             .catalyst(DestroyBlocks.BUBBLE_CAP::get)
             .itemIcon(DestroyBlocks.BUBBLE_CAP.get())

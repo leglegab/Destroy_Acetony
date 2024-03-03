@@ -59,7 +59,6 @@ import com.petrolpark.destroy.world.village.DestroyTrades;
 import com.petrolpark.destroy.world.village.DestroyVillageAddition;
 import com.petrolpark.destroy.world.village.DestroyVillagers;
 import com.simibubi.create.AllItems;
-import com.simibubi.create.Create;
 import com.simibubi.create.api.event.BlockEntityBehaviourEvent;
 import com.simibubi.create.content.equipment.potatoCannon.PotatoProjectileEntity;
 import com.simibubi.create.content.fluids.FluidFX;
@@ -814,20 +813,23 @@ public class DestroyCommonEvents {
          */
 		@SubscribeEvent
 		public static void addPackFinders(AddPackFindersEvent event) {
+            IModFileInfo modFileInfo = ModList.get().getModFileById(Destroy.MOD_ID);
+            if (modFileInfo == null) {
+                Destroy.LOGGER.error("Could not find Destroy mod file info; built-in resource packs will be missing!");
+                return;
+            };
+            IModFile modFile = modFileInfo.getFile();
 			if (event.getPackType() == PackType.CLIENT_RESOURCES) {
-				IModFileInfo modFileInfo = ModList.get().getModFileById(Destroy.MOD_ID);
-				if (modFileInfo == null) {
-					Destroy.LOGGER.error("Could not find Destroy mod file info; built-in resource packs will be missing!");
-					return;
-				}
-				IModFile modFile = modFileInfo.getFile();
                 event.addRepositorySource(consumer -> {
-					Pack pack = Pack.readMetaAndCreate(Create.asResource("destroy_create_patches").toString(), Components.literal("Destroy Patches For Create"), true, id -> new ModFilePackResources(id, modFile, "resourcepacks/destroy_create_patches"), PackType.CLIENT_RESOURCES, Pack.Position.TOP, PackSource.BUILT_IN);
-					if (pack != null) {
-						consumer.accept(pack);
-					}
+					Pack pack = Pack.readMetaAndCreate(Destroy.asResource("create_patches").toString(), Components.literal("Destroy Patches For Create"), true, id -> new ModFilePackResources(id, modFile, "resourcepacks/create_patches"), PackType.CLIENT_RESOURCES, Pack.Position.TOP, PackSource.BUILT_IN);
+					if (pack != null) consumer.accept(pack);
 				});
-			};
+			} else { // Datapacks
+                event.addRepositorySource(consumer -> {
+                    Pack pack = Pack.readMetaAndCreate(Destroy.asResource("tfmg_compat").toString(), Components.literal("Destroy Compat With Create: TFMG"), false, id -> new ModFilePackResources(id, modFile, "datapacks/tfmg_compat"), PackType.SERVER_DATA, Pack.Position.TOP, PackSource.BUILT_IN);
+                    if (pack != null) consumer.accept(pack);
+                });
+            };
 		};
 
         @SubscribeEvent

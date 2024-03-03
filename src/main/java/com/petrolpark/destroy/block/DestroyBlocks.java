@@ -469,7 +469,8 @@ public class DestroyBlocks {
         .initialProperties(() -> Blocks.IRON_BLOCK)
         .properties(p -> p
             .strength(7f, 8f)
-        ).transform(TagGen.pickaxeOnly())
+        ).onRegister(CreateRegistrate.connectedTextures(() -> new SimpleCTBehaviour(DestroySpriteShifts.STAINLESS_STEEL_BLOCK)))
+        .transform(TagGen.pickaxeOnly())
         .tag(BlockTags.NEEDS_STONE_TOOL)
         .tag(Tags.Blocks.STORAGE_BLOCKS)
         .tag(BlockTags.BEACON_BASE_BLOCKS)
@@ -803,7 +804,7 @@ public class DestroyBlocks {
         ).register();
 
     public static final BlockEntry<StainlessSteelRodsBlock> STAINLESS_STEEL_RODS = REGISTRATE.block("stainless_steel_rods_block", StainlessSteelRodsBlock::new)
-        .intialProperties(STAINLESS_STEEL_BLOCK)
+        .initialProperties(STAINLESS_STEEL_BLOCK)
         .properties(p -> p
             .mapColor(state -> state.getValue(StainlessSteelRodsBlock.MOLTEN) ? MapColor.COLOR_ORANGE : MapColor.METAL) //TODO change if cooled down
             .lightLevel(state -> state.getValue(StainlessSteelRodsBlock.MOLTEN) ? 15 : 0) //change this also

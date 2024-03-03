@@ -219,10 +219,7 @@ public class DestroyItems {
         .register(),
 
     // COMPOUNDS
-
-    AMMONIUM_NITRATE_PRILL = REGISTRATE.item("ammonium_nitrate_prill", Item::new)
-        .tag(DestroyItemTags.PRILL.tag, DestroyItemTags.LIABLE_TO_CHANGE.tag)
-        .register(),
+    
     CHALK_DUST = REGISTRATE.item("chalk_dust", Item::new)
         .tag(DestroyItemTags.SALT.tag, Tags.Items.DUSTS, DestroyItemTags.LIABLE_TO_CHANGE.tag)
         .register(),

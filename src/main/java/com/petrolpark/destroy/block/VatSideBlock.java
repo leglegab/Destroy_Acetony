@@ -54,16 +54,20 @@ public class VatSideBlock extends CopycatBlock implements ISpecialBlockItemRequi
     public InteractionResult onWrenched(BlockState state, UseOnContext context) {
         return onBlockEntityUse(context.getLevel(), context.getClickedPos(), be -> {
             if (!(be instanceof VatSideBlockEntity vatSide)) return InteractionResult.PASS;
+            boolean blocked = !be.getLevel().getBlockState(be.getBlockPos().relative(context.getClickedFace())).isAir();
             switch (vatSide.getDisplayType()) {
                 case PIPE: {
                     return InteractionResult.PASS;
                 } case NORMAL: {
-                    vatSide.setDisplayType(vatSide.direction == Direction.UP ? DisplayType.OPEN_VENT : DisplayType.THERMOMETER);
+                    vatSide.setDisplayType(vatSide.direction == Direction.UP ? DisplayType.OPEN_VENT : (blocked ? DisplayType.THERMOMETER_BLOCKED : DisplayType.THERMOMETER));
                     return InteractionResult.SUCCESS;
                 } case THERMOMETER: {
                     vatSide.setDisplayType(DisplayType.BAROMETER);
                     return InteractionResult.SUCCESS;
-                } case BAROMETER: case OPEN_VENT: case CLOSED_VENT: {
+                } case THERMOMETER_BLOCKED: {
+                    vatSide.setDisplayType(DisplayType.BAROMETER_BLOCKED);
+                    return InteractionResult.SUCCESS;
+                } case BAROMETER: case BAROMETER_BLOCKED: case OPEN_VENT: case CLOSED_VENT: {
                     vatSide.setDisplayType(DisplayType.NORMAL);
                     return InteractionResult.SUCCESS;
                 } default:
@@ -71,6 +75,16 @@ public class VatSideBlock extends CopycatBlock implements ISpecialBlockItemRequi
             }
         });
     };
+
+    @Override
+    public int getDirectSignal(BlockState state, BlockGetter level, BlockPos pos, Direction direction) {
+        return getBlockEntityOptional(level, pos).map(be -> be instanceof VatSideBlockEntity vatSide && vatSide.direction == direction ? vatSide.getRedstoneOutputStrength() : 0).orElse(0);
+    };
+
+    @Override
+	public int getSignal(BlockState state, BlockGetter level, BlockPos pos, Direction side) {
+		return getBlockEntityOptional(level, pos).map(be -> be instanceof VatSideBlockEntity vatSide ? vatSide.getRedstoneOutputStrength() : 0).orElse(0);
+	};
 
     @Override
     public InteractionResult onSneakWrenched(BlockState state, UseOnContext context) {
@@ -81,7 +95,7 @@ public class VatSideBlock extends CopycatBlock implements ISpecialBlockItemRequi
     public BlockState updateShape(BlockState state, Direction facing, BlockState facingState, LevelAccessor level, BlockPos currentPos, BlockPos facingPos) {
         withBlockEntityDo(level, currentPos, be -> {
             if (!(be instanceof VatSideBlockEntity vatSide)) return;
-            vatSide.updateRedstone();
+            vatSide.updateRedstoneInput();
             if (facing != vatSide.direction) return;
             vatSide.updateDisplayType(facingPos);
             vatSide.setPowerFromAdjacentBlock(facingPos);   
@@ -104,7 +118,7 @@ public class VatSideBlock extends CopycatBlock implements ISpecialBlockItemRequi
     public void neighborChanged(BlockState state, Level level, BlockPos pos, Block block, BlockPos fromPos, boolean isMoving) {
         withBlockEntityDo(level, pos, be -> {
             if (!(be instanceof VatSideBlockEntity vatSide)) return;
-            vatSide.updateRedstone();
+            vatSide.updateRedstoneInput();
         });
     };
 
@@ -170,7 +184,7 @@ public class VatSideBlock extends CopycatBlock implements ISpecialBlockItemRequi
     @Override
     public BlockEntityType<? extends CopycatBlockEntity> getBlockEntityType() {
         return DestroyBlockEntityTypes.VAT_SIDE.get();
-    }
+    };
 
     @Override
     public ItemRequirement getRequiredItems(BlockState state, BlockEntity blockEntity) {

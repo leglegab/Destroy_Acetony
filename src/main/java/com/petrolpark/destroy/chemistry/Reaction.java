@@ -750,12 +750,13 @@ public class Reaction {
                 reactionString += reactant.getSerlializedMolecularFormula(false);
                 reactionString += " + ";
             };
-            reactionString = reactionString.substring(0, reactionString.length() - 3) + " => ";
+            if (reaction.reactants.keySet().size() > 0) reactionString = reactionString.substring(0, reactionString.length() - 3);
+            reactionString = reactionString + " => ";
             for (Molecule product : reaction.products.keySet()) {
                 reactionString += product.getSerlializedMolecularFormula(false);
                 reactionString += " + ";
             };
-            reactionString = reactionString.substring(0, reactionString.length() - 3);
+            if (reaction.products.keySet().size() > 0) reactionString = reactionString.substring(0, reactionString.length() - 3);
             return reactionString;
         };
     };
