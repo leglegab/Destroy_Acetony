@@ -188,8 +188,7 @@ public class AgingBarrelBlockEntity extends SmartBlockEntity implements IHaveGog
     public void onTimerChange() {
         if (!hasLevel()) return;
         BlockState oldState = getBlockState();
-        BlockState newState = getBlockState();
-        newState = oldState.setValue(AgingBarrelBlock.IS_OPEN, timer < 0);
+        BlockState newState = oldState.setValue(AgingBarrelBlock.IS_OPEN, timer < 0);
         if (timer <= 0) {
             tank.allowExtraction();
             tank.allowInsertion();

@@ -57,6 +57,7 @@ public class CircuitMaskItem extends CircuitPatternItem {
         stack = stack.copy();
         CompoundTag tag = stack.getOrCreateTag();
         List<UUID> previousPunches = getContaminants(stack);
+        if (previousPunches.contains(uuid)) return stack;
         if (previousPunches.size() >= 3) return DestroyItems.RUINED_CIRCUIT_MASK.asStack();
         previousPunches.add(uuid);
         ListTag newPunches = new ListTag();
@@ -122,6 +123,18 @@ public class CircuitMaskItem extends CircuitPatternItem {
         consumer.accept(SimpleCustomRenderer.create(this, new CircuitMaskItemRenderer()));
     };
 
+    public static void renderCircuitMask(int pattern, GuiGraphics graphics) {
+        for (int i = 0; i < 16; i++) {
+            if (isPunched(pattern, i)) continue;
+            DestroyGuiTextures.CIRCUIT_MASK_CELL_SHADING.render(graphics, 7 + (i % 4) * 8, 7 + (i / 4) * 8);
+        };
+        DestroyGuiTextures.CIRCUIT_MASK_BORDER.render(graphics, 0, 0);
+        for (int i = 0; i < 16; i++) {
+            if (isPunched(pattern, i)) continue;
+            DestroyGuiTextures.CIRCUIT_MASK_CELL.render(graphics, 8 + (i % 4) * 8, 8 + (i / 4) * 8);
+        };
+    };
+
     public static class CircuitMaskTooltip extends DestroyTooltipComponent<CircuitMaskTooltip, ClientCircuitMaskTooltipComponent> {
 
         public CircuitMaskTooltip(int pattern) {
@@ -143,21 +156,13 @@ public class CircuitMaskItem extends CircuitPatternItem {
             PoseStack ms = guiGraphics.pose();
             ms.pushPose();
             ms.translate(x, y, 250f);
-            for (int i = 0; i < 16; i++) {
-                if (isPunched(pattern, i)) continue;
-                DestroyGuiTextures.CIRCUIT_MASK_CELL_SHADING.render(guiGraphics, 7 + (i % 4) * 8, 7 + (i / 4) * 8);
-            };
-            DestroyGuiTextures.CIRCUIT_MASK_BORDER.render(guiGraphics, 0, 0);
-            for (int i = 0; i < 16; i++) {
-                if (isPunched(pattern, i)) continue;
-                DestroyGuiTextures.CIRCUIT_MASK_CELL.render(guiGraphics, 8 + (i % 4) * 8, 8 + (i / 4) * 8);
-            };
+            renderCircuitMask(pattern, guiGraphics);
             ms.popPose();
         };
 
         @Override
         public int getHeight() {
-            return 48;
+            return 58;
         };
 
         @Override

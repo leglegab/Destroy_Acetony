@@ -3,8 +3,10 @@ package com.petrolpark.destroy.world.explosion;
 import java.util.Arrays;
 import java.util.EnumMap;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import com.google.gson.JsonElement;
@@ -26,9 +28,31 @@ import net.minecraftforge.common.crafting.conditions.ICondition.IContext;
 public class ExplosiveProperties extends EnumMap<ExplosiveProperties.ExplosiveProperty, Float> {
 
     public static final Map<Item, ExplosiveProperties> ITEM_EXPLOSIVE_PROPERTIES = new HashMap<>();
+
+    public static final ExplosivePropertyCondition
+
+    CAN_EXPLODE = new ExplosivePropertyCondition(ExplosiveProperty.SENSITIVTY, 0f, "destroy.explosion_condition.can_explode"),
+    EXPLODES_RANDOMLY = new ExplosivePropertyCondition(ExplosiveProperty.SENSITIVTY, 10f, "destroy.explosion_condition.explodes_randomly"),
+    EVAPORATES_FLUIDS = new ExplosivePropertyCondition(ExplosiveProperty.TEMPERATURE, 5f, "destroy.explosion_condition.evaporates_fluids"),
+    OBLITERATES = new ExplosivePropertyCondition(ExplosiveProperty.BRISANCE, 5f, "destroy.explosion_condition.obliterates"),
+    SILK_TOUCH = new ExplosivePropertyCondition(ExplosiveProperty.BRISANCE, -5f, "destroy.explosion_condition.silk_touch");
+
+    public Set<ExplosivePropertyCondition> conditions = new HashSet<>();
   
     public ExplosiveProperties() {
         super(Arrays.stream(ExplosiveProperty.values()).collect(Collectors.toMap(p -> p, p -> 0f)));
+    };
+
+    public ExplosiveProperties withConditions(ExplosivePropertyCondition ...conditions) {
+        this.conditions.clear();
+        for (ExplosivePropertyCondition condition : conditions) this.conditions.add(condition);
+        return this;
+    };
+
+    public boolean fulfils(ExplosivePropertyCondition condition) {
+        if (!conditions.contains(condition)) return false;
+        float value = get(condition.property);
+        return condition.negative() ? value <= condition.threshhold : value >= condition.threshhold;
     };
 
     public CompoundTag write() {
@@ -57,6 +81,27 @@ public class ExplosiveProperties extends EnumMap<ExplosiveProperties.ExplosivePr
         return properties;
     };
 
+    public static class ExplosivePropertyCondition {
+
+        public final ExplosiveProperty property;
+        public final float threshhold;
+        protected final String translationKey;
+
+        public ExplosivePropertyCondition(ExplosiveProperty property, float threshhold, String translationKey) {
+            this.property = property;
+            this.threshhold = threshhold;
+            this.translationKey = translationKey;
+        };
+
+        public boolean negative() {
+            return threshhold < 0f;
+        };
+
+        public Component getDescription() {
+            return Component.translatable(translationKey);
+        };
+    };
+
     public static enum ExplosiveProperty {
 
         ENERGY,
@@ -66,7 +111,7 @@ public class ExplosiveProperties extends EnumMap<ExplosiveProperties.ExplosivePr
         SENSITIVTY;
 
         public Component getName() {
-            return DestroyLang.translate("tooltip.explosive_property."+name()).component();
+            return DestroyLang.translate("explosive_property."+name()).component();
         };
     };
 

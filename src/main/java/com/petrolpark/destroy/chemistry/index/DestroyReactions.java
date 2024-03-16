@@ -1,7 +1,7 @@
 package com.petrolpark.destroy.chemistry.index;
 
 import com.petrolpark.destroy.Destroy;
-import com.petrolpark.destroy.advancement.DestroyAdvancements;
+import com.petrolpark.destroy.advancement.DestroyAdvancementTrigger;
 import com.petrolpark.destroy.block.DestroyBlocks;
 import com.petrolpark.destroy.chemistry.Reaction;
 import com.petrolpark.destroy.chemistry.Reaction.ReactionBuilder;
@@ -27,6 +27,15 @@ public class DestroyReactions {
         .withResult(1f, PrecipitateReactionResult.of(DestroyItems.ABS::asStack))
         .preexponentialFactor(15f)
         .activationEnergy(20f)
+        .build(),
+
+    ACRYLONITRILE_POLYMERIZATION = builder()
+        .id("acrylonitrile_polymerization")
+        .addReactant(DestroyMolecules.ACRYLONITRILE)
+        .addCatalyst(DestroyMolecules.AIBN, 0)
+        .withResult(3f, PrecipitateReactionResult.of(DestroyItems.POLYACRYLONITRILE::asStack))
+        .preexponentialFactor(10f)
+        .activationEnergy(10f)
         .build(),
 
     AIBN_SYNTHESIS = builder()
@@ -459,7 +468,7 @@ public class DestroyReactions {
         .addReactant(DestroyMolecules.METHYLAMINE)
         .withResult(0f, (m, r) -> new CombinedReactionResult(m, r)
             .with(ExplosionReactionResult::small)
-            .with(DestroyAdvancements.TRY_TO_MAKE_METH::asReactionResult)
+            .with(DestroyAdvancementTrigger.TRY_TO_MAKE_METH::asReactionResult)
         ).dontIncludeInJei()
         .build(),
 
@@ -546,7 +555,7 @@ public class DestroyReactions {
         .addSimpleItemTagCatalyst(AllTags.forgeItemTag("dusts/rhodium"), 1f)
         .addProduct(DestroyMolecules.WATER)
         .addProduct(DestroyMolecules.NITRIC_ACID)
-        .withResult(0f, DestroyAdvancements.OSTWALD_PROCESS::asReactionResult)
+        .withResult(0f, DestroyAdvancementTrigger.OSTWALD_PROCESS::asReactionResult)
         .build(), //TODO potentially split into multiple equations, and add side reactions
 
     //TODO phenylacetic acid synthesis, either from benzyl chloride or benzyl cyanide

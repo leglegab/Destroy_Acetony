@@ -3,7 +3,7 @@ package com.petrolpark.destroy.block.movementbehaviour;
 import com.jozufozu.flywheel.core.virtual.VirtualRenderWorld;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import com.petrolpark.destroy.advancement.DestroyAdvancements;
+import com.petrolpark.destroy.advancement.DestroyAdvancementTrigger;
 import com.petrolpark.destroy.block.DestroyBlocks;
 import com.petrolpark.destroy.block.entity.behaviour.DestroyAdvancementBehaviour;
 import com.petrolpark.destroy.util.BlockExtrusion;
@@ -84,7 +84,7 @@ public class ExtrudableMovementBehaviour implements MovementBehaviour {
                 context.contraption.getBlocks().put(context.localPos, new StructureBlockInfo(context.localPos, getBlockState(context), null));
                 if (!context.world.isClientSide()) {
                     DestroyAdvancementBehaviour advancementBehaviour = BlockEntityBehaviour.get(context.world, diePos, DestroyAdvancementBehaviour.TYPE);
-                    if (advancementBehaviour != null) advancementBehaviour.awardDestroyAdvancement(DestroyAdvancements.EXTRUDE);
+                    if (advancementBehaviour != null) advancementBehaviour.awardDestroyAdvancement(DestroyAdvancementTrigger.EXTRUDE);
                 };
                 data.putBoolean("Extruded", true);
             };

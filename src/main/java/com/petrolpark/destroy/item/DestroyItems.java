@@ -47,40 +47,54 @@ public class DestroyItems {
     // PLASTICS
     
     POLYETHENE_TEREPHTHALATE = REGISTRATE.item("polyethene_terephthalate", Item::new)
-        .tag(DestroyItemTags.PLASTIC.tag)
+        .tag(DestroyItemTags.PLASTIC.tag, DestroyItemTags.TEXTILE_PLASTIC.tag)
         .register(),
     POLYVINYL_CHLORIDE = REGISTRATE.item("polyvinyl_chloride", Item::new)
-        .tag(DestroyItemTags.PLASTIC.tag)
+        .tag(DestroyItemTags.PLASTIC.tag, DestroyItemTags.RIGID_PLASTIC.tag)
         .register(),
     POLYETHENE = REGISTRATE.item("polyethene", Item::new)
-        .tag(DestroyItemTags.PLASTIC.tag)
+        .tag(DestroyItemTags.PLASTIC.tag, DestroyItemTags.RIGID_PLASTIC.tag)
         .register(),
     POLYPROPENE = REGISTRATE.item("polypropene", Item::new)
-        .tag(DestroyItemTags.PLASTIC.tag)
+        .tag(DestroyItemTags.PLASTIC.tag, DestroyItemTags.RIGID_PLASTIC.tag)
         .register(),
     POLYSTYRENE = REGISTRATE.item("polystyrene", Item::new)
-        .tag(DestroyItemTags.PLASTIC.tag)
+        .tag(DestroyItemTags.PLASTIC.tag, DestroyItemTags.RIGID_PLASTIC.tag, DestroyItemTags.POROUS_PLASTIC.tag)
         .register(),
     ABS = REGISTRATE.item("abs", Item::new)
-        .tag(DestroyItemTags.PLASTIC.tag)
+        .tag(DestroyItemTags.PLASTIC.tag, DestroyItemTags.RIGID_PLASTIC.tag)
         .register(),
     POLYTETRAFLUOROETHENE = REGISTRATE.item("polytetrafluoroethene", Item::new)
-        .tag(DestroyItemTags.PLASTIC.tag)
+        .tag(DestroyItemTags.PLASTIC.tag, DestroyItemTags.RIGID_PLASTIC.tag, DestroyItemTags.INERT_PLASTIC.tag)
         .register(),
     NYLON = REGISTRATE.item("nylon", Item::new)
-        .tag(DestroyItemTags.PLASTIC.tag)
+        .tag(DestroyItemTags.PLASTIC.tag, DestroyItemTags.RIGID_PLASTIC.tag, DestroyItemTags.TEXTILE_PLASTIC.tag)
         .register(),
     POLYSTYRENE_BUTADIENE = REGISTRATE.item("polystyrene_butadiene", Item::new)
+        .tag(DestroyItemTags.PLASTIC.tag, DestroyItemTags.RUBBER_PLASTIC.tag)
+        .register(),
+    POLYACRYLONITRILE = REGISTRATE.item("polyacrylonitrile", Item::new)
         .tag(DestroyItemTags.PLASTIC.tag)
+        .register(),
+    POLYISOPRENE = REGISTRATE.item("polyisoprene", Item::new)
+        .tag(DestroyItemTags.PLASTIC.tag, DestroyItemTags.TEXTILE_PLASTIC.tag, DestroyItemTags.RUBBER_PLASTIC.tag)
+        .register(),
+    POLYURETHANE = REGISTRATE.item("polyurethane", Item::new)
+        .tag(DestroyItemTags.PLASTIC.tag, DestroyItemTags.RIGID_PLASTIC.tag, DestroyItemTags.TEXTILE_PLASTIC.tag, DestroyItemTags.POROUS_PLASTIC.tag)
+        .register(),
+    POLYMETHYL_METHACRYLATE = REGISTRATE.item("polymethyl_methacrylate", Item::new)
+        .tag(DestroyItemTags.PLASTIC.tag, DestroyItemTags.RIGID_PLASTIC.tag)
         .register(),
 
     CARD_STOCK = REGISTRATE.item("card_stock", Item::new)
+        .register(),
+    CARBON_FIBER = REGISTRATE.item("carbon_fiber", Item::new)
         .register(),
 
     // INGOTS ETC
 
     FLUORITE = REGISTRATE.item("fluorite", Item::new)
-        .tag(DestroyItemTags.SALT.tag, forgeItemTag("raw_materials/fluorite"), ItemTags.BEACON_PAYMENT_ITEMS)
+        .tag(forgeItemTag("raw_materials/fluorite"), ItemTags.BEACON_PAYMENT_ITEMS)
         .register(),
     NICKEL_INGOT = REGISTRATE.item("nickel_ingot", Item::new)
         .tag(DestroyItemTags.DESTROY_INGOTS.tag, forgeItemTag("ingots/nickel"), Tags.Items.INGOTS)
@@ -183,7 +197,7 @@ public class DestroyItems {
         .tag(DestroyItemTags.PRIMARY_EXPLOSIVE.tag, Tags.Items.DUSTS)
         .register(),
     FULMINATED_MERCURY = REGISTRATE.item("fulminated_mercury", Item::new)
-        .tag(DestroyItemTags.PRIMARY_EXPLOSIVE.tag, DestroyItemTags.SALT.tag, Tags.Items.DUSTS)
+        .tag(DestroyItemTags.PRIMARY_EXPLOSIVE.tag, Tags.Items.DUSTS)
         .register(),
     NICKEL_HYDRAZINE_NITRATE = REGISTRATE.item("nickel_hydrazine_nitrate", Item::new)
         .tag(DestroyItemTags.PRIMARY_EXPLOSIVE.tag, Tags.Items.DUSTS)
@@ -212,7 +226,7 @@ public class DestroyItems {
         .tag(DestroyItemTags.SECONDARY_EXPLOSIVE.tag)
         .register(),
     PICRIC_ACID_TABLET = REGISTRATE.item("picric_acid_tablet", Item::new)
-        .tag(DestroyItemTags.SALT.tag, DestroyItemTags.SECONDARY_EXPLOSIVE.tag)
+        .tag(DestroyItemTags.SECONDARY_EXPLOSIVE.tag)
         .register(),
     TNT_TABLET = REGISTRATE.item("tnt_tablet", Item::new)
         .tag(DestroyItemTags.SECONDARY_EXPLOSIVE.tag)
@@ -221,7 +235,7 @@ public class DestroyItems {
     // COMPOUNDS
     
     CHALK_DUST = REGISTRATE.item("chalk_dust", Item::new)
-        .tag(DestroyItemTags.SALT.tag, Tags.Items.DUSTS, DestroyItemTags.LIABLE_TO_CHANGE.tag)
+        .tag(Tags.Items.DUSTS, DestroyItemTags.LIABLE_TO_CHANGE.tag)
         .register(),
     BABY_BLUE_CRYSTAL = REGISTRATE.item("baby_blue_crystal", Item::new)
         .register(),
@@ -232,7 +246,6 @@ public class DestroyItems {
         .register();
     
     public static final ItemEntry<IodineItem> IODINE = REGISTRATE.item("iodine", IodineItem::new)
-        .tag(DestroyItemTags.PRILL.tag)
         .register();
 
     // TOOLS AND ARMOR

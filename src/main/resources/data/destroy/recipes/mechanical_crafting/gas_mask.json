@@ -8,10 +8,10 @@
     ],
     "key": {
       "N": {
-        "item": "destroy:nylon"
+        "tag": "destroy:plastic/textile"
       },
       "P": {
-        "item": "destroy:polytetrafluoroethene"
+        "tag": "destroy:plastic/inert"
       },
       "Y": {
         "tag": "forge:dyes/yellow"

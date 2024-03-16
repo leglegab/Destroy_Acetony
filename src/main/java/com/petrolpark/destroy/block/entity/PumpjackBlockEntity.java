@@ -7,7 +7,7 @@ import javax.annotation.Nullable;
 
 import org.jetbrains.annotations.NotNull;
 
-import com.petrolpark.destroy.advancement.DestroyAdvancements;
+import com.petrolpark.destroy.advancement.DestroyAdvancementTrigger;
 import com.petrolpark.destroy.block.DestroyBlocks;
 import com.petrolpark.destroy.block.PumpjackBlock;
 import com.petrolpark.destroy.block.entity.behaviour.DestroyAdvancementBehaviour;
@@ -63,7 +63,7 @@ public class PumpjackBlockEntity extends SmartBlockEntity implements IHaveGoggle
             .forbidInsertion();
         behaviours.add(tank);
 
-        advancementBehaviour = new DestroyAdvancementBehaviour(this);
+        advancementBehaviour = new DestroyAdvancementBehaviour(this, DestroyAdvancementTrigger.USE_PUMPJACK);
         behaviours.add(advancementBehaviour);
 
         pollutionBehaviour = new PollutingBehaviour(this);
@@ -103,11 +103,11 @@ public class PumpjackBlockEntity extends SmartBlockEntity implements IHaveGoggle
         LazyOptional<ChunkCrudeOil> crudeOilOptional = chunk.getCapability(ChunkCrudeOil.Provider.CHUNK_CRUDE_OIL);
         if (!crudeOilOptional.isPresent()) return; // Don't go any further if there's somehow no capability
         int oilAmount = crudeOilOptional.map(crudeOilCap -> {
-            crudeOilCap.generate(chunk, advancementBehaviour.getPlayer());
+            crudeOilCap.generate(chunk, null);
             return crudeOilCap.getAmount();
         }).orElse(0);
         if (oilAmount == 0) return; // Don't go any further if there's no oil
-        advancementBehaviour.awardDestroyAdvancement(DestroyAdvancements.USE_PUMPJACK);
+        advancementBehaviour.awardDestroyAdvancement(DestroyAdvancementTrigger.USE_PUMPJACK);
         // Add the oil to the Pumpjack's internal tank
         tank.allowInsertion();
         int amountPumped = tank.getPrimaryHandler().fill(new FluidStack(DestroyFluids.CRUDE_OIL.get(), (int)Math.min(oilAmount, Math.abs(cam.getSpeed() / 16))), FluidAction.EXECUTE);

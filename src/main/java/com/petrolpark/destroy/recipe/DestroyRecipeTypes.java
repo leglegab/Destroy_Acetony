@@ -1,18 +1,15 @@
 package com.petrolpark.destroy.recipe;
 
 import java.util.Optional;
-import java.util.Set;
 import java.util.function.Supplier;
 
 import org.jetbrains.annotations.Nullable;
 
-import com.google.common.collect.ImmutableSet;
 import com.petrolpark.destroy.Destroy;
 import com.simibubi.create.content.processing.recipe.ProcessingRecipeBuilder;
 import com.simibubi.create.content.processing.recipe.ProcessingRecipeSerializer;
 import com.simibubi.create.foundation.recipe.IRecipeTypeInfo;
 import com.simibubi.create.foundation.utility.Lang;
-import com.simibubi.create.foundation.utility.RegisteredObjects;
 
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
@@ -37,11 +34,14 @@ public enum DestroyRecipeTypes implements IRecipeTypeInfo {
     MUTATION(MutationRecipe::new),
     OBLITERATION(ObliterationRecipe::new),
     REACTION(ReactionRecipe::new),
+    TAPPING(TappingRecipe::new),
 
-    DURATION_4_FIREWORK_ROCKET_CRAFTING(() -> ExtendedDurationFireworkRocketRecipe.DURATION_4_FIREWORK_ROCKET, () -> RecipeType.CRAFTING, false),
-    DURATION_5_FIREWORK_ROCKET_CRAFTING(() -> ExtendedDurationFireworkRocketRecipe.DURATION_5_FIREWORK_ROCKET, () -> RecipeType.CRAFTING, false),
+    MANUAL_ONLY_CRAFING_SHAPED(ManualOnlyShapedRecipe.Serializer::new, () -> ManualOnlyShapedRecipe.TYPE, true),
 
-    BADGE_DUPLICATION(() -> BadgeDuplicationRecipe.BADGE_DUPLICATION, () -> RecipeType.CRAFTING, false);
+    DURATION_4_FIREWORK_ROCKET_CRAFTING(() -> ExtendedDurationFireworkRocketRecipe.DURATION_4_FIREWORK_ROCKET, () -> RecipeType.CRAFTING),
+    DURATION_5_FIREWORK_ROCKET_CRAFTING(() -> ExtendedDurationFireworkRocketRecipe.DURATION_5_FIREWORK_ROCKET, () -> RecipeType.CRAFTING),
+
+    BADGE_DUPLICATION(() -> BadgeDuplicationRecipe.BADGE_DUPLICATION, () -> RecipeType.CRAFTING);
 
     // This is alllllll copied from Create source code
     private final ResourceLocation id;
@@ -49,6 +49,10 @@ public enum DestroyRecipeTypes implements IRecipeTypeInfo {
     @Nullable
     private final RegistryObject<RecipeType<?>> typeObject;
     private final Supplier<RecipeType<?>> type;
+
+    DestroyRecipeTypes(Supplier<RecipeSerializer<?>> serializerSupplier, Supplier<RecipeType<?>> typeSupplier) {
+        this(serializerSupplier, typeSupplier, false);
+    };
 
     DestroyRecipeTypes(Supplier<RecipeSerializer<?>> serializerSupplier, Supplier<RecipeType<?>> typeSupplier, boolean registerType) {
         String name = Lang.asId(name());
@@ -60,29 +64,19 @@ public enum DestroyRecipeTypes implements IRecipeTypeInfo {
         } else {
             typeObject = null;
             type = typeSupplier;
-        }
+        };
     };
 
     DestroyRecipeTypes(Supplier<RecipeSerializer<?>> serializerSupplier) {
         String name = Lang.asId(name());
         id = Destroy.asResource(name);
         serializerObject = Registers.SERIALIZER_REGISTER.register(name, serializerSupplier);
-        typeObject = Registers.TYPE_REGISTER.register(name, () -> simpleType(id));
+        typeObject = Registers.TYPE_REGISTER.register(name, () -> RecipeType.simple(id));
         type = typeObject;
     };
 
     DestroyRecipeTypes(ProcessingRecipeBuilder.ProcessingRecipeFactory<?> processingFactory) {
         this(() -> new ProcessingRecipeSerializer<>(processingFactory));
-    };
-
-    public static <T extends Recipe<?>> RecipeType<T> simpleType(ResourceLocation id) {
-        String stringId = id.toString();
-        return new RecipeType<T>() {
-            @Override
-            public String toString() {
-                return stringId;
-            }
-        };
     };
 
     public static void register(IEventBus modEventBus) {
@@ -110,18 +104,6 @@ public enum DestroyRecipeTypes implements IRecipeTypeInfo {
     public <C extends Container, T extends Recipe<C>> Optional<T> find(C inv, Level world) {
         return world.getRecipeManager()
             .getRecipeFor(getType(), inv, world);
-    };
-
-    public static final Set<ResourceLocation> RECIPE_DENY_SET =
-        ImmutableSet.of(new ResourceLocation("occultism", "spirit_trade"), new ResourceLocation("occultism", "ritual"));
-
-    public static boolean shouldIgnoreInAutomation(Recipe<?> recipe) {
-        RecipeSerializer<?> serializer = recipe.getSerializer();
-        if (serializer != null && RECIPE_DENY_SET.contains(RegisteredObjects.getKeyOrThrow(serializer)))
-            return true;
-        return recipe.getId()
-            .getPath()
-            .endsWith("_manual_only");
     };
 
     private static class Registers {

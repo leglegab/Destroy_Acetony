@@ -1,6 +1,6 @@
 package com.petrolpark.destroy.block;
 
-import com.petrolpark.destroy.advancement.DestroyAdvancements;
+import com.petrolpark.destroy.advancement.DestroyAdvancementTrigger;
 import com.petrolpark.destroy.block.entity.AgingBarrelBlockEntity;
 import com.petrolpark.destroy.block.entity.DestroyBlockEntityTypes;
 import com.petrolpark.destroy.block.shape.DestroyShapes;
@@ -65,7 +65,7 @@ public class AgingBarrelBlock extends HorizontalDirectionalBlock implements IBE<
 
             if (be.tryOpen()) {
                 DestroySoundEvents.AGING_BARREL_OPEN.playOnServer(level, pos);
-                DestroyAdvancements.OPEN_AGING_BARREL.award(level, player);
+                DestroyAdvancementTrigger.OPEN_AGING_BARREL.award(level, player);
                 return InteractionResult.SUCCESS;
             };
 

@@ -6,6 +6,7 @@
     "destroy:palladium_ingot",
     "destroy:platinum_ingot",
     "destroy:rhodium_ingot",
+    "destroy:stainless_steel_ingot",
     "destroy:pure_gold_ingot"
   ]
 }

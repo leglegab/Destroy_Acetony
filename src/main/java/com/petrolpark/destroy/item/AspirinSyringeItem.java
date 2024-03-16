@@ -1,6 +1,6 @@
 package com.petrolpark.destroy.item;
 
-import com.petrolpark.destroy.advancement.DestroyAdvancements;
+import com.petrolpark.destroy.advancement.DestroyAdvancementTrigger;
 import com.petrolpark.destroy.effect.DestroyMobEffects;
 
 import net.minecraft.world.entity.LivingEntity;
@@ -19,7 +19,7 @@ public class AspirinSyringeItem extends SyringeItem {
         target.heal(10);
         if (!target.removeEffect(DestroyMobEffects.HANGOVER.get())) return;
         if (target instanceof Player player) {
-            DestroyAdvancements.CURE_HANGOVER.award(level, player);
+            DestroyAdvancementTrigger.CURE_HANGOVER.award(level, player);
         };
     };
     

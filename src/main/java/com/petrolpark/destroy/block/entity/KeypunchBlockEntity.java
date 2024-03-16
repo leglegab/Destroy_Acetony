@@ -5,13 +5,16 @@ import java.util.UUID;
 import java.util.concurrent.atomic.AtomicReference;
 
 import com.petrolpark.destroy.Destroy;
+import com.petrolpark.destroy.advancement.DestroyAdvancementTrigger;
 import com.petrolpark.destroy.block.KeypunchBlock;
+import com.petrolpark.destroy.block.entity.behaviour.AbstractRememberPlacerBehaviour;
 import com.petrolpark.destroy.block.entity.behaviour.CircuitPunchingBehaviour;
 import com.petrolpark.destroy.block.entity.behaviour.DestroyAdvancementBehaviour;
 import com.petrolpark.destroy.block.entity.behaviour.ICircuitPuncher;
 import com.petrolpark.destroy.block.entity.behaviour.CircuitPunchingBehaviour.CircuitPunchingSpecifics;
 import com.petrolpark.destroy.item.CircuitMaskItem;
 import com.petrolpark.destroy.item.CircuitPatternItem;
+import com.petrolpark.destroy.item.DestroyItems;
 import com.petrolpark.destroy.item.directional.DirectionalTransportedItemStack;
 import com.petrolpark.destroy.item.directional.IDirectionalOnBelt;
 import com.petrolpark.destroy.network.DestroyMessages;
@@ -19,6 +22,7 @@ import com.petrolpark.destroy.network.packet.RequestKeypunchNamePacket;
 import com.petrolpark.destroy.util.circuit.CircuitPuncherHandler;
 import com.simibubi.create.content.kinetics.base.KineticBlockEntity;
 import com.simibubi.create.content.kinetics.belt.transport.TransportedItemStack;
+import com.simibubi.create.foundation.blockEntity.behaviour.BehaviourType;
 import com.simibubi.create.foundation.blockEntity.behaviour.BlockEntityBehaviour;
 
 import net.minecraft.core.BlockPos;
@@ -41,12 +45,14 @@ public class KeypunchBlockEntity extends KineticBlockEntity implements ICircuitP
 
     public CircuitPunchingBehaviour punchingBehaviour;
     public DestroyAdvancementBehaviour advancementBehaviour;
+    public NamingBehaviour namingBehaviour;
 
     public KeypunchBlockEntity(BlockEntityType<?> typeIn, BlockPos pos, BlockState state) {
         super(typeIn, pos, state);
         pistonPosition = 0;
         uuid = UUID.randomUUID();
         name = "";
+        namedYet = false;
     };
 
     @Override
@@ -62,14 +68,17 @@ public class KeypunchBlockEntity extends KineticBlockEntity implements ICircuitP
         punchingBehaviour = new CircuitPunchingBehaviour(this);
         behaviours.add(punchingBehaviour);
 
-        advancementBehaviour = new DestroyAdvancementBehaviour(this);
+        advancementBehaviour = new DestroyAdvancementBehaviour(this, DestroyAdvancementTrigger.USE_KEYPUNCH);
         behaviours.add(advancementBehaviour);
+
+        namingBehaviour = new NamingBehaviour();
+        behaviours.add(namingBehaviour);
     };
 
     @Override
     public boolean tryProcessOnBelt(DirectionalTransportedItemStack input, AtomicReference<TransportedItemStack> output, boolean simulate) {
         ItemStack stack = input.stack;
-        if (!(stack.getItem() instanceof CircuitMaskItem)) return false;
+        if (!stack.getItem().equals(DestroyItems.CIRCUIT_MASK.get())) return false;
         int pattern = CircuitPatternItem.getPattern(stack);
 
         int positionToPunch = getActualPosition();
@@ -122,7 +131,7 @@ public class KeypunchBlockEntity extends KineticBlockEntity implements ICircuitP
         super.tick();
         if (Destroy.CIRCUIT_PUNCHER_HANDLER.getPuncher(getLevel(), uuid) == CircuitPuncherHandler.UNKNOWN) Destroy.CIRCUIT_PUNCHER_HANDLER.addPuncher(level, this);
         if (!namedYet && !getLevel().isClientSide()) {
-            Player player = advancementBehaviour.getPlayer();
+            Player player = namingBehaviour.getPlayer();
             if (player != null && player instanceof ServerPlayer serverPlayer) {
                 DestroyMessages.sendToClient(new RequestKeypunchNamePacket(getBlockPos()), serverPlayer);
             } else {
@@ -134,7 +143,7 @@ public class KeypunchBlockEntity extends KineticBlockEntity implements ICircuitP
 
     @Override
     public void onPunchingCompleted() {
-        // TODO advancement
+        advancementBehaviour.awardDestroyAdvancement(DestroyAdvancementTrigger.USE_KEYPUNCH);
     };
 
     @Override
@@ -179,6 +188,26 @@ public class KeypunchBlockEntity extends KineticBlockEntity implements ICircuitP
     public void invalidate() {
         Destroy.CIRCUIT_PUNCHER_HANDLER.removePuncher(getLevel(), this);
         super.invalidate();
+    };
+
+    public class NamingBehaviour extends AbstractRememberPlacerBehaviour {
+
+        public static BehaviourType<NamingBehaviour> TYPE = new BehaviourType<>();
+
+        public NamingBehaviour() {
+            super(KeypunchBlockEntity.this);
+        };
+
+        @Override
+        public boolean shouldRememberPlacer(Player placer) {
+            return !namedYet;
+        };
+
+        @Override
+        public BehaviourType<?> getType() {
+            return TYPE;
+        };
+
     };
     
 };

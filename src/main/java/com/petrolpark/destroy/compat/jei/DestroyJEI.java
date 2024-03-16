@@ -28,6 +28,7 @@ import com.petrolpark.destroy.compat.jei.category.ITickableCategory;
 import com.petrolpark.destroy.compat.jei.category.MutationCategory;
 import com.petrolpark.destroy.compat.jei.category.ObliterationCategory;
 import com.petrolpark.destroy.compat.jei.category.ReactionCategory;
+import com.petrolpark.destroy.compat.jei.category.TappingCategory;
 import com.petrolpark.destroy.compat.tfmg.SharedDistillationRecipes;
 import com.petrolpark.destroy.effect.potion.PotionSeparationRecipes;
 import com.petrolpark.destroy.fluid.DestroyFluids;
@@ -43,6 +44,7 @@ import com.petrolpark.destroy.recipe.ExtrusionRecipe;
 import com.petrolpark.destroy.recipe.MutationRecipe;
 import com.petrolpark.destroy.recipe.ObliterationRecipe;
 import com.petrolpark.destroy.recipe.ReactionRecipe;
+import com.petrolpark.destroy.recipe.TappingRecipe;
 import com.petrolpark.destroy.recipe.ReactionRecipe.GenericReactionRecipe;
 import com.petrolpark.destroy.util.DestroyLang;
 import com.simibubi.create.AllBlocks;
@@ -205,7 +207,15 @@ public class DestroyJEI implements IModPlugin {
             .catalyst(AllBlocks.BASIN::get)
             .doubleItemIcon(DestroyBlocks.DYNAMO.get(), AllBlocks.BASIN.get())
             .emptyBackground(177, 85)
-            .build("electrolysis", (info, helpers) -> new ElectrolysisCategory(info));
+            .build("electrolysis", (info, helpers) -> new ElectrolysisCategory(info)),
+
+        tapping = builder(TappingRecipe.class)
+            .addRecipes(() -> TappingCategory.RECIPES)
+            .acceptsMixtures()
+            .catalyst(DestroyBlocks.TREE_TAP::get)
+            .itemIcon(DestroyBlocks.TREE_TAP.get())
+            .emptyBackground(177, 70)
+            .build("tapping", TappingCategory::new);
 
         DestroyJEI.MOLECULE_RECIPES_NEED_PROCESSING = false;
     };

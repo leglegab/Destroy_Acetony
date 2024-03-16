@@ -598,6 +598,14 @@ public final class DestroyMolecules {
         .tag(Tags.OZONE_DEPLETER)
         .build(),
 
+    ISOPRENE = builder()
+        .id("isoprene")
+        .structure(Formula.deserialize("destroy:linear:C=C(C)CC=C"))
+        .boilingPoint(34f)
+        .density(681f)
+        .molarHeatCapacity(102.69f)
+        .build(),
+
     IODIDE = builder()
         .id("iodide")
         .structure(Formula.atom(Element.IODINE, -1))
@@ -671,6 +679,7 @@ public final class DestroyMolecules {
         .molarHeatCapacity(68.62f)
         .tag(Tags.ACUTELY_TOXIC)
         .tag(Tags.SMOG)
+        .tag(Tags.SOLVENT)
         .build(),
 
     METHYLAMINE = builder()
@@ -1048,6 +1057,7 @@ public final class DestroyMolecules {
         .boilingPoint(72.7f)
         .density(934f)
         .molarHeatCapacity(169.5f)
+        .tag(Tags.ADHESIVE)
         .tag(Tags.CARCINOGEN)
         .tag(Tags.FRAGRANT)
         .tag(Tags.SMOG)
@@ -1055,7 +1065,7 @@ public final class DestroyMolecules {
 
     WATER = builder()
         .id("water")
-        .structure(Formula.deserialize("destroy:linear:O"))
+        .structure(Formula.deserialize("destroy:linear:HOH"))
         .boilingPoint(100f)
         .density(1000f)
         .specificHeatCapacity(4160f)

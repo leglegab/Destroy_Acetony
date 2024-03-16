@@ -1,0 +1,8 @@
+{
+    "type": "create:crushing",
+    "conditions": [
+        {
+            "type": "forge:false"
+        }
+    ]
+}

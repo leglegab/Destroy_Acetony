@@ -21,6 +21,7 @@ import com.petrolpark.destroy.block.renderer.PlanetaryGearsetRenderer;
 import com.petrolpark.destroy.block.renderer.PollutometerRenderer;
 import com.petrolpark.destroy.block.renderer.PumpjackRenderer;
 import com.petrolpark.destroy.block.renderer.RedstoneProgrammerRenderer;
+import com.petrolpark.destroy.block.renderer.TreeTapRenderer;
 import com.petrolpark.destroy.block.renderer.VatRenderer;
 import com.petrolpark.destroy.block.renderer.VatSideRenderer;
 import com.simibubi.create.content.kinetics.simpleRelays.BracketedKineticBlockEntityInstance;
@@ -146,6 +147,12 @@ public class DestroyBlockEntityTypes {
     public static final BlockEntityEntry<SandCastleBlockEntity> SAND_CASTLE = REGISTRATE
         .blockEntity("sand_castle", SandCastleBlockEntity::new)
         .validBlocks(DestroyBlocks.SAND_CASTLE)
+        .register();
+
+    public static final BlockEntityEntry<TreeTapBlockEntity> TREE_TAP = REGISTRATE
+        .blockEntity("tree_tap", TreeTapBlockEntity::new)
+        .validBlock(DestroyBlocks.TREE_TAP)
+        .renderer(() -> TreeTapRenderer::new)
         .register();
 
     public static final BlockEntityEntry<VatControllerBlockEntity> VAT_CONTROLLER = REGISTRATE

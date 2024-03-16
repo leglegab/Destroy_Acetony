@@ -3,7 +3,7 @@ package com.petrolpark.destroy.block.entity;
 import java.util.List;
 import java.util.Optional;
 
-import com.petrolpark.destroy.advancement.DestroyAdvancements;
+import com.petrolpark.destroy.advancement.DestroyAdvancementTrigger;
 import com.petrolpark.destroy.block.DestroyBlocks;
 import com.petrolpark.destroy.block.entity.behaviour.ChargingBehaviour;
 import com.petrolpark.destroy.block.entity.behaviour.DestroyAdvancementBehaviour;
@@ -62,12 +62,12 @@ public class DynamoBlockEntity extends BasinOperatingBlockEntity implements Char
         chargingBehaviour = new ChargingBehaviour(this);
         behaviours.add(chargingBehaviour);
 
-        advancementBehaviour = new DestroyAdvancementBehaviour(this);
+        advancementBehaviour = new DestroyAdvancementBehaviour(this, DestroyAdvancementTrigger.CHARGE_WITH_DYNAMO, DestroyAdvancementTrigger.ELECTROLYZE_WITH_DYNAMO);
         behaviours.add(advancementBehaviour);
     };
 
     public void onItemCharged(ItemStack stack) {
-        advancementBehaviour.awardDestroyAdvancement(DestroyAdvancements.CHARGE_WITH_DYNAMO);
+        advancementBehaviour.awardDestroyAdvancement(DestroyAdvancementTrigger.CHARGE_WITH_DYNAMO);
     };
 
     @Override
@@ -175,7 +175,7 @@ public class DynamoBlockEntity extends BasinOperatingBlockEntity implements Char
 		if (chargingBehaviour.running && chargingBehaviour.runningTicks <= ChargingBehaviour.CHARGING_TIME) return; // If this isn't the right time to process
 		super.startProcessingBasin();
 
-        advancementBehaviour.awardDestroyAdvancement(DestroyAdvancements.ELECTROLYZE_WITH_DYNAMO);
+        advancementBehaviour.awardDestroyAdvancement(DestroyAdvancementTrigger.ELECTROLYZE_WITH_DYNAMO);
 
 		chargingBehaviour.start(ChargingBehaviour.Mode.BASIN, Vec3.atBottomCenterOf(getBlockPos().below(2)).add(0f, (2 / 16f) + getBasin().map(basin -> {
             IFluidHandler fluidHandler = basin.getCapability(ForgeCapabilities.FLUID_HANDLER).orElse(null);

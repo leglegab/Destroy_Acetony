@@ -2,7 +2,7 @@ package com.petrolpark.destroy.util;
 
 import java.util.List;
 
-import com.petrolpark.destroy.advancement.DestroyAdvancements;
+import com.petrolpark.destroy.advancement.DestroyAdvancementTrigger;
 import com.petrolpark.destroy.capability.level.pollution.LevelPollutionProvider;
 import com.petrolpark.destroy.capability.level.pollution.LevelPollution.PollutionType;
 import com.petrolpark.destroy.chemistry.Molecule;
@@ -61,9 +61,9 @@ public class PollutionHelper {
 
             // Award Advancements for fully polluting/repairing the world
             if (level instanceof ServerLevel serverLevel && levelPollution.hasPollutionEverBeenMaxed()) {
-                serverLevel.players().forEach(player -> DestroyAdvancements.FULLY_POLLUTE.award(serverLevel, player));
+                serverLevel.players().forEach(player -> DestroyAdvancementTrigger.FULLY_POLLUTE.award(serverLevel, player));
                 if (levelPollution.hasPollutionEverBeenFullyReduced()) {
-                    serverLevel.players().forEach(player -> DestroyAdvancements.UNPOLLUTE.award(serverLevel, player));
+                    serverLevel.players().forEach(player -> DestroyAdvancementTrigger.UNPOLLUTE.award(serverLevel, player));
                 };
             };
             return newValue;

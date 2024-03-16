@@ -10,7 +10,7 @@
         "tag": "forge:rods/wooden"
       },
       "P": {
-        "tag": "destroy:plastic"
+        "tag": "destroy:plastic/textile"
       }
     },
     "result": {

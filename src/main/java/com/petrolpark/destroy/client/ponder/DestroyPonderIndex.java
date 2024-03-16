@@ -5,6 +5,8 @@ import java.util.List;
 import com.petrolpark.destroy.Destroy;
 import com.petrolpark.destroy.block.DestroyBlocks;
 import com.petrolpark.destroy.block.PeriodicTableBlock;
+import com.petrolpark.destroy.client.ponder.scene.DestroyScenes;
+import com.petrolpark.destroy.client.ponder.scene.TrypolithographyScenes;
 import com.petrolpark.destroy.item.DestroyItems;
 import com.simibubi.create.AllBlocks;
 import com.simibubi.create.Create;
@@ -83,6 +85,12 @@ public class DestroyPonderIndex {
         HELPER.forComponents(DestroyItems.HYPERACCUMULATING_FERTILIZER)
             .addStoryBoard("phytomining", DestroyScenes::phytomining);
 
+        // Keypunch
+        HELPER.forComponents(DestroyItems.CIRCUIT_MASK, DestroyBlocks.KEYPUNCH)
+            .addStoryBoard("trypolithography/intro", TrypolithographyScenes::intro)
+            .addStoryBoard("trypolithography/rotating", TrypolithographyScenes::rotating)
+            .addStoryBoard("trypolithography/flipping", TrypolithographyScenes::flipping);
+
         // Mechanical Mixer
         HELPER.forComponents(AllBlocks.MECHANICAL_MIXER)
             .addStoryBoard("reactions", DestroyScenes::reactions);
@@ -98,6 +106,10 @@ public class DestroyPonderIndex {
         HELPER.forComponents(DestroyBlocks.PUMPJACK)
             .addStoryBoard("pumpjack", DestroyScenes::pumpjack);
 
+        // Tree Tap
+        HELPER.forComponents(DestroyBlocks.TREE_TAP)
+            .addStoryBoard("tree_tap", DestroyScenes::treeTap);
+
         // Vat Controller
         HELPER.forComponents(DestroyBlocks.VAT_CONTROLLER)
             .addStoryBoard("vat/construction", DestroyScenes::vatConstruction)
@@ -108,6 +120,7 @@ public class DestroyPonderIndex {
 
     private static final ResourceLocation periodicTableSchematicLocation = Destroy.asResource("periodic_table");
 
+    @SuppressWarnings("deprecation")
     public static void refreshPeriodicTableBlockScenes() {
         PeriodicTableBlock.ELEMENTS.forEach(entry -> {
             entry.blocks().forEach(block -> {

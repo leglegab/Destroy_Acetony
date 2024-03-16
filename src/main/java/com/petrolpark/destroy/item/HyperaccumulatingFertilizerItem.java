@@ -1,6 +1,6 @@
 package com.petrolpark.destroy.item;
 
-import com.petrolpark.destroy.advancement.DestroyAdvancements;
+import com.petrolpark.destroy.advancement.DestroyAdvancementTrigger;
 import com.petrolpark.destroy.util.CropMutation;
 
 import net.minecraft.core.BlockPos;
@@ -65,7 +65,7 @@ public class HyperaccumulatingFertilizerItem extends BoneMealItem {
             if (!level.isClientSide() && player != null && !player.isCreative()) {
                 context.getItemInHand().shrink(1);
             };
-            DestroyAdvancements.HYPERACCUMULATE.award(level, player);
+            DestroyAdvancementTrigger.HYPERACCUMULATE.award(level, player);
             return InteractionResult.SUCCESS;
         };
         return super.useOn(context);

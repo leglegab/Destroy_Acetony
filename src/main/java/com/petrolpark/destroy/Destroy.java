@@ -1,7 +1,7 @@
 package com.petrolpark.destroy;
 
 import com.mojang.logging.LogUtils;
-import com.petrolpark.destroy.advancement.DestroyAdvancements;
+import com.petrolpark.destroy.advancement.DestroyAdvancementTrigger;
 import com.petrolpark.destroy.badge.Badge;
 import com.petrolpark.destroy.badge.DestroyBadges;
 import com.petrolpark.destroy.block.DestroyBlocks;
@@ -75,12 +75,14 @@ public class Destroy {
 
     // Utility
     public static final Logger LOGGER = LogUtils.getLogger();
+    public static final boolean datagen = false;
 
+    // Registrate(s)
     @MoveToPetrolparkLibrary
     public static final DestroyRegistrate PETROLPARK_REGISTRATE = new DestroyRegistrate("petrolpark");
-
     public static final DestroyRegistrate REGISTRATE = new DestroyRegistrate(MOD_ID);
 
+    // Level-attached managers
     public static final CircuitPuncherHandler CIRCUIT_PUNCHER_HANDLER = new CircuitPuncherHandler();
     public static final CircuitPatternHandler CIRCUIT_PATTERN_HANDLER = new CircuitPatternHandler();
 
@@ -112,7 +114,7 @@ public class Destroy {
         REGISTRATE.registerEventListeners(modEventBus);
 
         // Mod objects
-        DestroySoundEvents.prepare();
+        if (!datagen) DestroySoundEvents.prepare(); // Sound datagen is broken and I can't be bothered to fix it
         DestroyBadges.register();
         DestroyCreativeModeTabs.register(modEventBus);
         DestroyTags.register();
@@ -139,7 +141,7 @@ public class Destroy {
 
         // Initiation Events
         modEventBus.addListener(Destroy::init);
-        modEventBus.addListener(DestroySoundEvents::register);
+        if (!datagen) modEventBus.addListener(DestroySoundEvents::register);
         modEventBus.addListener(Destroy::clientInit);
         modEventBus.addListener(EventPriority.LOWEST, Destroy::gatherData);
 
@@ -161,7 +163,7 @@ public class Destroy {
         });
         VatMaterial.registerDestroyVatMaterials();
         DestroyOpenEndedPipeEffects.register();
-        DestroyAdvancements.register();
+        DestroyAdvancementTrigger.register();
         DestroyPotatoCannonProjectileTypes.register();
         DestroyExtrusions.register();
 

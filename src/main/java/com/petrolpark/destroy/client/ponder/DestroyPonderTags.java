@@ -50,9 +50,11 @@ public class DestroyPonderTags {
             .add(DestroyBlocks.DYNAMO)
             .add(DestroyBlocks.EXTRUSION_DIE)
             .add(DestroyItems.HYPERACCUMULATING_FERTILIZER)
+            .add(DestroyBlocks.KEYPUNCH)
             .add(DestroyBlocks.PLANETARY_GEARSET)
             .add(DestroyBlocks.PUMPJACK)
             .add(DestroyItems.SEISMOMETER)
+            .add(DestroyBlocks.TREE_TAP)
             .add(DestroyBlocks.VAT_CONTROLLER)
         ;
 
@@ -69,6 +71,8 @@ public class DestroyPonderTags {
         PonderRegistry.TAGS.forTag(AllPonderTags.KINETIC_APPLIANCES)
             .add(DestroyBlocks.CENTRIFUGE)
             .add(DestroyBlocks.DYNAMO)
+            .add(DestroyBlocks.KEYPUNCH)
+            .add(DestroyBlocks.TREE_TAP)
         ;
 
         PonderRegistry.TAGS.forTag(AllPonderTags.KINETIC_RELAYS)

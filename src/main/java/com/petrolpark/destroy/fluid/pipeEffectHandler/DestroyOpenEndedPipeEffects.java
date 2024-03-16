@@ -10,8 +10,8 @@ public class DestroyOpenEndedPipeEffects {
   
     public static final void register() {
         OpenEndedPipe.registerEffectHandler(new PollutingOpenEndedPipeEffect());
-        OpenEndedPipe.registerEffectHandler(new BurningOpenEndedPipeEffectHandler(DestroyFluids.NAPALM_SUNDAE.get()));
-        OpenEndedPipe.registerEffectHandler(new BurningOpenEndedPipeEffectHandler(DestroyFluids.MOLTEN_CINNABAR.get()));
+        OpenEndedPipe.registerEffectHandler(new BurningOpenEndedPipeEffect(DestroyFluids.NAPALM_SUNDAE.get()));
+        OpenEndedPipe.registerEffectHandler(new BurningOpenEndedPipeEffect(DestroyFluids.MOLTEN_CINNABAR.get()));
         OpenEndedPipe.registerEffectHandler(new EffectApplyingOpenEndedPipeEffect(new MobEffectInstance(DestroyMobEffects.FRAGRANCE.get(), 21, 0, false, false, true), DestroyFluids.PERFUME.get()));
         OpenEndedPipe.registerEffectHandler(new EffectApplyingOpenEndedPipeEffect(new MobEffectInstance(DestroyMobEffects.INEBRIATION.get(), 21, 0, false, false, true), DestroyFluids.UNDISTILLED_MOONSHINE.get()));
         OpenEndedPipe.registerEffectHandler(new EffectApplyingOpenEndedPipeEffect(new MobEffectInstance(DestroyMobEffects.INEBRIATION.get(), 21, 0, false, false, true), DestroyFluids.ONCE_DISTILLED_MOONSHINE.get()));

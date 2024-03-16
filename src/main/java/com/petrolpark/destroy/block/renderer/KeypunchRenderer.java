@@ -12,7 +12,6 @@ import com.simibubi.create.foundation.render.SuperByteBuffer;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider.Context;
-import net.minecraft.core.Direction;
 import net.minecraft.world.level.block.state.BlockState;
 
 public class KeypunchRenderer extends KineticBlockEntityRenderer<KeypunchBlockEntity> {
@@ -43,8 +42,7 @@ public class KeypunchRenderer extends KineticBlockEntityRenderer<KeypunchBlockEn
 
 	@Override
 	protected SuperByteBuffer getRotatedModel(KeypunchBlockEntity be, BlockState state) {
-		return CachedBufferer.partial(AllPartialModels.SHAFTLESS_COGWHEEL, state)
-            .rotateToFace(Direction.UP);
+		return CachedBufferer.partial(AllPartialModels.SHAFTLESS_COGWHEEL, state);
 	};
     
 };

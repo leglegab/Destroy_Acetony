@@ -51,6 +51,9 @@ public class DestroyShapes {
         .add(2, 3, 2, 14, 10, 14)
         .build(),
 
+    TREE_TAP = shape(0, 0, 0, 16, 13, 16)
+        .build(),
+
     MOLTEN_STAINLESS_STEEL_COLLISION = shape(0, 0, 0, 16, 14, 16)
         .build();
 

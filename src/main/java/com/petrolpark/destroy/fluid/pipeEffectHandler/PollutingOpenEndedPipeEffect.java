@@ -28,7 +28,7 @@ public class PollutingOpenEndedPipeEffect implements IEffectHandler {
 
     @Override
     public void applyEffects(OpenEndedPipe pipe, FluidStack fluid) {
-        PollutionHelper.pollute(pipe.getWorld(), fluid);
+        PollutionHelper.pollute(pipe.getWorld(), pipe.getOutputPos(), fluid);
         if (random.nextInt(20) == 0) DestroyMessages.sendToAllClients(new EvaporatingFluidS2CPacket(pipe.getOutputPos(), fluid));
     };
     

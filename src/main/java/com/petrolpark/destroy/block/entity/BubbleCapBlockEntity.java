@@ -9,7 +9,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import com.petrolpark.destroy.Destroy;
-import com.petrolpark.destroy.advancement.DestroyAdvancements;
+import com.petrolpark.destroy.advancement.DestroyAdvancementTrigger;
 import com.petrolpark.destroy.block.BubbleCapBlock;
 import com.petrolpark.destroy.block.display.MixtureContentsDisplaySource;
 import com.petrolpark.destroy.block.entity.behaviour.DestroyAdvancementBehaviour;
@@ -102,7 +102,7 @@ public class BubbleCapBlockEntity extends SmartBlockEntity implements IHaveGoggl
 			return new CombinedTankWrapper(tank.getCapability().orElse(null), internalTank.getCapability().orElse(null));
 		});
 
-        advancementBehaviour = new DestroyAdvancementBehaviour(this);
+        advancementBehaviour = new DestroyAdvancementBehaviour(this, DestroyAdvancementTrigger.DISTILL);
         behaviours.add(advancementBehaviour);
 
         pollutingBehaviour = new PollutingBehaviour(this);
@@ -198,7 +198,7 @@ public class BubbleCapBlockEntity extends SmartBlockEntity implements IHaveGoggl
     public void onDistill() {
         if (!isController) return;
         DestroySoundEvents.DISTILLATION_TOWER_BOIL.playOnServer(level, getBlockPos());
-        advancementBehaviour.awardDestroyAdvancement(DestroyAdvancements.DISTILL);
+        advancementBehaviour.awardDestroyAdvancement(DestroyAdvancementTrigger.DISTILL);
     };
 
     public static int getTankCapacity() {

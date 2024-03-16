@@ -2,7 +2,6 @@
   "values": [
     "destroy:crushed_raw_chromium",
     "destroy:crushed_raw_palladium",
-    "create:crushed_raw_platinum",
     "destroy:crushed_raw_rhodium"
   ]
 }

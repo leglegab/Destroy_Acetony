@@ -5,7 +5,7 @@ import java.util.Optional;
 
 import com.petrolpark.destroy.Destroy;
 import com.petrolpark.destroy.MoveToPetrolparkLibrary;
-import com.petrolpark.destroy.advancement.DestroyAdvancements;
+import com.petrolpark.destroy.advancement.DestroyAdvancementTrigger;
 import com.petrolpark.destroy.badge.BadgeHandler;
 import com.petrolpark.destroy.block.DestroyBlocks;
 import com.petrolpark.destroy.block.PeriodicTableBlock;
@@ -378,7 +378,7 @@ public class DestroyCommonEvents {
                 DestroySoundEvents.URINATE.playOnServer(level, posOn);
             if (ticksUrinating == 119) {
                 InebriationHelper.increaseInebriation(player, -1);
-                DestroyAdvancements.URINATE.award(level, player);
+                DestroyAdvancementTrigger.URINATE.award(level, player);
                 level.setBlockAndUpdate(posOn, DestroyBlocks.URINE_CAULDRON.getDefaultState());
             };
         };
@@ -487,7 +487,7 @@ public class DestroyCommonEvents {
             if (effect != null) {
                 player.addEffect(new MobEffectInstance(DestroyMobEffects.HANGOVER.get(), DestroyAllConfigs.COMMON.substances.hangoverDuration.get() * (effect.getAmplifier() + 1)));
                 player.removeEffect(DestroyMobEffects.INEBRIATION.get());
-                DestroyAdvancements.HANGOVER.award(player.level(), player);
+                DestroyAdvancementTrigger.HANGOVER.award(player.level(), player);
             };
         };
     };
@@ -525,7 +525,7 @@ public class DestroyCommonEvents {
 
         // Award achievement for shooting a Hefty Beetroot
         if (event.getEntity() instanceof PotatoProjectileEntity projectile && projectile.getOwner() instanceof ServerPlayer player && DestroyItemTags.HEFTY_BEETROOT.matches(projectile.getItem().getItem())) {
-            DestroyAdvancements.SHOOT_HEFTY_BEETROOT.award(player.level(), player);
+            DestroyAdvancementTrigger.SHOOT_HEFTY_BEETROOT.award(player.level(), player);
         };
 
         // Attach new AI to Villagers
@@ -561,7 +561,7 @@ public class DestroyCommonEvents {
                 player.getInventory().placeItemBackInInventory(filled);
             };
 
-            DestroyAdvancements.CAPTURE_STRAY.award(event.getLevel(), player);
+            DestroyAdvancementTrigger.CAPTURE_STRAY.award(event.getLevel(), player);
 
             event.setResult(Result.DENY);
             return;
@@ -582,7 +582,7 @@ public class DestroyCommonEvents {
                 player.getInventory().placeItemBackInInventory(filled);
             };
 
-            DestroyAdvancements.COLLECT_TEARS.award(event.getLevel(), player);
+            DestroyAdvancementTrigger.COLLECT_TEARS.award(event.getLevel(), player);
 
             event.setResult(Result.DENY);
             return;
@@ -664,7 +664,7 @@ public class DestroyCommonEvents {
                 // Update the animation of the Seismometer(s)
                 if (player instanceof ServerPlayer serverPlayer) DestroyMessages.sendToClient(new SeismometerSpikeS2CPacket(), serverPlayer);
                 // Award Advancement if some oil was found
-                if (bucketsOfOil > 0) DestroyAdvancements.USE_SEISMOMETER.award(level, player);
+                if (bucketsOfOil > 0) DestroyAdvancementTrigger.USE_SEISMOMETER.award(level, player);
             };
         });
     };
@@ -776,7 +776,7 @@ public class DestroyCommonEvents {
                         };
                     };
                     if (allPresent) {
-                        DestroyAdvancements.PERIODIC_TABLE.award(level, serverPlayer);
+                        DestroyAdvancementTrigger.PERIODIC_TABLE.award(level, serverPlayer);
                         return;
                     };
                 };
@@ -824,9 +824,10 @@ public class DestroyCommonEvents {
 					Pack pack = Pack.readMetaAndCreate(Destroy.asResource("create_patches").toString(), Components.literal("Destroy Patches For Create"), true, id -> new ModFilePackResources(id, modFile, "resourcepacks/create_patches"), PackType.CLIENT_RESOURCES, Pack.Position.TOP, PackSource.BUILT_IN);
 					if (pack != null) consumer.accept(pack);
 				});
-			} else { // Datapacks
+			} else {
+                // Datapacks
                 event.addRepositorySource(consumer -> {
-                    Pack pack = Pack.readMetaAndCreate(Destroy.asResource("tfmg_compat").toString(), Components.literal("Destroy Compat With Create: TFMG"), false, id -> new ModFilePackResources(id, modFile, "datapacks/tfmg_compat"), PackType.SERVER_DATA, Pack.Position.TOP, PackSource.BUILT_IN);
+                    Pack pack = Pack.readMetaAndCreate(Destroy.asResource("tfmg_compat").toString(), Components.literal("Destroy Compat With Create: TFMG"), false, id -> new ModFilePackResources(id, modFile, "datapacks/tfmg_compat"), PackType.SERVER_DATA, Pack.Position.TOP, PackSource.DEFAULT);
                     if (pack != null) consumer.accept(pack);
                 });
             };

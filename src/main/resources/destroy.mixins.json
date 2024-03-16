@@ -49,6 +49,7 @@
         "ItemDrainBlockMixin",
         "KineticBlockEntityMixin",
         "MechanicalMixerBlockEntityMixin",
+        "OpenEndedPipeMixin",
         "PipeConnectionMixin",
         "PonderTagScreenMixin",
         "PonderUIMixin",

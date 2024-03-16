@@ -2,14 +2,14 @@ package com.petrolpark.destroy.config;
 
 public class DestroyClientConfigs extends DestroyConfigBase {
 
+    public final ConfigBool tempramentalItemDescriptions = b(true, "TempramentalItemDescriptions", Comments.temperamentalItemDescriptions);
+
     public final DestroyClientChemistryConfigs chemistry = nested(0, DestroyClientChemistryConfigs::new, Comments.chemistry);
     public final DestroyMenuButtonConfig configurationButtons = nested(0, DestroyMenuButtonConfig::new, Comments.configurationButtons);
-
-    public final ConfigBool tempramentalItemDescriptions = b(true, "TempramentalItemDescriptions", Comments.temperamentalItemDescriptions);
     
     @Override
     public String getName() {
-        return "server";
+        return "client";
     };
 
     private static class Comments {

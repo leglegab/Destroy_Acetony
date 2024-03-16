@@ -25,22 +25,27 @@ public class DestroyTags {
         CHEMICAL_PROTECTION_LEGS,
         CHEMICAL_PROTECTION_FEET,
         DESTROY_INGOTS,
-        DIRTY_SILICA,
         FERTILIZER,
         HEFTY_BEETROOT,
         LIABLE_TO_CHANGE,
         PAPER_PULPABLE,
         PERIODIC_TABLE_BLOCK,
+
         PLASTIC,
-        PRILL,
+        RIGID_PLASTIC("plastic/rigid"),
+        TEXTILE_PLASTIC("plastic/textile"),
+        POROUS_PLASTIC("plastic/porous"),
+        INERT_PLASTIC("plastic/inert"),
+        RUBBER_PLASTIC("plastic/rubber"),
+
         PRIMARY_EXPLOSIVE("explosive/primary"),
-        SALT,
         SCHEMATICANNON_FUEL,
         SECONDARY_EXPLOSIVE("explosive/secondary"),
+        OBLITERATION_EXPLOSIVE,  // This tag is only used to display the right Blocks in JEI.
+
         SPRAY_BOTTLE,
         SYRINGE,
         YEAST,
-        OBLITERATION_EXPLOSIVE // This tag is only used to display the right Blocks in JEI.
         ;
 
         public final TagKey<Item> tag;

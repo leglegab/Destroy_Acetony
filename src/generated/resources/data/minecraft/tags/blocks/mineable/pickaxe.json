@@ -21,6 +21,7 @@
     "destroy:platinum_block",
     "destroy:rhodium_block",
     "destroy:lead_block",
+    "destroy:stainless_steel_block",
     "destroy:fluorite_ore",
     "destroy:deepslate_fluorite_ore",
     "destroy:end_fluorite_ore",

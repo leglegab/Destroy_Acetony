@@ -1,0 +1,7 @@
+{
+    "parent": "minecraft:block/cube_column",
+    "textures": {
+      "end": "destroy:block/plywood_end",
+      "side": "destroy:block/plywood_side"
+    }
+  }

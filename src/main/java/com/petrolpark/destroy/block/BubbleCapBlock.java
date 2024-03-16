@@ -4,7 +4,7 @@ import javax.annotation.Nullable;
 
 import com.petrolpark.destroy.block.entity.BubbleCapBlockEntity;
 import com.petrolpark.destroy.block.entity.DestroyBlockEntityTypes;
-import com.petrolpark.destroy.block.entity.behaviour.DestroyAdvancementBehaviour;
+import com.petrolpark.destroy.block.entity.behaviour.AbstractRememberPlacerBehaviour;
 import com.petrolpark.destroy.block.shape.DestroyShapes;
 import com.simibubi.create.content.equipment.wrench.IWrenchable;
 import com.simibubi.create.foundation.block.IBE;
@@ -93,7 +93,7 @@ public class BubbleCapBlock extends Block implements IBE<BubbleCapBlockEntity>, 
 
     @Override
     public void setPlacedBy(Level level, BlockPos pos, BlockState state, @Nullable LivingEntity placer, ItemStack stack) {
-        DestroyAdvancementBehaviour.setPlacedBy(level, pos, placer);
+        AbstractRememberPlacerBehaviour.setPlacedBy(level, pos, placer);
         super.setPlacedBy(level, pos, state, placer, stack);
     };
 

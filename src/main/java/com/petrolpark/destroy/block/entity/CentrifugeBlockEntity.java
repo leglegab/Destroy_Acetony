@@ -15,7 +15,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 import com.petrolpark.destroy.Destroy;
-import com.petrolpark.destroy.advancement.DestroyAdvancements;
+import com.petrolpark.destroy.advancement.DestroyAdvancementTrigger;
 import com.petrolpark.destroy.block.CentrifugeBlock;
 import com.petrolpark.destroy.block.display.MixtureContentsDisplaySource;
 import com.petrolpark.destroy.block.entity.behaviour.DestroyAdvancementBehaviour;
@@ -112,7 +112,7 @@ public class CentrifugeBlockEntity extends KineticBlockEntity implements IDirect
             return new CombinedTankWrapper(inputTank.getCapability().orElse(null), denseOutputTank.getCapability().orElse(null), lightOutputTank.getCapability().orElse(null));
         });
 
-        advancementBehaviour = new DestroyAdvancementBehaviour(this);
+        advancementBehaviour = new DestroyAdvancementBehaviour(this, DestroyAdvancementTrigger.USE_CENTRIFUGE);
         behaviours.add(advancementBehaviour);
 
         pollutingBehaviour = new PollutingBehaviour(this);
@@ -452,7 +452,7 @@ public class CentrifugeBlockEntity extends KineticBlockEntity implements IDirect
             getDenseOutputTank().fill(lastRecipe.getDenseOutputFluid(), FluidAction.EXECUTE);
             getLightOutputTank().fill(lastRecipe.getLightOutputFluid(), FluidAction.EXECUTE);
         };
-        advancementBehaviour.awardDestroyAdvancement(DestroyAdvancements.USE_CENTRIFUGE);
+        advancementBehaviour.awardDestroyAdvancement(DestroyAdvancementTrigger.USE_CENTRIFUGE);
         notifyUpdate();
     };
 

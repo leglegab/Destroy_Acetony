@@ -105,12 +105,21 @@ repositories {
         name = 'tterag maven'
         url = 'https://www.cursemaven.com'
     }
-    maven { // Curse Maven
+    maven { // Curse Maven - Farmer's Delight and C:TFMG
         url = "https://cursemaven.com"
         content {
             includeGroup "curse.maven"
         }
     }
+
+    maven { // CBC library library
+        url "https://pkgs.dev.azure.com/djtheredstoner/DevAuth/_packaging/public/maven/v1"
+    }
+
+    maven { // CBC
+        url "https://maven.realrobotix.me/master"
+    }
+
     maven { // Blueprint
         url = "https://maven.jaackson.me"
     }
@@ -170,19 +179,19 @@ dependencies {
 
     // Farmer's Delight
     compileOnly fg.deobf("curse.maven:farmers-delight-398521:${farmersdelight_version}")
-    implementation fg.deobf("curse.maven:farmers-delight-398521:${farmersdelight_version}")
 
     // Blueprint
     compileOnly fg.deobf("com.teamabnormals:blueprint:${minecraft_version}-${blueprint_version}")
-    implementation fg.deobf("com.teamabnormals:blueprint:${minecraft_version}-${blueprint_version}")
 
     // Spark
     compileOnly fg.deobf("curse.maven:spark-361579:${spark_version}")
-    implementation fg.deobf("curse.maven:spark-361579:${spark_version}")
 
     // TFMG
-    implementation fg.deobf("curse.maven:create-industry-693815:5079967")
+    compileOnly fg.deobf("curse.maven:create-industry-693815:5079967")
 
+    // CBC
+    implementation fg.deobf("com.rbasamoyai:ritchiesprojectilelib:1.0.0-369e88d+1.20.1-forge")
+    implementation fg.deobf("com.rbasamoyai:createbigcannons-forge-${minecraft_version}:${cbc_version}")
 
     // ANNOTATION PROCESSORS
 

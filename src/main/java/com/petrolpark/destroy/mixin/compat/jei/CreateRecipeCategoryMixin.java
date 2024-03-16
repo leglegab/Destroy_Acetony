@@ -13,7 +13,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-import com.petrolpark.destroy.chemistry.ReadOnlyMixture;
+import com.petrolpark.destroy.chemistry.ClientMixture;
 import com.petrolpark.destroy.compat.jei.DestroyJEI;
 import com.petrolpark.destroy.config.DestroyAllConfigs;
 import com.petrolpark.destroy.fluid.DestroyFluids;
@@ -120,7 +120,7 @@ public abstract class CreateRecipeCategoryMixin<T extends Recipe<?>> {
                 } else if (view.getRole() == RecipeIngredientRole.OUTPUT) {
                     CompoundTag mixtureTag = fluidTag.getCompound("Mixture");
                     if (!mixtureTag.isEmpty()) {
-                        ReadOnlyMixture mixture = ReadOnlyMixture.readNBT(ReadOnlyMixture::new, mixtureTag);
+                        ClientMixture mixture = ClientMixture.readNBT(ClientMixture::new, mixtureTag);
                         name = mixture.getName();
                         mixtureTooltip = mixture.getContentsTooltip(iupac, false, false, mbAmount, df);
                     } else {

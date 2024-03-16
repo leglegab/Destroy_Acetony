@@ -40,6 +40,7 @@ import com.tterrag.registrate.util.entry.BlockEntry;
 
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.tags.BlockTags;
+import net.minecraft.tags.ItemTags;
 import net.minecraft.world.item.CreativeModeTabs;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.enchantment.Enchantments;
@@ -48,6 +49,7 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.HalfTransparentBlock;
 import net.minecraft.world.level.block.RotatedPillarBlock;
 import net.minecraft.world.level.block.SoundType;
+import net.minecraft.world.level.block.state.properties.NoteBlockInstrument;
 import net.minecraft.world.level.material.MapColor;
 import net.minecraft.world.level.storage.loot.entries.LootItem;
 import net.minecraft.world.level.storage.loot.functions.ApplyBonusCount;
@@ -180,7 +182,7 @@ public class DestroyBlocks {
         .initialProperties(SharedProperties::softMetal)
         .properties(p -> p
             .noOcclusion()
-        ).item()
+        ).item(AssemblyOperatorBlockItem::new)
         .transform(customItemModel())
         .register();
 
@@ -261,6 +263,12 @@ public class DestroyBlocks {
             .instabreak()
             .sound(SoundType.SAND)
         ).register();
+
+    public static final BlockEntry<TreeTapBlock> TREE_TAP = REGISTRATE.block("tree_tap", TreeTapBlock::new)
+        .initialProperties(AllBlocks.DEPLOYER)
+        .item()
+        .build()
+        .register();
 
     public static final BlockEntry<VatControllerBlock> VAT_CONTROLLER = REGISTRATE.block("vat_controller", VatControllerBlock::new)
         .initialProperties(SharedProperties::copperMetal)
@@ -411,6 +419,7 @@ public class DestroyBlocks {
         .initialProperties(() -> Blocks.NETHERITE_BLOCK)
         .properties(p -> p
             .mapColor(MapColor.DIRT)
+            .instrument(NoteBlockInstrument.IRON_XYLOPHONE)
             .requiresCorrectToolForDrops()
             .strength(6f, 6f)
         ).transform(TagGen.pickaxeOnly())
@@ -426,6 +435,7 @@ public class DestroyBlocks {
         .initialProperties(() -> Blocks.DIAMOND_BLOCK)
         .properties(p -> p
             .requiresCorrectToolForDrops()
+            .instrument(NoteBlockInstrument.BELL)
             .strength(6f, 6f)
         ).transform(TagGen.pickaxeOnly())
         .tag(BlockTags.NEEDS_IRON_TOOL)
@@ -440,6 +450,7 @@ public class DestroyBlocks {
         .initialProperties(() -> Blocks.NETHERITE_BLOCK)
         .properties(p -> p
             .mapColor(MapColor.TERRACOTTA_LIGHT_BLUE)
+            .instrument(NoteBlockInstrument.BELL)
             .requiresCorrectToolForDrops()
             .strength(6f, 6f)
         ).transform(TagGen.pickaxeOnly())
@@ -454,6 +465,7 @@ public class DestroyBlocks {
     public static final BlockEntry<Block> LEAD_BLOCK = REGISTRATE.block("lead_block", Block::new)
         .initialProperties(() -> Blocks.IRON_BLOCK)
         .properties(p -> p
+            .instrument(NoteBlockInstrument.IRON_XYLOPHONE)
             .requiresCorrectToolForDrops()
             .strength(7f, 6f)
         ).transform(TagGen.pickaxeOnly())
@@ -468,13 +480,14 @@ public class DestroyBlocks {
     public static final BlockEntry<Block> STAINLESS_STEEL_BLOCK = REGISTRATE.block("stainless_steel_block", Block::new)
         .initialProperties(() -> Blocks.IRON_BLOCK)
         .properties(p -> p
+            .instrument(NoteBlockInstrument.IRON_XYLOPHONE)
             .strength(7f, 8f)
         ).onRegister(CreateRegistrate.connectedTextures(() -> new SimpleCTBehaviour(DestroySpriteShifts.STAINLESS_STEEL_BLOCK)))
         .transform(TagGen.pickaxeOnly())
         .tag(BlockTags.NEEDS_STONE_TOOL)
         .tag(Tags.Blocks.STORAGE_BLOCKS)
         .tag(BlockTags.BEACON_BASE_BLOCKS)
-        .transform(TagGen.tagBlockAndItem("storage_blocks/steel", "storage_blocks/stainless_steel"))
+        .transform(TagGen.tagBlockAndItem("storage_blocks/stainless_steel"))
         .tag(Tags.Items.STORAGE_BLOCKS)
         .build()
         .register();
@@ -501,6 +514,7 @@ public class DestroyBlocks {
         .initialProperties(() -> Blocks.GOLD_ORE)
         .properties(p -> p
             .mapColor(MapColor.COLOR_PURPLE)
+            .instrument(NoteBlockInstrument.BASEDRUM)
             .requiresCorrectToolForDrops()
             .strength(3f, 3f)
         ).transform(TagGen.pickaxeOnly())
@@ -516,6 +530,7 @@ public class DestroyBlocks {
         .initialProperties(() -> Blocks.DEEPSLATE_GOLD_ORE)
         .properties(p -> p
             .mapColor(MapColor.COLOR_PURPLE)
+            .instrument(NoteBlockInstrument.BASEDRUM)
             .requiresCorrectToolForDrops()
             .sound(SoundType.DEEPSLATE)
             .strength(4.5f, 3f)
@@ -532,6 +547,7 @@ public class DestroyBlocks {
         .initialProperties(() -> Blocks.END_STONE)
         .properties(p -> p
             .mapColor(MapColor.COLOR_PURPLE)
+            .instrument(NoteBlockInstrument.BASEDRUM)
             .requiresCorrectToolForDrops()
             .strength(4f, 9f)
         ).transform(TagGen.pickaxeOnly())
@@ -547,6 +563,7 @@ public class DestroyBlocks {
         .initialProperties(() -> Blocks.GOLD_ORE)
         .properties(p -> p
             .mapColor(MapColor.SAND)
+            .instrument(NoteBlockInstrument.BASEDRUM)
             .requiresCorrectToolForDrops()
             .strength(3f, 3f)
         ).transform(TagGen.pickaxeOnly())
@@ -562,6 +579,7 @@ public class DestroyBlocks {
         .initialProperties(() -> Blocks.DEEPSLATE_GOLD_ORE)
         .properties(p -> p
             .mapColor(MapColor.SAND)
+            .instrument(NoteBlockInstrument.BASEDRUM)
             .requiresCorrectToolForDrops()
             .sound(SoundType.DEEPSLATE)
             .strength(4.5f, 3f)
@@ -578,6 +596,8 @@ public class DestroyBlocks {
         .initialProperties(() -> Blocks.NETHER_QUARTZ_ORE)
         .properties(p -> p
             .mapColor(MapColor.COLOR_ORANGE)
+            .instrument(NoteBlockInstrument.BASEDRUM)
+            .sound(SoundType.NETHERRACK)
             .requiresCorrectToolForDrops()
         ).onRegister(CreateRegistrate.connectedTextures(() -> new SimpleCTBehaviour(DestroySpriteShifts.NETHER_CROCOITE_BLOCK)))
         .transform(TagGen.pickaxeOnly())
@@ -796,18 +816,32 @@ public class DestroyBlocks {
 
     // UNCATEGORISED
 
+    public static final BlockEntry<RotatedPillarBlock> PLYWOOD = REGISTRATE.block("plywood", RotatedPillarBlock::new)
+        .properties(p -> p
+            .mapColor(MapColor.WOOD)
+            .instrument(NoteBlockInstrument.BASS)
+            .strength(4.0f, 6.0f)
+        ).tag(BlockTags.MINEABLE_WITH_AXE, BlockTags.PLANKS)
+        .item()
+        .tag(ItemTags.PLANKS)
+        .build()
+        .register();
+
     public static final BlockEntry<MoltenStainlessSteelBlock> MOLTEN_STAINLESS_STEEL = REGISTRATE.block("molten_stainless_steel", MoltenStainlessSteelBlock::new)
         .properties(p -> p
             .mapColor(MapColor.COLOR_ORANGE)
+            .instrument(NoteBlockInstrument.IRON_XYLOPHONE)
             .lightLevel(state -> 15)
+            .noLootTable()
             .dynamicShape()
         ).register();
 
     public static final BlockEntry<StainlessSteelRodsBlock> STAINLESS_STEEL_RODS = REGISTRATE.block("stainless_steel_rods_block", StainlessSteelRodsBlock::new)
         .initialProperties(STAINLESS_STEEL_BLOCK)
         .properties(p -> p
-            .mapColor(state -> state.getValue(StainlessSteelRodsBlock.MOLTEN) ? MapColor.COLOR_ORANGE : MapColor.METAL) //TODO change if cooled down
-            .lightLevel(state -> state.getValue(StainlessSteelRodsBlock.MOLTEN) ? 15 : 0) //change this also
+            .mapColor(state -> state.getValue(StainlessSteelRodsBlock.MOLTEN) ? MapColor.COLOR_ORANGE : MapColor.METAL)
+            .instrument(NoteBlockInstrument.IRON_XYLOPHONE)
+            .lightLevel(state -> state.getValue(StainlessSteelRodsBlock.MOLTEN) ? 15 : 0)
         ).item()
         .build()
         .register();

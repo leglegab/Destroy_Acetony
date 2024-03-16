@@ -1,0 +1,26 @@
+{
+    "parent": "destroy:root",
+    "criteria": {
+      "tap": {
+        "conditions": {},
+        "trigger": "destroy:tap_tree"
+      }
+    },
+    "display": {
+      "description": {
+        "color": "#DBA213",
+        "translate": "advancement.destroy.tap_tree.description"
+      },
+      "icon": {
+        "item": "destroy:tree_tap"
+      },
+      "title": {
+        "translate": "advancement.destroy.tap_tree"
+      }
+    },
+    "requirements": [
+      [
+        "tap"
+      ]
+    ]
+  }

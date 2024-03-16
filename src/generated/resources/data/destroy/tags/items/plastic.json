@@ -8,6 +8,10 @@
     "destroy:abs",
     "destroy:polytetrafluoroethene",
     "destroy:nylon",
-    "destroy:polystyrene_butadiene"
+    "destroy:polystyrene_butadiene",
+    "destroy:polyacrylonitrile",
+    "destroy:polyisoprene",
+    "destroy:polyurethane",
+    "destroy:polymethyl_methacrylate"
   ]
 }

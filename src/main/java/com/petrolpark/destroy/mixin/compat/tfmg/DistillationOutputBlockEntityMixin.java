@@ -15,7 +15,8 @@ public class DistillationOutputBlockEntityMixin {
     @Inject(
         method = "Lcom/drmangotea/tfmg/blocks/machines/oil_processing/distillation/distillation_tower/DistillationOutputBlockEntity;getMatchingRecipes(Lcom/drmangotea/tfmg/blocks/machines/oil_processing/distillation/distillation_tower/DistillationControllerBlockEntity;)V",
         at = @At("TAIL"),
-        cancellable = true
+        cancellable = true,
+        remap = false
     )
     public void inGetMatchingRecipes(DistillationControllerBlockEntity be, CallbackInfoReturnable<AdvancedDistillationRecipe> cir) {
         //TODO reimplement once TFMG distillation is fixed

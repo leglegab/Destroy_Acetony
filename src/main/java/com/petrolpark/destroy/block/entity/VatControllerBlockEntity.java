@@ -9,7 +9,7 @@ import java.util.function.Function;
 
 import javax.annotation.Nullable;
 
-import com.petrolpark.destroy.advancement.DestroyAdvancements;
+import com.petrolpark.destroy.advancement.DestroyAdvancementTrigger;
 import com.petrolpark.destroy.block.DestroyBlocks;
 import com.petrolpark.destroy.block.VatControllerBlock;
 import com.petrolpark.destroy.block.display.MixtureContentsDisplaySource;
@@ -49,6 +49,7 @@ import net.minecraft.nbt.NbtUtils;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -101,7 +102,7 @@ public class VatControllerBlockEntity extends SmartBlockEntity implements IHaveG
     protected LazyOptional<IItemHandler> itemCapability;
     protected boolean inventoryChanged;
 
-    protected DestroyAdvancementBehaviour advancementBehaviour;
+    protected VatAdvancementBehaviour advancementBehaviour;
 
     protected int initializationTicks;
     /**
@@ -134,7 +135,7 @@ public class VatControllerBlockEntity extends SmartBlockEntity implements IHaveG
         behaviours.add(tankBehaviour);
 
         // Advancement behaviour
-        advancementBehaviour = new DestroyAdvancementBehaviour(this);
+        advancementBehaviour = new VatAdvancementBehaviour();
         behaviours.add(advancementBehaviour);
     };
 
@@ -219,7 +220,7 @@ public class VatControllerBlockEntity extends SmartBlockEntity implements IHaveG
                 cachedMixture.reactForTick(context, getSimulationLevel());
                 shouldUpdateFluidMixture = true;
 
-                if (!cachedMixture.isAtEquilibrium()) advancementBehaviour.awardDestroyAdvancement(DestroyAdvancements.USE_VAT);
+                if (!cachedMixture.isAtEquilibrium()) advancementBehaviour.awardDestroyAdvancement(DestroyAdvancementTrigger.USE_VAT);
             };
 
             // Put all Items back in the Inventory
@@ -638,6 +639,19 @@ public class VatControllerBlockEntity extends SmartBlockEntity implements IHaveG
 			.forGoggles(tooltip);
         DestroyLang.tankInfoTooltip(tooltip, DestroyLang.translate("tooltip.vat.contents_liquid"), vatController.getLiquidTank().getFluid(), vatController.getCapacity());
         DestroyLang.tankInfoTooltip(tooltip, DestroyLang.translate("tooltip.vat.contents_gas"), vatController.getGasTank().getFluid(), vatController.getCapacity());
+    };
+    
+    public class VatAdvancementBehaviour extends DestroyAdvancementBehaviour {
+
+        public VatAdvancementBehaviour() {
+            super(VatControllerBlockEntity.this);
+        };
+
+        @Override
+        public boolean shouldRememberPlacer(Player placer) {
+            return true;
+        };
+
     };
 
     public static class VatDisplaySource extends MixtureContentsDisplaySource {

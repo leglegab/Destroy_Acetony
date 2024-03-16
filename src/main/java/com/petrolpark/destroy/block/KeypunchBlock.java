@@ -3,7 +3,7 @@ package com.petrolpark.destroy.block;
 import com.petrolpark.destroy.Destroy;
 import com.petrolpark.destroy.block.entity.DestroyBlockEntityTypes;
 import com.petrolpark.destroy.block.entity.KeypunchBlockEntity;
-import com.petrolpark.destroy.block.entity.behaviour.DestroyAdvancementBehaviour;
+import com.petrolpark.destroy.block.entity.behaviour.AbstractRememberPlacerBehaviour;
 import com.petrolpark.destroy.client.gui.menu.KeypunchScreen;
 import com.simibubi.create.content.kinetics.base.HorizontalKineticBlock;
 import com.simibubi.create.content.kinetics.simpleRelays.ICogWheel;
@@ -47,7 +47,7 @@ public class KeypunchBlock extends HorizontalKineticBlock implements IBE<Keypunc
     @Override
     public void setPlacedBy(Level level, BlockPos pos, BlockState state, LivingEntity placer, ItemStack stack) {
         super.setPlacedBy(level, pos, state, placer, stack);
-        DestroyAdvancementBehaviour.setPlacedBy(level, pos, placer);
+        AbstractRememberPlacerBehaviour.setPlacedBy(level, pos, placer);
     };
 
     @Override

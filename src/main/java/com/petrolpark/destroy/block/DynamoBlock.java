@@ -4,7 +4,7 @@ import javax.annotation.Nullable;
 
 import com.petrolpark.destroy.block.entity.DestroyBlockEntityTypes;
 import com.petrolpark.destroy.block.entity.DynamoBlockEntity;
-import com.petrolpark.destroy.block.entity.behaviour.DestroyAdvancementBehaviour;
+import com.petrolpark.destroy.block.entity.behaviour.AbstractRememberPlacerBehaviour;
 import com.petrolpark.destroy.block.shape.DestroyShapes;
 import com.simibubi.create.content.kinetics.base.KineticBlock;
 import com.simibubi.create.content.kinetics.simpleRelays.ICogWheel;
@@ -60,7 +60,7 @@ public class DynamoBlock extends KineticBlock implements IBE<DynamoBlockEntity>,
 
     @Override
     public void setPlacedBy(Level level, BlockPos pos, BlockState state, @Nullable LivingEntity placer, ItemStack stack) {
-        DestroyAdvancementBehaviour.setPlacedBy(level, pos, placer);
+        AbstractRememberPlacerBehaviour.setPlacedBy(level, pos, placer);
         super.setPlacedBy(level, pos, state, placer, stack);
     };
 

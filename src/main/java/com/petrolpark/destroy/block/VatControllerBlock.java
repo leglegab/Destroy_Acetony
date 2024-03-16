@@ -4,7 +4,7 @@ import javax.annotation.Nullable;
 
 import com.petrolpark.destroy.block.entity.DestroyBlockEntityTypes;
 import com.petrolpark.destroy.block.entity.VatControllerBlockEntity;
-import com.petrolpark.destroy.block.entity.behaviour.DestroyAdvancementBehaviour;
+import com.petrolpark.destroy.block.entity.behaviour.AbstractRememberPlacerBehaviour;
 import com.petrolpark.destroy.client.gui.screen.VatScreen;
 import com.simibubi.create.AllSoundEvents;
 import com.simibubi.create.foundation.block.IBE;
@@ -60,7 +60,7 @@ public class VatControllerBlock extends HorizontalDirectionalBlock implements IB
                 boolean success = be.tryMakeVat();
                 SoundEvent sound = success ? AllSoundEvents.CONFIRM.getMainEvent() : AllSoundEvents.DENY.getMainEvent();
                 level.playSound(null, pos.getX(), pos.getY(), pos.getZ(), sound, SoundSource.BLOCKS, 1f, 1f);
-                if (success) DestroyAdvancementBehaviour.setPlacedBy(level, pos, player);
+                if (success) AbstractRememberPlacerBehaviour.setPlacedBy(level, pos, player);
             }
             return InteractionResult.SUCCESS;
         });
@@ -75,7 +75,7 @@ public class VatControllerBlock extends HorizontalDirectionalBlock implements IB
 
     @Override
     public void setPlacedBy(Level level, BlockPos pos, BlockState state, @Nullable LivingEntity placer, ItemStack stack) {
-        DestroyAdvancementBehaviour.setPlacedBy(level, pos, placer);
+        AbstractRememberPlacerBehaviour.setPlacedBy(level, pos, placer);
         super.setPlacedBy(level, pos, state, placer, stack);
     };
 

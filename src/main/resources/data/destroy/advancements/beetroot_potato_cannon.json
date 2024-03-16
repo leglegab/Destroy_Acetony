@@ -3,7 +3,7 @@
     "criteria": {
       "shoot": {
         "conditions": {},
-        "trigger": "destroy:shoot_hefty_beetroot"
+        "trigger": "destroy:beetroot_potato_cannon"
       }
     },
     "display": {

@@ -35,3 +35,9 @@ description='''A destructive chemistry-based add-on to Create.'''
 	ordering="AFTER"
 	side="BOTH"
 
+[[dependencies.tfmg]]
+	modId="tfmg"
+	mandatory=false
+	ordering="AFTER"
+	side="BOTH"
+
