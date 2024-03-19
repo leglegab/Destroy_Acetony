@@ -1,0 +1,54 @@
+{
+    "type": "destroy:circuit_sequenced_assembly",
+    "ingredient": {
+      "item": "create:copper_sheet"
+    },
+    "transitionalItem": {
+      "item": "destroy:unfinished_circuit_board"
+    },
+    "sequence": [
+      {
+        "type": "destroy:circuit_deploying",
+        "ingredients": [
+          {
+            "item": "destroy:unfinished_circuit_board"
+          },
+          {
+            "item": "destroy:circuit_mask"
+          }
+        ],
+        "results": [
+          {
+            "item": "destroy:unfinished_circuit_board"
+          }
+        ]
+      },
+      {
+        "type": "create:filling",
+        "ingredients": [
+          {
+            "item": "destroy:unfinished_circuit_board"
+          },
+          {
+            "mixtureFluidWithSalt": "destroy:mixture",
+            "cation": "destroy:copper_ii",
+            "anion": "destroy:chloride",
+            "min_concentration": 4.0,
+            "max_concentration": 6.0,
+            "amount": 1
+          }
+        ],
+        "results": [
+          {
+            "item": "destroy:unfinished_circuit_board"
+          }
+        ]
+      }
+    ],
+    "results": [
+      {
+        "item": "destroy:circuit_board"
+      }
+    ],
+    "loops": 1
+  }

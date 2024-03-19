@@ -1,0 +1,19 @@
+{
+    "__comment": "Trim material palettes which should bypass the usual way in which trim material textures and models get applied, and just apply to every possible trim.",
+    "values": {
+        "andesite_alloy": "destroy:trims/color_palettes/andesite_alloy",
+        "brass": "destroy:trims/color_palettes/brass",
+        "chromium": "destroy:trims/color_palettes/chromium",
+        "fluorite": "destroy:trims/color_palettes/fluorite",
+        "lead": "destroy:trims/color_palettes/lead",
+        "nickel": "destroy:trims/color_palettes/nickel",
+        "palladium": "destroy:trims/color_palettes/palladium",
+        "platinum": "destroy:trims/color_palettes/platinum",
+        "pure_gold": "destroy:trims/color_palettes/pure_gold",
+        "rainbow": "destroy:trims/color_palettes/rainbow",
+        "rhodium": "destroy:trims/color_palettes/rhodium",
+        "shadow_steel": "destroy:trims/color_palettes/shadow_steel",
+        "stainless_steel": "destroy:trims/color_palettes/stainless_steel",
+        "zinc": "destroy:trims/color_palettes/zinc"
+    }
+}

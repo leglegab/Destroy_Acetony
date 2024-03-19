@@ -1,6 +1,7 @@
 package com.petrolpark.destroy.item;
 
 import com.petrolpark.destroy.item.directional.IDirectionalOnBelt;
+import com.simibubi.create.content.processing.sequenced.SequencedAssemblyItem;
 
 import net.minecraft.nbt.Tag;
 import net.minecraft.world.item.Item;
@@ -64,12 +65,12 @@ public class CircuitPatternItem extends Item implements IDirectionalOnBelt {
     };
 
     public static int getPattern(ItemStack stack) {
-        if (!stack.getOrCreateTag().contains("Pattern", Tag.TAG_SHORT)) return 0;
+        if (!(stack.getItem() instanceof CircuitPatternItem || stack.getItem() instanceof SequencedAssemblyItem) || !stack.getOrCreateTag().contains("Pattern", Tag.TAG_SHORT)) return 0;
         return (int)Short.MAX_VALUE + (int)stack.getOrCreateTag().getShort("Pattern");
     };
 
     public static void putPattern(ItemStack stack, int pattern) {
-        stack.getOrCreateTag().putShort("Pattern", (short)(pattern - Short.MAX_VALUE));
+        if (stack.getItem() instanceof CircuitPatternItem || stack.getItem() instanceof SequencedAssemblyItem) stack.getOrCreateTag().putShort("Pattern", (short)(pattern - Short.MAX_VALUE));
     };
     
 };

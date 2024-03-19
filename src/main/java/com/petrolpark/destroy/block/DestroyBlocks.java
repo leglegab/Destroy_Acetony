@@ -54,6 +54,7 @@ import net.minecraft.world.level.material.MapColor;
 import net.minecraft.world.level.storage.loot.entries.LootItem;
 import net.minecraft.world.level.storage.loot.functions.ApplyBonusCount;
 import net.minecraft.world.level.storage.loot.functions.SetItemCountFunction;
+import net.minecraft.world.level.storage.loot.providers.number.ConstantValue;
 import net.minecraft.world.level.storage.loot.providers.number.UniformGenerator;
 import net.minecraftforge.common.Tags;
 
@@ -805,14 +806,17 @@ public class DestroyBlocks {
         .build()
         .register();
 
-    // public static final BlockEntry<RotatedPillarBlock> RAW_FRIES_BLOCK = REGISTRATE.block("raw_fries_block", RotatedPillarBlock::new)
-    //     .initialProperties(() -> Blocks.CLAY)
-    //     .properties(p -> p
-    //         .mapColor(MapColor.COLOR_YELLOW)
-    //         .sound(SoundType.SLIME_BLOCK)
-    //         .strength(0.2f)
-    //     ).tag(BlockTags.MINEABLE_WITH_SHOVEL)
-    //     .register();
+    public static final BlockEntry<RotatedPillarBlock> RAW_FRIES_BLOCK = REGISTRATE.block("raw_fries_block", RotatedPillarBlock::new)
+        .initialProperties(() -> Blocks.CLAY)
+        .properties(p -> p
+            .mapColor(MapColor.COLOR_YELLOW)
+            .sound(SoundType.SLIME_BLOCK)
+            .strength(0.2f)
+        ).loot((lt, b) -> lt.add(b, RegistrateBlockLootTables.createSilkTouchDispatchTable(b, LootItem.lootTableItem(DestroyItems.RAW_FRIES).apply(SetItemCountFunction.setCount(ConstantValue.exactly(5f))))))
+        .tag(BlockTags.MINEABLE_WITH_SHOVEL)
+        .item()
+        .build()
+        .register();
 
     // UNCATEGORISED
 
@@ -864,8 +868,10 @@ public class DestroyBlocks {
             .mapColor(MapColor.COLOR_ORANGE)
             .sound(SoundType.SLIME_BLOCK)
             .strength(0.2f)
-        ).tag(BlockTags.MINEABLE_WITH_SHOVEL)
-        .tag(BlockTags.MINEABLE_WITH_HOE).item()
+        ).loot((lt, b) -> lt.add(b, RegistrateBlockLootTables.createSilkTouchDispatchTable(b, LootItem.lootTableItem(DestroyItems.CORDITE).apply(SetItemCountFunction.setCount(ConstantValue.exactly(5f))))))
+        .tag(BlockTags.MINEABLE_WITH_SHOVEL)
+        .tag(BlockTags.MINEABLE_WITH_HOE)
+        .item()
         .build()
         .register();
 

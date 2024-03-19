@@ -32,5 +32,10 @@ public class DiscStampingRecipe extends DeployerApplicationRecipe {
             .toolNotConsumed()
             .build();
     };
+
+    @Override
+    public boolean supportsAssembly() {
+        return false;
+    };
     
 };

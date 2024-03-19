@@ -1,0 +1,12 @@
+{
+    "type": "minecraft:crafting_shapeless",
+    "ingredients": [
+      {
+        "item": "destroy:raw_fries_block"
+      }
+    ],
+    "result": {
+      "item": "destroy:raw_fries",
+      "count": 5
+    }
+  }

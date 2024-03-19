@@ -101,6 +101,7 @@ public class CircuitMaskItem extends CircuitPatternItem {
     @Override
     public void appendHoverText(ItemStack stack, Level level, List<Component> tooltipComponents, TooltipFlag isAdvanced) {
         super.appendHoverText(stack, level, tooltipComponents, isAdvanced);
+        if (stack.getOrCreateTag().contains("HideContaminants")) return;
         List<UUID> previousPunchers = getContaminants(stack);
         tooltipComponents.add(Component.literal(" "));
         tooltipComponents.add(DestroyLang.translate("tooltip.circuit_mask.punched_by", previousPunchers.size()).style(ChatFormatting.GRAY).component());

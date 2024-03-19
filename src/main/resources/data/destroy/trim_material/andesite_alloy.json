@@ -1,0 +1,9 @@
+{
+    "asset_name": "andesite_alloy",
+    "description": {
+      "color": "#92b09c",
+      "translate": "destroy.trim_material.andesite_alloy"
+    },
+    "ingredient": "create:andesite_alloy",
+    "item_model_index": -1.0
+  }

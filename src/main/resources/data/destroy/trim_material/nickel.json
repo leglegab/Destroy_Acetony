@@ -1,0 +1,9 @@
+{
+    "asset_name": "nickel",
+    "description": {
+      "color": "#e0dda8",
+      "translate": "destroy.trim_material.nickel"
+    },
+    "ingredient": "destroy:nickel_ingot",
+    "item_model_index": -1.0
+  }

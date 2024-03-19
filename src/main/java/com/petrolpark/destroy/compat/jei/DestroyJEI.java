@@ -25,6 +25,7 @@ import com.petrolpark.destroy.compat.jei.category.ElectrolysisCategory;
 import com.petrolpark.destroy.compat.jei.category.ExtrusionCategory;
 import com.petrolpark.destroy.compat.jei.category.GenericReactionCategory;
 import com.petrolpark.destroy.compat.jei.category.ITickableCategory;
+import com.petrolpark.destroy.compat.jei.category.ManualOnlyCategory;
 import com.petrolpark.destroy.compat.jei.category.MutationCategory;
 import com.petrolpark.destroy.compat.jei.category.ObliterationCategory;
 import com.petrolpark.destroy.compat.jei.category.ReactionCategory;
@@ -41,6 +42,7 @@ import com.petrolpark.destroy.recipe.DistillationRecipe;
 import com.petrolpark.destroy.recipe.ElectrolysisRecipe;
 import com.petrolpark.destroy.recipe.ExtendedDurationFireworkRocketRecipe;
 import com.petrolpark.destroy.recipe.ExtrusionRecipe;
+import com.petrolpark.destroy.recipe.ManualOnlyShapedRecipe;
 import com.petrolpark.destroy.recipe.MutationRecipe;
 import com.petrolpark.destroy.recipe.ObliterationRecipe;
 import com.petrolpark.destroy.recipe.ReactionRecipe;
@@ -67,7 +69,6 @@ import mezz.jei.api.forge.ForgeTypes;
 import mezz.jei.api.gui.drawable.IDrawable;
 import mezz.jei.api.helpers.IJeiHelpers;
 import mezz.jei.api.helpers.IPlatformFluidHelper;
-import mezz.jei.api.recipe.RecipeType;
 import mezz.jei.api.recipe.category.IRecipeCategory;
 import mezz.jei.api.registration.IAdvancedRegistration;
 import mezz.jei.api.registration.IGuiHandlerRegistration;
@@ -78,11 +79,16 @@ import mezz.jei.api.registration.IRecipeRegistration;
 import mezz.jei.api.registration.ISubtypeRegistration;
 import mezz.jei.api.runtime.IJeiRuntime;
 import net.minecraft.client.Minecraft;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtUtils;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.item.crafting.CraftingRecipe;
 import net.minecraft.world.item.crafting.Recipe;
+import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.ItemLike;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 
@@ -95,7 +101,7 @@ public class DestroyJEI implements IModPlugin {
      * All Create and Destroy {@link mezz.jei.api.recipe.RecipeType Recipe Types} which can produce or consume Mixtures, mapped to the class of Recipe which those Recipe Types describe.
      * Create's Recipe Types are not exposed by default, meaning we have to access them through a {@link com.petrolpark.destroy.mixin.compat.jei.CreateRecipeCategoryMixin mixin} and store them here.
      */ 
-    public static final Map<RecipeType<?>, Class<? extends Recipe<?>>> RECIPE_TYPES = new HashMap<>();
+    public static final Map<mezz.jei.api.recipe.RecipeType<?>, Class<? extends Recipe<?>>> RECIPE_TYPES = new HashMap<>();
     /**
      * A map of Molecules to the Recipes in which they are inputs.
      * This does not include {@link com.petrolpark.destroy.chemistry.Reaction Reactions}.
@@ -215,7 +221,22 @@ public class DestroyJEI implements IModPlugin {
             .catalyst(DestroyBlocks.TREE_TAP::get)
             .itemIcon(DestroyBlocks.TREE_TAP.get())
             .emptyBackground(177, 70)
-            .build("tapping", TappingCategory::new);
+            .build("tapping", TappingCategory::new),
+
+        manual_crafting = builder(CraftingRecipe.class)
+            .addTypedRecipesIf(() -> RecipeType.CRAFTING, r -> r instanceof ManualOnlyShapedRecipe)
+            .catalyst(() -> Blocks.CRAFTING_TABLE)
+            .doubleItemIcon(
+                () -> new ItemStack(Items.CRAFTING_TABLE),
+                () -> {
+                    Minecraft mc = Minecraft.getInstance();
+                    ItemStack head = new ItemStack(Items.PLAYER_HEAD);
+                    head.getOrCreateTag().put("SkullOwner", NbtUtils.writeGameProfile(new CompoundTag(), mc.player.getGameProfile()));
+                    return head;
+                }
+            )
+            .emptyBackground(116, 56)
+            .build("manual_crafting", ManualOnlyCategory::new);
 
         DestroyJEI.MOLECULE_RECIPES_NEED_PROCESSING = false;
     };
@@ -325,6 +346,19 @@ public class DestroyJEI implements IModPlugin {
         };
 
         /**
+         * Adds all Recipes of a given Recipe Type to this Category, given that each recipe matches the given condition.
+         * @param recipeTypeEntry The Recipe Type
+         * @param pred The Condition a Recipe must match to be added
+         * @return This Category Builder
+         */
+        public CategoryBuilder<T> addTypedRecipesIf(Supplier<RecipeType<? extends T>> recipeType, Predicate<Recipe<?>> pred) {
+			recipeListConsumers.add(recipes -> CreateJEI.<T>consumeTypedRecipes(recipe -> {
+				if (pred.test(recipe)) recipes.add(recipe);
+			}, recipeType.get()));
+            return this;
+		};
+
+        /**
          * Adds a given Item as a Catalyst for all Recipes of this Category.
          * Useful for adding the required machines for a Category of Recipe.
          * @param itemSupplier A Supplier of the catalyst Item
@@ -352,7 +386,17 @@ public class DestroyJEI implements IModPlugin {
          * @return This Category Builder
          */
         public CategoryBuilder<T> doubleItemIcon(ItemLike bigItem, ItemLike smallItem) {
-            this.icon = new DoubleItemIcon(() -> new ItemStack(bigItem), () -> new ItemStack(smallItem));
+            return doubleItemIcon(() -> new ItemStack(bigItem), () -> new ItemStack(smallItem));
+        };
+
+        /**
+         * Sets the given pair of Items as the icon for this Category.
+         * @param bigItem Typically this will be the machine required for this Type of Recipe
+         * @param smallItem Typically this will be a way to differentiate this use from other uses of the same machine
+         * @return This Category Builder
+         */
+        public CategoryBuilder<T> doubleItemIcon(Supplier<ItemStack> bigItem, Supplier<ItemStack> smallItem) {
+            this.icon = new DoubleItemIcon(bigItem, smallItem);
             return this;
         };
 

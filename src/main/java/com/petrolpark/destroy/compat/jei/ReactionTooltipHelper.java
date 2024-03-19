@@ -74,6 +74,7 @@ public class ReactionTooltipHelper {
             tooltip.clear();
             boolean reversible = reaction.getReverseReactionForDisplay().isPresent();
             tooltip.add(DestroyLang.translate("tooltip.reaction.kinetics_information").component());
+            if (reaction.isHalfReaction()) tooltip.add(DestroyLang.translate("tooltip.reaction.standard_half_cell_potential", reaction.getStandardHalfCellPotential()).style(ChatFormatting.GRAY).component());
             if (reversible) tooltip.add(DestroyLang.translate("tooltip.reaction.forward").component());
             tooltip.add(Component.literal(reversible ? "  " : "").append(DestroyLang.translate("tooltip.reaction.activation_energy", reaction.getActivationEnergy()).style(ChatFormatting.GRAY).component()));
             tooltip.add(Component.literal(reversible ? "  " : "").append(DestroyLang.translate("tooltip.reaction.enthalpy_change", reaction.getEnthalpyChange()).style(ChatFormatting.GRAY).component()));

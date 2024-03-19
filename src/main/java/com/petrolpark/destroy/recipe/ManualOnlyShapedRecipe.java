@@ -8,7 +8,6 @@ import org.jetbrains.annotations.Nullable;
 import java.util.Optional;
 
 import com.google.gson.JsonObject;
-import com.petrolpark.destroy.Destroy;
 import com.petrolpark.destroy.util.DestroyReloadListener;
 
 import net.minecraft.core.Holder;
@@ -26,22 +25,40 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.CraftingBookCategory;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.RecipeSerializer;
-import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.item.crafting.ShapedRecipe;
 import net.minecraft.world.level.Level;
 
 public class ManualOnlyShapedRecipe extends ShapedRecipe {
 
-    public static final RecipeType<ManualOnlyShapedRecipe> TYPE = RecipeType.simple(Destroy.asResource("manual_only_shaped_crafting"));
+    public static final AllowedMenuListener ALLOWED_MENU_LISTENER = new AllowedMenuListener();
+
     public static final Set<MenuType<?>> ALLOWED_MENUS = new HashSet<>();
 
     public ManualOnlyShapedRecipe(ResourceLocation id, String group, CraftingBookCategory category, int width, int height, NonNullList<Ingredient> recipeItems, ItemStack result) {
         super(id, group, category, width, height, recipeItems, result);
     };
 
+    public static boolean isAllowed(CraftingContainer inv) {
+        return inv instanceof TransientCraftingContainer container && (container.menu instanceof InventoryMenu || ALLOWED_MENUS.contains(container.menu.getType()));
+    };
+
     @Override
     public boolean matches(CraftingContainer inv, Level level) {
-        return super.matches(inv, level) && inv instanceof TransientCraftingContainer container && (container.menu instanceof InventoryMenu || ALLOWED_MENUS.contains(container.menu.getType()));
+        return super.matches(inv, level) && isAllowed(inv);
+    };
+
+    @Override
+    public boolean isSpecial() {
+        return true;
+    };
+
+    @Override
+    public RecipeSerializer<?> getSerializer() {
+        return DestroyRecipeTypes.MANUAL_ONLY_CRAFTING_SHAPED.getSerializer();
+    };
+
+    public ItemStack getExampleResult() {
+        return getResultItem(null);
     };
 
     public static class AllowedMenuListener extends DestroyReloadListener {
@@ -79,12 +96,14 @@ public class ManualOnlyShapedRecipe extends ShapedRecipe {
 
         @Override
         public ManualOnlyShapedRecipe fromJson(ResourceLocation recipeId, JsonObject serializedRecipe) {
-            return (ManualOnlyShapedRecipe)parent.fromJson(recipeId, serializedRecipe);
+            ShapedRecipe recipe = parent.fromJson(recipeId, serializedRecipe);
+            return new ManualOnlyShapedRecipe(recipeId, recipe.getGroup(), recipe.category(), recipe.getWidth(), recipe.getHeight(), recipe.getIngredients(), recipe.getResultItem(null));
         };
 
         @Override
         public @Nullable ManualOnlyShapedRecipe fromNetwork(ResourceLocation recipeId, FriendlyByteBuf buffer) {
-            return (ManualOnlyShapedRecipe)parent.fromNetwork(recipeId, buffer);
+            ShapedRecipe recipe = parent.fromNetwork(recipeId, buffer);
+            return new ManualOnlyShapedRecipe(recipeId, recipe.getGroup(), recipe.category(), recipe.getWidth(), recipe.getHeight(), recipe.getIngredients(), recipe.getResultItem(null));
         };
 
         @Override

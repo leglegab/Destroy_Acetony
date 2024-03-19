@@ -14,7 +14,6 @@ import com.petrolpark.destroy.block.entity.behaviour.ICircuitPuncher;
 import com.petrolpark.destroy.block.entity.behaviour.CircuitPunchingBehaviour.CircuitPunchingSpecifics;
 import com.petrolpark.destroy.item.CircuitMaskItem;
 import com.petrolpark.destroy.item.CircuitPatternItem;
-import com.petrolpark.destroy.item.DestroyItems;
 import com.petrolpark.destroy.item.directional.DirectionalTransportedItemStack;
 import com.petrolpark.destroy.item.directional.IDirectionalOnBelt;
 import com.petrolpark.destroy.network.DestroyMessages;
@@ -78,7 +77,7 @@ public class KeypunchBlockEntity extends KineticBlockEntity implements ICircuitP
     @Override
     public boolean tryProcessOnBelt(DirectionalTransportedItemStack input, AtomicReference<TransportedItemStack> output, boolean simulate) {
         ItemStack stack = input.stack;
-        if (!stack.getItem().equals(DestroyItems.CIRCUIT_MASK.get())) return false;
+        if (!(stack.getItem() instanceof CircuitMaskItem)) return false;
         int pattern = CircuitPatternItem.getPattern(stack);
 
         int positionToPunch = getActualPosition();

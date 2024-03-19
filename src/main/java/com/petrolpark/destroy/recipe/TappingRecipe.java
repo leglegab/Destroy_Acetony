@@ -40,5 +40,10 @@ public class TappingRecipe extends ProcessingRecipe<RecipeWrapper> {
     protected int getMaxOutputCount() {
         return 0;
     };
+
+    @Override
+    protected int getMaxFluidOutputCount() {
+        return 1;
+    };
     
 };

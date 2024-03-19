@@ -207,14 +207,6 @@ public class DestroyPotatoCannonProjectileTypes {
         .preEntityHit(setFire(7))
         .registerAndAssign(DestroyItems.THERMITE_BROWNIE.get()),
 
-    UNSEASONED_FRIES = create("unseasoned_fries")
-        .damage(3)
-        .reloadTicks(12)
-        .velocity(1.1f)
-        .renderTumbling()
-        .soundPitch(1.3f)
-        .registerAndAssign(DestroyItems.UNSEASONED_FRIES.get()),
-
     ZINC_INFUSED_BEETROOT = create("zinc_infused_beetroot")
         .damage(5)
         .reloadTicks(20)

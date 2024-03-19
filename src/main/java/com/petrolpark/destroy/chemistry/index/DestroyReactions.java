@@ -313,8 +313,6 @@ public class DestroyReactions {
         .addProduct(DestroyMolecules.NITROGEN_DIOXIDE, 3)
         .build(),
 
-    //TODO iodine dissolution and precipitation
-
     HABER_PROCESS = builder()
         .id("haber_process")
         .addReactant(DestroyMolecules.NITROGEN)
@@ -406,6 +404,14 @@ public class DestroyReactions {
         .addSimpleItemReactant(AllItems.CRUSHED_IRON::get, 0.75f)
         .addProduct(DestroyMolecules.HYDROGEN, 3)
         .addProduct(DestroyMolecules.IRON_III, 2)
+        .build(),
+
+    IRON_III_REDUCTION = builder()
+        .id("iron_iii_reduction")
+        .addReactant(DestroyMolecules.IRON_III)
+        .addProduct(DestroyMolecules.IRON_II)
+        .standardHalfCellPotential(0.771f)
+        .reverseReaction(r -> {})
         .build(),
 
     KELP_DISSOLUTION = builder()

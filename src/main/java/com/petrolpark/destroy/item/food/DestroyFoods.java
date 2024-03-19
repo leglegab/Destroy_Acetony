@@ -18,7 +18,6 @@ public class DestroyFoods {
     public static final FoodProperties
     BUTTER = new FoodProperties.Builder().nutrition(6).saturationMod(0.1f).build(),
     RAW_FRIES = new FoodProperties.Builder().nutrition(2).saturationMod(0.6f).build(),
-    UNSEASONED_FRIES = new FoodProperties.Builder().nutrition(5).saturationMod(1.0f).build(),
     FRIES = new FoodProperties.Builder().nutrition(6).saturationMod(1.5f).build(),
     MASHED_POTATO = new FoodProperties.Builder().nutrition(5).saturationMod(1.4f).build(),
     POTATE_O = new FoodProperties.Builder().nutrition(2).saturationMod(0.6f).build(),

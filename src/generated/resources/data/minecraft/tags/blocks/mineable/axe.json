@@ -4,6 +4,7 @@
     "destroy:coaxial_gear",
     "destroy:differential",
     "destroy:planetary_gearset",
-    "destroy:vat_side"
+    "destroy:vat_side",
+    "destroy:plywood"
   ]
 }

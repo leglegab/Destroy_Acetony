@@ -59,6 +59,7 @@ public enum DestroyGuiTextures implements ScreenElement {
 	REDSTONE_PROGRAMMER_PLAYHEAD("redstone_programmer_2", 185,16, 7, 199),
 
     // JEI
+	JEI_POINTING_HAND("jei/widgets", 40, 40, 18, 14),
     JEI_SHORT_DOWN_ARROW("jei/widgets", 0, 64, 18, 18),
     JEI_SHORT_RIGHT_ARROW("jei/widgets", 0, 82, 18, 16),
 	JEI_EQUILIBRIUM_ARROW("jei/widgets", 0, 96, 42, 11),

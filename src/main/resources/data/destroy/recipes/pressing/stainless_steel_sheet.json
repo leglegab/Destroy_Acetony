@@ -1,0 +1,13 @@
+{
+    "type": "create:pressing",
+    "ingredients": [
+      {
+        "tag": "forge:plates/stainless_steel"
+      }
+    ],
+    "results": [
+      {
+        "item": "destroy:stainless_steel_sheet"
+      }
+    ]
+  }

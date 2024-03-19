@@ -39,7 +39,7 @@ public class CircuitMaskItemRenderer extends CustomRenderedItemModelRenderer {
 
         ItemRenderer itemRenderer = mc.getItemRenderer();
         itemRenderer.render(stack, ItemDisplayContext.NONE, false, ms, buffer, light, overlay, model.getOriginalModel()); // Render the Item normally
-        int pattern = (stack.getItem() instanceof CircuitMaskItem item ? item.getPattern(stack): 0);
+        int pattern = (stack.getItem() instanceof CircuitMaskItem item ? CircuitMaskItem.getPattern(stack): 0);
         for (int i = 0; i < 16; i++) {
             if (CircuitMaskItem.isPunched(pattern, i)) continue;
             itemRenderer.render(stack, ItemDisplayContext.NONE, false, ms, buffer, light, overlay, models[i]);

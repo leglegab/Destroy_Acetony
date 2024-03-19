@@ -6,6 +6,7 @@ import java.util.function.Supplier;
 import org.jetbrains.annotations.Nullable;
 
 import com.petrolpark.destroy.Destroy;
+import com.simibubi.create.AllRecipeTypes;
 import com.simibubi.create.content.processing.recipe.ProcessingRecipeBuilder;
 import com.simibubi.create.content.processing.recipe.ProcessingRecipeSerializer;
 import com.simibubi.create.foundation.recipe.IRecipeTypeInfo;
@@ -28,6 +29,7 @@ public enum DestroyRecipeTypes implements IRecipeTypeInfo {
     CHARGING(ChargingRecipe::new),
     CENTRIFUGATION(CentrifugationRecipe::new),
     DISC_ELECTROPLATING(DiscElectroplatingRecipe::new),
+    CIRCUIT_DEPLOYING(CircuitDeployerApplicationRecipe::new, AllRecipeTypes.DEPLOYING::getType),
     DISTILLATION(DistillationRecipe::new),
     ELECTROLYSIS(ElectrolysisRecipe::new),
     EXTRUSION(ExtrusionRecipe::new),
@@ -35,8 +37,10 @@ public enum DestroyRecipeTypes implements IRecipeTypeInfo {
     OBLITERATION(ObliterationRecipe::new),
     REACTION(ReactionRecipe::new),
     TAPPING(TappingRecipe::new),
+    CIRCUIT_SEQUENCED_ASSEMBLY(CircuitSequencedAssemblyRecipe.Serializer::new, AllRecipeTypes.SEQUENCED_ASSEMBLY::getType),
 
-    MANUAL_ONLY_CRAFING_SHAPED(ManualOnlyShapedRecipe.Serializer::new, () -> ManualOnlyShapedRecipe.TYPE, true),
+    MANUAL_ONLY_CRAFTING_SHAPED(ManualOnlyShapedRecipe.Serializer::new, () -> RecipeType.CRAFTING),
+    CIRCUIT_BOARD_MANUAL_CRAFTING(ManualCircuitBoardRecipe.Serializer::new, () -> RecipeType.CRAFTING),
 
     DURATION_4_FIREWORK_ROCKET_CRAFTING(() -> ExtendedDurationFireworkRocketRecipe.DURATION_4_FIREWORK_ROCKET, () -> RecipeType.CRAFTING),
     DURATION_5_FIREWORK_ROCKET_CRAFTING(() -> ExtendedDurationFireworkRocketRecipe.DURATION_5_FIREWORK_ROCKET, () -> RecipeType.CRAFTING),
@@ -77,6 +81,10 @@ public enum DestroyRecipeTypes implements IRecipeTypeInfo {
 
     DestroyRecipeTypes(ProcessingRecipeBuilder.ProcessingRecipeFactory<?> processingFactory) {
         this(() -> new ProcessingRecipeSerializer<>(processingFactory));
+    };
+
+    DestroyRecipeTypes(ProcessingRecipeBuilder.ProcessingRecipeFactory<?> processingFactory, Supplier<RecipeType<?>> typeSupplier) {
+        this(() -> new ProcessingRecipeSerializer<>(processingFactory), typeSupplier);
     };
 
     public static void register(IEventBus modEventBus) {

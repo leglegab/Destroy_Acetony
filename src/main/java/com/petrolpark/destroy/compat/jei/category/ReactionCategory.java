@@ -62,11 +62,7 @@ public class ReactionCategory<T extends ReactionRecipe> extends HoverableTextCat
      */
     static {
         for (Reaction reaction : Reaction.REACTIONS.values()) {
-            ReactionRecipe recipe = ReactionRecipe.create(reaction);
-            reaction.getReverseReactionForDisplay().ifPresent(reverseReaction -> {
-                RECIPES.put(reverseReaction, recipe);
-            });
-            if (reaction.includeInJei()) RECIPES.put(reaction, recipe);
+            if (reaction.includeInJei()) RECIPES.put(reaction, ReactionRecipe.create(reaction));
         };
     };
 
@@ -79,10 +75,19 @@ public class ReactionCategory<T extends ReactionRecipe> extends HoverableTextCat
         List<LinesAndActivationAreas> paragraphs = new ArrayList<>(2);
         paragraphs.add(AbstractStackedTextBox.getTextAndActivationAreas(Component.translatable(getTranslationKey(recipe)).getString(), 2, 2, 176, minecraft.screen, minecraft.font, DARK_GRAY_AND_BLUE, false));
         paragraphs.add(AbstractStackedTextBox.getTextAndActivationAreas(Component.translatable(getTranslationKey(recipe) + ".description").getString(), 2, 90, 176, minecraft.screen, minecraft.font, DARK_GRAY_AND_BLUE, false));
+        
         if (reaction.needsUV()) {
             Vector2i pos = getCatalystRenderPosition(0, getNumberOfCatalysts(reaction));
             paragraphs.add(AbstractStackedTextBox.getTextAndActivationAreas(DestroyLang.translate("tooltip.reaction.ultraviolet").string(), pos.x + 3, pos.y + 4, 100, minecraft.screen, minecraft.font, WHITE_AND_WHITE, false));
         };
+
+        if (reaction.isHalfReaction()) {
+            int reactants = getNumberOfReactants(reaction);
+            Vector2i pos = getReactantRenderPosition(reactants - 1, reactants);
+            paragraphs.add(AbstractStackedTextBox.getTextAndActivationAreas(DestroyLang.translate("tooltip.reaction.electrons", DestroyLang.nothingIfOne(reaction.getElectronsTransferred())).string(), pos.x + 3, pos.y + 4, 100, minecraft.screen, minecraft.font, WHITE_AND_WHITE, false));
+            paragraphs.add(AbstractStackedTextBox.getTextAndActivationAreas(DestroyLang.translate("tooltip.reaction.standard_half_cell_potential_hoverable", reaction.getStandardHalfCellPotential()).string(), 72, 36, 100, minecraft.screen, minecraft.font, WHITE_AND_WHITE, false));
+        };
+
         return paragraphs;
     };
 
@@ -107,23 +112,13 @@ public class ReactionCategory<T extends ReactionRecipe> extends HoverableTextCat
 
         int i = 0;
 
-        int numberOfReactants = reaction.getReactants().size() + reaction.getItemReactants().stream().filter(ir -> !ir.isCatalyst()).toList().size();
+        int numberOfReactants = getNumberOfReactants(reaction);
         if (numberOfReactants >= 6) tooManyMoleculesWarning(true, reaction);
-        int reactantsXOffset = 5;
-        if (numberOfReactants >= 5) {
-        } else if (numberOfReactants % 2 == 0) {
-            reactantsXOffset += 9;
-        } else if (numberOfReactants == 1) {
-            reactantsXOffset += 19;
-        };
-        int reactantYOffset = yOffset;
-        if (numberOfReactants <= 3) reactantYOffset += 9;
-
-        int k = numberOfReactants == 4 ? 2 : 3;
 
         for (Molecule reactant : reaction.getReactants()) {
             if (i >= 6) continue;
-            builder.addSlot(RecipeIngredientRole.INPUT, reactantsXOffset + (19 * (i % k)), reactantYOffset + (i / k) * 19)
+            Vector2i pos = getReactantRenderPosition(i, numberOfReactants);
+            builder.addSlot(RecipeIngredientRole.INPUT, pos.x, pos.y)
                 .addIngredient(MoleculeJEIIngredient.TYPE, reactant)
                 .addTooltipCallback(ReactionTooltipHelper.reactantTooltip(reaction, reactant))
                 .setBackground(getRenderedSlot(), -1, -1);
@@ -133,7 +128,8 @@ public class ReactionCategory<T extends ReactionRecipe> extends HoverableTextCat
         for (IItemReactant itemReactant : reaction.getItemReactants()) {
             if (i >= 6) continue;
             if (!itemReactant.isCatalyst()) {
-                builder.addSlot(RecipeIngredientRole.INPUT, reactantsXOffset + (19 * (i % k)), reactantYOffset + (i / k) * 19)
+                Vector2i pos = getReactantRenderPosition(i, numberOfReactants);
+                builder.addSlot(RecipeIngredientRole.INPUT, pos.x, pos.y)
                     .addItemStacks(itemReactant.getDisplayedItemStacks())
                     .addTooltipCallback(ReactionTooltipHelper.itemReactantTooltip(reaction, itemReactant))
                     .setBackground(getRenderedSlot(), -1, -1);
@@ -216,6 +212,25 @@ public class ReactionCategory<T extends ReactionRecipe> extends HoverableTextCat
                 .addItemStack(DestroyItems.ABS.asStack()) // Dummy item so we actually get something generated
                 .addTooltipCallback(ReactionTooltipHelper.nerdModeTooltip(reaction));
         };
+    };
+
+    protected Vector2i getReactantRenderPosition(int position, int numberOfReactants) {
+        int reactantsXOffset = 5;
+        if (numberOfReactants >= 5) {
+        } else if (numberOfReactants % 2 == 0) {
+            reactantsXOffset += 9;
+        } else if (numberOfReactants == 1) {
+            reactantsXOffset += 19;
+        };
+        int reactantYOffset = yOffset;
+        if (numberOfReactants <= 3) reactantYOffset += 9;
+
+        int k = numberOfReactants == 4 ? 2 : 3;
+        return new Vector2i(reactantsXOffset + (19 * (position % k)), reactantYOffset + (position / k) * 19);
+    };
+
+    protected int getNumberOfReactants(Reaction reaction) {
+        return reaction.getReactants().size() + reaction.getItemReactants().stream().filter(ir -> !ir.isCatalyst()).toList().size() + (reaction.isHalfReaction() ? 1 : 0);
     };
 
     protected Vector2i getCatalystRenderPosition(int position, int numberOfCatalysts) {

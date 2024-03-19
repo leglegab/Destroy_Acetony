@@ -16,6 +16,7 @@ import com.petrolpark.destroy.client.gui.menu.DestroyMenuTypes;
 import com.petrolpark.destroy.client.particle.DestroyParticleTypes;
 import com.petrolpark.destroy.client.ponder.DestroyPonderIndex;
 import com.petrolpark.destroy.client.ponder.DestroyPonderTags;
+import com.petrolpark.destroy.client.sprites.DestroySpriteSource;
 import com.petrolpark.destroy.compat.jei.DestroyJEI;
 import com.petrolpark.destroy.config.DestroyAllConfigs;
 import com.petrolpark.destroy.effect.DestroyMobEffects;
@@ -154,7 +155,7 @@ public class Destroy {
         DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> clientCtor(modEventBus, forgeEventBus));
     };
 
-    //Initiation Events
+    // Initiation Events
 
     public static void init(final FMLCommonSetupEvent event) {
         event.enqueueWork(() -> {
@@ -187,6 +188,7 @@ public class Destroy {
     };
 
     public static void clientCtor(IEventBus modEventBus, IEventBus forgeEventBus) {
+        DestroySpriteSource.register();
         DestroyPartials.init();
         modEventBus.addListener(DestroyParticleTypes::registerProviders);
     };

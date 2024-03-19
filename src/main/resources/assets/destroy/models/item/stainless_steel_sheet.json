@@ -1,6 +1,6 @@
 {
     "parent": "minecraft:item/generated",
     "textures": {
-      "layer0": "destroy:item/unseasoned_fries"
+      "layer0": "destroy:item/stainless_steel_sheet"
     }
   }

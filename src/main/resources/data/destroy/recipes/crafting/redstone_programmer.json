@@ -8,8 +8,8 @@
     "key": {
         "B": {
             "type": "destroy:circuit_pattern_item",
-            "item": "destroy:circuit_mask",
-            "pattern": "destroy:easy"
+            "item": "destroy:circuit_board",
+            "pattern": "destroy:shared_easy_0"
         },
         "C": {
             "item": "create:brass_casing"

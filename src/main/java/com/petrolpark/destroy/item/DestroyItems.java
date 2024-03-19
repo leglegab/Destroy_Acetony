@@ -94,40 +94,37 @@ public class DestroyItems {
     // INGOTS ETC
 
     FLUORITE = REGISTRATE.item("fluorite", Item::new)
-        .tag(forgeItemTag("raw_materials/fluorite"), ItemTags.BEACON_PAYMENT_ITEMS)
+        .tag(forgeItemTag("raw_materials/fluorite"), ItemTags.BEACON_PAYMENT_ITEMS, ItemTags.TRIM_MATERIALS)
         .register(),
     NICKEL_INGOT = REGISTRATE.item("nickel_ingot", Item::new)
-        .tag(DestroyItemTags.DESTROY_INGOTS.tag, forgeItemTag("ingots/nickel"), Tags.Items.INGOTS)
+        .tag(DestroyItemTags.DESTROY_INGOTS.tag, forgeItemTag("ingots/nickel"), Tags.Items.INGOTS, ItemTags.TRIM_MATERIALS)
         .register(),
     CHROMIUM_INGOT = REGISTRATE.item("chromium_ingot", Item::new)
-        .tag(DestroyItemTags.DESTROY_INGOTS.tag, forgeItemTag("ingots/chromium"), Tags.Items.INGOTS)
+        .tag(DestroyItemTags.DESTROY_INGOTS.tag, forgeItemTag("ingots/chromium"), Tags.Items.INGOTS, ItemTags.TRIM_MATERIALS)
         .register(),
     LEAD_INGOT = REGISTRATE.item("lead_ingot", Item::new)
-        .tag(DestroyItemTags.DESTROY_INGOTS.tag, forgeItemTag("ingots/lead"), Tags.Items.INGOTS)
+        .tag(DestroyItemTags.DESTROY_INGOTS.tag, forgeItemTag("ingots/lead"), Tags.Items.INGOTS, ItemTags.TRIM_MATERIALS)
         .register(),
     PALLADIUM_INGOT = REGISTRATE.item("palladium_ingot", Item::new)
-        .tag(DestroyItemTags.DESTROY_INGOTS.tag, forgeItemTag("ingots/palladium"), Tags.Items.INGOTS)
+        .tag(DestroyItemTags.DESTROY_INGOTS.tag, forgeItemTag("ingots/palladium"), Tags.Items.INGOTS, ItemTags.TRIM_MATERIALS)
         .register(),
     PLATINUM_INGOT = REGISTRATE.item("platinum_ingot", Item::new)
-        .tag(DestroyItemTags.DESTROY_INGOTS.tag, forgeItemTag("ingots/platinum"), Tags.Items.INGOTS)
+        .tag(DestroyItemTags.DESTROY_INGOTS.tag, forgeItemTag("ingots/platinum"), Tags.Items.INGOTS, ItemTags.TRIM_MATERIALS)
         .register(),
     RHODIUM_INGOT = REGISTRATE.item("rhodium_ingot", Item::new)
-        .tag(DestroyItemTags.DESTROY_INGOTS.tag, forgeItemTag("ingots/rhodium"), Tags.Items.INGOTS)
+        .tag(DestroyItemTags.DESTROY_INGOTS.tag, forgeItemTag("ingots/rhodium"), Tags.Items.INGOTS, ItemTags.TRIM_MATERIALS)
         .register(),
     STAINLESS_STEEL_INGOT = REGISTRATE.item("stainless_steel_ingot", Item::new)
-        .tag(DestroyItemTags.DESTROY_INGOTS.tag, forgeItemTag("ingots/steel"), forgeItemTag("ingots/stainless_steel"), Tags.Items.INGOTS)
+        .tag(DestroyItemTags.DESTROY_INGOTS.tag, forgeItemTag("ingots/steel"), forgeItemTag("ingots/stainless_steel"), Tags.Items.INGOTS, ItemTags.TRIM_MATERIALS)
         .register(),
     PURE_GOLD_INGOT = REGISTRATE.item("pure_gold_ingot", Item::new)
-        .tag(DestroyItemTags.DESTROY_INGOTS.tag, Tags.Items.INGOTS, ItemTags.PIGLIN_LOVED)
+        .tag(DestroyItemTags.DESTROY_INGOTS.tag, Tags.Items.INGOTS, ItemTags.PIGLIN_LOVED, ItemTags.TRIM_MATERIALS)
         .register(),
-    // ZIRCONIUM_INGOT = REGISTRATE.item("zirconium_ingot", Item::new)
-    //     .tag(DestroyItemTags.DESTROY_INGOTS.tag, forgeItemTag("ingots/zirconium"), Tags.Items.INGOTS, DestroyItemTags.LIABLE_TO_CHANGE.tag)
-    //     .register(),
-    // SULFUR = REGISTRATE.item("sulfur", Item::new)
-    //     .tag(forgeItemTag("raw_materials/sulfur"))
-    //     .register(),
     ZINC_SHEET = REGISTRATE.item("zinc_sheet", Item::new)
-        .tag(forgeItemTag("plates/zinc"))
+        .tag(forgeItemTag("plates/zinc"), forgeItemTag("plates"))
+        .register(),
+    STAINLESS_STEEL_SHEET = REGISTRATE.item("stainless_steel_sheet", Item::new)
+        .tag(forgeItemTag("plates/steel"), forgeItemTag("plates/stainless_steel"), forgeItemTag("plates"))
         .register(),
     STAINLESS_STEEL_ROD = REGISTRATE.item("stainless_steel_rod", Item::new)
         .tag(forgeItemTag("rods/steel"), forgeItemTag("rods/stainless_steel"), Tags.Items.RODS)
@@ -381,18 +378,11 @@ public class DestroyItems {
     RAW_FRIES = REGISTRATE.item("raw_fries", Item::new)
         .properties(p -> p
             .food(DestroyFoods.RAW_FRIES)
-        ).tag(DestroyItemTags.LIABLE_TO_CHANGE.tag)
-        .register(),
-    UNSEASONED_FRIES = REGISTRATE.item("unseasoned_fries", Item::new)
-        .properties(p -> p
-            .food(DestroyFoods.UNSEASONED_FRIES)
-        ).tag(DestroyItemTags.LIABLE_TO_CHANGE.tag)
-        .register(),
+        ).register(),
     FRIES = REGISTRATE.item("fries", Item::new)
         .properties(p -> p
             .food(DestroyFoods.FRIES)
-        ).tag(DestroyItemTags.LIABLE_TO_CHANGE.tag)
-        .register(),
+        ).register(),
     MASHED_POTATO = REGISTRATE.item("mashed_potato", Item::new)
         .properties(p -> p
             .food(DestroyFoods.MASHED_POTATO)
@@ -468,6 +458,9 @@ public class DestroyItems {
     public static final ItemEntry<SequencedAssemblyItem>
 
     UNFINISHED_BLACKLIGHT = REGISTRATE.item("unfinished_blacklight", SequencedAssemblyItem::new)
+        .tab(null)
+        .register(),
+    UNFINISHED_CIRCUIT_BOARD = REGISTRATE.item("unfinished_circuit_board", SequencedAssemblyItem::new)
         .tab(null)
         .register(),
     UNFINISHED_CARD_STOCK = REGISTRATE.item("unfinished_card_stock", SequencedAssemblyItem::new)
@@ -666,6 +659,8 @@ public class DestroyItems {
         .properties(p -> p
             .stacksTo(1)
         ).register();
+    public static final ItemEntry<CircuitBoardItem> CIRCUIT_BOARD = REGISTRATE.item("circuit_board", CircuitBoardItem::new)
+        .register();
 
     public static final ItemEntry<Item> RUINED_CIRCUIT_MASK = REGISTRATE.item("ruined_circuit_mask", Item::new)
         .register();

@@ -63,6 +63,9 @@
       {
         "type": "single",
         "resource": "destroy:entity/armor/gas_mask"
+      },
+      {
+        "type": "destroy:blocks"
       }
     ]
   }

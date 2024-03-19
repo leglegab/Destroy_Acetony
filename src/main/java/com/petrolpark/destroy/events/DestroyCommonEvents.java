@@ -33,6 +33,7 @@ import com.petrolpark.destroy.commands.RegenerateCircuitPatternCommand.CircuitPa
 import com.petrolpark.destroy.config.DestroyAllConfigs;
 import com.petrolpark.destroy.effect.DestroyMobEffects;
 import com.petrolpark.destroy.fluid.DestroyFluids;
+import com.petrolpark.destroy.item.CircuitPatternItem;
 import com.petrolpark.destroy.item.DestroyItems;
 import com.petrolpark.destroy.item.DiscStamperItem;
 import com.petrolpark.destroy.item.RedstoneProgrammerBlockItem;
@@ -43,7 +44,10 @@ import com.petrolpark.destroy.network.packet.CircuitPatternsS2CPacket;
 import com.petrolpark.destroy.network.packet.LevelPollutionS2CPacket;
 import com.petrolpark.destroy.network.packet.RefreshPeriodicTablePonderSceneS2CPacket;
 import com.petrolpark.destroy.network.packet.SeismometerSpikeS2CPacket;
+import com.petrolpark.destroy.recipe.CircuitDeployerApplicationRecipe;
+import com.petrolpark.destroy.recipe.DestroyRecipeTypes;
 import com.petrolpark.destroy.recipe.DiscStampingRecipe;
+import com.petrolpark.destroy.recipe.ManualOnlyShapedRecipe;
 import com.petrolpark.destroy.recipe.ingredient.CircuitPatternIngredient;
 import com.petrolpark.destroy.sound.DestroySoundEvents;
 import com.petrolpark.destroy.util.ChemistryDamageHelper;
@@ -109,6 +113,7 @@ import net.minecraft.world.entity.npc.VillagerTrades;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -749,9 +754,17 @@ public class DestroyCommonEvents {
     @SubscribeEvent
     public static void onGetDeployerRecipes(DeployerRecipeSearchEvent event) {
         RecipeWrapper inv = event.getInventory();
-        ItemStack stamper = inv.getItem(1);
-        if (stamper.getItem() instanceof DiscStamperItem && inv.getItem(0).is(DestroyItems.BLANK_MUSIC_DISC.get())) {
-            event.addRecipe(() -> Optional.ofNullable(DiscStampingRecipe.create(stamper)), 75);
+
+        ItemStack appliedStack = inv.getItem(1);
+
+        if (appliedStack.getItem() instanceof DiscStamperItem && inv.getItem(0).is(DestroyItems.BLANK_MUSIC_DISC.get())) {
+            event.addRecipe(() -> Optional.ofNullable(DiscStampingRecipe.create(appliedStack)), 75);
+        };
+
+        if (inv.hasAnyMatching(stack -> stack.getItem() instanceof CircuitPatternItem)) {
+            Recipe<?> recipe = event.getRecipe() instanceof CircuitDeployerApplicationRecipe ? event.getRecipe() : null;
+            if (recipe == null) recipe = DestroyRecipeTypes.CIRCUIT_DEPLOYING.find(event.getInventory(), event.getBlockEntity().getLevel()).orElse(null);
+            if (recipe != null && recipe instanceof CircuitDeployerApplicationRecipe circuitRecipe) event.addRecipe(() -> Optional.of(circuitRecipe.specify(inv)), 150);
         };
     };
 
@@ -789,6 +802,7 @@ public class DestroyCommonEvents {
         event.addListener(new PeriodicTableBlock.Listener(event.getConditionContext()));
         event.addListener(Destroy.CIRCUIT_PATTERN_HANDLER.RELOAD_LISTENER);
         event.addListener(new ExplosiveProperties.Listener(event.getConditionContext()));
+        event.addListener(ManualOnlyShapedRecipe.ALLOWED_MENU_LISTENER);
     };
 
     @SubscribeEvent

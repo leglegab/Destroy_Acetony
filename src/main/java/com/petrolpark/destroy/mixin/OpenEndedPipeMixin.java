@@ -37,10 +37,14 @@ public abstract class OpenEndedPipeMixin {
             && world.getBlockState(outputPos).canBeReplaced()
             && stack.getFluid().isSame(DestroyFluids.MOLTEN_STAINLESS_STEEL.get())
             && AllConfigs.server().fluids.pipesPlaceFluidSourceBlocks.get()
+            && (simulate || stack.getAmount() == 1000)
         ) {
-            if (simulate && stack.getAmount() == 1000) world.setBlockAndUpdate(outputPos, DestroyBlocks.MOLTEN_STAINLESS_STEEL.getDefaultState());
-            cir.setReturnValue(true); //TODO FluidHelper mixin
+            if (!simulate) world.setBlockAndUpdate(outputPos, DestroyBlocks.MOLTEN_STAINLESS_STEEL.getDefaultState());
+            cir.setReturnValue(true);
             cir.cancel();
+            return;
         };
+        cir.setReturnValue(false);
+        cir.cancel();
     };
 };

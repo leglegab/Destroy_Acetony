@@ -1,6 +1,9 @@
 package com.petrolpark.destroy.events;
 
+import java.util.List;
+import java.util.Map.Entry;
 import java.util.function.BiFunction;
+import java.util.stream.Stream;
 
 import javax.annotation.Nullable;
 
@@ -9,6 +12,7 @@ import com.petrolpark.destroy.capability.level.pollution.ClientLevelPollutionDat
 import com.petrolpark.destroy.capability.level.pollution.LevelPollution;
 import com.petrolpark.destroy.capability.level.pollution.LevelPollution.PollutionType;
 import com.petrolpark.destroy.chemistry.naming.SaltNameOverrides;
+import com.petrolpark.destroy.client.model.UniversalArmorTrimModel;
 import com.petrolpark.destroy.item.CircuitMaskItem.CircuitMaskTooltip;
 import com.petrolpark.destroy.item.MoleculeDisplayItem.MoleculeTooltip;
 import com.petrolpark.destroy.util.NameLists;
@@ -16,7 +20,10 @@ import com.simibubi.create.foundation.utility.Color;
 
 import net.minecraft.client.color.block.BlockColor;
 import net.minecraft.client.renderer.BiomeColors;
+import net.minecraft.client.resources.model.BakedModel;
+import net.minecraft.client.resources.model.SimpleBakedModel;
 import net.minecraft.core.BlockPos;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.BlockAndTintGetter;
 import net.minecraft.world.level.FoliageColor;
 import net.minecraft.world.level.GrassColor;
@@ -25,6 +32,7 @@ import net.minecraft.world.level.block.DoublePlantBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.DoubleBlockHalf;
 import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.client.event.ModelEvent;
 import net.minecraftforge.client.event.RegisterClientReloadListenersEvent;
 import net.minecraftforge.client.event.RegisterClientTooltipComponentFactoriesEvent;
 import net.minecraftforge.client.event.RegisterColorHandlersEvent;
@@ -74,7 +82,7 @@ public class DestroyClientModEvents {
 
         private final BlockColor originalColor;
 
-        public SmogAffectedBlockColor(BiFunction<BlockAndTintGetter, BlockPos, Integer> levelAndPosBlockColor, Integer fallback) {
+        public SmogAffectedBlockColor(BiFunction<BlockAndTintGetter, BlockPos, Integer> levelAndPosBlockColor, int fallback) {
             this((state, level, pos, tintIndex) -> level != null && pos != null ? levelAndPosBlockColor.apply(level, pos) : fallback);
         };
 
@@ -102,4 +110,20 @@ public class DestroyClientModEvents {
         event.register(MoleculeTooltip.class, MoleculeTooltip::getClientTooltipComponent);
         event.register(CircuitMaskTooltip.class, CircuitMaskTooltip::getClientTooltipComponent);
     };
+
+    public static final ResourceLocation trimTypePredicateLocation = new ResourceLocation("trim_type");
+
+    @SubscribeEvent
+    public static void onModelBakel(ModelEvent.ModifyBakingResult event) {
+        List<Entry<ResourceLocation, BakedModel>> modelsToReplace = event.getModels().entrySet()
+            .stream()
+            .filter(entry ->
+                entry.getKey().toString().endsWith("#inventory")
+                && entry.getValue() instanceof SimpleBakedModel // Don't override anything complicated
+                && Stream.of(entry.getValue().getOverrides().properties).anyMatch(trimTypePredicateLocation::equals) // Check if this item is likely to support trims
+            ) .toList();
+        for (Entry<ResourceLocation, BakedModel> entry : modelsToReplace) 
+            event.getModels().put(entry.getKey(), new UniversalArmorTrimModel(entry.getValue())); // Replace the model with one which wraps the old one but also provides the additional Armor Trims
+    };
+
 };
