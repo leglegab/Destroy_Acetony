@@ -65,6 +65,10 @@
         "resource": "destroy:entity/armor/gas_mask"
       },
       {
+        "type": "single",
+        "resource": "destroy:item/test_tube_overlay"
+      },
+      {
         "type": "destroy:blocks"
       }
     ]

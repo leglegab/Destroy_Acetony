@@ -20,8 +20,7 @@ import net.minecraft.world.level.Level;
 public enum DestroyAdvancementTrigger {
 
     OPEN_AGING_BARREL("open_aging_barrel", "aging_barrel"),
-    TAKE_BABY_BLUE("take_baby_blue", "baby_blue"),
-    TAKE_BABY_BLUE_HIGH("take_baby_blue_high", "baby_blue_high"),
+    TAKE_BABY_BLUE("take_baby_blue", "baby_blue", "baby_blue_high"),
     SHOOT_HEFTY_BEETROOT("beetroot_potato_cannon"),
     CAPTURE_STRAY,
     USE_CENTRIFUGE("use_centrifuge", "centrifuge"),
@@ -36,7 +35,7 @@ public enum DestroyAdvancementTrigger {
     CURE_HANGOVER("cure_hangover", "hangover_cured"),
     HYPERACCUMULATE,
     USE_KEYPUNCH("keypunch"),
-    MECHANICAL_HANDS,
+    KEYPUNCH_FIVE,
     TRY_TO_MAKE_METH("try_to_make_meth", "meth"),
     OSTWALD_PROCESS,
     PERIODIC_TABLE,

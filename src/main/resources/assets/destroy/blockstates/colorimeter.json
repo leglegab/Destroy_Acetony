@@ -1,0 +1,34 @@
+{
+    "variants": {
+        "facing=north,blushing=false": {
+            "model": "destroy:block/colorimeter"
+        },
+        "facing=east,blushing=false": {
+            "model": "destroy:block/colorimeter",
+            "y": 90
+        },
+        "facing=south,blushing=false": {
+            "model": "destroy:block/colorimeter",
+            "y": 180
+        },
+        "facing=west,blushing=false": {
+            "model": "destroy:block/colorimeter",
+            "y": 270
+        },
+        "facing=north,blushing=true": {
+            "model": "destroy:block/colorimeter_blushing"
+        },
+        "facing=east,blushing=true": {
+            "model": "destroy:block/colorimeter_blushing",
+            "y": 90
+        },
+        "facing=south,blushing=true": {
+            "model": "destroy:block/colorimeter_blushing",
+            "y": 180
+        },
+        "facing=west,blushing=true": {
+            "model": "destroy:block/colorimeter_blushing",
+            "y": 270
+        }
+    }
+}

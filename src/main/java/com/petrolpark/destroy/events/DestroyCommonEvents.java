@@ -12,6 +12,7 @@ import com.petrolpark.destroy.block.PeriodicTableBlock;
 import com.petrolpark.destroy.block.PeriodicTableBlock.PeriodicTableEntry;
 import com.petrolpark.destroy.block.entity.VatControllerBlockEntity;
 import com.petrolpark.destroy.block.entity.VatSideBlockEntity;
+import com.petrolpark.destroy.block.entity.behaviour.DestroyAdvancementBehaviour;
 import com.petrolpark.destroy.block.entity.behaviour.ExtendedBasinBehaviour;
 import com.petrolpark.destroy.block.entity.behaviour.PollutingBehaviour;
 import com.petrolpark.destroy.capability.chunk.ChunkCrudeOil;
@@ -21,6 +22,7 @@ import com.petrolpark.destroy.capability.level.pollution.LevelPollution.Pollutio
 import com.petrolpark.destroy.capability.level.pollution.LevelPollutionProvider;
 import com.petrolpark.destroy.capability.player.PlayerBadges;
 import com.petrolpark.destroy.capability.player.PlayerCrouching;
+import com.petrolpark.destroy.capability.player.PlayerNovelCompoundsSynthesized;
 import com.petrolpark.destroy.capability.player.babyblue.PlayerBabyBlueAddiction;
 import com.petrolpark.destroy.capability.player.babyblue.PlayerBabyBlueAddictionProvider;
 import com.petrolpark.destroy.capability.player.previousposition.PlayerPreviousPositions;
@@ -196,6 +198,10 @@ public class DestroyCommonEvents {
             // Add Badge Capability
             if (!player.getCapability(PlayerBadges.Provider.PLAYER_BADGES).isPresent()) {
                 event.addCapability(Destroy.asResource("badges"), new PlayerBadges.Provider());
+            };
+            // Add Badge Capability
+            if (!player.getCapability(PlayerNovelCompoundsSynthesized.Provider.PLAYER_NOVEL_COMPOUNDS_SYNTHESIZED).isPresent()) {
+                event.addCapability(Destroy.asResource("novel_compounds_synthesized"), new PlayerNovelCompoundsSynthesized.Provider());
             };
         };
     };
@@ -757,10 +763,12 @@ public class DestroyCommonEvents {
 
         ItemStack appliedStack = inv.getItem(1);
 
+        // Disc Stamping
         if (appliedStack.getItem() instanceof DiscStamperItem && inv.getItem(0).is(DestroyItems.BLANK_MUSIC_DISC.get())) {
             event.addRecipe(() -> Optional.ofNullable(DiscStampingRecipe.create(appliedStack)), 75);
         };
 
+        // Circuit deployer application
         if (inv.hasAnyMatching(stack -> stack.getItem() instanceof CircuitPatternItem)) {
             Recipe<?> recipe = event.getRecipe() instanceof CircuitDeployerApplicationRecipe ? event.getRecipe() : null;
             if (recipe == null) recipe = DestroyRecipeTypes.CIRCUIT_DEPLOYING.find(event.getInventory(), event.getBlockEntity().getLevel()).orElse(null);
@@ -769,15 +777,16 @@ public class DestroyCommonEvents {
     };
 
     /**
-     * Reward the Player with an advancement for assembling a full periodic table.
+     * Reward the Player with an advancement for assembling a full periodic table,
+     * and add the player to the Destroy Advancement behaviour of the Basin.
      */
     @SubscribeEvent
     public static void onPlayerPlacesBlock(EntityPlaceEvent event) {
         BlockState state = event.getPlacedBlock();
         Level level = event.getEntity().level();
 
-        // Periodic Table advancement
         if (event.getEntity() instanceof ServerPlayer serverPlayer) {
+            // Periodic Table advancement
             if (PeriodicTableBlock.isPeriodicTableBlock(state)) {
                 int[] thisPos = PeriodicTableBlock.getXY(state.getBlock());
                 for (Direction direction : Iterate.horizontalDirections) {
@@ -794,7 +803,12 @@ public class DestroyCommonEvents {
                     };
                 };
             };
+
+            // Basin Destroy Advancement behaviour
+            BlockEntity be = level.getBlockEntity(event.getPos());
+            if (be != null && be instanceof BasinBlockEntity) DestroyAdvancementBehaviour.setPlacedBy(level, event.getPos(), serverPlayer);
         };
+
     };
 
     @SubscribeEvent

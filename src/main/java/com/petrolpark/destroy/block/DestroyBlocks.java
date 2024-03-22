@@ -123,6 +123,12 @@ public class DestroyBlocks {
             .noOcclusion()
         ).register();
 
+    public static final BlockEntry<ColorimeterBlock> COLORIMETER = REGISTRATE.block("colorimeter", ColorimeterBlock::new)
+        .initialProperties(() -> Blocks.OBSERVER)
+        .item()
+        .build()
+        .register();
+
     public static final BlockEntry<CoolerBlock> COOLER = REGISTRATE.block("cooler", CoolerBlock::new)
         .initialProperties(SharedProperties::stone)
         .properties(p -> p

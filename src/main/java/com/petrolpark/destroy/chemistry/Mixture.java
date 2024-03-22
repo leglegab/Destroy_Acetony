@@ -19,6 +19,7 @@ import com.petrolpark.destroy.chemistry.genericreaction.GenericReactant;
 import com.petrolpark.destroy.chemistry.genericreaction.GenericReaction;
 import com.petrolpark.destroy.chemistry.genericreaction.SingleGroupGenericReaction;
 import com.petrolpark.destroy.chemistry.index.DestroyMolecules;
+import com.petrolpark.destroy.chemistry.reactionresult.NovelCompoundSynthesizedReactionResult;
 import com.petrolpark.destroy.recipe.ReactionInBasinRecipe.ReactionInBasinResult;
 import com.simibubi.create.foundation.utility.NBTHelper;
 import com.simibubi.create.foundation.utility.Pair;
@@ -165,9 +166,9 @@ public class Mixture extends ReadOnlyMixture {
         tag.putBoolean("AtEquilibrium", equilibrium);
 
         if (!reactionResults.isEmpty()) {
-            tag.put("Results", NBTHelper.writeCompoundList(reactionResults.entrySet(), entry -> {
+            tag.put("Results", NBTHelper.writeCompoundList(reactionResults.entrySet().stream().filter(entry -> entry.getKey().getReaction().isPresent()).toList(), entry -> {
                 CompoundTag resultTag = new CompoundTag();
-                resultTag.putString("Result", entry.getKey().getReaction().getFullId());
+                resultTag.putString("Result", entry.getKey().getReaction().get().getFullId());
                 resultTag.putFloat("MolesPerBucket", entry.getValue());
                 return resultTag;
             }));
@@ -268,7 +269,8 @@ public class Mixture extends ReadOnlyMixture {
         };
 
         for (Entry<ReactionResult, Double> reactionResultAndMoles : reactionResultsAndMoles.entrySet()) {
-            resultMixture.incrementReactionResults(reactionResultAndMoles.getKey().getReaction(), (float)(reactionResultAndMoles.getValue() / totalAmount)); // Add all Reaction Results to the new Mixture
+            if (reactionResultAndMoles.getKey().getReaction().isPresent())
+                resultMixture.incrementReactionResults(reactionResultAndMoles.getKey().getReaction().get(), (float)(reactionResultAndMoles.getValue() / totalAmount)); // Add all Reaction Results to the new Mixture
         };
 
         resultMixture.temperature = 0f; // Initially set the temperature of the new Mixture to 0K
@@ -746,7 +748,7 @@ public class Mixture extends ReadOnlyMixture {
                 continue;
             };
 
-            Float molesPerBucketOfReaction = reactionResults.get(result);
+            float molesPerBucketOfReaction = reactionResults.get(result);
             int numberOfResult = (int) (volumeInBuckets * molesPerBucketOfReaction / result.getRequiredMoles());
             if (numberOfResult == 0) continue;
 
@@ -762,7 +764,7 @@ public class Mixture extends ReadOnlyMixture {
     };
 
     /**
-     * Get the heat capacity (in joules per bucket-kelvin) of this Mixture.
+     * Get the heat capacity (in joules per bucket-kelvin) of this Mixture. Probably best to cache this instead of calling it repeatedly.
      */
     public float getVolumetricHeatCapacity() {
         float totalHeatCapacity = 0f;
@@ -773,7 +775,7 @@ public class Mixture extends ReadOnlyMixture {
     };
 
     /**
-     * Set the Molecules which will be next to be condense or boil if the temperature of this Mixture changes.
+     * Set the Molecules which will be next to condense or boil if the temperature of this Mixture changes.
      */
     protected void updateNextBoilingPoints() {
         nextHigherBoilingPoint = Pair.of(Float.MAX_VALUE, null);
@@ -834,7 +836,10 @@ public class Mixture extends ReadOnlyMixture {
             if (!found) {
                 super.addMolecule(molecule, concentration);
                 novelMolecules.add(molecule); // If it was actually a brand new Molecule, add it to the novel list
-            }; 
+            };
+            if (newMoleculeAdded) {
+                reactionResults.put(new NovelCompoundSynthesizedReactionResult(0f, null, molecule), 1f);
+            };
         };
 
         if (shouldRefreshReactions && newMoleculeAdded) {

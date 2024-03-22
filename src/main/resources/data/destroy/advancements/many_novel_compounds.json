@@ -1,0 +1,42 @@
+{
+    "parent": "destroy:novel_compound",
+    "criteria": {
+      "synthesize": {
+        "conditions": {
+            "player": {
+                "type_specific": {
+                    "type": "player",
+                    "stats": [
+                        {
+                            "type": "minecraft:custom",
+                            "stat": "destroy:novel_compounds_synthesized",
+                            "value": {
+                              "min": 50
+                            }
+                        }
+                    ]
+                }
+            }
+        },
+        "trigger": "minecraft:location"
+      }
+    },
+    "display": {
+      "description": {
+        "color": "#DBA213",
+        "translate": "advancement.destroy.many_novel_compounds.description"
+      },
+      "icon": {
+        "item": "destroy:test_tube"
+      },
+      "title": {
+        "translate": "advancement.destroy.many_novel_compounds"
+      },
+      "frame": "challenge"
+    },
+    "requirements": [
+      [
+        "synthesize"
+      ]
+    ]
+  }

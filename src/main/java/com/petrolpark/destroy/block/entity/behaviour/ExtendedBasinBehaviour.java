@@ -101,9 +101,9 @@ public class ExtendedBasinBehaviour extends BlockEntityBehaviour {
 	public void write(CompoundTag nbt, boolean clientPacket) {
         nbt.putBoolean("TooFullToReact", tooFullToReact);
 
-        nbt.put("Results", NBTHelper.writeCompoundList(reactionResults.entrySet(), entry -> {
+        nbt.put("Results", NBTHelper.writeCompoundList(reactionResults.entrySet().stream().filter(entry -> entry.getKey().getReaction().isPresent()).toList(), entry -> {
             CompoundTag resultTag = new CompoundTag();
-            resultTag.putString("Result", entry.getKey().getReaction().getFullId());
+            resultTag.putString("Result", entry.getKey().getReaction().get().getFullId());
             resultTag.putInt("Count", entry.getValue());
             return resultTag;
         }));

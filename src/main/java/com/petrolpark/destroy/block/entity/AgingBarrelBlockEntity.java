@@ -21,7 +21,6 @@ import com.simibubi.create.foundation.blockEntity.SmartBlockEntity;
 import com.simibubi.create.foundation.blockEntity.behaviour.BlockEntityBehaviour;
 import com.simibubi.create.foundation.blockEntity.behaviour.fluid.SmartFluidTankBehaviour;
 import com.simibubi.create.foundation.blockEntity.behaviour.fluid.SmartFluidTankBehaviour.TankSegment;
-import com.simibubi.create.foundation.fluid.CombinedTankWrapper;
 import com.simibubi.create.foundation.fluid.SmartFluidTank;
 import com.simibubi.create.foundation.item.SmartInventory;
 import com.simibubi.create.foundation.recipe.RecipeFinder;
@@ -31,6 +30,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.util.Mth;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.Recipe;
@@ -40,7 +40,6 @@ import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler.FluidAction;
 import net.minecraftforge.items.IItemHandlerModifiable;
 
@@ -52,13 +51,12 @@ public class AgingBarrelBlockEntity extends SmartBlockEntity implements IHaveGog
     public SmartInventory inventory;
     protected SmartFluidTankBehaviour tank;
 
-    protected LazyOptional<IFluidHandler> fluidCapability;
     public LazyOptional<IItemHandlerModifiable> itemCapability;
 
     protected DirectBeltInputBehaviour beltBehaviour;
     protected PollutingBehaviour pollutingBehaviour;
 
-    private int timer; // -1 = open, 0 = done processing but closed
+    private int timer; // -1 = finished, 0 = progress is at 100%
     private int totalTime;
 
     public AgingBarrelBlockEntity(BlockEntityType<?> pType, BlockPos pos, BlockState pBlockState) {
@@ -73,12 +71,13 @@ public class AgingBarrelBlockEntity extends SmartBlockEntity implements IHaveGog
 
     @Override
     public void addBehaviours(List<BlockEntityBehaviour> behaviours) {
-        tank = new SmartFluidTankBehaviour(SmartFluidTankBehaviour.INPUT, this, 1, TANK_CAPACITY, true)
-            .whenFluidUpdates(this::sendData);
+        tank = new SmartFluidTankBehaviour(SmartFluidTankBehaviour.TYPE, this, 1, TANK_CAPACITY, true)
+            .whenFluidUpdates(() -> {
+                sendData();
+                if (timer == 0) timer = -1;
+                onTimerChange();
+            });
         behaviours.add(tank);
-        fluidCapability = LazyOptional.of(() -> {
-			return new CombinedTankWrapper(tank.getCapability().orElse(null));
-		});
 
         beltBehaviour = new DirectBeltInputBehaviour(this);
         behaviours.add(beltBehaviour);
@@ -137,7 +136,7 @@ public class AgingBarrelBlockEntity extends SmartBlockEntity implements IHaveGog
     };
 
     public int getLuminosity() {
-        if (timer == -1 && !getTank().isEmpty()) { // If Barrel is open
+        if (getBlockState().getValue(AgingBarrelBlock.IS_OPEN) && !getTank().isEmpty()) { // If Barrel is open
             FluidStack fluidStack = getTank().getFluid();
             return fluidStack.getRawFluid().getFluidType().getLightLevel(fluidStack);
         } else {
@@ -168,7 +167,7 @@ public class AgingBarrelBlockEntity extends SmartBlockEntity implements IHaveGog
     @SuppressWarnings("null")
     public <T> LazyOptional<T> getCapability(@NotNull Capability<T> cap, @Nullable Direction side) {
         if (cap == ForgeCapabilities.FLUID_HANDLER) {
-            return fluidCapability.cast();
+            return tank.getCapability().cast();
         } else if (cap == ForgeCapabilities.ITEM_HANDLER) {
             return itemCapability.cast();
         };
@@ -188,16 +187,20 @@ public class AgingBarrelBlockEntity extends SmartBlockEntity implements IHaveGog
     public void onTimerChange() {
         if (!hasLevel()) return;
         BlockState oldState = getBlockState();
-        BlockState newState = oldState.setValue(AgingBarrelBlock.IS_OPEN, timer < 0);
+        BlockState newState = oldState.setValue(AgingBarrelBlock.IS_OPEN, timer >= 0 ? false : oldState.getValue(AgingBarrelBlock.IS_OPEN));
         if (timer <= 0) {
             tank.allowExtraction();
             tank.allowInsertion();
         };
-        if (timer == -1) {
-            newState = newState.setValue(AgingBarrelBlock.PROGRESS, 0);
+        int progress;
+        if (timer < 0) {
+            progress = 0;
+        } else if (timer == 0) {
+            progress = 4;
+        } else {
+            progress = (int)Mth.clamp(5 * (0.995f - (float)timer / (float)totalTime), 0, 4.9f);
         };
-        newState = newState.setValue(AgingBarrelBlock.PROGRESS, 0);
-        newState = newState.setValue(AgingBarrelBlock.PROGRESS, totalTime != 0 ? 4 - (int)(timer / (float)totalTime * 4) : 0);
+        newState = newState.setValue(AgingBarrelBlock.PROGRESS, progress);
         if (newState != oldState) {
             getLevel().setBlockAndUpdate(getBlockPos(), newState); // This is the bit it thinks might be null
             sendData();
@@ -215,6 +218,7 @@ public class AgingBarrelBlockEntity extends SmartBlockEntity implements IHaveGog
         if (!hasLevel() || getLevel().isClientSide()) return false; // It thinks getLevel() might be null (it's not)
         if (timer == 0) {
             timer = -1;
+            getLevel().setBlockAndUpdate(getBlockPos(), getBlockState().setValue(AgingBarrelBlock.IS_OPEN, true));
             onTimerChange();
             return true;
         };
@@ -223,9 +227,9 @@ public class AgingBarrelBlockEntity extends SmartBlockEntity implements IHaveGog
 
     @Override
     public boolean addToGoggleTooltip(List<Component> tooltip, boolean isPlayerSneaking) {
-        containedFluidTooltip(tooltip, isPlayerSneaking, fluidCapability);
-        if (timer != -1) {
-            DestroyLang.translate("tooltip.aging_barrel.progress", (int)((0.995 - (timer/(float)totalTime)) * 100) + "%")
+        containedFluidTooltip(tooltip, isPlayerSneaking, tank.getCapability().cast());
+        if (timer >= 0) {
+            DestroyLang.translate("tooltip.aging_barrel.progress", (timer == 0 ? 100 : (int)((0.995 - (timer/(float)totalTime)) * 100)) + "%")
                 .style(ChatFormatting.WHITE)
                 .forGoggles(tooltip);
         };

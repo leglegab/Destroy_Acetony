@@ -42,8 +42,7 @@ public class ChangeKeypunchPositionC2SPacket extends C2SPacket {
             if (level == null) return;
             BlockEntity be = level.getBlockEntity(pos);
             if (be instanceof KeypunchBlockEntity keypunch) {
-                keypunch.pistonPosition = pistonPosition;
-                keypunch.notifyUpdate();  
+                keypunch.setPistonPosition(pistonPosition);
             };
         });
         return true;

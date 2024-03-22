@@ -39,7 +39,6 @@ public class BabyBlueHighMobEffect extends UncurableMobEffect {
             if (livingEntity instanceof Player player) {
                 Level level = player.level();
                 DestroyAdvancementTrigger.TAKE_BABY_BLUE.award(level, player);
-                if (player.getY() >= 1000) DestroyAdvancementTrigger.TAKE_BABY_BLUE_HIGH.award(level, player);
             };
 
             if (livingEntity instanceof Animal animal && !animal.isBaby()) {

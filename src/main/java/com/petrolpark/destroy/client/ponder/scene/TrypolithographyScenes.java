@@ -93,7 +93,7 @@ public class TrypolithographyScenes {
             .rightClick()
         , 80);
         scene.idle(20);
-        scene.world.modifyBlockEntity(secondKeypunch, KeypunchBlockEntity.class, be -> { be.pistonPosition = 6; });
+        scene.world.modifyBlockEntity(secondKeypunch, KeypunchBlockEntity.class, be -> { be.setPistonPosition(6); });
         scene.idle(80);
 
         scene.world.removeItemsFromBelt(secondBelt);
@@ -119,8 +119,8 @@ public class TrypolithographyScenes {
         scene.idle(10);
         scene.world.stallBeltItem(circuit2Element, false);
         scene.world.showSection(util.select.fromTo(1, 3, 4, 4, 3, 4), Direction.DOWN);
-        scene.world.modifyBlockEntity(util.grid.at(3, 3, 4), KeypunchBlockEntity.class, be -> { be.pistonPosition = 9; });
-        scene.world.modifyBlockEntity(util.grid.at(1, 3, 4), KeypunchBlockEntity.class, be -> { be.pistonPosition = 15; });
+        scene.world.modifyBlockEntity(util.grid.at(3, 3, 4), KeypunchBlockEntity.class, be -> { be.setPistonPosition(9); });
+        scene.world.modifyBlockEntity(util.grid.at(1, 3, 4), KeypunchBlockEntity.class, be -> { be.setPistonPosition(15); });
         scene.idle(35);
         scene.world.stallBeltItem(circuit2Element, true);
         scene.idle(80);

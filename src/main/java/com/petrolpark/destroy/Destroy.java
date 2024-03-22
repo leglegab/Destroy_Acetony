@@ -38,6 +38,7 @@ import com.petrolpark.destroy.recipe.DestroyExtrusions;
 import com.petrolpark.destroy.recipe.DestroyRecipeTypes;
 import com.petrolpark.destroy.registrate.DestroyRegistrate;
 import com.petrolpark.destroy.sound.DestroySoundEvents;
+import com.petrolpark.destroy.stats.DestroyStats;
 import com.petrolpark.destroy.util.DestroyTags;
 import com.petrolpark.destroy.util.circuit.CircuitPatternHandler;
 import com.petrolpark.destroy.util.circuit.CircuitPuncherHandler;
@@ -133,6 +134,7 @@ public class Destroy {
         DestroyVillagers.register(modEventBus);
         DestroyLoot.register(modEventBus);
         DestroyDamageTypes.register();
+        DestroyStats.register(modEventBus);
 
         // Events
         MinecraftForge.EVENT_BUS.register(this);
@@ -162,6 +164,7 @@ public class Destroy {
             DestroyMessages.register();
             DestroyCompostables.register();
         });
+        DestroyStats.register();
         VatMaterial.registerDestroyVatMaterials();
         DestroyOpenEndedPipeEffects.register();
         DestroyAdvancementTrigger.register();

@@ -27,6 +27,7 @@ import com.simibubi.create.foundation.blockEntity.behaviour.BlockEntityBehaviour
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.Tag;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -36,7 +37,7 @@ import net.minecraft.world.phys.AABB;
 
 public class KeypunchBlockEntity extends KineticBlockEntity implements ICircuitPuncher, CircuitPunchingSpecifics {
 
-    public int pistonPosition;
+    private int pistonPosition;
 
     protected boolean namedYet;
     public String name;
@@ -45,6 +46,10 @@ public class KeypunchBlockEntity extends KineticBlockEntity implements ICircuitP
     public CircuitPunchingBehaviour punchingBehaviour;
     public DestroyAdvancementBehaviour advancementBehaviour;
     public NamingBehaviour namingBehaviour;
+
+    // This is kept for the Advancement
+    public int differentPositionsPunched;
+    public int previouslyPunched;
 
     public KeypunchBlockEntity(BlockEntityType<?> typeIn, BlockPos pos, BlockState state) {
         super(typeIn, pos, state);
@@ -67,7 +72,7 @@ public class KeypunchBlockEntity extends KineticBlockEntity implements ICircuitP
         punchingBehaviour = new CircuitPunchingBehaviour(this);
         behaviours.add(punchingBehaviour);
 
-        advancementBehaviour = new DestroyAdvancementBehaviour(this, DestroyAdvancementTrigger.USE_KEYPUNCH);
+        advancementBehaviour = new DestroyAdvancementBehaviour(this, DestroyAdvancementTrigger.USE_KEYPUNCH, DestroyAdvancementTrigger.KEYPUNCH_FIVE);
         behaviours.add(advancementBehaviour);
 
         namingBehaviour = new NamingBehaviour();
@@ -99,8 +104,29 @@ public class KeypunchBlockEntity extends KineticBlockEntity implements ICircuitP
             result.stack = resultStack;
             output.set(result);
             punchingBehaviour.particleItem = resultStack;
+
+            int newPattern = CircuitPatternItem.punch(previouslyPunched, positionToPunch); // Record this for the advancement
+            if (previouslyPunched != newPattern) {
+                differentPositionsPunched++;
+                previouslyPunched = newPattern;
+                if (differentPositionsPunched >= 5) {
+                    advancementBehaviour.awardDestroyAdvancement(DestroyAdvancementTrigger.KEYPUNCH_FIVE);
+                };
+            };
         };
         return true;
+    };
+
+    public int getPistonPosition() {
+        return pistonPosition;
+    };
+
+    public void setPistonPosition(int position) {
+        if (position < 0 || position > 15) position = 0;
+        pistonPosition = position;
+        previouslyPunched = 0;
+        differentPositionsPunched = 0;
+        notifyUpdate();  
     };
 
     public int getActualPosition() {
@@ -158,6 +184,10 @@ public class KeypunchBlockEntity extends KineticBlockEntity implements ICircuitP
     @Override
     protected void read(CompoundTag compound, boolean clientPacket) {
         super.read(compound, clientPacket);
+        if (compound.contains("PatternIvePunched", Tag.TAG_INT)) {
+            previouslyPunched = compound.getInt("PatternIvePunched");
+            differentPositionsPunched = compound.getInt("CountPositionsIvePunched");
+        };
         pistonPosition = compound.getInt("PunchPosition");
         uuid = compound.getUUID("UUID");
         name = compound.getString("Name");
@@ -167,6 +197,10 @@ public class KeypunchBlockEntity extends KineticBlockEntity implements ICircuitP
     @Override
     protected void write(CompoundTag compound, boolean clientPacket) {
         super.write(compound, clientPacket);
+        if (advancementBehaviour.getPlayer() != null) {
+            compound.putInt("PatternIvePunched", previouslyPunched);
+            compound.putInt("CountPositionsIvePunched", differentPositionsPunched);
+        };
         compound.putInt("PunchPosition", pistonPosition);
         compound.putUUID("UUID", uuid);
         if (name != null) compound.putString("Name", name);

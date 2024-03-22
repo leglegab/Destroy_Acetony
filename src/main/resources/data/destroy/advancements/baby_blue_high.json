@@ -2,8 +2,18 @@
     "parent": "destroy:baby_blue",
     "criteria": {
       "take": {
-        "conditions": {},
-        "trigger": "destroy:take_baby_blue_high"
+        "conditions": {
+          "player": {
+            "location": {
+              "position": {
+                "y": {
+                  "min": 1000
+                }
+              }
+            }
+          }
+        },
+        "trigger": "destroy:take_baby_blue"
       }
     },
     "display": {

@@ -3,6 +3,7 @@ package com.petrolpark.destroy.item;
 import java.text.DecimalFormat;
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Consumer;
 
 import javax.annotation.Nullable;
 
@@ -16,7 +17,9 @@ import com.petrolpark.destroy.chemistry.ReadOnlyMixture;
 import com.petrolpark.destroy.config.DestroyAllConfigs;
 import com.petrolpark.destroy.fluid.MixtureFluid;
 import com.petrolpark.destroy.item.renderer.ILayerTintsWithAlphaItem;
+import com.petrolpark.destroy.item.renderer.TestTubeRenderer;
 import com.petrolpark.destroy.util.ChemistryDamageHelper;
+import com.simibubi.create.foundation.item.render.SimpleCustomRenderer;
 import com.simibubi.create.foundation.utility.Iterate;
 import com.simibubi.create.foundation.utility.Lang;
 
@@ -34,6 +37,7 @@ import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.client.extensions.common.IClientItemExtensions;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.fluids.FluidStack;
@@ -143,16 +147,18 @@ public class TestTubeItem extends ItemFluidContainer implements ILayerTintsWithA
         });
     };
 
+    @Override
+    @OnlyIn(Dist.CLIENT)
+    public void initializeClient(Consumer<IClientItemExtensions> consumer) {
+        consumer.accept(SimpleCustomRenderer.create(this, new TestTubeRenderer()));
+    };
+
     public static boolean isEmpty(ItemStack stack)  {
         return getContents(stack).map(FluidStack::isEmpty).orElse(true);  
     };
 
-    public static int getColor(ItemStack stack, int tintIndex) {
-        if (tintIndex == 0) {
-            return getContents(stack).map(MixtureFluid::getTintColor).orElse(0xFFFFFFFF);
-        } else {
-            return 0xFFFFFFFF;
-        }
+    public static int getColor(ItemStack stack) {
+        return getContents(stack).map(MixtureFluid::getTintColor).orElse(0xFFFFFFFF);
     };
 
     public static Optional<FluidStack> getContents(ItemStack itemStack) {

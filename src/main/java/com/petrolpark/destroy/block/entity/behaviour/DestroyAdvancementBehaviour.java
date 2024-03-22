@@ -32,7 +32,7 @@ public class DestroyAdvancementBehaviour extends AbstractRememberPlacerBehaviour
 
     @Override
     public boolean shouldRememberPlacer(Player placer) {
-        return placer instanceof ServerPlayer player && !advancements.stream().allMatch(advancement -> advancement.isAlreadyAwardedTo(player));
+        return placer instanceof ServerPlayer player && (advancements.size() == 0 || !advancements.stream().allMatch(advancement -> advancement.isAlreadyAwardedTo(player)));
     };
     
 };

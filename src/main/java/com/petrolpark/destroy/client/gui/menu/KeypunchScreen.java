@@ -33,7 +33,7 @@ public class KeypunchScreen extends AbstractSimiScreen {
 
     public KeypunchScreen(KeypunchBlockEntity keypunch) {
         background = DestroyGuiTextures.KEYPUNCH;
-        selectedPosition = keypunch.pistonPosition;
+        selectedPosition = keypunch.getPistonPosition();
         this.keypunch = keypunch;
     };
 

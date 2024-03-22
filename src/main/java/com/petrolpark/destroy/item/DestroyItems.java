@@ -306,8 +306,7 @@ public class DestroyItems {
     TEST_TUBE = REGISTRATE.item("test_tube", TestTubeItem::new)
         .properties(p -> p
             .stacksTo(1)
-        ).color(() -> () -> TestTubeItem::getColor)
-        .register();
+        ).register();
 
     // TOYS
 

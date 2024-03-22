@@ -1,5 +1,7 @@
 package com.petrolpark.destroy.chemistry;
 
+import java.util.Optional;
+
 import com.petrolpark.destroy.block.entity.VatControllerBlockEntity;
 import com.simibubi.create.content.processing.basin.BasinBlockEntity;
 
@@ -29,8 +31,8 @@ public abstract class ReactionResult {
         return moles;
     };
 
-    public Reaction getReaction() {
-        return reaction;
+    public final Optional<Reaction> getReaction() {
+        return Optional.ofNullable(reaction);
     };
 
     /**
