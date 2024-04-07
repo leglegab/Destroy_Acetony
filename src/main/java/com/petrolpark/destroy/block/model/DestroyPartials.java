@@ -64,6 +64,8 @@ public class DestroyPartials {
     // Redstone Programmer
     REDSTONE_PROGRAMMER_CYLINDER = block("redstone_programmer/cylinder"),
     REDSTONE_PROGRAMMER_NEEDLE = block("redstone_programmer/needle"),
+    REDSTONE_PROGRAMMER_TRANSMITTER = block("redstone_programmer/transmitter"),
+    REDSTONE_PROGRAMMER_TRANSMITTER_POWERED = block("redstone_programmer/transmitter_powered"),
 
     // Miscellaneous
     TREE_TAP_ARM = block("tree_tap/arm"),

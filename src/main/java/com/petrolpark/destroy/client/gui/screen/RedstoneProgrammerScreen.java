@@ -82,6 +82,7 @@ public class RedstoneProgrammerScreen extends AbstractSimiContainerScreen<Redsto
 
         background = DestroyGuiTextures.REDSTONE_PROGRAMMER;
         modeButtons = new HashMap<>(PlayMode.values().length);
+        playhead.setValue((float)noteWidth * (float)program.getAbsolutePlaytime());
     };
 
     @Override
@@ -366,9 +367,9 @@ public class RedstoneProgrammerScreen extends AbstractSimiContainerScreen<Redsto
 
             // Sequence
             GuiHelper.startStencil(graphics, NOTE_AREA.getX(), NOTE_AREA.getY(), NOTE_AREA.getWidth(), NOTE_AREA.getHeight());
-            for (int i = 0; i < program.getLength(); i++) {
+            renderNotes: for (int i = 0; i < program.getLength(); i++) {
                 float horizontalOffset = xOffset + i * noteWidth;
-                if (horizontalOffset < 0 || horizontalOffset > NOTE_AREA.getWidth()) continue;
+                if (horizontalOffset < 0 || horizontalOffset > NOTE_AREA.getWidth()) break renderNotes;
                 int strength = channel.getStrength(i);
                 if (strength == 0) continue;
 
@@ -397,12 +398,21 @@ public class RedstoneProgrammerScreen extends AbstractSimiContainerScreen<Redsto
         };
         GuiHelper.endStencil();
 
-        // Playhead
+        // Playhead and length buttons
         GuiHelper.startStencil(graphics, NOTE_AREA.getX(), NOTE_AREA.getY() - 11, NOTE_AREA.getWidth(), NOTE_AREA.getHeight() + 11);
         ms.pushPose();
-        ms.translate(NOTE_AREA.getX() - horizontalScroll.getValue(partialTicks) + playhead.getValue(partialTicks), NOTE_AREA.getY() - 10, channelNo);
+        ms.translate(NOTE_AREA.getX() - horizontalScroll.getValue(partialTicks), NOTE_AREA.getY() - 10, channelNo);
+
+        DestroyGuiTextures.REDSTONE_PROGRAMMER_REMOVE_BAR.render(graphics, 80, 80);
+        DestroyGuiTextures.REDSTONE_PROGRAMMER_ADD_BAR.render(graphics, 96, 80);
+
+        ms.pushPose();
+        ms.translate(program.paused ? playhead.getValue() : playhead.getValue(partialTicks), 0f, 0f);
         DestroyGuiTextures.REDSTONE_PROGRAMMER_PLAYHEAD.render(graphics, -3, 0);
         ms.popPose();
+
+        ms.popPose();
+
         GuiHelper.endStencil();
 
         // Shadows

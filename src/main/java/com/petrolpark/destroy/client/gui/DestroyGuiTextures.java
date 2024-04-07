@@ -27,6 +27,7 @@ public enum DestroyGuiTextures implements ScreenElement {
 	VAT_CARD_SELECTED("vat", 116, 226, 102, 30),
 	VAT_CARD_ARROW("vat", 218, 226, 25, 30),
 	VAT_SCROLL_DOT("vat", 100, 226, 7, 8),
+	VAT_QUANTITY_OBSERVER("logistics", 0, 0, 256, 95),
 
 	// REDSTONE PROGRAMMER
 	REDSTONE_PROGRAMMER("redstone_programmer_1", 0, 0, 256, 226),
@@ -57,6 +58,8 @@ public enum DestroyGuiTextures implements ScreenElement {
 	REDSTONE_PROGRAMMER_MOVE_CHANNEL_UP("redstone_programmer_2", 228, 36, 12, 9),
 	REDSTONE_PROGRAMMER_MOVE_CHANNEL_DOWN("redstone_programmer_2", 228, 45, 12, 9),
 	REDSTONE_PROGRAMMER_PLAYHEAD("redstone_programmer_2", 185,16, 7, 199),
+	REDSTONE_PROGRAMMER_REMOVE_BAR("redstone_programmer_2", 192, 54, 12, 13),
+	REDSTONE_PROGRAMMER_ADD_BAR("redstone_programmer_2", 204, 54, 12, 13),
 
     // JEI
 	JEI_POINTING_HAND("jei/widgets", 40, 40, 18, 14),
@@ -73,7 +76,8 @@ public enum DestroyGuiTextures implements ScreenElement {
 	JEI_EXPLOSION("jei/widgets", 169, 0, 18, 21),
 
 	// MISC
-	NERD_EMOJI("jei/widgets", 115, 19, 16, 14);
+	NERD_EMOJI("jei/widgets", 115, 19, 16, 14),
+	GLOBE("jei/widgets", 115 + 16, 19, 16, 14);
 
     public final ResourceLocation location;
 	public int width, height, startX, startY;

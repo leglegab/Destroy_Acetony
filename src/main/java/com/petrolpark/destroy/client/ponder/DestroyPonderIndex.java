@@ -106,6 +106,9 @@ public class DestroyPonderIndex {
         HELPER.forComponents(DestroyBlocks.PUMPJACK)
             .addStoryBoard("pumpjack", DestroyScenes::pumpjack);
 
+        HELPER.forComponents(DestroyBlocks.REDSTONE_PROGRAMMER)
+            .addStoryBoard("redstone_programmer", DestroyScenes::redstoneProgrammer);
+
         // Tree Tap
         HELPER.forComponents(DestroyBlocks.TREE_TAP)
             .addStoryBoard("tree_tap", DestroyScenes::treeTap);

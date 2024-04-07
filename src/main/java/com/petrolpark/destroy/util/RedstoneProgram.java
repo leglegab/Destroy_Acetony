@@ -155,7 +155,7 @@ public abstract class RedstoneProgram {
 
     public void restart() {
         playtime = 0;
-        ticksToNextBeat = 0;
+        ticksToNextBeat = ticksPerBeat;
     };
 
     public abstract boolean hasPower();

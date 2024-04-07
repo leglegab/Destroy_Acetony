@@ -33,7 +33,7 @@ public class CrudeOilGenerationTest {
     };
 
     private static float getNoise(PerlinNoise noise, int x, int y) {
-        float value = (float)(noise.getValue(x * 0.7, y * 0.7, 0));
-        return value < 0.3d ? 0f : value;
+        float value = (float)(noise.getValue(x * 2d, y * 2d, 0));
+        return value < 0.15d ? 0f : value;
     };
 };

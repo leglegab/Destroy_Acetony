@@ -62,6 +62,11 @@ public class DestroyBlockEntityTypes {
 		.renderer(() -> BracketedKineticBlockEntityRenderer::new)
 		.register();
 
+    public static final BlockEntityEntry<ColorimeterBlockEntity> COLORIMETER = REGISTRATE
+        .blockEntity("colorimeter", ColorimeterBlockEntity::new)
+        .validBlocks(DestroyBlocks.COLORIMETER)
+        .register();
+
     public static final BlockEntityEntry<CoolerBlockEntity> COOLER = REGISTRATE
         .blockEntity("cooler", CoolerBlockEntity::new)
         .validBlocks(DestroyBlocks.COOLER)

@@ -2,7 +2,10 @@ package com.petrolpark.destroy.compat.jei.category;
 
 import com.petrolpark.destroy.block.DestroyBlocks;
 import com.petrolpark.destroy.client.gui.DestroyGuiTextures;
+import com.petrolpark.destroy.compat.jei.animation.DestroyGuiTextureDrawable;
 import com.petrolpark.destroy.compat.jei.animation.HeatConditionRenderer;
+import com.petrolpark.destroy.compat.jei.tooltip.BiomeSpecificTooltipHelper;
+import com.petrolpark.destroy.item.DestroyItems;
 import com.petrolpark.destroy.recipe.DistillationRecipe;
 
 import mezz.jei.api.forge.ForgeTypes;
@@ -31,6 +34,13 @@ public class DistillationCategory extends DestroyRecipeCategory<DistillationReci
         builder.addSlot(RecipeIngredientRole.CATALYST, 18, 30)
             .setBackground(getRenderedSlot(), -1, -1)
             .addItemStack(new ItemStack(DestroyBlocks.BUBBLE_CAP.get(), fractions + 1));
+
+        // Location indicator
+        if (recipe.getAllowedBiomes().size() > 0) builder.addSlot(RecipeIngredientRole.RENDER_ONLY, 18, 49)
+            .setBackground(getRenderedSlot(), -1, -1)
+            .setOverlay(DestroyGuiTextureDrawable.of(DestroyGuiTextures.GLOBE), 0, 1)
+            .addItemStack(DestroyItems.ABS.asStack()) // Dummy item so we actually get something generated
+            .addTooltipCallback(BiomeSpecificTooltipHelper.getAllowedBiomeList(recipe));
 
         // Fluid input
         builder.addSlot(RecipeIngredientRole.INPUT, 18, 81)

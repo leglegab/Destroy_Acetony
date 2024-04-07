@@ -6,9 +6,9 @@ import java.util.function.Supplier;
 import org.jetbrains.annotations.Nullable;
 
 import com.petrolpark.destroy.Destroy;
+import com.petrolpark.destroy.recipe.serializer.AdvancedProcessingRecipeSerializer;
 import com.simibubi.create.AllRecipeTypes;
 import com.simibubi.create.content.processing.recipe.ProcessingRecipeBuilder;
-import com.simibubi.create.content.processing.recipe.ProcessingRecipeSerializer;
 import com.simibubi.create.foundation.recipe.IRecipeTypeInfo;
 import com.simibubi.create.foundation.utility.Lang;
 
@@ -33,6 +33,7 @@ public enum DestroyRecipeTypes implements IRecipeTypeInfo {
     DISTILLATION(DistillationRecipe::new),
     ELECTROLYSIS(ElectrolysisRecipe::new),
     EXTRUSION(ExtrusionRecipe::new),
+    MIXTURE_CONVERSION(MixtureConversionRecipe::new),
     MUTATION(MutationRecipe::new),
     OBLITERATION(ObliterationRecipe::new),
     REACTION(ReactionRecipe::new),
@@ -80,11 +81,11 @@ public enum DestroyRecipeTypes implements IRecipeTypeInfo {
     };
 
     DestroyRecipeTypes(ProcessingRecipeBuilder.ProcessingRecipeFactory<?> processingFactory) {
-        this(() -> new ProcessingRecipeSerializer<>(processingFactory));
+        this(() -> new AdvancedProcessingRecipeSerializer<>(processingFactory));
     };
 
     DestroyRecipeTypes(ProcessingRecipeBuilder.ProcessingRecipeFactory<?> processingFactory, Supplier<RecipeType<?>> typeSupplier) {
-        this(() -> new ProcessingRecipeSerializer<>(processingFactory), typeSupplier);
+        this(() -> new AdvancedProcessingRecipeSerializer<>(processingFactory), typeSupplier);
     };
 
     public static void register(IEventBus modEventBus) {

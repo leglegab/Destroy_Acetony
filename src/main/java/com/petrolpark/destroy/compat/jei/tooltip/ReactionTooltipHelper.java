@@ -1,4 +1,4 @@
-package com.petrolpark.destroy.compat.jei;
+package com.petrolpark.destroy.compat.jei.tooltip;
 
 import com.petrolpark.destroy.chemistry.IItemReactant;
 import com.petrolpark.destroy.chemistry.Molecule;

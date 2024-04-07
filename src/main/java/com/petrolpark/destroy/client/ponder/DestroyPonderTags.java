@@ -53,6 +53,7 @@ public class DestroyPonderTags {
             .add(DestroyBlocks.KEYPUNCH)
             .add(DestroyBlocks.PLANETARY_GEARSET)
             .add(DestroyBlocks.PUMPJACK)
+            .add(DestroyBlocks.REDSTONE_PROGRAMMER)
             .add(DestroyItems.SEISMOMETER)
             .add(DestroyBlocks.TREE_TAP)
             .add(DestroyBlocks.VAT_CONTROLLER)
@@ -88,6 +89,7 @@ public class DestroyPonderTags {
 
         PonderRegistry.TAGS.forTag(AllPonderTags.REDSTONE)
             .add(DestroyBlocks.DYNAMO)
+            .add(DestroyBlocks.REDSTONE_PROGRAMMER)
         ;
 
         PonderRegistry.TAGS.forTag(AllPonderTags.DISPLAY_SOURCES)

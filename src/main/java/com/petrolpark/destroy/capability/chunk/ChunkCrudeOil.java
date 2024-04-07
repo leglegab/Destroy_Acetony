@@ -32,9 +32,9 @@ public class ChunkCrudeOil {
             // Get the seeded randomizer for this level
             RandomSource random = RandomSource.create(level.getSeed() ^ SALT);
             // Generate the noise value for this Chunk
-            double value = (PerlinNoise.create(random, -2, 1d).getValue(pos.x * 0.7, pos.z * 0.7, 0));
+            double value = (PerlinNoise.create(random, -2, 1d).getValue(pos.x * 1.5, pos.z * 1.5, 0));
             // Don't generate any oil if the value is less than a threshold
-            amount = value < 0.3d ? 0 : (int)(value * 100000d);
+            amount = value < 0.15d ? 0 : (int)(value * 100000d);
         
             //TODO check for Player luck
             generated = true;

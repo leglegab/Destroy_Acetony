@@ -24,6 +24,7 @@ import com.simibubi.create.foundation.utility.Iterate;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -122,10 +123,10 @@ public class DistillationTower {
     public void findRecipe(Level level) {
         if (getControllerBubbleCap() == null || level.isClientSide()) return;
         SmartFluidTank inputTank = getControllerBubbleCap().getTank();
-        if (lastRecipe == null || !lastRecipe.getRequiredFluid().test(inputTank.getFluid())) { // If the Recipe has changed
+        if (lastRecipe == null || !lastRecipe.getRequiredFluid().test(inputTank.getFluid()) || !lastRecipe.isValidAt(level, getControllerPos())) { // If the Recipe has changed
             List<Recipe<?>> possibleRecipes = RecipeFinder.get(distillationRecipeKey, level, r -> r.getType() == DestroyRecipeTypes.DISTILLATION.getType()).stream().filter(r -> {
                 DistillationRecipe recipe = (DistillationRecipe) r;
-                return (recipe.getRequiredFluid().test(inputTank.getFluid())); // If there is insufficient input Fluid
+                return (recipe.getRequiredFluid().test(inputTank.getFluid())) && recipe.isValidAt(level, getControllerPos()); // If there is sufficient input Fluid and we're in the right biome
             }).collect(Collectors.toList());
             possibleRecipes.addAll(SharedDistillationRecipes.getTFMGToDestroyRecipes(level));
             if (possibleRecipes.size() >= 1) {
@@ -215,6 +216,9 @@ public class DistillationTower {
         // If we've got to this point, the Recipe is being successfully processed
         controller.particleFluid = fluidDrained.copy();
         controller.onDistill();
+        if (controller.advancementBehaviour.getPlayer() instanceof ServerPlayer player) {
+            player.triggerRecipeCrafted(lastRecipe, List.of());
+        };
         return true;
     };
 

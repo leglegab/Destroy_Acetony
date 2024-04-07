@@ -19,6 +19,7 @@ import com.petrolpark.destroy.network.packet.RequestKeypunchNamePacket;
 import com.petrolpark.destroy.network.packet.S2CPacket;
 import com.petrolpark.destroy.network.packet.SeismometerSpikeS2CPacket;
 import com.petrolpark.destroy.network.packet.SwissArmyKnifeToolC2SPacket;
+import com.petrolpark.destroy.network.packet.VatSideQuantityThresholdChangeC2SPacket;
 
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.server.level.ServerPlayer;
@@ -62,6 +63,7 @@ public class DestroyMessages {
         addC2SPacket(net, RedstoneProgramSyncC2SPacket.class, RedstoneProgramSyncC2SPacket::new);
         addC2SPacket(net, NameKeypunchC2SPacket.class, NameKeypunchC2SPacket::new);
         addC2SPacket(net, ChangeKeypunchPositionC2SPacket.class, ChangeKeypunchPositionC2SPacket::new);
+        addC2SPacket(net, VatSideQuantityThresholdChangeC2SPacket.class, VatSideQuantityThresholdChangeC2SPacket::new);
     };
 
     public static <T extends S2CPacket> void addS2CPacket(SimpleChannel net, Class<T> clazz, Function<FriendlyByteBuf, T> decoder) {

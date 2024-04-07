@@ -9,6 +9,7 @@ import com.petrolpark.destroy.advancement.DestroyAdvancementTrigger;
 import com.petrolpark.destroy.badge.BadgeHandler;
 import com.petrolpark.destroy.block.DestroyBlocks;
 import com.petrolpark.destroy.block.PeriodicTableBlock;
+import com.petrolpark.destroy.block.RedstoneProgrammerBlock;
 import com.petrolpark.destroy.block.PeriodicTableBlock.PeriodicTableEntry;
 import com.petrolpark.destroy.block.entity.VatControllerBlockEntity;
 import com.petrolpark.destroy.block.entity.VatSideBlockEntity;
@@ -83,11 +84,13 @@ import com.simibubi.create.foundation.utility.Iterate;
 
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import net.minecraft.ChatFormatting;
+import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.commands.synchronization.ArgumentTypeInfos;
 import net.minecraft.commands.synchronization.SingletonArgumentInfo;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Registry;
+import net.minecraft.core.SectionPos;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
@@ -107,6 +110,7 @@ import net.minecraft.world.InteractionResult;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.entity.ExperienceOrb;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.monster.Stray;
@@ -115,6 +119,7 @@ import net.minecraft.world.entity.npc.VillagerTrades;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
@@ -124,10 +129,12 @@ import net.minecraft.world.level.chunk.LevelChunk;
 import net.minecraft.world.level.levelgen.structure.pools.StructureTemplatePool;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructureProcessorList;
 import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.capabilities.RegisterCapabilitiesEvent;
 import net.minecraftforge.common.crafting.CraftingHelper;
+import net.minecraftforge.common.util.FakePlayer;
 import net.minecraftforge.event.AddPackFindersEvent;
 import net.minecraftforge.event.AddReloadListenerEvent;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
@@ -601,7 +608,29 @@ public class DestroyCommonEvents {
     };
 
     /**
+     * Instantly destroy and recieve the Item when right-clicking a Redstone Programmer, even if in Creative
+     */
+    @SubscribeEvent
+	public static void onLeftClickBlock(PlayerInteractEvent.LeftClickBlock event) {
+        Player player = event.getEntity();
+        Level world = event.getLevel();
+        BlockPos pos = event.getPos();
+        BlockState state = world.getBlockState(pos);
+        if (state.getBlock() instanceof RedstoneProgrammerBlock) {
+            if (player instanceof FakePlayer) return;
+            if (world.isClientSide()) return;
+            if (world instanceof ServerLevel) {
+                ItemStack cloneItemStack = state.getCloneItemStack(new BlockHitResult(Vec3.ZERO, event.getFace(), event.getPos(), false), world, pos, player);
+                world.destroyBlock(pos, false);
+                if (world.getBlockState(pos) != state) player.getInventory().placeItemBackInInventory(cloneItemStack);
+                event.setCancellationResult(InteractionResult.SUCCESS);
+            };
+        };
+	};
+
+    /**
      * Allow Redstone Link Frequencies to be added to Redstone Programmers without setting the Programmer itself as a Frequency,
+     * and allow the Redstone Programmer Item to be consumed even if in Creative
      * and allow empty Test Tubes to be filled from Fluid Tanks
      */
     @SubscribeEvent
@@ -612,24 +641,30 @@ public class DestroyCommonEvents {
         Player player = event.getEntity();
 
         // Redstone Programmers
-        LinkBehaviour link = BlockEntityBehaviour.get(level, pos, LinkBehaviour.TYPE);
-        if (event.getItemStack().getItem() instanceof RedstoneProgrammerBlockItem && link != null) {
-            if (player.isShiftKeyDown()) return;
-            RedstoneProgrammerBlockItem.getProgram(stack, level, player).ifPresent((program) -> {
-                Couple<Frequency> key = link.getNetworkKey();
-                if (program.getChannels().stream().anyMatch(channel -> channel.getNetworkKey().equals(key))) {
-                    event.setCancellationResult(InteractionResult.FAIL);
-                    if (level.isClientSide()) player.displayClientMessage(DestroyLang.translate("tooltip.redstone_programmer.add_frequency.failure.exists").style(ChatFormatting.RED).component(), true); 
-                } else if (program.getChannels().size() >= DestroyAllConfigs.SERVER.contraptions.maxChannels.get()) {
-                    event.setCancellationResult(InteractionResult.FAIL);
-                    if (level.isClientSide()) player.displayClientMessage(DestroyLang.translate("tooltip.redstone_programmer.add_frequency.failure.full").style(ChatFormatting.RED).component(), true); 
-                } else {
-                    program.addBlankChannel(link.getNetworkKey());
-                    RedstoneProgrammerBlockItem.setProgram(stack, program);
-                    event.setCancellationResult(InteractionResult.SUCCESS);
-                    if (level.isClientSide()) player.displayClientMessage(DestroyLang.translate("tooltip.redstone_programmer.add_frequency.success", key.getFirst().getStack().getHoverName(), key.getSecond().getStack().getHoverName()).component(), true); 
-                };
-            });
+        if (event.getItemStack().getItem() instanceof RedstoneProgrammerBlockItem) {
+            LinkBehaviour link = BlockEntityBehaviour.get(level, pos, LinkBehaviour.TYPE);
+            if (link != null) {
+                if (player.isShiftKeyDown()) return;
+                RedstoneProgrammerBlockItem.getProgram(stack, level, player).ifPresent((program) -> {
+                    Couple<Frequency> key = link.getNetworkKey();
+                    if (program.getChannels().stream().anyMatch(channel -> channel.getNetworkKey().equals(key))) {
+                        event.setCancellationResult(InteractionResult.FAIL);
+                        if (level.isClientSide()) player.displayClientMessage(DestroyLang.translate("tooltip.redstone_programmer.add_frequency.failure.exists").style(ChatFormatting.RED).component(), true); 
+                    } else if (program.getChannels().size() >= DestroyAllConfigs.SERVER.contraptions.maxChannels.get()) {
+                        event.setCancellationResult(InteractionResult.FAIL);
+                        if (level.isClientSide()) player.displayClientMessage(DestroyLang.translate("tooltip.redstone_programmer.add_frequency.failure.full").style(ChatFormatting.RED).component(), true); 
+                    } else {
+                        program.addBlankChannel(link.getNetworkKey());
+                        RedstoneProgrammerBlockItem.setProgram(stack, program);
+                        event.setCancellationResult(InteractionResult.SUCCESS);
+                        if (level.isClientSide()) player.displayClientMessage(DestroyLang.translate("tooltip.redstone_programmer.add_frequency.success", key.getFirst().getStack().getHoverName(), key.getSecond().getStack().getHoverName()).component(), true); 
+                    };
+                });
+            } else { // If we're not clicking on a link
+                InteractionResult result = stack.useOn(new UseOnContext(player, event.getHand(), event.getHitVec()));
+                if (result.consumesAction() && player instanceof ServerPlayer serverPlayer) CriteriaTriggers.ITEM_USED_ON_BLOCK.trigger(serverPlayer, pos, stack);
+                event.setCancellationResult(result);
+            };
             event.setCanceled(true);
         };
 
@@ -664,14 +699,35 @@ public class DestroyCommonEvents {
                 if (DestroyItems.SEISMOMETER.isIn(itemStack)) holdingSeismometer = true;
             };
             if (holdingSeismometer) {
-                // Generate the Oil
-                LevelChunk chunk = level.getChunkAt(player.getOnPos());
+                // Generate the Oil in this chunk
+                int chunkX = SectionPos.blockToSectionCoord(player.getOnPos().getX());
+                int chunkZ = SectionPos.blockToSectionCoord(player.getOnPos().getZ());
+                LevelChunk chunk = level.getChunk(chunkX, chunkZ);
                 int bucketsOfOil = chunk.getCapability(ChunkCrudeOil.Provider.CHUNK_CRUDE_OIL).map(crudeOil -> {
                     crudeOil.generate(chunk, player);
                     return crudeOil.getAmount();
                 }).orElse(0) / 1000;
-                // Let the Player know how much Oil there is
-                if (!level.isClientSide()) player.displayClientMessage(DestroyLang.translate("tooltip.seismometer.crude_oil", bucketsOfOil).component(), true);
+                // Let the Player know how much Oil there is in this chunk
+                if (!level.isClientSide() && bucketsOfOil > 0) player.displayClientMessage(DestroyLang.translate("tooltip.seismometer.crude_oil.local", bucketsOfOil).component(), true);
+                
+                int surroundingOil = 0;
+                for (int x = -2; x < 3; x++) {
+                    nextChunk: for (int z = -2; z < 3; z++) {
+                        if (x == 0 && z == 0) continue nextChunk;
+                        LevelChunk surroundingChunk = level.getChunkSource().getChunk(chunkX + x, chunkZ + z, false);
+                        if (surroundingChunk != null) surroundingOil += surroundingChunk.getCapability(ChunkCrudeOil.Provider.CHUNK_CRUDE_OIL).map(crudeOil -> {
+                            crudeOil.generate(chunk, player);
+                            return crudeOil.getAmount();
+                        }).orElse(0) / 1000;
+                    };
+                };
+                if (!level.isClientSide() && bucketsOfOil == 0) {
+                    if (surroundingOil > 0) player.displayClientMessage(DestroyLang.translate("tooltip.seismometer.crude_oil.surrounding", surroundingOil).component(), true);
+                    else player.displayClientMessage(DestroyLang.translate("tooltip.seismometer.nothing").component(), true);
+                };
+                
+                // Award XP
+                if (level instanceof ServerLevel serverLevel) ExperienceOrb.award(serverLevel, player.position(), bucketsOfOil);
                 // Update the animation of the Seismometer(s)
                 if (player instanceof ServerPlayer serverPlayer) DestroyMessages.sendToClient(new SeismometerSpikeS2CPacket(), serverPlayer);
                 // Award Advancement if some oil was found

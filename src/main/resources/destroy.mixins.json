@@ -11,6 +11,7 @@
         "accessor.DepotBehaviourAccessor",
         "accessor.FluidIngredientAccessor",
         "accessor.FluidNetworkAccessor",
+        "accessor.ItemAttributeAccessor",
         "accessor.MenuRowsAccessor",
         "accessor.PipeConnectionAccessor",
         "accessor.PonderTagScreenAccessor",
@@ -69,12 +70,10 @@
         "VillagerMixin"
     ],
     "client": [
-        "accessor.ItemRendererAccessor",
         "compat.jei.ProcessingRecipeMixin",
         "EffectRenderingInventoryScreenMixin",
         "GuiMixin",
         "HeartTypeMixin",
-        "ItemRendererMixin",
         "LevelRendererMixin",
         "MultiPlayerGameModeMixin"
     ],

@@ -11,6 +11,7 @@ import org.jetbrains.annotations.NotNull;
 import org.joml.Math;
 
 import com.petrolpark.destroy.block.DestroyBlocks;
+import com.petrolpark.destroy.block.entity.behaviour.RedstoneQuantityMonitorBehaviour;
 import com.petrolpark.destroy.capability.blockEntity.VatSideTankCapability;
 import com.petrolpark.destroy.config.DestroyAllConfigs;
 import com.petrolpark.destroy.util.DestroyLang;
@@ -40,7 +41,6 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtUtils;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.util.Mth;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
@@ -69,6 +69,8 @@ public class VatSideBlockEntity extends CopycatBlockEntity implements IHaveGoggl
 
     protected LazyOptional<IItemHandler> itemCapability;
 
+    public RedstoneQuantityMonitorBehaviour redstoneMonitor;
+
     protected int initializationTicks;
 
     /**
@@ -88,10 +90,6 @@ public class VatSideBlockEntity extends CopycatBlockEntity implements IHaveGoggl
     public int spoutingTicks;
     public FluidStack spoutingFluid;
     public LerpedFloat ventOpenness = LerpedFloat.linear().startWithValue(0f);
-
-    public float lowerThreshold;
-    public float upperThreshold;
-    protected int oldStrength;
 
     public VatSideBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState state) {
         super(type, pos, state);
@@ -120,6 +118,9 @@ public class VatSideBlockEntity extends CopycatBlockEntity implements IHaveGoggl
         behaviours.add(inputBehaviour);
         fluidCapability = LazyOptional.empty(); // Temporarily set this to an empty optional
         refreshFluidCapability();
+
+        redstoneMonitor = new RedstoneQuantityMonitorBehaviour(this);
+        behaviours.add(redstoneMonitor);
     };
 
     @Override
@@ -207,14 +208,6 @@ public class VatSideBlockEntity extends CopycatBlockEntity implements IHaveGoggl
             initializationTicks--;
             if (initializationTicks <= 0) getBlockState().updateNeighbourShapes(getLevel(), getBlockPos(), 3);
         };
-
-        // Redstone monitoring
-        int strength = 0;
-        if (displayType.quantityObserved.isPresent() && getVatOptional().isPresent()) strength = (int)(Mth.clamp((displayType.quantityObserved.get().apply(getController()) - lowerThreshold) / (upperThreshold - lowerThreshold), 0f, 1f) * 15f);
-        if (strength != oldStrength) {
-            oldStrength = strength;
-            updateRedstoneOutput();
-        };
  
         // Animation
         if (getLevel().isClientSide()) { // It thinks getLevel() might be null (it's not)
@@ -240,11 +233,6 @@ public class VatSideBlockEntity extends CopycatBlockEntity implements IHaveGoggl
         oldPower = tag.getFloat("OldHeatingPower");
         oldUV = tag.getFloat("OldUVPower");
         if (tag.contains("InitializationTicks", Tag.TAG_INT)) initializationTicks = tag.getInt("InitializationTicks");
-        if (displayType.quantityObserved.isPresent()) {
-            oldStrength = tag.getInt("OldRedstoneStrength");
-            lowerThreshold = tag.getFloat("LowerObservedQuantityThreshold");
-            upperThreshold = tag.getFloat("UpperObservedQuantityThreshold");
-        };
         if (clientPacket) {
             spoutingTicks = tag.getInt("SpoutingTicks");
             spoutingFluid = FluidStack.loadFluidStackFromNBT(tag.getCompound("SpoutingFluid"));
@@ -261,11 +249,6 @@ public class VatSideBlockEntity extends CopycatBlockEntity implements IHaveGoggl
         tag.putFloat("OldHeatingPower", oldPower);
         tag.putFloat("OldUVPower", oldUV);
         if (initializationTicks > 0) tag.putInt("InitializationTicks", initializationTicks);
-        if (displayType.quantityObserved.isPresent()) {
-            tag.putInt("OldRedstoneStrength", oldStrength);
-            tag.putFloat("LowerObservedQuantityThreshold", lowerThreshold);
-            tag.putFloat("UpperObservedQuantityThreshold", upperThreshold);
-        };
         if (clientPacket) {
             tag.putInt("SpoutingTicks", spoutingTicks);
             if (!spoutingFluid.isEmpty()) tag.put("SpoutingFluid", spoutingFluid.writeToNBT(new CompoundTag()));
@@ -349,17 +332,6 @@ public class VatSideBlockEntity extends CopycatBlockEntity implements IHaveGoggl
         sendData();
     };
 
-    public int getRedstoneOutputStrength() {
-        if (displayType.quantityObserved.isPresent()) return oldStrength;
-        return 0;
-    };
-
-    public void updateRedstoneOutput() {
-        BlockPos adjacentPos = getBlockPos().relative(direction);
-        level.blockUpdated(getBlockPos(), getBlockState().getBlock());
-		level.blockUpdated(adjacentPos, level.getBlockState(adjacentPos).getBlock());
-    };
-
     public static final Optional<Function<VatControllerBlockEntity, Float>> pressureObserved = Optional.of(VatControllerBlockEntity::getPressure);
     public static final Optional<Function<VatControllerBlockEntity, Float>> temperatureObserved = Optional.of(VatControllerBlockEntity::getTemperature);
 
@@ -418,18 +390,22 @@ public class VatSideBlockEntity extends CopycatBlockEntity implements IHaveGoggl
         };
 
         // If the observer has been switched, create new bounds
+        redstoneMonitor.quantityObserved = displayType.quantityObserved.map(f -> {
+            if (getController() == null) return () -> 0f;
+            return () -> f.apply(getController());
+        });
         if (oldDisplayType.quantityObserved != this.displayType.quantityObserved) {
             if (this.displayType.showsPressure) {
-                lowerThreshold = 0f;
-                upperThreshold = getVatOptional().isPresent() ? getVatOptional().get().getMaxPressure() : 100000f;
+                redstoneMonitor.lowerThreshold = 0f;
+                redstoneMonitor.upperThreshold = getVatOptional().isPresent() ? getVatOptional().get().getMaxPressure() : 100000f;
             } else if (this.displayType.showsTemperature) {
-                lowerThreshold = 273f;
-                upperThreshold = 373f;
+                redstoneMonitor.lowerThreshold = 273f;
+                redstoneMonitor.upperThreshold = 373f;
             } else {
-                lowerThreshold = 0f;
-                upperThreshold = 1f;
+                redstoneMonitor.lowerThreshold = 0f;
+                redstoneMonitor.upperThreshold = 1f;
             };
-            updateRedstoneOutput();
+            redstoneMonitor.update();
         };
     };
 
@@ -471,7 +447,7 @@ public class VatSideBlockEntity extends CopycatBlockEntity implements IHaveGoggl
             };
         };
 
-        updateRedstoneOutput();
+        redstoneMonitor.update();
         invalidateRenderBoundingBox();
     };
 

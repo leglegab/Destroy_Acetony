@@ -26,6 +26,7 @@ import com.petrolpark.destroy.fluid.DestroyFluids;
 import com.petrolpark.destroy.fluid.pipeEffectHandler.DestroyOpenEndedPipeEffects;
 import com.petrolpark.destroy.item.DestroyItemProperties;
 import com.petrolpark.destroy.item.DestroyItems;
+import com.petrolpark.destroy.item.attributes.DestroyItemAttributes;
 import com.petrolpark.destroy.item.compostable.DestroyCompostables;
 import com.petrolpark.destroy.item.creativeModeTab.DestroyCreativeModeTabs;
 import com.petrolpark.destroy.item.potatoCannonProjectileType.DestroyPotatoCannonProjectileTypes;
@@ -135,6 +136,7 @@ public class Destroy {
         DestroyLoot.register(modEventBus);
         DestroyDamageTypes.register();
         DestroyStats.register(modEventBus);
+        DestroyItemAttributes.register();
 
         // Events
         MinecraftForge.EVENT_BUS.register(this);

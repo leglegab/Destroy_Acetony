@@ -5,12 +5,16 @@ import javax.annotation.Nullable;
 import com.petrolpark.destroy.block.entity.DestroyBlockEntityTypes;
 import com.petrolpark.destroy.block.entity.VatSideBlockEntity;
 import com.petrolpark.destroy.block.entity.VatSideBlockEntity.DisplayType;
+import com.petrolpark.destroy.client.gui.screen.QuantityObservingVatSideScreen;
+import com.petrolpark.destroy.item.DestroyItems;
+import com.simibubi.create.AllItems;
 import com.simibubi.create.content.decoration.copycat.CopycatBlock;
 import com.simibubi.create.content.decoration.copycat.CopycatBlockEntity;
 import com.simibubi.create.content.schematics.requirement.ISpecialBlockItemRequirement;
 import com.simibubi.create.content.schematics.requirement.ItemRequirement;
 import com.simibubi.create.foundation.block.IBE;
 import com.simibubi.create.foundation.blockEntity.SmartBlockEntityTicker;
+import com.simibubi.create.foundation.gui.ScreenOpener;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -32,6 +36,8 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.fml.DistExecutor;
 
 public class VatSideBlock extends CopycatBlock implements ISpecialBlockItemRequirement {
 
@@ -47,7 +53,17 @@ public class VatSideBlock extends CopycatBlock implements ISpecialBlockItemRequi
 
     @Override
     public InteractionResult use(BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
-        return InteractionResult.PASS;
+        if (AllItems.WRENCH.isIn(player.getItemInHand(hand)) || DestroyItems.TEST_TUBE.isIn(player.getItemInHand(hand))) return InteractionResult.PASS;
+        return onBlockEntityUse(level, pos, be -> {
+            if (!(be instanceof VatSideBlockEntity vbe)) return InteractionResult.PASS;
+            if (vbe.getDisplayType().quantityObserved.isPresent()) {
+                DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> {
+                    ScreenOpener.open(new QuantityObservingVatSideScreen(vbe));
+                });
+                return InteractionResult.SUCCESS;
+            };
+            return InteractionResult.PASS;
+        });
     };
 
     @Override
@@ -78,12 +94,12 @@ public class VatSideBlock extends CopycatBlock implements ISpecialBlockItemRequi
 
     @Override
     public int getDirectSignal(BlockState state, BlockGetter level, BlockPos pos, Direction direction) {
-        return getBlockEntityOptional(level, pos).map(be -> be instanceof VatSideBlockEntity vatSide && vatSide.direction == direction ? vatSide.getRedstoneOutputStrength() : 0).orElse(0);
+        return getBlockEntityOptional(level, pos).map(be -> be instanceof VatSideBlockEntity vatSide && vatSide.direction == direction ? vatSide.redstoneMonitor.getStrength() : 0).orElse(0);
     };
 
     @Override
 	public int getSignal(BlockState state, BlockGetter level, BlockPos pos, Direction side) {
-		return getBlockEntityOptional(level, pos).map(be -> be instanceof VatSideBlockEntity vatSide ? vatSide.getRedstoneOutputStrength() : 0).orElse(0);
+		return getBlockEntityOptional(level, pos).map(be -> be instanceof VatSideBlockEntity vatSide ? vatSide.redstoneMonitor.getStrength() : 0).orElse(0);
 	};
 
     @Override

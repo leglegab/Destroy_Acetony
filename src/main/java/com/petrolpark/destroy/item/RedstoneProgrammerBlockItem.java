@@ -2,12 +2,15 @@ package com.petrolpark.destroy.item;
 
 import java.util.Optional;
 import java.util.UUID;
+import java.util.function.Consumer;
 
 import com.petrolpark.destroy.block.DestroyBlocks;
 import com.petrolpark.destroy.block.RedstoneProgrammerBlock;
 import com.petrolpark.destroy.client.gui.menu.RedstoneProgrammerMenu;
+import com.petrolpark.destroy.item.renderer.RedstoneProgrammerItemRenderer;
 import com.petrolpark.destroy.util.RedstoneProgram;
 import com.petrolpark.destroy.util.RedstoneProgrammerItemHandler;
+import com.simibubi.create.foundation.item.render.SimpleCustomRenderer;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
@@ -24,9 +27,13 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.client.extensions.common.IClientItemExtensions;
 import net.minecraftforge.network.NetworkHooks;
 
 public class RedstoneProgrammerBlockItem extends BlockItem {
@@ -42,6 +49,15 @@ public class RedstoneProgrammerBlockItem extends BlockItem {
         if (player.isShiftKeyDown()) return super.onItemUseFirst(stack, context);
         openScreen(stack, context.getLevel(), player);
         return InteractionResult.SUCCESS;
+    };
+
+    @Override
+    public InteractionResult place(BlockPlaceContext context) {
+        InteractionResult result = super.place(context);
+        if (result == InteractionResult.sidedSuccess(context.getLevel().isClientSide()) && context.getPlayer() != null && context.getPlayer().getAbilities().instabuild) {
+            context.getItemInHand().shrink(1); // Remove the Item from the Inventory even if in Creative
+        };
+        return result;
     };
 
     @Override
@@ -62,9 +78,9 @@ public class RedstoneProgrammerBlockItem extends BlockItem {
     @Override
     public void inventoryTick(ItemStack stack, Level level, Entity entity, int slotId, boolean isSelected) {
         super.inventoryTick(stack, level, entity, slotId, isSelected);
-        if (!level.isClientSide() && entity instanceof LivingEntity player) {
+        if (entity instanceof LivingEntity player) {
             getProgram(stack, level, player).ifPresent(program -> {
-                program.load(); // This is a set so we're safe to repeatedly load
+                if (!level.isClientSide()) program.load(); // This is a set so we're safe to repeatedly load
                 program.tick();
                 setProgram(stack, program);
             });
@@ -108,10 +124,14 @@ public class RedstoneProgrammerBlockItem extends BlockItem {
             uuid = UUID.randomUUID();
             tag.putUUID("UUID", uuid);
         };
-        ItemStackRedstoneProgram program = RedstoneProgrammerItemHandler.programs.get(level).computeIfAbsent(uuid, u -> {
-            if (!tag.contains("Program")) return new ItemStackRedstoneProgram(player);
-            return RedstoneProgram.read(() -> new ItemStackRedstoneProgram(player), item.getOrCreateTag().getCompound("Program"));
-        });
+
+        ItemStackRedstoneProgram newProgram;
+        if (!tag.contains("Program")) newProgram = new ItemStackRedstoneProgram(player);
+        else newProgram = RedstoneProgram.read(() -> new ItemStackRedstoneProgram(player), item.getOrCreateTag().getCompound("Program"));
+
+        if (level.isClientSide()) return Optional.of(newProgram); // For client-sided Redstone Programmers, create a new one every time its needed
+
+        ItemStackRedstoneProgram program = RedstoneProgrammerItemHandler.programs.get(level).computeIfAbsent(uuid, u -> newProgram);
         return Optional.of(program);
     };
 
@@ -172,5 +192,11 @@ public class RedstoneProgrammerBlockItem extends BlockItem {
         };
 
     };
+
+    @Override
+    @OnlyIn(Dist.CLIENT)
+	public void initializeClient(Consumer<IClientItemExtensions> consumer) {
+		consumer.accept(SimpleCustomRenderer.create(this, new RedstoneProgrammerItemRenderer()));
+	};
     
 };

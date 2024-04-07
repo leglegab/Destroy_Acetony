@@ -72,7 +72,7 @@ public class BubbleCapBlockEntity extends SmartBlockEntity implements IHaveGoggl
     protected SmartFluidTankBehaviour internalTank, tank;
     protected LazyOptional<IFluidHandler> allFluidCapability;
 
-    protected DestroyAdvancementBehaviour advancementBehaviour;
+    public DestroyAdvancementBehaviour advancementBehaviour;
     protected PollutingBehaviour pollutingBehaviour;
 
     private int initializationTicks;
