@@ -23,6 +23,7 @@ import com.simibubi.create.content.processing.basin.BasinRecipe;
 import com.simibubi.create.content.processing.recipe.ProcessingRecipeBuilder;
 import com.simibubi.create.content.processing.recipe.ProcessingRecipeBuilder.ProcessingRecipeParams;
 import com.simibubi.create.foundation.fluid.FluidIngredient;
+import com.simibubi.create.foundation.recipe.RecipeFinder;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -34,6 +35,7 @@ import net.minecraftforge.fluids.FluidStack;
 
 public class ReactionInBasinRecipe extends BasinRecipe {
 
+    private static final Object recipeCacheKey = new Object();
     private static final int BASIN_MAX_OUTPUT = 1000;
 
     public ReactionInBasinRecipe(ProcessingRecipeParams params) {
@@ -47,6 +49,7 @@ public class ReactionInBasinRecipe extends BasinRecipe {
         List<ItemStack> availableItemsCopy = availableItems.stream().map(ItemStack::copy).filter(stack -> !stack.isEmpty()).toList();
 
         boolean canReact = true; // Start by assuming we will be able to React
+        boolean containsMixtures = false; // If the ONLY thing we have are non-Mixtures, even if they can be converted to Mixtures we don't want to react
 
         boolean isBasinTooFullToReact = false;
         
@@ -60,15 +63,34 @@ public class ReactionInBasinRecipe extends BasinRecipe {
 
         // Check all Fluids are Mixturess
         for (FluidStack fluidStack : availableFluids) {
-            if (!DestroyFluids.isMixture(fluidStack)) { // Can't react with any non-Mixtures
-                canReact = false;
-                break;
+
+            Mixture mixture;
+            if (DestroyFluids.isMixture(fluidStack)) {
+                // True Mixtures
+                mixture = Mixture.readNBT(fluidStack.getOrCreateTag().getCompound("Mixture"));
+                containsMixtures = true;
+            } else {
+                // Non-Mixture -> Mixture conversions
+                MixtureConversionRecipe recipe = RecipeFinder.get(recipeCacheKey, basin.getLevel(), r -> r.getType() == DestroyRecipeTypes.MIXTURE_CONVERSION.getType())
+                    .stream()
+                    .map(r -> (MixtureConversionRecipe)r)
+                    .filter(r -> r.getFluidIngredients().get(0).test(fluidStack))
+                    .findFirst()
+                    .orElse(null);
+                if (recipe == null) {
+                    canReact = false;
+                    break;
+                } else {
+                    mixture = Mixture.readNBT(recipe.getFluidResults().get(0).getOrCreateTag().getCompound("Mixture"));
+                };
             };
+
             int amount = fluidStack.getAmount();
             totalAmount += amount;
-            Mixture mixture = Mixture.readNBT(fluidStack.getOrCreateTag().getCompound("Mixture"));
             mixtures.put(mixture, (double)amount / 1000d);
         };
+
+        if (!containsMixtures) canReact = false; // Don't react without Mixtures, even if there are fluids which could be converted into Mixtures 
 
         tryReact: if (canReact) {
             // TODO modify temp according to Heat Level

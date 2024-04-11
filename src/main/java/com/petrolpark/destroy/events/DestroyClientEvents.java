@@ -15,20 +15,25 @@ import com.petrolpark.destroy.item.SwissArmyKnifeItem;
 import com.petrolpark.destroy.item.renderer.SeismometerItemRenderer;
 import com.petrolpark.destroy.mixin.accessor.MenuRowsAccessor;
 import com.petrolpark.destroy.util.CogwheelChainingHandler;
+import com.petrolpark.destroy.util.DestroyLang;
 import com.petrolpark.destroy.util.PollutionHelper;
 import com.simibubi.create.infrastructure.gui.OpenCreateMenuButton.MenuRows;
 
+import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.screens.PauseScreen;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.TitleScreen;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.level.material.FogType;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.ScreenEvent;
 import net.minecraftforge.client.event.ViewportEvent.ComputeFogColor;
 import net.minecraftforge.client.event.ViewportEvent.RenderFog;
 import net.minecraftforge.event.TickEvent;
+import net.minecraftforge.event.entity.player.ItemTooltipEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
 
@@ -131,5 +136,11 @@ public class DestroyClientEvents {
                 );
             if (toAdd.getValue() != null) event.addListener(toAdd.getValue());
         };
+    };
+
+    @SubscribeEvent
+    public static void onItemTooltip(ItemTooltipEvent event) {
+        Item item = event.getItemStack().getItem();
+        if (item.equals(Items.TNT)) event.getToolTip().add(DestroyLang.translate("tooltip.tnt").style(ChatFormatting.GRAY).component());
     };
 };

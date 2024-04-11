@@ -480,7 +480,7 @@ public class VatSideBlockEntity extends CopycatBlockEntity implements IHaveGoggl
             if (DestroyAllConfigs.CLIENT.chemistry.nerdMode.get()) DestroyLang.translate("tooltip.vat.power", df.format(controller.heatingPower / 1000f)).forGoggles(tooltip);
         } else if (getDisplayType().showsPressure) {
             Vat vat = getVatOptional().get();
-            DestroyLang.translate("tooltip.vat.pressure.header").style(ChatFormatting.WHITE).forGoggles(tooltip);
+            DestroyLang.translate("tooltip.vat.pressure.header", " ").style(ChatFormatting.WHITE).forGoggles(tooltip);
             DestroyLang.translate("tooltip.vat.pressure.current", df.format(controller.getPressure() / 1000f)).style(ChatFormatting.GRAY).forGoggles(tooltip, 1);
             DestroyLang.translate("tooltip.vat.pressure.max", df.format(vat.getMaxPressure() / 1000f), vat.getWeakestBlock().getBlock().getName().getString()).style(ChatFormatting.GRAY).forGoggles(tooltip, 1);
         } else {

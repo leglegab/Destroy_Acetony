@@ -122,6 +122,7 @@
     "block.destroy.chromium_periodic_table_block": "Chromium Element Block",
     "block.destroy.coaxial_gear": "Coaxial Cogwheel",
     "block.destroy.colorimeter": "Colorimeter",
+    "block.destroy.colossal_cogwheel": "Colossal Cogwheel",
     "block.destroy.cooler": "Refrigerstraytor",
     "block.destroy.copper_periodic_table_block": "Copper Element Block",
     "block.destroy.cordite": "Cordite",
@@ -200,6 +201,8 @@
     "block.destroy.yeast_mushroom": "Yeast Mushroom",
     "block.destroy.zinc_periodic_table_block": "Zinc Element Block",
     "block.destroy.zirconium_block": "Zirconium Block",
+
+    "block.minecraft.tnt": "\"TNT\"",
 
     "create.destroy.pollution.acid_rain": "Rain Acidity",
     "create.destroy.pollution.greenhouse": "Greenhouse Gas Level",
@@ -915,9 +918,11 @@
     "destroy.recipe.distillation": "Distillation",
     "destroy.recipe.electrolysis": "Electrolysis",
     "destroy.recipe.extrusion": "Extrusion",
-    "destroy.recipe.generic_reaction": "Generic Reaction",
+    "destroy.recipe.generic_reaction": "Organic Reaction",
     "destroy.recipe.heat_requirement.cooled": "Cooled",
     "destroy.recipe.manual_crafting": "Manual-Only Crafting",
+    "destroy.recipe.mixture_conversion": "Equivalent Mixtures",
+    "destroy.recipe.mixture_conversion.description": "This _non-Mixture fluid_, when pumped into a Vat or mixed in a Basin _automatically_ converts to this _Mixture_.",
     "destroy.recipe.mutation": "Phytomining",
     "destroy.recipe.obliteration": "Obliteration",
     "destroy.recipe.potion_centrifugation": "Potion Separation",
@@ -1027,6 +1032,7 @@
     "destroy.tooltip.seismometer.crude_oil.local": "Struck oil! There are about %1$s bucket(s) in this chunk",
     "destroy.tooltip.seismometer.crude_oil.surrounding": "There are about %1$s bucket(s) of oil in the surrounding chunks",
     "destroy.tooltip.seismometer.nothing": "There's no oil to be found nearby...",
+    "destroy.tooltip.tnt": "Gunpowder ≠ TNT!",
     "destroy.tooltip.unknown_molecule": "Unknown Molecule",
     "destroy.tooltip.vat.contents_liquid": "Solution:",
     "destroy.tooltip.vat.contents_gas": "Gas:",
@@ -1098,6 +1104,7 @@
     "effect.destroy.sun_protection": "Sun Protection",
     "effect.destroy.sun_protection.description": "_Protects_ the user from harmful _UV radiation_ if the world's ozone level is too low.",
 
+    "entity.minecraft.tnt_minecart": "Minecart with \"TNT\"",
     "entity.minecraft.villager.destroy.innkeeper": "Innkeeper",
 
     "fluid.destroy.air": "Air",
@@ -1446,6 +1453,7 @@
     "item.minecraft.potion.effect.unique": "Unique Potion",
     "item.minecraft.splash_potion.effect.unique": "Unique Splash Potion",
     "item.minecraft.tipped_arrow.effect.unique": "Unique Tipped Arrow",
+    "item.minecraft.tnt_minecart": "Minecart with \"TNT\"",
 
     "stat.destroy.novel_compounds_synthesized": "Novel compounds synthesized"
 }

@@ -1,0 +1,10 @@
+{
+	"parent": "block/block",
+	"loader": "forge:obj",
+	"flip_v": true,
+	"model": "destroy:models/block/colossal_cogwheel/colossal_cogwheel.obj",
+	"textures": {
+		"block_texture": "destroy:block/colossal_cogwheel"
+	},
+	"render_type": "cutout"
+}

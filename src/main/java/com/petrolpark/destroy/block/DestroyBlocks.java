@@ -129,6 +129,14 @@ public class DestroyBlocks {
         .build()
         .register();
 
+    public static final BlockEntry<ColossalCogwheelBlock> COLOSSAL_COGWHEEL = REGISTRATE.block("colossal_cogwheel", ColossalCogwheelBlock::new)
+        .initialProperties(AllBlocks.LARGE_WATER_WHEEL)
+        .properties(p -> p
+            .noOcclusion()
+        ).item()
+        .transform(customItemModel())
+        .register();
+
     public static final BlockEntry<CoolerBlock> COOLER = REGISTRATE.block("cooler", CoolerBlock::new)
         .initialProperties(SharedProperties::stone)
         .properties(p -> p

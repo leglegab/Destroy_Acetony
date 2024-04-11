@@ -12,6 +12,7 @@ import com.petrolpark.destroy.block.renderer.AgingBarrelRenderer;
 import com.petrolpark.destroy.block.renderer.BubbleCapRenderer;
 import com.petrolpark.destroy.block.renderer.CentrifugeRenderer;
 import com.petrolpark.destroy.block.renderer.ChainedCogwheelRenderer;
+import com.petrolpark.destroy.block.renderer.ColossalCogwheelRenderer;
 import com.petrolpark.destroy.block.renderer.CoolerRenderer;
 import com.petrolpark.destroy.block.renderer.DifferentialRenderer;
 import com.petrolpark.destroy.block.renderer.DoubleCardanShaftRenderer;
@@ -65,6 +66,12 @@ public class DestroyBlockEntityTypes {
     public static final BlockEntityEntry<ColorimeterBlockEntity> COLORIMETER = REGISTRATE
         .blockEntity("colorimeter", ColorimeterBlockEntity::new)
         .validBlocks(DestroyBlocks.COLORIMETER)
+        .register();
+
+    public static final BlockEntityEntry<ColossalCogwheelBlockEntity> COLOSSAL_COGWHEEL = REGISTRATE
+        .blockEntity("colossal_cogwheel", ColossalCogwheelBlockEntity::new)
+        .validBlocks(DestroyBlocks.COLOSSAL_COGWHEEL)
+        .renderer(() -> ColossalCogwheelRenderer::new)
         .register();
 
     public static final BlockEntityEntry<CoolerBlockEntity> COOLER = REGISTRATE

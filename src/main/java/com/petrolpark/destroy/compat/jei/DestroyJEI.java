@@ -26,6 +26,7 @@ import com.petrolpark.destroy.compat.jei.category.ExtrusionCategory;
 import com.petrolpark.destroy.compat.jei.category.GenericReactionCategory;
 import com.petrolpark.destroy.compat.jei.category.ITickableCategory;
 import com.petrolpark.destroy.compat.jei.category.ManualOnlyCategory;
+import com.petrolpark.destroy.compat.jei.category.MixtureConversionCategory;
 import com.petrolpark.destroy.compat.jei.category.MutationCategory;
 import com.petrolpark.destroy.compat.jei.category.ObliterationCategory;
 import com.petrolpark.destroy.compat.jei.category.ReactionCategory;
@@ -43,6 +44,7 @@ import com.petrolpark.destroy.recipe.ElectrolysisRecipe;
 import com.petrolpark.destroy.recipe.ExtendedDurationFireworkRocketRecipe;
 import com.petrolpark.destroy.recipe.ExtrusionRecipe;
 import com.petrolpark.destroy.recipe.ManualOnlyShapedRecipe;
+import com.petrolpark.destroy.recipe.MixtureConversionRecipe;
 import com.petrolpark.destroy.recipe.MutationRecipe;
 import com.petrolpark.destroy.recipe.ObliterationRecipe;
 import com.petrolpark.destroy.recipe.ReactionRecipe;
@@ -189,9 +191,7 @@ public class DestroyJEI implements IModPlugin {
         reaction = builder(ReactionRecipe.class)
             .addRecipes(ReactionCategory.RECIPES::values)
             // Doesn't accept Mixtures as Reactions involve Molecules, not Mixtures.
-            .catalyst(AllBlocks.MECHANICAL_MIXER::get)
-            .catalyst(AllBlocks.BASIN::get)
-            .catalyst(DestroyBlocks.VAT_CONTROLLER::get)
+            .reactionCatalysts()
             .itemIcon(DestroyItems.MOLECULE_DISPLAY.get())
             .emptyBackground(180, 125)
             .build("reaction", ReactionCategory::new),
@@ -199,9 +199,7 @@ public class DestroyJEI implements IModPlugin {
         genericReaction = builder(GenericReactionRecipe.class)
             .addRecipes(GenericReactionCategory.RECIPES::values)
             // Doesn't accept Mixtures as Generic Reactions involve Molecules, not Mixtures.
-            .catalyst(AllBlocks.MECHANICAL_MIXER::get)
-            .catalyst(AllBlocks.BASIN::get)
-            .catalyst(DestroyBlocks.VAT_CONTROLLER::get)
+            .reactionCatalysts()
             .itemIcon(DestroyItems.MOLECULE_DISPLAY.get())
             .emptyBackground(180, 125)
             .build("generic_reaction", GenericReactionCategory::new),
@@ -236,7 +234,14 @@ public class DestroyJEI implements IModPlugin {
                 }
             )
             .emptyBackground(116, 56)
-            .build("manual_crafting", ManualOnlyCategory::new);
+            .build("manual_crafting", ManualOnlyCategory::new),
+
+        mixture_conversion = builder(MixtureConversionRecipe.class)
+            .addTypedRecipes(DestroyRecipeTypes.MIXTURE_CONVERSION)
+            .reactionCatalysts()
+            .itemIcon(DestroyBlocks.VAT_CONTROLLER.get())
+            .emptyBackground(125, 20)
+            .build("mixture_conversion", MixtureConversionCategory::new);
 
         DestroyJEI.MOLECULE_RECIPES_NEED_PROCESSING = false;
     };
@@ -368,6 +373,18 @@ public class DestroyJEI implements IModPlugin {
             catalysts.add(() -> new ItemStack(itemSupplier.get().asItem()));
             return this;
         };
+
+        /**
+         * Adds all the Items which can be used to do chemical Reactions as catalysts for this Category.
+         * @return This Category Builder
+         */
+        public CategoryBuilder<T> reactionCatalysts() {
+            return this
+                .catalyst(AllBlocks.MECHANICAL_MIXER::get)
+                .catalyst(AllBlocks.BASIN::get)
+                .catalyst(DestroyBlocks.VAT_CONTROLLER::get);
+        };
+
 
         /**
          * Sets the given Item as the icon for this Category.
