@@ -17,7 +17,7 @@
       "title": {
         "translate": "advancement.destroy.keypunch_five"
       },
-      "frame": "challenge"
+      "frame": "goal"
     },
     "requirements": [
       [

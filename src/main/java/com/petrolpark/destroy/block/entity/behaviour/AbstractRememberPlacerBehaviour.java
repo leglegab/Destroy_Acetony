@@ -3,6 +3,8 @@ package com.petrolpark.destroy.block.entity.behaviour;
 import java.util.ConcurrentModificationException;
 import java.util.UUID;
 
+import javax.annotation.Nullable;
+
 import com.simibubi.create.foundation.blockEntity.SmartBlockEntity;
 import com.simibubi.create.foundation.blockEntity.behaviour.BlockEntityBehaviour;
 
@@ -23,6 +25,7 @@ public abstract class AbstractRememberPlacerBehaviour extends BlockEntityBehavio
 
     public abstract boolean shouldRememberPlacer(Player placer);
 
+    @Nullable
     public Player getPlayer() {
         if (playerUUID == null) return null;
         return getWorld().getPlayerByUUID(playerUUID);

@@ -37,6 +37,7 @@
         "BeltInventoryMixin",
         "BlazeBurnerBlockEntityMixin",
         "BlockMixin",
+        "CartographyTableMenuMixin",
         "ConnectivityHandlerMixin",
         "ContraptionMixin",
         "DepotBehaviourMixin",

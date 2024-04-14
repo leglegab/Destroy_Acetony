@@ -14,7 +14,6 @@
       "icon": {
         "item": "destroy:hefty_beetroot"
       },
-      "frame": "goal",
       "title": {
         "translate": "advancement.destroy.beetroot_potato_cannon"
       }

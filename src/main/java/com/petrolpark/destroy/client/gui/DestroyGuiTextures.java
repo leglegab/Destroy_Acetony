@@ -61,6 +61,12 @@ public enum DestroyGuiTextures implements ScreenElement {
 	REDSTONE_PROGRAMMER_REMOVE_BAR("redstone_programmer_2", 192, 54, 12, 13),
 	REDSTONE_PROGRAMMER_ADD_BAR("redstone_programmer_2", 204, 54, 12, 13),
 
+	// SEISMOGRAPH
+	SEISMOGRAPH_TICK("icons", 0, 64, 16, 16),
+	SEISMOGRAPH_CROSS("icons", 16, 64, 16, 16),
+	SEISMOGRAPH_GUESSED_TICK("icons", 32, 64, 16, 16),
+	SEISMOGRAPH_GUESSED_CROSS("icons", 48, 64, 16, 16),
+
     // JEI
 	JEI_POINTING_HAND("jei/widgets", 40, 40, 18, 14),
     JEI_SHORT_DOWN_ARROW("jei/widgets", 0, 64, 18, 18),
