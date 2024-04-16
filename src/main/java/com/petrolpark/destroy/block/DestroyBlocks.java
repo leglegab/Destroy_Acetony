@@ -12,6 +12,7 @@ import com.petrolpark.destroy.block.model.CopycatBlockModel;
 import com.petrolpark.destroy.block.spriteshifts.DestroySpriteShifts;
 import com.petrolpark.destroy.entity.PrimedBomb;
 import com.petrolpark.destroy.item.CoaxialGearBlockItem;
+import com.petrolpark.destroy.item.CombustibleBlockItem;
 import com.petrolpark.destroy.item.DestroyItems;
 import com.petrolpark.destroy.item.PeriodicTableBlockItem;
 import com.petrolpark.destroy.item.PumpjackBlockItem;
@@ -834,7 +835,9 @@ public class DestroyBlocks {
 
     // UNCATEGORISED
 
-    public static final BlockEntry<RotatedPillarBlock> PLYWOOD = REGISTRATE.block("plywood", RotatedPillarBlock::new)
+    public static final BlockEntry<FlippableRotatedPillarBlock>
+    
+    PLYWOOD = REGISTRATE.block("plywood", FlippableRotatedPillarBlock::new)
         .properties(p -> p
             .mapColor(MapColor.WOOD)
             .instrument(NoteBlockInstrument.BASS)
@@ -842,6 +845,19 @@ public class DestroyBlocks {
         ).tag(BlockTags.MINEABLE_WITH_AXE, BlockTags.PLANKS)
         .item()
         .tag(ItemTags.PLANKS)
+        .build()
+        .register(),
+
+    UNVARNISHED_PLYWOOD = REGISTRATE.block("unvarnished_plywood", FlippableRotatedPillarBlock::new)
+        .properties(p -> p
+            .mapColor(MapColor.WOOD)
+            .instrument(NoteBlockInstrument.BASS)
+            .strength(3.0f, 5.0f)
+            .ignitedByLava()
+        ).tag(BlockTags.MINEABLE_WITH_AXE, BlockTags.PLANKS)
+        .item(CombustibleBlockItem::new)
+        .tag(ItemTags.PLANKS)
+        .onRegister(i -> i.setBurnTime(20000))
         .build()
         .register();
 

@@ -31,6 +31,8 @@ public class SeismographItem extends MapItem {
         Seismograph seismograph = new Seismograph();
         if (!(stack.getItem() instanceof SeismographItem)) return seismograph;
         CompoundTag tag = stack.getOrCreateTag().getCompound("Seismograph");
+        seismograph.rowsDiscovered = tag.getByte("RowsDiscovered");
+        seismograph.columnsDiscovered = tag.getByte("ColumnsDiscovered");
         seismograph.rows = Arrays.copyOf(tag.getByteArray("Rows"), 8);
         seismograph.columns = Arrays.copyOf(tag.getByteArray("Columns"), 8);
         seismograph.marks = Arrays.copyOf(tag.getByteArray("Markings"), 64);
@@ -39,6 +41,8 @@ public class SeismographItem extends MapItem {
 
     public static void writeSeismograph(ItemStack stack, Seismograph seismograph) {
         CompoundTag tag = new CompoundTag();
+        tag.putByte("RowsDiscovered", seismograph.rowsDiscovered);
+        tag.putByte("ColumnsDiscovered", seismograph.columnsDiscovered);
         tag.putByteArray("Rows", seismograph.rows);
         tag.putByteArray("Columns", seismograph.columns);
         tag.putByteArray("Markings", seismograph.marks);
@@ -55,7 +59,6 @@ public class SeismographItem extends MapItem {
 
         private byte rowsDiscovered;
         private byte columnsDiscovered;
-
         private byte[] rows;
         private byte[] columns;
         private byte[] marks;
@@ -104,13 +107,13 @@ public class SeismographItem extends MapItem {
             return getDisplayed(rows, row);
         };
 
-        private int[] getDisplayed(byte[] array, int index) {
+        public int[] getDisplayed(byte[] array, int index) {
             if (index < 0 || index > 7) return new int[0];
             int[] numbers = new int[4];
             int numbersAdded = 0;
             int count = 0;
             for (int i = 0; i < 8; i++) {
-                if ((array[index] & (1 << i)) != 0) { // If there is something here
+                if (((array[index]) & (1 << i)) != 0) { // If there is something here
                     count++;
                 } else {
                     if (count != 0) {
@@ -147,6 +150,16 @@ public class SeismographItem extends MapItem {
             columnsDiscovered |= 1 << column;
             triggerSolveSeismographAdvancement(level, player);
             return oldColumnsDiscovered != columnsDiscovered;
+        };
+
+        public boolean isRowDiscovered(int row) {
+            if (row < 0 || row > 7) return false;
+            return (rowsDiscovered & 1 << row) != 0;
+        };
+
+        public boolean isColumnDiscovered(int column) {
+            if (column < 0 || column > 7) return false;
+            return (columnsDiscovered & 1 << column) != 0;
         };
 
         /**

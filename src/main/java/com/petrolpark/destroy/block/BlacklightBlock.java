@@ -4,6 +4,8 @@ import javax.annotation.Nullable;
 
 import com.petrolpark.destroy.block.shape.DestroyShapes;
 import com.petrolpark.destroy.util.vat.IUVLampBlock;
+import com.simibubi.create.content.contraptions.ITransformableBlock;
+import com.simibubi.create.content.contraptions.StructureTransform;
 import com.simibubi.create.content.equipment.wrench.IWrenchable;
 import com.simibubi.create.foundation.block.ProperWaterloggedBlock;
 
@@ -26,7 +28,7 @@ import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
 
-public class BlacklightBlock extends Block implements IUVLampBlock, IWrenchable, ProperWaterloggedBlock {
+public class BlacklightBlock extends Block implements IUVLampBlock, IWrenchable, ITransformableBlock, ProperWaterloggedBlock {
 
     public static final DirectionProperty SIDE = BlockStateProperties.FACING;
     public static final BooleanProperty FLIPPED = BooleanProperty.create("flipped");
@@ -83,6 +85,12 @@ public class BlacklightBlock extends Block implements IUVLampBlock, IWrenchable,
     public float getUVPower(Level level, BlockState blockState, BlockPos blockPos, Direction face) {
         if (face == blockState.getValue(SIDE).getOpposite()) return 100f;
         return 0f;
+    }
+
+    @Override
+    public BlockState transform(BlockState state, StructureTransform transform) {
+        // TODO Auto-generated method stub
+        return state;
     };
     
 };

@@ -112,7 +112,7 @@ public class ChunkCrudeOil {
              * If we are surrounded on four sides by red herrings, we don't want to show this too as that would lead to a false positive (plusses indicate oil).
              * Otherwise, if we are a red herring, show that.
              */
-            if (oilInSurroundings || (!surroundedByHerrings && redHerring[length - 1][1]))
+            if (oilInSurroundings || (!surroundedByHerrings && redHerring[length][1]))
                 signals |= 1 << length - 1;
             
         };

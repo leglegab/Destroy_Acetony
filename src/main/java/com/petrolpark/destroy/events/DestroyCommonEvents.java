@@ -14,8 +14,9 @@ import com.petrolpark.destroy.block.RedstoneProgrammerBlock;
 import com.petrolpark.destroy.block.PeriodicTableBlock.PeriodicTableEntry;
 import com.petrolpark.destroy.block.entity.VatControllerBlockEntity;
 import com.petrolpark.destroy.block.entity.VatSideBlockEntity;
-import com.petrolpark.destroy.block.entity.behaviour.DestroyAdvancementBehaviour;
+import com.petrolpark.destroy.block.entity.behaviour.AbstractRememberPlacerBehaviour;
 import com.petrolpark.destroy.block.entity.behaviour.ExtendedBasinBehaviour;
+
 import com.petrolpark.destroy.block.entity.behaviour.PollutingBehaviour;
 import com.petrolpark.destroy.capability.chunk.ChunkCrudeOil;
 import com.petrolpark.destroy.capability.entity.EntityChemicalPoison;
@@ -24,6 +25,7 @@ import com.petrolpark.destroy.capability.level.pollution.LevelPollution.Pollutio
 import com.petrolpark.destroy.capability.level.pollution.LevelPollutionProvider;
 import com.petrolpark.destroy.capability.player.PlayerBadges;
 import com.petrolpark.destroy.capability.player.PlayerCrouching;
+import com.petrolpark.destroy.capability.player.PlayerLuckyFirstRecipes;
 import com.petrolpark.destroy.capability.player.PlayerNovelCompoundsSynthesized;
 import com.petrolpark.destroy.capability.player.babyblue.PlayerBabyBlueAddiction;
 import com.petrolpark.destroy.capability.player.babyblue.PlayerBabyBlueAddictionProvider;
@@ -212,9 +214,13 @@ public class DestroyCommonEvents {
             if (!player.getCapability(PlayerBadges.Provider.PLAYER_BADGES).isPresent()) {
                 event.addCapability(Destroy.asResource("badges"), new PlayerBadges.Provider());
             };
-            // Add Badge Capability
+            // Add Novel compound Capability
             if (!player.getCapability(PlayerNovelCompoundsSynthesized.Provider.PLAYER_NOVEL_COMPOUNDS_SYNTHESIZED).isPresent()) {
                 event.addCapability(Destroy.asResource("novel_compounds_synthesized"), new PlayerNovelCompoundsSynthesized.Provider());
+            };
+            // Add Lucky first recipe Capability
+            if (!player.getCapability(PlayerLuckyFirstRecipes.Provider.PLAYER_LUCKY_FIRST_RECIPES).isPresent()) {
+                event.addCapability(Destroy.asResource("lucky_first_recipes"), new PlayerLuckyFirstRecipes.Provider());
             };
         };
     };
@@ -283,14 +289,26 @@ public class DestroyCommonEvents {
         if (event.isWasDeath()) {
             // Copy Baby Blue Addiction Data
             event.getOriginal().getCapability(PlayerBabyBlueAddictionProvider.PLAYER_BABY_BLUE_ADDICTION).ifPresent(oldStore -> {
-                event.getOriginal().getCapability(PlayerBabyBlueAddictionProvider.PLAYER_BABY_BLUE_ADDICTION).ifPresent(newStore -> {
+                event.getEntity().getCapability(PlayerBabyBlueAddictionProvider.PLAYER_BABY_BLUE_ADDICTION).ifPresent(newStore -> {
                     newStore.copyFrom(oldStore);
                 });
             });
             // Copy Badge data
             event.getOriginal().getCapability(PlayerBadges.Provider.PLAYER_BADGES).ifPresent(oldStore -> {
-                event.getOriginal().getCapability(PlayerBadges.Provider.PLAYER_BADGES).ifPresent(newStore -> {
+                event.getEntity().getCapability(PlayerBadges.Provider.PLAYER_BADGES).ifPresent(newStore -> {
                     newStore.setBadges(oldStore.getBadges());
+                });
+            });
+            // Copy Novel Compound Data
+            event.getOriginal().getCapability(PlayerNovelCompoundsSynthesized.Provider.PLAYER_NOVEL_COMPOUNDS_SYNTHESIZED).ifPresent(oldStore -> {
+                event.getEntity().getCapability(PlayerNovelCompoundsSynthesized.Provider.PLAYER_NOVEL_COMPOUNDS_SYNTHESIZED).ifPresent(newStore -> {
+                    newStore.copyFrom(oldStore);
+                });
+            });
+            // Copy Lucky First Recipe data
+            event.getOriginal().getCapability(PlayerLuckyFirstRecipes.Provider.PLAYER_LUCKY_FIRST_RECIPES).ifPresent(oldStore -> {
+                event.getEntity().getCapability(PlayerLuckyFirstRecipes.Provider.PLAYER_LUCKY_FIRST_RECIPES).ifPresent(newStore -> {
+                    newStore.copyFrom(oldStore);
                 });
             });
         };
@@ -744,7 +762,7 @@ public class DestroyCommonEvents {
                     };
                     // Show message (and award XP if necessary)
                     if (newOilGenerated > 0) {
-                        player.displayClientMessage(DestroyLang.translate("tooltip.seismometer.struck_oil").component(), true);
+                        player.displayClientMessage(DestroyLang.translate("tooltip.seismometer.struck_oil", newOilGenerated / 1000).component(), true);
                         ExperienceOrb.award(serverLevel, player.position(), newOilGenerated / 10000);  
                     } else if (seismographs.isEmpty()) player.displayClientMessage(DestroyLang.translate("tooltip.seismometer.no_seismograph").style(ChatFormatting.RED).component(), true);
                     else if (newInfo) player.displayClientMessage(DestroyLang.translate("tooltip.seismometer.added_info").component(), true);
@@ -857,7 +875,7 @@ public class DestroyCommonEvents {
 
     /**
      * Reward the Player with an advancement for assembling a full periodic table,
-     * and add the player to the Destroy Advancement behaviour of the Basin.
+     * and add the player to the RememberPlacerBehaviours of non-Destroy Block Entities.
      */
     @SubscribeEvent
     public static void onPlayerPlacesBlock(EntityPlaceEvent event) {
@@ -883,9 +901,8 @@ public class DestroyCommonEvents {
                 };
             };
 
-            // Basin Destroy Advancement behaviour
-            BlockEntity be = level.getBlockEntity(event.getPos());
-            if (be != null && be instanceof BasinBlockEntity) DestroyAdvancementBehaviour.setPlacedBy(level, event.getPos(), serverPlayer);
+            // Remember-placer behaviours for non-Destroy block entities - as the adding of this behaviour is deferred, simply placing the block won't do.
+            AbstractRememberPlacerBehaviour.setPlacedBy(level, event.getPos(), serverPlayer);
         };
 
     };

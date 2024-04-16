@@ -1,12 +1,22 @@
 package com.petrolpark.destroy.client.gui;
 
+import org.joml.Matrix4f;
+
 import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.vertex.BufferBuilder;
+import com.mojang.blaze3d.vertex.BufferUploader;
+import com.mojang.blaze3d.vertex.DefaultVertexFormat;
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.vertex.VertexFormat;
+import com.mojang.blaze3d.vertex.Tesselator;
 import com.petrolpark.destroy.Destroy;
 import com.simibubi.create.foundation.gui.UIRenderHelper;
 import com.simibubi.create.foundation.gui.element.ScreenElement;
 import com.simibubi.create.foundation.utility.Color;
 
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.renderer.GameRenderer;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -14,15 +24,15 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 public enum DestroyGuiTextures implements ScreenElement {
 
 	// CIRCUIT MASK
-	CIRCUIT_MASK_BORDER("circuit_mask", 0, 0, 48, 48),
+	CIRCUIT_MASK_BORDER("circuit_mask", 48, 48),
 	CIRCUIT_MASK_CELL_SHADING("circuit_mask", 48, 0, 10, 10),
 	CIRCUIT_MASK_CELL("circuit_mask", 48, 16, 8, 8),
 	
 	// KEYPUNCH
-	KEYPUNCH("keypunch", 0, 0, 187, 169),
+	KEYPUNCH("keypunch", 187, 169),
 
 	// VAT
-	VAT("vat", 0, 0, 256, 226),
+	VAT("vat", 256, 226),
 	VAT_CARD_UNSELECTED("vat", 0, 227, 100, 28),
 	VAT_CARD_SELECTED("vat", 116, 226, 102, 30),
 	VAT_CARD_ARROW("vat", 218, 226, 25, 30),
@@ -30,7 +40,7 @@ public enum DestroyGuiTextures implements ScreenElement {
 	VAT_QUANTITY_OBSERVER("logistics", 0, 0, 256, 95),
 
 	// REDSTONE PROGRAMMER
-	REDSTONE_PROGRAMMER("redstone_programmer_1", 0, 0, 256, 226),
+	REDSTONE_PROGRAMMER("redstone_programmer_1", 256, 226),
 	REDSTONE_PROGRAMMER_NOTE_BORDER_MIDDLE("redstone_programmer_2", 192, 0, 4, 18),
 	REDSTONE_PROGRAMMER_NOTE_BORDER_LEFT("redstone_programmer_2", 196, 0, 4, 18),
 	REDSTONE_PROGRAMMER_NOTE_BORDER_LONE("redstone_programmer_2", 200, 0, 4, 18),
@@ -62,6 +72,8 @@ public enum DestroyGuiTextures implements ScreenElement {
 	REDSTONE_PROGRAMMER_ADD_BAR("redstone_programmer_2", 204, 54, 12, 13),
 
 	// SEISMOGRAPH
+	SEISMOGRAPH_BACKGROUND("seismograph", 0, 0, 64, 64, 64, 64),
+	SEISMOGRAPH_OVERLAY("seismograph_overlay", 0, 0, 64, 64, 64, 64),
 	SEISMOGRAPH_TICK("icons", 0, 64, 16, 16),
 	SEISMOGRAPH_CROSS("icons", 16, 64, 16, 16),
 	SEISMOGRAPH_GUESSED_TICK("icons", 32, 64, 16, 16),
@@ -73,7 +85,7 @@ public enum DestroyGuiTextures implements ScreenElement {
     JEI_SHORT_RIGHT_ARROW("jei/widgets", 0, 82, 18, 16),
 	JEI_EQUILIBRIUM_ARROW("jei/widgets", 0, 96, 42, 11),
 	JEI_LINE("jei/widgets", 40, 38, 177, 2),
-	JEI_TEXT_BOX_LONG("jei/widgets", 0, 0, 169, 19),
+	JEI_TEXT_BOX_LONG("jei/widgets",169, 19),
 	JEI_TEXT_BOX_SHORT("jei/widgets", 0, 19, 115, 19),
 	JEI_DISTILLATION_TOWER_BOTTOM("jei/widgets", 0, 52, 12, 12),
 	JEI_DISTILLATION_TOWER_MIDDLE("jei/widgets", 0, 40, 20, 12),
@@ -86,14 +98,24 @@ public enum DestroyGuiTextures implements ScreenElement {
 	GLOBE("jei/widgets", 115 + 16, 19, 16, 14);
 
     public final ResourceLocation location;
-	public int width, height, startX, startY;
+	public final int width, height, startX, startY, textureWidth, textureHeight;
 
-    private DestroyGuiTextures(String location, int startX, int startY, int width, int height) {
+	private DestroyGuiTextures(String location, int width, int height) {
+		this(location, 0, 0, width, height);	
+	};
+
+	private DestroyGuiTextures(String location, int startX, int startY, int width, int height) {
+		this(location, startX, startY, width, height, 256, 256);
+	};
+
+    private DestroyGuiTextures(String location, int startX, int startY, int width, int height, int textureWidth, int textureHeight) {
 		this.location = Destroy.asResource("textures/gui/" + location + ".png");
 		this.startX = startX;
 		this.startY = startY;
 		this.width = width;
 		this.height = height;
+		this.textureWidth = textureWidth;
+		this.textureHeight = textureHeight;
 	};
 
 	private static final DestroyGuiTextures[] notes = new DestroyGuiTextures[]{REDSTONE_PROGRAMMER_NOTE_0, REDSTONE_PROGRAMMER_NOTE_1, REDSTONE_PROGRAMMER_NOTE_2, REDSTONE_PROGRAMMER_NOTE_3, REDSTONE_PROGRAMMER_NOTE_4, REDSTONE_PROGRAMMER_NOTE_5, REDSTONE_PROGRAMMER_NOTE_6, REDSTONE_PROGRAMMER_NOTE_7, REDSTONE_PROGRAMMER_NOTE_8, REDSTONE_PROGRAMMER_NOTE_9, REDSTONE_PROGRAMMER_NOTE_10, REDSTONE_PROGRAMMER_NOTE_11, REDSTONE_PROGRAMMER_NOTE_12, REDSTONE_PROGRAMMER_NOTE_13, REDSTONE_PROGRAMMER_NOTE_14, REDSTONE_PROGRAMMER_NOTE_15};
@@ -101,6 +123,10 @@ public enum DestroyGuiTextures implements ScreenElement {
 	public static DestroyGuiTextures getRedstoneProgrammerNote(int strength) {
 		if (strength > 0 && strength <= 15) return notes[strength];
 		return REDSTONE_PROGRAMMER_NOTE_0;
+	};
+
+	public RenderType asTextRenderType() {
+		return RenderType.text(location);
 	};
 
     @OnlyIn(Dist.CLIENT)
@@ -117,6 +143,24 @@ public enum DestroyGuiTextures implements ScreenElement {
 	public void render(GuiGraphics graphics, int x, int y, Color c) {
 		bind();
 		UIRenderHelper.drawColoredTexture(graphics, c, x, y, startX, startY, width, height);
+	};
+
+	@OnlyIn(Dist.CLIENT)
+	public void render(PoseStack ms, float x, float y) {
+		Matrix4f matrix = ms.last().pose();
+		float uvx1 = startX / (float)textureWidth;
+		float uvx2 = (startX + width) / (float)textureWidth;
+		float uvy1 = startY / (float)textureHeight;
+		float uvy2 = (startY + height) / (float)textureHeight;
+		RenderSystem.setShaderTexture(0, location);
+		RenderSystem.setShader(GameRenderer::getPositionTexShader);
+		BufferBuilder bufferbuilder = Tesselator.getInstance().getBuilder();
+		bufferbuilder.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX);
+		bufferbuilder.vertex(matrix, x, y, 0f).uv(uvx1, uvy1).endVertex();
+		bufferbuilder.vertex(matrix, x, y + height, 0f).uv(uvx1, uvy2).endVertex();
+		bufferbuilder.vertex(matrix, x + width, y + height, 0f).uv(uvx2, uvy2).endVertex();
+		bufferbuilder.vertex(matrix, x + width, y, 0f).uv(uvx2, uvy1).endVertex();
+		BufferUploader.drawWithShader(bufferbuilder.end());
 	};
     
 };

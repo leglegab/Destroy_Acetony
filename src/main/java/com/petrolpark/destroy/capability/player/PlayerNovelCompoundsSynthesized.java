@@ -32,6 +32,11 @@ public class PlayerNovelCompoundsSynthesized {
         });
     };
 
+    public void copyFrom(PlayerNovelCompoundsSynthesized pncs) {
+        novelCompoundFROWNSStrings.clear();
+        novelCompoundFROWNSStrings.addAll(pncs.novelCompoundFROWNSStrings);
+    };
+
     public static class Provider implements ICapabilityProvider, INBTSerializable<CompoundTag> {
 
         public static Capability<PlayerNovelCompoundsSynthesized> PLAYER_NOVEL_COMPOUNDS_SYNTHESIZED = CapabilityManager.get(new CapabilityToken<PlayerNovelCompoundsSynthesized>() {});

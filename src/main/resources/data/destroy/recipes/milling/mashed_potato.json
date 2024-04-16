@@ -1,5 +1,5 @@
 {
-    "type": "create:splashing",
+    "type": "destroy:first_time_lucky_milling",
     "ingredients": [
       {
         "item": "destroy:mashed_potato"

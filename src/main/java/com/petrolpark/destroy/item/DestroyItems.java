@@ -120,6 +120,9 @@ public class DestroyItems {
     PURE_GOLD_INGOT = REGISTRATE.item("pure_gold_ingot", Item::new)
         .tag(DestroyItemTags.DESTROY_INGOTS.tag, Tags.Items.INGOTS, ItemTags.PIGLIN_LOVED, ItemTags.TRIM_MATERIALS)
         .register(),
+    CHROMIUM_NUGGET = REGISTRATE.item("chromium_nugget", Item::new)
+        .tag(Tags.Items.NUGGETS, forgeItemTag("nuggets/chromium"))
+        .register(),
     ZINC_SHEET = REGISTRATE.item("zinc_sheet", Item::new)
         .tag(forgeItemTag("plates/zinc"), forgeItemTag("plates"))
         .register(),
@@ -473,6 +476,9 @@ public class DestroyItems {
         .tab(null)
         .register(),
     UNFINISHED_VOLTAIC_PILE = REGISTRATE.item("unfinished_voltaic_pile", SequencedAssemblyItem::new)
+        .tab(null)
+        .register(),
+    UNFINISHED_UNVARNISHED_PLYWOOD = REGISTRATE.item("unfinished_unvarnished_plywood", SequencedAssemblyItem::new)
         .tab(null)
         .register(),
     UNPROCESSED_CONVERSION_CATALYST = REGISTRATE.item("unprocessed_conversion_catalyst", SequencedAssemblyItem::new)

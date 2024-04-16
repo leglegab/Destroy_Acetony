@@ -26,13 +26,14 @@ import net.minecraftforge.registries.RegistryObject;
 
 public enum DestroyRecipeTypes implements IRecipeTypeInfo {
     AGING(AgingRecipe::new),
-    CHARGING(ChargingRecipe::new),
     CENTRIFUGATION(CentrifugationRecipe::new),
-    DISC_ELECTROPLATING(DiscElectroplatingRecipe::new),
+    CHARGING(ChargingRecipe::new),
     CIRCUIT_DEPLOYING(CircuitDeployerApplicationRecipe::new, AllRecipeTypes.DEPLOYING::getType),
+    DISC_ELECTROPLATING(DiscElectroplatingRecipe::new),
     DISTILLATION(DistillationRecipe::new),
     ELECTROLYSIS(ElectrolysisRecipe::new),
     EXTRUSION(ExtrusionRecipe::new),
+    FIRST_TIME_LUCKY_MILLING(FirstTimeLuckyMillingRecipe::new, AllRecipeTypes.MILLING::getType),
     MIXTURE_CONVERSION(MixtureConversionRecipe::new),
     MUTATION(MutationRecipe::new),
     OBLITERATION(ObliterationRecipe::new),
