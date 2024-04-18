@@ -162,6 +162,7 @@ public class CentrifugeBlockEntity extends KineticBlockEntity implements IDirect
             // Standard recipes
             List<Recipe<?>> possibleRecipes = RecipeFinder.get(centrifugationRecipeKey, getLevel(), r -> r.getType() == DestroyRecipeTypes.CENTRIFUGATION.getType()).stream().filter(r -> {
                 CentrifugationRecipe recipe = (CentrifugationRecipe) r;
+                if (!recipe.isValidAt(getLevel(), getBlockPos())) return false; // Biome-specific recipes
                 if (!recipe.getRequiredFluid().test(inputFluidStack)) return false; // If there is insufficient input Fluid
                 if (!canFitFluidInTank(recipe.getDenseOutputFluid(), getDenseOutputTank()) || !canFitFluidInTank(recipe.getLightOutputFluid(), getLightOutputTank())) return false; // If the outputs can't fit
                 return true;

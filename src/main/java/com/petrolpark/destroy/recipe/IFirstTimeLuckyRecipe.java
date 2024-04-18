@@ -12,7 +12,21 @@ import net.minecraftforge.common.util.LazyOptional;
 
 public interface IFirstTimeLuckyRecipe<T extends ProcessingRecipe<?>> {
     
+    /**
+     * Give a way for {@link IFirstTimeLuckyRecipe} to convert to the proper class for this Recipe.
+     * @return Should almost always be just {@code this}
+     */
     T getAsRecipe();
+
+    /**
+     * Recipe-specific. Should this recipe in particular guarantee chance rewards the first time?
+     */
+    public boolean shouldBeLuckyFirstTime();
+
+    /**
+     * Recipe-specific. This is called by the recipe deserializer when it wants to mark this recipe as giving chance outputs the first time.
+     */
+    public void setLuckyFirstTime(boolean lucky);
 
     public default List<ItemStack> rollLuckyResults(Player player) {
         ProcessingRecipe<?> recipe = getAsRecipe();

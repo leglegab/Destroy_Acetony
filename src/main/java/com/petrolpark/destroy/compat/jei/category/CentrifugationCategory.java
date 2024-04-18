@@ -39,6 +39,8 @@ public class CentrifugationCategory extends DestroyRecipeCategory<Centrifugation
             .addIngredients(ForgeTypes.FLUID_STACK, withImprovedVisibility(inputFluid.getMatchingFluidStacks()))
             .addTooltipCallback(addFluidTooltip(inputFluid.getRequiredAmount()));
 
+        addOptionalRequiredBiomeSlot(builder, recipe, 3, 19);
+
         builder
             .addSlot(RecipeIngredientRole.OUTPUT, 99, 38)
             .setBackground(getRenderedSlot(), -1, -1)

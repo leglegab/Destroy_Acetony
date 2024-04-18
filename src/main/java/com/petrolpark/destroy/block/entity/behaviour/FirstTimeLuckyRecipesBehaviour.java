@@ -1,5 +1,6 @@
 package com.petrolpark.destroy.block.entity.behaviour;
 
+import java.util.List;
 import java.util.function.Predicate;
 
 import com.petrolpark.destroy.capability.player.PlayerLuckyFirstRecipes;
@@ -33,10 +34,12 @@ public class FirstTimeLuckyRecipesBehaviour extends AbstractRememberPlacerBehavi
 
     @Override
     public boolean shouldRememberPlacer(Player placer) {
+        List<Recipe<?>> applicableRecipes = RecipeFinder.get(recipeCacheKey, getWorld(), recipeFilter.and(r -> r instanceof IFirstTimeLuckyRecipe));
+        if (applicableRecipes.isEmpty()) return false; // If there are no recipes which need to be lucky
         LazyOptional<PlayerLuckyFirstRecipes> plfrOp = placer.getCapability(PlayerLuckyFirstRecipes.Provider.PLAYER_LUCKY_FIRST_RECIPES);
         if (!plfrOp.isPresent()) return true;
         PlayerLuckyFirstRecipes plfr = plfrOp.resolve().get();
-        return !RecipeFinder.get(recipeCacheKey, getWorld(), recipeFilter.and(r -> r instanceof IFirstTimeLuckyRecipe)).stream().map(Recipe::getId).allMatch(plfr::contains);
+        return !applicableRecipes.stream().map(Recipe::getId).allMatch(plfr::contains);
     };
 
     @Override

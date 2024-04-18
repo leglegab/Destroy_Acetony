@@ -10,12 +10,20 @@ public class FirstTimeLuckyMillingRecipe extends MillingRecipe implements IFirst
 
     public FirstTimeLuckyMillingRecipe(ProcessingRecipeParams params) {
         super(params);
-    }
+    };
 
     @Override
     public MillingRecipe getAsRecipe() {
         return this;
     };
 
-    
+    @Override
+    public boolean shouldBeLuckyFirstTime() {
+        return true;
+    }
+
+    @Override
+    public void setLuckyFirstTime(boolean lucky) {
+        // Do nothing, this type of recipe is always lucky the first time
+    };
 };

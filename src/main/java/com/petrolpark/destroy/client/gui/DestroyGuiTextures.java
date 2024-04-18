@@ -74,10 +74,19 @@ public enum DestroyGuiTextures implements ScreenElement {
 	// SEISMOGRAPH
 	SEISMOGRAPH_BACKGROUND("seismograph", 0, 0, 64, 64, 64, 64),
 	SEISMOGRAPH_OVERLAY("seismograph_overlay", 0, 0, 64, 64, 64, 64),
-	SEISMOGRAPH_TICK("icons", 0, 64, 16, 16),
-	SEISMOGRAPH_CROSS("icons", 16, 64, 16, 16),
-	SEISMOGRAPH_GUESSED_TICK("icons", 32, 64, 16, 16),
-	SEISMOGRAPH_GUESSED_CROSS("icons", 48, 64, 16, 16),
+	SEISMOGRAPH_TICK("seismograph_symbols", 0, 0, 5, 5, 32, 32),
+	SEISMOGRAPH_CROSS("seismograph_symbols", 5, 0, 5, 5, 32, 32),
+	SEISMOGRAPH_GUESSED_TICK("seismograph_symbols", 10, 0, 5, 5, 32, 32),
+	SEISMOGRAPH_GUESSED_CROSS("seismograph_symbols", 15, 0, 5, 5, 32, 32),
+	SEISMOGRAPH_1("seismograph_symbols", 0, 5, 3, 5, 32, 32),
+	SEISMOGRAPH_2("seismograph_symbols", 3, 5, 3, 5, 32, 32),
+	SEISMOGRAPH_3("seismograph_symbols", 6, 5, 3, 5, 32, 32),
+	SEISMOGRAPH_4("seismograph_symbols", 9, 5, 3, 5, 32, 32),
+	SEISMOGRAPH_5("seismograph_symbols", 12, 5, 3, 5, 32, 32),
+	SEISMOGRAPH_6("seismograph_symbols", 15, 5, 3, 5, 32, 32),
+	SEISMOGRAPH_7("seismograph_symbols", 18, 5, 3, 5, 32, 32),
+	SEISMOGRAPH_8("seismograph_symbols", 21, 5, 3, 5, 32, 32),
+	SEISMOGRAPH_UNKNOWN("seismograph_symbols", 0, 10, 3, 5, 32, 32),
 
     // JEI
 	JEI_POINTING_HAND("jei/widgets", 40, 40, 18, 14),

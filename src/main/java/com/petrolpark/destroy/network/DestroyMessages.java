@@ -11,6 +11,7 @@ import com.petrolpark.destroy.network.packet.CircuitPatternsS2CPacket;
 import com.petrolpark.destroy.network.packet.CryingS2CPacket;
 import com.petrolpark.destroy.network.packet.EvaporatingFluidS2CPacket;
 import com.petrolpark.destroy.network.packet.LevelPollutionS2CPacket;
+import com.petrolpark.destroy.network.packet.MarkSeismographC2SPacket;
 import com.petrolpark.destroy.network.packet.NameKeypunchC2SPacket;
 import com.petrolpark.destroy.network.packet.RedstoneProgramSyncC2SPacket;
 import com.petrolpark.destroy.network.packet.RedstoneProgramSyncReplyS2CPacket;
@@ -64,6 +65,7 @@ public class DestroyMessages {
         addC2SPacket(net, NameKeypunchC2SPacket.class, NameKeypunchC2SPacket::new);
         addC2SPacket(net, ChangeKeypunchPositionC2SPacket.class, ChangeKeypunchPositionC2SPacket::new);
         addC2SPacket(net, VatSideQuantityThresholdChangeC2SPacket.class, VatSideQuantityThresholdChangeC2SPacket::new);
+        addC2SPacket(net, MarkSeismographC2SPacket.class, MarkSeismographC2SPacket::new);
     };
 
     public static <T extends S2CPacket> void addS2CPacket(SimpleChannel net, Class<T> clazz, Function<FriendlyByteBuf, T> decoder) {

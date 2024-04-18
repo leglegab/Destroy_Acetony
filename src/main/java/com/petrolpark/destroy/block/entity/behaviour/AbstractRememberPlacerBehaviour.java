@@ -47,10 +47,15 @@ public abstract class AbstractRememberPlacerBehaviour extends BlockEntityBehavio
 			be = null;
 		};
         if (be == null || !(be instanceof SmartBlockEntity sbe)) return;
-        for (BlockEntityBehaviour behaviour : sbe.getAllBehaviours()) {
+        setPlacedBy(sbe, player);
+	};
+
+    public static void setPlacedBy(SmartBlockEntity be, Player player) {
+        if (player == null) return;
+        for (BlockEntityBehaviour behaviour : be.getAllBehaviours()) {
             if (behaviour instanceof AbstractRememberPlacerBehaviour arpb && arpb.shouldRememberPlacer(player)) arpb.setPlayer(player.getUUID());
         };
-	};
+    };
 
     @Override
     public void read(CompoundTag nbt, boolean clientPacket) {

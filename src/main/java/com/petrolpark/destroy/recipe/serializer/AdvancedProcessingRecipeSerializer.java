@@ -9,6 +9,7 @@ import com.google.gson.JsonSyntaxException;
 import com.petrolpark.destroy.Destroy;
 import com.petrolpark.destroy.MoveToPetrolparkLibrary;
 import com.petrolpark.destroy.recipe.IBiomeSpecificProcessingRecipe;
+import com.petrolpark.destroy.recipe.IFirstTimeLuckyRecipe;
 import com.petrolpark.destroy.recipe.IBiomeSpecificProcessingRecipe.BiomeValue;
 import com.simibubi.create.content.processing.recipe.ProcessingRecipe;
 import com.simibubi.create.content.processing.recipe.ProcessingRecipeBuilder.ProcessingRecipeFactory;
@@ -38,6 +39,11 @@ public class AdvancedProcessingRecipeSerializer<T extends ProcessingRecipe<?>> e
                 json.add("biomes", jsonArray);
             };
         };
+
+        // Lucky first time
+        if (recipe instanceof IFirstTimeLuckyRecipe luckyRecipe) {
+            json.addProperty("lucky_first_time", luckyRecipe.shouldBeLuckyFirstTime());
+        };
     };
 
     @Override
@@ -58,6 +64,24 @@ public class AdvancedProcessingRecipeSerializer<T extends ProcessingRecipe<?>> e
             };
         };
 
+        // Lucky first time
+        if (json.has("lucky_first_time")) {
+            if (recipe instanceof IFirstTimeLuckyRecipe luckyRecipe) {
+                boolean isLucky = false;
+                try {
+                    isLucky = json.get("lucky_first_time").getAsBoolean();
+                } catch(UnsupportedOperationException e) {
+                    throw new JsonSyntaxException("The field 'lucky_first_time' must be a single boolean");
+                } catch(IllegalStateException e) {
+                    throw new JsonSyntaxException("The field 'lucky_first_time' must be a single boolean");
+                } finally {
+                    luckyRecipe.setLuckyFirstTime(isLucky);
+                };
+            } else {
+                Destroy.LOGGER.warn("Recipe "+recipeId+" is marked as first-time-lucky but that is not supported by this recipe type.");
+            };
+        };
+
         return recipe;
     };
 
@@ -70,6 +94,11 @@ public class AdvancedProcessingRecipeSerializer<T extends ProcessingRecipe<?>> e
             Set<BiomeValue> biomes = biomeRecipe.getAllowedBiomes();
             buffer.writeVarInt(biomes.size());
             biomes.forEach(biome -> buffer.writeUtf(biome.serialize()));
+        };
+
+        // Lucky first time
+        if (recipe instanceof IFirstTimeLuckyRecipe luckyRecipe) {
+            buffer.writeBoolean(luckyRecipe.shouldBeLuckyFirstTime());
         };
     };
 
@@ -85,6 +114,11 @@ public class AdvancedProcessingRecipeSerializer<T extends ProcessingRecipe<?>> e
                 biomes.add(IBiomeSpecificProcessingRecipe.valueFromString(buffer.readUtf()));
             };
             biomeRecipe.setAllowedBiomes(biomes);
+        };
+
+        // Lucky first time
+        if (recipe instanceof IFirstTimeLuckyRecipe luckyRecipe) {
+            luckyRecipe.setLuckyFirstTime(buffer.readBoolean());
         };
 
         return recipe;

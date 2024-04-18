@@ -40,7 +40,7 @@ public class ChunkCrudeOil {
         // Generate the noise value for this Chunk
         double value = (PerlinNoise.create(random, -2, 1d).getValue(chunkX * 1.5d, chunkZ * 1.5d, 0));
         // Don't generate any oil if the value is less than a threshold
-        return value < 0.25d ? 0 : (int)(value * 100000d);
+        return value < 0.3d ? 0 : (int)(value * 100000d);
     };
 
     /**
@@ -69,7 +69,7 @@ public class ChunkCrudeOil {
         return signal;
     };
 
-    private static boolean debug = true;
+    private static boolean debug = false;
 
     /**
      * Get the 'signals' in a line (the "long axis") which are used for the seismograph nonogram.
@@ -98,8 +98,8 @@ public class ChunkCrudeOil {
         for (int length = 1; length <= 8; length++) {
             boolean oilInSurroundings = false; // Start by assuming we have red herrings on all eight sides
             boolean surroundedByHerrings = true; // Whether we have oil or an adjacent one does
-            checkAllSides: for (int lengthOffset = -1; lengthOffset <= 1; lengthOffset++) {
-                for (int widthOffset = -1; widthOffset <= 1; widthOffset++) {
+            for (int lengthOffset = -1; lengthOffset <= 1; lengthOffset++) {
+                checkAllSides: for (int widthOffset = -1; widthOffset <= 1; widthOffset++) {
                     if (lengthOffset != 0 && widthOffset != 0) continue checkAllSides; // Don't check corners
                     if (oil[length + lengthOffset][1 + widthOffset]) oilInSurroundings = true;
                     if (!redHerring[length + lengthOffset][1 + widthOffset] && lengthOffset != 0 && widthOffset != 0) surroundedByHerrings = false; // If there's anything which isn't a red herring to our side (not including ourselves)
@@ -112,8 +112,9 @@ public class ChunkCrudeOil {
              * If we are surrounded on four sides by red herrings, we don't want to show this too as that would lead to a false positive (plusses indicate oil).
              * Otherwise, if we are a red herring, show that.
              */
-            if (oilInSurroundings || (!surroundedByHerrings && redHerring[length][1]))
-                signals |= 1 << length - 1;
+            if (oilInSurroundings || (!surroundedByHerrings && redHerring[length][1])) {
+                signals |= 1 << (length - 1);
+            };
             
         };
         if (debug) {
@@ -121,7 +122,7 @@ public class ChunkCrudeOil {
             for (int i = 0; i <= 2; i++) {
                 String string = "";
                 for (boolean[] slice : oil) {
-                    string += slice[i] ? "O" : " ";
+                    string += slice[i] ? "O" : "_";
                 };
                 Destroy.LOGGER.info((xNotZ ? " X " : " Z ") + string);
             };
@@ -129,11 +130,13 @@ public class ChunkCrudeOil {
             for (int i = 0; i <= 2; i++) {
                 String string = "";
                 for (boolean[] slice : redHerring) {
-                    string += slice[i] ? "O" : " ";
+                    string += slice[i] ? "O" : "_";
                 };
                 Destroy.LOGGER.info((xNotZ ? " X " : " Z ") + string);
             };
-            Destroy.LOGGER.info((xNotZ ? " X " : " Z ") + "signals: "+signals);
+            String string = Integer.toBinaryString(signals);
+            string = string.substring(Math.max(0, string.length() - 8));
+            Destroy.LOGGER.info((xNotZ ? " X " : " Z ") + "signals: "+string);
         };
         return signals;
     };

@@ -8,7 +8,9 @@ public class SeismographTest {
     
     public static void main(String[] args) {
         Seismograph seismograph = new Seismograph();
-        seismograph.getRows()[0] = 0b1101;
+        byte sequence = 0;
+        System.out.println(sequence);
+        seismograph.getRows()[0] = sequence;
         System.out.println(Arrays.toString(seismograph.getRowDisplayed(0)));
     };
 };

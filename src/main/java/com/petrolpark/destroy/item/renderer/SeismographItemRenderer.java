@@ -1,9 +1,11 @@
 package com.petrolpark.destroy.item.renderer;
 
 import com.jozufozu.flywheel.util.AnimationTickHolder;
+import com.jozufozu.flywheel.util.transform.TransformStack;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
 import com.petrolpark.destroy.client.gui.DestroyGuiTextures;
+import com.petrolpark.destroy.client.gui.screen.SeismographScreen;
 import com.petrolpark.destroy.item.SeismographItem;
 import com.petrolpark.destroy.item.SeismographItem.Seismograph;
 import com.petrolpark.destroy.item.SeismographItem.Seismograph.Mark;
@@ -12,7 +14,6 @@ import com.simibubi.create.foundation.item.render.CustomRenderedItemModelRendere
 import com.simibubi.create.foundation.item.render.PartialItemModelRenderer;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.Font;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.client.renderer.ItemInHandRenderer;
 import net.minecraft.client.renderer.MultiBufferSource;
@@ -43,6 +44,8 @@ public class SeismographItemRenderer extends CustomRenderedItemModelRenderer {
         float partialTicks = AnimationTickHolder.getPartialTicks();
 
         if (transformType == ItemDisplayContext.FIRST_PERSON_LEFT_HAND || transformType == ItemDisplayContext.FIRST_PERSON_RIGHT_HAND) {
+            if (mc.screen instanceof SeismographScreen) return; // Don't render if it's already open in GUI form
+            
             // Logic replicated from ItemInHandRenderer
             InteractionHand swingingHand = player.swingingArm;
             HumanoidArm arm = transformType == ItemDisplayContext.FIRST_PERSON_LEFT_HAND ? HumanoidArm.LEFT : HumanoidArm.RIGHT;
@@ -68,6 +71,9 @@ public class SeismographItemRenderer extends CustomRenderedItemModelRenderer {
      * Largely copied from the {@link net.minecraft.client.renderer.ItemInHandRenderer#renderOneHandedMap Minecraft source code}.
      */
     public static void renderOneHandedSeismograph(PoseStack ms, MultiBufferSource buffer, int light, float equippedProgress, HumanoidArm hand, float swingProgress, ItemStack stack, Minecraft mc, ItemInHandRenderer itemRenderer) {
+        
+        // Copied from vanilla - hand
+        ms.pushPose();
         float handRotation = hand == HumanoidArm.RIGHT ? 1f : -1f;
         ms.translate(handRotation * 0.125f, -0.125f, 0f);
         if (!mc.player.isInvisible()) {
@@ -76,120 +82,107 @@ public class SeismographItemRenderer extends CustomRenderedItemModelRenderer {
             itemRenderer.renderPlayerArm(ms, buffer, light, equippedProgress, swingProgress, hand);
             ms.popPose();
         };
-        ms.pushPose();
+
+        // Copied from vanilla - transformation for map
         ms.translate(handRotation * 0.51f, -0.08f + equippedProgress * -1.2f, -0.75f);
         float sqrtSwing = Mth.sqrt(swingProgress);
         float swingAngle = Mth.sin(sqrtSwing * (float)Math.PI);
         ms.translate(handRotation * -0.5f * swingAngle, 0.4f * Mth.sin(sqrtSwing * ((float)Math.PI * 2f)) - 0.3f * swingAngle, -0.3f * Mth.sin(swingProgress * (float)Math.PI));
         ms.mulPose(Axis.XP.rotationDegrees(swingAngle * -45f));
         ms.mulPose(Axis.YP.rotationDegrees(sqrtSwing * swingAngle * -30f));
-        renderSeismograph(ms, buffer, light, stack, mc);
-        ms.popPose();
-    };
-
-    /**
-     * Largely copied from the {@link net.minecraft.client.renderer.ItemInHandRenderer#renderMap Minecraft source code}.
-     */
-    public static void renderSeismograph(PoseStack ms, MultiBufferSource buffer, int light, ItemStack stack, Minecraft mc) {
         ms.mulPose(Axis.YP.rotationDegrees(180f));
         ms.mulPose(Axis.ZP.rotationDegrees(180f));
         ms.scale(0.38f, 0.38f, 0.38f);
         ms.translate(-0.5f, -0.5f, 0f);
-        ms.scale(1 / 128f, 1 / 128f, 1 / 128f);
 
+        // Scale to the size of the vanilla map
+        ms.scale(1 / 128f, 1 / 128f, 1 / 128f);
+        ms.translate(-7f, -7f, 0f);
+        ms.scale(142 / 64f, 142 / 64f, 1f);
+
+        // Get relevant data
         Integer mapId = SeismographItem.getMapId(stack);
         MapItemSavedData mapData = SeismographItem.getSavedData(mapId, mc.level);
         Seismograph seismograph = SeismographItem.readSeismograph(stack);
 
-        // Scale to the size of the vanilla map
-        ms.translate(-7f, -7f, 0f);
-        ms.scale(142 / 64f, 142 / 64f, 1f);
-        ms.pushPose(); {
+        // Render as normal
+        renderSeismograph(ms, buffer, light, mapId, mapData, seismograph, mc);
 
-            // Background
-            DestroyGuiTextures.SEISMOGRAPH_BACKGROUND.render(ms, 0f, 0f);
-
-            // Map colors
-            ms.pushPose();
-            ms.translate(13f, 13f, 0f);
-            ms.scale(47 / 128f, 47 / 128f, 1f);
-            if (mapData != null) mc.gameRenderer.getMapRenderer().render(ms, buffer, mapId, mapData, false, light);
-            ms.popPose();
-        
-            // Marks
-            ms.pushPose();
-            ms.translate(13f, 13f, -0.02f);
-            ms.scale(5 / 16f, 5 / 16f, 1f);
-            for (int x = 0; x < 8; x++) {
-                for (int z = 0; z < 8; z++) {
-                    Mark mark = seismograph.getMark(x, z);
-                    if (mark != Mark.NONE) mark.icon.render(ms, x * 19.2f, z * 19.2f);
-                };
-            };
-            ms.popPose();
-
-            // Numbers
-            ms.pushPose();;
-            ms.translate(9f, 14f, -0.03f);
-            ms.scale(0.5f, 0.5f, 1f);
-            for (int z = 0; z < 8; z++) {
-                ms.pushPose();
-                ms.translate(0f, z * 12f, 0f);
-                if (seismograph.isRowDiscovered(z)) {
-                    int[] numbers = seismograph.getRowDisplayed(z);
-                    //drawString(mc.font, Integer.toBinaryString(seismograph.getRows()[z]), ms, buffer, 0f, 0f, 0);
-                    if (numbers[0] == 0) {
-                        drawString(mc.font, "0", ms, buffer, 0f, 0f, 0x484263);
-                    } else {
-                        int i = 0;
-                        for (int number : numbers) {
-                            if (number != 0) {
-                                drawString(mc.font, ""+number, ms, buffer, -5f * i, 0f, 0x484263);
-                                i++;
-                            };
-                        };
-                    };
-                } else {
-                    drawString(mc.font, "?", ms, buffer, 0f, 0f, 0x484263);
-                };
-                ms.popPose();
-            };
-            ms.popPose();
-
-            // Columns
-            ms.pushPose();;
-            ms.translate(14f, 8f, -0.03f);
-            ms.scale(0.5f, 0.5f, 1f);
-            for (int x = 0; x < 8; x++) {
-                ms.pushPose();
-                ms.translate(x * 12f, 0f, 0f);
-                if (seismograph.isColumnDiscovered(x)) {
-                    int[] numbers = seismograph.getColumnDisplayed(x);
-                    if (numbers[0] == 0) {
-                        drawString(mc.font, "0", ms, buffer, 0f, 0f, 0x484263);
-                    } else {
-                        int i = 0;
-                        for (int number : numbers) {
-                            if (number != 0) {
-                                drawString(mc.font, ""+number, ms, buffer, 0f, -5f * i, 0x484263);
-                                i++;
-                            };
-                        };
-                    };
-                } else {
-                    drawString(mc.font, "?", ms, buffer, 0f, 0f, 0x484263);
-                };
-                ms.popPose();
-            };
-            ms.popPose();
-
-            // Overlay
-            DestroyGuiTextures.SEISMOGRAPH_OVERLAY.render(ms, 0f, 0f);
-        } ms.popPose();
+        ms.popPose();
     };
 
-    public static void drawString(Font font, String text, PoseStack ms, MultiBufferSource bufferSource, float x, float y, int color) {
-        font.drawInBatch(text, x, y, color, false, ms.last().pose(), bufferSource, Font.DisplayMode.NORMAL, 0, 15728880, font.isBidirectional());
-    };
+    public static final DestroyGuiTextures[] numberSymbols = new DestroyGuiTextures[]{DestroyGuiTextures.SEISMOGRAPH_1, DestroyGuiTextures.SEISMOGRAPH_1, DestroyGuiTextures.SEISMOGRAPH_2, DestroyGuiTextures.SEISMOGRAPH_3, DestroyGuiTextures.SEISMOGRAPH_4, DestroyGuiTextures.SEISMOGRAPH_5, DestroyGuiTextures.SEISMOGRAPH_6, DestroyGuiTextures.SEISMOGRAPH_7, DestroyGuiTextures.SEISMOGRAPH_8};
+
+    public static void renderSeismograph(PoseStack ms, MultiBufferSource buffer, int light, Integer mapId, MapItemSavedData mapData, Seismograph seismograph, Minecraft mc) {
+        ms.pushPose(); 
+
+        // Background
+        DestroyGuiTextures.SEISMOGRAPH_BACKGROUND.render(ms, 0f, 0f);
+
+        // Map colors
+        ms.pushPose();
+        ms.translate(13f, 13f, 0f);
+        ms.scale(47 / 128f, 47 / 128f, 1f);
+        if (mapData != null) mc.gameRenderer.getMapRenderer().render(ms, buffer, mapId, mapData, false, light);
+        ms.popPose();
     
+        // Marks
+        ms.pushPose();
+        ms.translate(13f, 13f, -0.02f);
+        for (int x = 0; x < 8; x++) {
+            for (int z = 0; z < 8; z++) {
+                Mark mark = seismograph.getMark(x, z);
+                if (mark != Mark.NONE) mark.icon.render(ms, x * 6f, z * 6f);
+            };
+        };
+        ms.popPose();
+
+        // Rows
+        ms.pushPose();;
+        ms.translate(8f, 13f, -0.03f);
+        for (int z = 0; z < 8; z++) {
+            ms.pushPose();
+            ms.translate(0f, z * 6f, 0f);
+            if (seismograph.isRowDiscovered(z)) {
+                int[] numbers = seismograph.getRowDisplayed(z);
+                for (int i = numbers.length - 1; i >= 0; i--) {
+                    if (numbers[i] != 0) {
+                        numberSymbols[numbers[i]].render(ms, 0f, 0f);
+                        ms.translate((numbers[i] <= 2) ? -2f : -3f, 0f, 0f);
+                    };
+                };
+            } else {
+                DestroyGuiTextures.SEISMOGRAPH_UNKNOWN.render(ms, 0f, 0f);
+            };
+            ms.popPose();
+        };
+        ms.popPose();
+
+        // Columns
+        ms.pushPose();;
+        ms.translate(18f, 8f, -0.03f);
+        TransformStack.cast(ms)
+            .rotateZ(90d);
+        for (int x = 0; x < 8; x++) {
+            ms.pushPose();
+            ms.translate(0f, x * -6f, 0f);
+            if (seismograph.isColumnDiscovered(x)) {
+                int[] numbers = seismograph.getColumnDisplayed(x);
+                for (int i = numbers.length - 1; i >= 0; i--) {
+                    if (numbers[i] != 0) {
+                        numberSymbols[numbers[i]].render(ms, 0f, 0f);
+                        ms.translate((numbers[i] <= 2) ? -2f : -3f, 0f, 0f);
+                    };
+                };
+            } else {
+                DestroyGuiTextures.SEISMOGRAPH_UNKNOWN.render(ms, 0f, 0f);
+            };
+            ms.popPose();
+        };
+        ms.popPose();
+
+        // Overlay
+        DestroyGuiTextures.SEISMOGRAPH_OVERLAY.render(ms, 0f, 0f);
+        ms.popPose();
+    };
 };

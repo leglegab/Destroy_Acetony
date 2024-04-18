@@ -7,12 +7,17 @@ import javax.annotation.Nullable;
 
 import com.petrolpark.destroy.advancement.DestroyAdvancementTrigger;
 import com.petrolpark.destroy.client.gui.DestroyGuiTextures;
+import com.petrolpark.destroy.client.gui.screen.SeismographScreen;
 import com.petrolpark.destroy.item.renderer.SeismographItemRenderer;
+import com.simibubi.create.foundation.gui.ScreenOpener;
 import com.simibubi.create.foundation.item.render.SimpleCustomRenderer;
 import com.simibubi.create.foundation.utility.Iterate;
 
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.Mth;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.MapItem;
@@ -20,12 +25,25 @@ import net.minecraft.world.level.Level;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.extensions.common.IClientItemExtensions;
+import net.minecraftforge.fml.DistExecutor;
 
 public class SeismographItem extends MapItem {
 
     public SeismographItem(Properties properties) {
         super(properties);
     };
+
+    @Override
+    public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand usedHand) {
+        ItemStack stack = player.getItemInHand(usedHand);
+        DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> openScreen(stack, usedHand));
+        return new InteractionResultHolder<>(InteractionResult.SUCCESS, player.getItemInHand(usedHand));
+    };
+
+	@OnlyIn(value = Dist.CLIENT)
+	protected void openScreen(ItemStack item, InteractionHand hand) {
+		ScreenOpener.open(new SeismographScreen(item, hand));
+	};
 
     public static Seismograph readSeismograph(ItemStack stack) {
         Seismograph seismograph = new Seismograph();
@@ -112,15 +130,13 @@ public class SeismographItem extends MapItem {
             int[] numbers = new int[4];
             int numbersAdded = 0;
             int count = 0;
-            for (int i = 0; i < 8; i++) {
-                if (((array[index]) & (1 << i)) != 0) { // If there is something here
+            for (int i = 0; i <= 8; i++) { // Iterate one more time than needed so the last count gets added on
+                if (i != 8 && (array[index] & (1 << i)) != 0) { // If there is something here
                     count++;
-                } else {
-                    if (count != 0) {
-                        numbers[numbersAdded] = count;
-                        numbersAdded++;
-                        count = 0;
-                    };
+                } else if (count > 0) {
+                    numbers[numbersAdded] = count;
+                    numbersAdded++;
+                    count = 0;
                 };
             };
             return numbers;
@@ -169,8 +185,8 @@ public class SeismographItem extends MapItem {
          * @return {@code true} if all columns and rows have been discovered, whether or not the player already has the advancement
          */
         private boolean triggerFillSeismographAdvancement(Level level, Player player) {
-            if (rowsDiscovered == 0b11111111 && columnsDiscovered == 0b11111111) {
-                DestroyAdvancementTrigger.FILL_SEISMOGRAPH.award(level, player);
+            if (rowsDiscovered == -1 && columnsDiscovered == -1) {
+                if (level != null && player != null) DestroyAdvancementTrigger.FILL_SEISMOGRAPH.award(level, player);
                 return true;
             };
             return false;
@@ -192,7 +208,7 @@ public class SeismographItem extends MapItem {
                         };
                     };
                 };
-                DestroyAdvancementTrigger.COMPLETE_SEISMOGRAPH.award(level, player);
+                if (level != null && player != null) DestroyAdvancementTrigger.COMPLETE_SEISMOGRAPH.award(level, player);
             };
         };
 
