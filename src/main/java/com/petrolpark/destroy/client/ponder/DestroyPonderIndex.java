@@ -6,6 +6,7 @@ import com.petrolpark.destroy.Destroy;
 import com.petrolpark.destroy.block.DestroyBlocks;
 import com.petrolpark.destroy.block.PeriodicTableBlock;
 import com.petrolpark.destroy.client.ponder.scene.DestroyScenes;
+import com.petrolpark.destroy.client.ponder.scene.OilScenes;
 import com.petrolpark.destroy.client.ponder.scene.TrypolithographyScenes;
 import com.petrolpark.destroy.item.DestroyItems;
 import com.simibubi.create.AllBlocks;
@@ -104,10 +105,22 @@ public class DestroyPonderIndex {
 
         // Pumpjack
         HELPER.forComponents(DestroyBlocks.PUMPJACK)
-            .addStoryBoard("pumpjack", DestroyScenes::pumpjack);
+            .addStoryBoard("oil/seismometer", OilScenes::seismometer)
+            .addStoryBoard("oil/pumpjack", OilScenes::pumpjack);
 
+        // Redstone Programmer
         HELPER.forComponents(DestroyBlocks.REDSTONE_PROGRAMMER)
             .addStoryBoard("redstone_programmer", DestroyScenes::redstoneProgrammer);
+
+        // Seismograph
+        HELPER.forComponents(DestroyItems.SEISMOGRAPH)
+            .addStoryBoard("oil/seismometer", OilScenes::seismometer)
+            .addStoryBoard("oil/seismograph", OilScenes::seismograph);
+
+        // Seismometer
+        HELPER.forComponents(DestroyItems.SEISMOMETER)
+            .addStoryBoard("oil/seismometer", OilScenes::seismometer)
+            .addStoryBoard("oil/seismograph", OilScenes::seismograph);
 
         // Tree Tap
         HELPER.forComponents(DestroyBlocks.TREE_TAP)

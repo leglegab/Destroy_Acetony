@@ -17,6 +17,7 @@ import com.petrolpark.destroy.block.DestroyBlocks;
 import com.petrolpark.destroy.chemistry.Molecule;
 import com.petrolpark.destroy.client.gui.screen.RedstoneProgrammerScreen;
 import com.petrolpark.destroy.compat.jei.category.AgingCategory;
+import com.petrolpark.destroy.compat.jei.category.CartographyTableCategory;
 import com.petrolpark.destroy.compat.jei.category.CentrifugationCategory;
 import com.petrolpark.destroy.compat.jei.category.ChargingCategory;
 import com.petrolpark.destroy.compat.jei.category.DestroyRecipeCategory;
@@ -31,6 +32,7 @@ import com.petrolpark.destroy.compat.jei.category.MutationCategory;
 import com.petrolpark.destroy.compat.jei.category.ObliterationCategory;
 import com.petrolpark.destroy.compat.jei.category.ReactionCategory;
 import com.petrolpark.destroy.compat.jei.category.TappingCategory;
+import com.petrolpark.destroy.compat.jei.category.CartographyTableCategory.CartographyTableRecipe;
 import com.petrolpark.destroy.compat.tfmg.SharedDistillationRecipes;
 import com.petrolpark.destroy.effect.potion.PotionSeparationRecipes;
 import com.petrolpark.destroy.fluid.DestroyFluids;
@@ -241,7 +243,14 @@ public class DestroyJEI implements IModPlugin {
             .reactionCatalysts()
             .itemIcon(DestroyBlocks.VAT_CONTROLLER.get())
             .emptyBackground(125, 20)
-            .build("mixture_conversion", MixtureConversionCategory::new);
+            .build("mixture_conversion", MixtureConversionCategory::new),
+
+        cartography_table = builder(CartographyTableRecipe.class)
+            .addRecipes(CartographyTableCategory::getAllRecipes)
+            .catalyst(() -> Items.CARTOGRAPHY_TABLE)
+            .itemIcon(Items.CARTOGRAPHY_TABLE)
+            .emptyBackground(125, 20)
+            .build("cartography_table", CartographyTableCategory::new);
 
         DestroyJEI.MOLECULE_RECIPES_NEED_PROCESSING = false;
     };

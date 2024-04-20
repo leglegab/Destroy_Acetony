@@ -106,24 +106,29 @@ public class SeismographItemRenderer extends CustomRenderedItemModelRenderer {
         Seismograph seismograph = SeismographItem.readSeismograph(stack);
 
         // Render as normal
-        renderSeismograph(ms, buffer, light, mapId, mapData, seismograph, mc);
+        renderSeismograph(ms, buffer, light, mapId, mapData, seismograph, mc, (t, x, y) -> t.render(ms, x, y));
 
         ms.popPose();
     };
 
     public static final DestroyGuiTextures[] numberSymbols = new DestroyGuiTextures[]{DestroyGuiTextures.SEISMOGRAPH_1, DestroyGuiTextures.SEISMOGRAPH_1, DestroyGuiTextures.SEISMOGRAPH_2, DestroyGuiTextures.SEISMOGRAPH_3, DestroyGuiTextures.SEISMOGRAPH_4, DestroyGuiTextures.SEISMOGRAPH_5, DestroyGuiTextures.SEISMOGRAPH_6, DestroyGuiTextures.SEISMOGRAPH_7, DestroyGuiTextures.SEISMOGRAPH_8};
 
-    public static void renderSeismograph(PoseStack ms, MultiBufferSource buffer, int light, Integer mapId, MapItemSavedData mapData, Seismograph seismograph, Minecraft mc) {
+    @FunctionalInterface
+    public static interface SeismographGuiTextureRenderer {
+        public void render(DestroyGuiTextures texture, float x, float y);
+    };
+    
+    public static void renderSeismograph(PoseStack ms, MultiBufferSource buffer, int light, Integer mapId, MapItemSavedData mapData, Seismograph seismograph, Minecraft mc, SeismographGuiTextureRenderer renderer) {
         ms.pushPose(); 
 
         // Background
-        DestroyGuiTextures.SEISMOGRAPH_BACKGROUND.render(ms, 0f, 0f);
+        renderer.render(DestroyGuiTextures.SEISMOGRAPH_BACKGROUND, 0f, 0f);
 
         // Map colors
         ms.pushPose();
         ms.translate(13f, 13f, 0f);
         ms.scale(47 / 128f, 47 / 128f, 1f);
-        if (mapData != null) mc.gameRenderer.getMapRenderer().render(ms, buffer, mapId, mapData, false, light);
+        if (mapId != null && mapData != null) mc.gameRenderer.getMapRenderer().render(ms, buffer, mapId, mapData, false, light);
         ms.popPose();
     
         // Marks
@@ -132,7 +137,7 @@ public class SeismographItemRenderer extends CustomRenderedItemModelRenderer {
         for (int x = 0; x < 8; x++) {
             for (int z = 0; z < 8; z++) {
                 Mark mark = seismograph.getMark(x, z);
-                if (mark != Mark.NONE) mark.icon.render(ms, x * 6f, z * 6f);
+                if (mark != Mark.NONE) renderer.render(mark.icon, x * 6f, z * 6f);
             };
         };
         ms.popPose();
@@ -147,12 +152,12 @@ public class SeismographItemRenderer extends CustomRenderedItemModelRenderer {
                 int[] numbers = seismograph.getRowDisplayed(z);
                 for (int i = numbers.length - 1; i >= 0; i--) {
                     if (numbers[i] != 0) {
-                        numberSymbols[numbers[i]].render(ms, 0f, 0f);
+                        renderer.render(numberSymbols[numbers[i]], 0f, 0f);
                         ms.translate((numbers[i] <= 2) ? -2f : -3f, 0f, 0f);
                     };
                 };
             } else {
-                DestroyGuiTextures.SEISMOGRAPH_UNKNOWN.render(ms, 0f, 0f);
+                renderer.render(DestroyGuiTextures.SEISMOGRAPH_UNKNOWN, 0f, 0f);
             };
             ms.popPose();
         };
@@ -170,19 +175,20 @@ public class SeismographItemRenderer extends CustomRenderedItemModelRenderer {
                 int[] numbers = seismograph.getColumnDisplayed(x);
                 for (int i = numbers.length - 1; i >= 0; i--) {
                     if (numbers[i] != 0) {
-                        numberSymbols[numbers[i]].render(ms, 0f, 0f);
+                        renderer.render(numberSymbols[numbers[i]], 0f, 0f);
                         ms.translate((numbers[i] <= 2) ? -2f : -3f, 0f, 0f);
                     };
                 };
             } else {
-                DestroyGuiTextures.SEISMOGRAPH_UNKNOWN.render(ms, 0f, 0f);
+                renderer.render(DestroyGuiTextures.SEISMOGRAPH_UNKNOWN, 0f, 0f);
             };
             ms.popPose();
         };
         ms.popPose();
 
         // Overlay
-        DestroyGuiTextures.SEISMOGRAPH_OVERLAY.render(ms, 0f, 0f);
+        renderer.render(DestroyGuiTextures.SEISMOGRAPH_OVERLAY, 0f, 0f);
         ms.popPose();
     };
+
 };

@@ -74,19 +74,23 @@ public enum DestroyGuiTextures implements ScreenElement {
 	// SEISMOGRAPH
 	SEISMOGRAPH_BACKGROUND("seismograph", 0, 0, 64, 64, 64, 64),
 	SEISMOGRAPH_OVERLAY("seismograph_overlay", 0, 0, 64, 64, 64, 64),
-	SEISMOGRAPH_TICK("seismograph_symbols", 0, 0, 5, 5, 32, 32),
-	SEISMOGRAPH_CROSS("seismograph_symbols", 5, 0, 5, 5, 32, 32),
-	SEISMOGRAPH_GUESSED_TICK("seismograph_symbols", 10, 0, 5, 5, 32, 32),
-	SEISMOGRAPH_GUESSED_CROSS("seismograph_symbols", 15, 0, 5, 5, 32, 32),
-	SEISMOGRAPH_1("seismograph_symbols", 0, 5, 3, 5, 32, 32),
-	SEISMOGRAPH_2("seismograph_symbols", 3, 5, 3, 5, 32, 32),
-	SEISMOGRAPH_3("seismograph_symbols", 6, 5, 3, 5, 32, 32),
-	SEISMOGRAPH_4("seismograph_symbols", 9, 5, 3, 5, 32, 32),
-	SEISMOGRAPH_5("seismograph_symbols", 12, 5, 3, 5, 32, 32),
-	SEISMOGRAPH_6("seismograph_symbols", 15, 5, 3, 5, 32, 32),
-	SEISMOGRAPH_7("seismograph_symbols", 18, 5, 3, 5, 32, 32),
-	SEISMOGRAPH_8("seismograph_symbols", 21, 5, 3, 5, 32, 32),
-	SEISMOGRAPH_UNKNOWN("seismograph_symbols", 0, 10, 3, 5, 32, 32),
+	SEISMOGRAPH_TICK("seismograph_symbols", 0, 0, 5, 5, 64, 64),
+	SEISMOGRAPH_CROSS("seismograph_symbols", 5, 0, 5, 5, 64, 64),
+	SEISMOGRAPH_GUESSED_TICK("seismograph_symbols", 10, 0, 5, 5, 64, 64),
+	SEISMOGRAPH_GUESSED_CROSS("seismograph_symbols", 15, 0, 5, 5, 64, 64),
+	SEISMOGRAPH_1("seismograph_symbols", 0, 5, 3, 5, 64, 64),
+	SEISMOGRAPH_2("seismograph_symbols", 3, 5, 3, 5, 64, 64),
+	SEISMOGRAPH_3("seismograph_symbols", 6, 5, 3, 5, 64, 64),
+	SEISMOGRAPH_4("seismograph_symbols", 9, 5, 3, 5, 64, 64),
+	SEISMOGRAPH_5("seismograph_symbols", 12, 5, 3, 5, 64, 64),
+	SEISMOGRAPH_6("seismograph_symbols", 15, 5, 3, 5, 64, 64),
+	SEISMOGRAPH_7("seismograph_symbols", 18, 5, 3, 5, 64, 64),
+	SEISMOGRAPH_8("seismograph_symbols", 21, 5, 3, 5, 64, 64),
+	SEISMOGRAPH_UNKNOWN("seismograph_symbols", 0, 10, 3, 5, 64, 64),
+	SEISMOGRAPH_HIGHLIGHT_ROW("seismograph_symbols", 0, 57, 57, 7, 64, 64),
+	SEISMOGRAPH_HIGHLIGHT_COLUMMN("seismograph_symbols", 57, 0, 7, 57, 64, 64),
+	SEISMOGRAPH_HIGHLIGHT_CROSS("seismograph_symbols", 0, 38, 19, 19, 64, 64),
+	SEISMOGRAPH_HIGHLIGHT_CELL("seismograph_symbols", 0, 31, 7, 7, 64, 64),
 
     // JEI
 	JEI_POINTING_HAND("jei/widgets", 40, 40, 18, 14),
@@ -145,13 +149,13 @@ public enum DestroyGuiTextures implements ScreenElement {
 
 	@OnlyIn(Dist.CLIENT)
 	public void render(GuiGraphics graphics, int x, int y) {
-		graphics.blit(location, x, y, startX, startY, width, height);
+		graphics.blit(location, x, y, startX, startY, width, height, textureWidth, textureHeight);
 	};
 
 	@OnlyIn(Dist.CLIENT)
 	public void render(GuiGraphics graphics, int x, int y, Color c) {
 		bind();
-		UIRenderHelper.drawColoredTexture(graphics, c, x, y, startX, startY, width, height);
+		UIRenderHelper.drawColoredTexture(graphics, c, x, y, 1, startX, startY, width, height, textureWidth, textureHeight);
 	};
 
 	@OnlyIn(Dist.CLIENT)

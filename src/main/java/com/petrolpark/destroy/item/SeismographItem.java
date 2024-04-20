@@ -87,6 +87,14 @@ public class SeismographItem extends MapItem {
             marks = new byte[64];
         };
 
+        public void clear() {
+            rowsDiscovered = 0;
+            columnsDiscovered = 0;
+            rows = new byte[8];
+            columns = new byte[8];
+            marks = new byte[64];
+        };
+
         public byte[] getRows() {
             return rows;
         };

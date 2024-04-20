@@ -80,7 +80,7 @@ public class SeismographScreen extends AbstractSimiScreen {
         ms.pushPose();
         ms.translate(guiLeft, guiTop, 0f);
         ms.scale(3f, 3f, 3f);
-        SeismographItemRenderer.renderSeismograph(ms, graphics.bufferSource(), 0xFFFFFF, mapId, mapData, seismograph, mc);
+        SeismographItemRenderer.renderSeismograph(ms, graphics.bufferSource(), 0xFFFFFF, mapId, mapData, seismograph, mc, (t, x, y) -> t.render(ms, x, y));
         ms.popPose();
     };
     

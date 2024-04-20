@@ -55,6 +55,7 @@ public class DestroyPonderTags {
             .add(DestroyBlocks.PUMPJACK)
             .add(DestroyBlocks.REDSTONE_PROGRAMMER)
             .add(DestroyItems.SEISMOMETER)
+            .add(DestroyItems.SEISMOGRAPH)
             .add(DestroyBlocks.TREE_TAP)
             .add(DestroyBlocks.VAT_CONTROLLER)
         ;

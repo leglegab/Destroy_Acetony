@@ -16,7 +16,6 @@ import com.petrolpark.destroy.block.entity.AgingBarrelBlockEntity;
 import com.petrolpark.destroy.block.entity.BubbleCapBlockEntity;
 import com.petrolpark.destroy.block.entity.CentrifugeBlockEntity;
 import com.petrolpark.destroy.block.entity.DynamoBlockEntity;
-import com.petrolpark.destroy.block.entity.PumpjackBlockEntity;
 import com.petrolpark.destroy.block.entity.TreeTapBlockEntity;
 import com.petrolpark.destroy.block.entity.VatSideBlockEntity;
 import com.petrolpark.destroy.block.entity.VatSideBlockEntity.DisplayType;
@@ -27,7 +26,6 @@ import com.petrolpark.destroy.chemistry.index.DestroyMolecules;
 import com.petrolpark.destroy.client.particle.DestroyParticleTypes;
 import com.petrolpark.destroy.client.particle.data.GasParticleData;
 import com.petrolpark.destroy.client.ponder.DestroyPonderTags;
-import com.petrolpark.destroy.client.ponder.PonderPlayer;
 import com.petrolpark.destroy.client.ponder.instruction.HighlightTagInstruction;
 import com.petrolpark.destroy.fluid.DestroyFluids;
 import com.petrolpark.destroy.fluid.MixtureFluid;
@@ -56,17 +54,13 @@ import com.simibubi.create.foundation.ponder.instruction.EmitParticlesInstructio
 import com.simibubi.create.foundation.utility.Pointing;
 import com.simibubi.create.foundation.utility.VecHelper;
 
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Direction.Axis;
 import net.minecraft.core.particles.BlockParticleOption;
 import net.minecraft.core.particles.ParticleTypes;
-import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.item.PrimedTnt;
 import net.minecraft.world.entity.monster.Stray;
 import net.minecraft.world.entity.npc.Villager;
 import net.minecraft.world.entity.npc.VillagerData;
@@ -1120,92 +1114,6 @@ public class DestroyScenes {
 
         scene.effects.rotationDirectionIndicator(util.grid.at(1, 2, 1));
 		scene.effects.rotationDirectionIndicator(util.grid.at(1, 2, 0));
-        scene.idle(100);
-
-        scene.markAsFinished();
-    };
-
-    public static void pumpjack(SceneBuilder scene, SceneBuildingUtil util) {
-        scene.title("pumpjack", "This text is defined in a language file.");
-        scene.configureBasePlate(0, 0, 5);
-        scene.showBasePlate();
-
-        Selection pumpjack = util.select.fromTo(1, 1, 3, 3, 2, 3);
-        Selection kinetics = util.select.position(3, 1, 4).add(util.select.fromTo(2, 0, 5, 3, 1, 5));
-        Selection pipes = util.select.fromTo(2, 1, 1, 3, 1, 2);
-        BlockPos pumpjackPos = util.grid.at(2, 1, 3);
-        BlockPos pumpPos = util.grid.at(2, 1, 2);
-
-        // Add player
-        ElementLink<EntityElement> playerElement = scene.world.createEntity(w -> {
-            Minecraft minecraft = Minecraft.getInstance();
-            LocalPlayer localPlayer = minecraft.player;
-            if (localPlayer == null) return null;
-            PonderPlayer player = new PonderPlayer(w, localPlayer.getScoreboardName());
-            Vec3 v = util.vector.topOf(2, 0, 0);
-            player.setPos(v.x, v.y, v.z);
-            player.xo = v.x;
-            player.yo = v.y;
-            player.zo = v.z;
-            player.setInvisible(true);
-            return player;
-        });
-
-        // Add TNT
-        scene.world.createEntity(w -> {
-            PrimedTnt tnt = new PrimedTnt(EntityType.TNT, w);
-            Vec3 v = util.vector.topOf(2, 0, 2);
-            tnt.setPos(v.x, v.y, v.z);
-            tnt.xo = v.x;
-            tnt.yo = v.y;
-            tnt.zo = v.z;
-            tnt.setFuse(80);
-            return tnt;
-        });
-
-        // Set and then un-set the Player invisible so it it doesn't awkwardly jerk when added to the scene
-        scene.world.modifyEntity(playerElement, entity -> {
-            if (!(entity instanceof PonderPlayer player)) return;
-            player.setItemInHand(InteractionHand.MAIN_HAND, DestroyItems.SEISMOMETER.asStack());
-            player.setInvisible(false);
-        });
-
-        scene.overlay.showText(60)
-            .text("This text is defined in a language file.");
-        scene.overlay.showControls(new InputWindowElement(util.vector.blockSurface(util.grid.at(2, 2, 0), Direction.UP), Pointing.DOWN)
-            .withItem(DestroyItems.SEISMOMETER.asStack()),
-            60
-        );
-        scene.idle(80);
-
-        scene.effects.emitParticles(VecHelper.getCenterOf(pumpPos), Emitter.withinBlockSpace(ParticleTypes.EXPLOSION_EMITTER, Vec3.ZERO), 1f, 1);
-        scene.world.modifyEntity(playerElement, Entity::discard);
-        scene.idle(20);
-
-        scene.world.showSection(kinetics, Direction.NORTH);
-        scene.idle(10);
-        scene.world.showSection(pumpjack, Direction.DOWN);
-        scene.idle(10);
-
-        scene.overlay.showText(100)
-            .text("This text is defined in a language file.")
-            .pointAt(util.vector.blockSurface(pumpjackPos, Direction.NORTH))
-            .attachKeyFrame();
-        scene.idle(120);
-        
-        scene.world.showSection(pipes, Direction.SOUTH);
-        scene.idle(10);
-        scene.overlay.showText(100)
-            .text("This text is defined in a language file.")
-            .pointAt(util.vector.blockSurface(pumpPos, Direction.UP))
-            .attachKeyFrame();
-        scene.world.modifyBlockEntity(pumpjackPos, PumpjackBlockEntity.class, be -> {
-            be.tank.allowInsertion();
-            be.tank.getPrimaryHandler().fill(new FluidStack(DestroyFluids.CRUDE_OIL.get(), 1000), FluidAction.EXECUTE);
-            be.tank.forbidInsertion();
-        });
-        scene.idle(20);
-        scene.world.propagatePipeChange(pumpPos);
         scene.idle(100);
 
         scene.markAsFinished();
