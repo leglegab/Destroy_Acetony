@@ -25,6 +25,7 @@ import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
 
 public enum DestroyRecipeTypes implements IRecipeTypeInfo {
+    // Processing recipes
     AGING(AgingRecipe::new),
     CENTRIFUGATION(CentrifugationRecipe::new),
     CHARGING(ChargingRecipe::new),
@@ -41,12 +42,12 @@ public enum DestroyRecipeTypes implements IRecipeTypeInfo {
     TAPPING(TappingRecipe::new),
     CIRCUIT_SEQUENCED_ASSEMBLY(CircuitSequencedAssemblyRecipe.Serializer::new, AllRecipeTypes.SEQUENCED_ASSEMBLY::getType),
 
+    // Advanced Crafting Table recipes
     MANUAL_ONLY_CRAFTING_SHAPED(ManualOnlyShapedRecipe.Serializer::new, () -> RecipeType.CRAFTING),
     CIRCUIT_BOARD_MANUAL_CRAFTING(ManualCircuitBoardRecipe.Serializer::new, () -> RecipeType.CRAFTING),
-
     DURATION_4_FIREWORK_ROCKET_CRAFTING(() -> ExtendedDurationFireworkRocketRecipe.DURATION_4_FIREWORK_ROCKET, () -> RecipeType.CRAFTING),
     DURATION_5_FIREWORK_ROCKET_CRAFTING(() -> ExtendedDurationFireworkRocketRecipe.DURATION_5_FIREWORK_ROCKET, () -> RecipeType.CRAFTING),
-
+    FILL_CUSTOM_EXPLOSIVE_MIX_ITEM(() -> FillCustomExplosiveMixItemRecipe.SERIALIZER, () -> RecipeType.CRAFTING),
     BADGE_DUPLICATION(() -> BadgeDuplicationRecipe.BADGE_DUPLICATION, () -> RecipeType.CRAFTING);
 
     // This is alllllll copied from Create source code

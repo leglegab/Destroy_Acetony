@@ -17,6 +17,8 @@ import com.petrolpark.destroy.client.particle.DestroyParticleTypes;
 import com.petrolpark.destroy.client.ponder.DestroyPonderIndex;
 import com.petrolpark.destroy.client.ponder.DestroyPonderTags;
 import com.petrolpark.destroy.client.sprites.DestroySpriteSource;
+import com.petrolpark.destroy.compat.CompatMods;
+import com.petrolpark.destroy.compat.createbigcannons.CreateBigCannons;
 import com.petrolpark.destroy.compat.jei.DestroyJEI;
 import com.petrolpark.destroy.config.DestroyAllConfigs;
 import com.petrolpark.destroy.effect.DestroyMobEffects;
@@ -157,6 +159,9 @@ public class Destroy {
 
         // Client
         DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> clientCtor(modEventBus, forgeEventBus));
+
+        // Optional compatibility mods. According to the Create main class doing the same thing, this isn't thread safe
+        CompatMods.BIG_CANNONS.executeIfInstalled(() -> () -> CreateBigCannons.init(modEventBus, forgeEventBus));
     };
 
     // Initiation Events

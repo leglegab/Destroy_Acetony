@@ -1,6 +1,9 @@
 {
     "replace": false,
     "values": [
-        "tfmg:sulfur_dust"
+        {
+            "value": "tfmg:sulfur_dust",
+            "required": false
+        }
     ]
 }

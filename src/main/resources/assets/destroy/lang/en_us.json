@@ -135,6 +135,7 @@
     "block.destroy.cordite.tooltip.condition1": "When Exploded",
     "block.destroy.cordite.tooltip.behaviour1": "_Evaporates_ liquids, doesn't drop items and does _minimal damage_ to mobs.",
     "block.destroy.cordite_block": "Cordite Block",
+    "block.destroy.custom_explosive_mix_charge": "Mixed Charge",
     "block.destroy.deepslate_fluorite_ore": "Deepslate Fluorite Ore",
     "block.destroy.deepslate_nickel_ore": "Deepslate Nickel Ore",
     "block.destroy.differential": "Differential",

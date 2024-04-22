@@ -13,6 +13,7 @@ import com.petrolpark.destroy.network.DestroyMessages;
 import com.petrolpark.destroy.network.packet.EvaporatingFluidS2CPacket;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.Mth;
@@ -91,24 +92,28 @@ public class PollutionHelper {
     @SuppressWarnings("deprecation")
     public static void pollute(Level level, FluidStack fluidStack) {
         if (DestroyFluids.isMixture(fluidStack) && fluidStack.getOrCreateTag().contains("Mixture", Tag.TAG_COMPOUND)) {
-            ReadOnlyMixture mixture = ReadOnlyMixture.readNBT(ReadOnlyMixture::new, fluidStack.getOrCreateTag().getCompound("Mixture"));
-            for (Molecule molecule : mixture.getContents(true)) {
-                float pollutionAmount = mixture.getConcentrationOf(molecule) * fluidStack.getAmount() / 1000; // One mole of polluting Molecule = one point of Pollution
-                for (PollutionType pollutionType : PollutionType.values()) {
-                    if (molecule.hasTag(pollutionType.moleculeTag)) {
-                        if (pollutionAmount < 1) {
-                            if (level.random.nextFloat() <= pollutionAmount) changePollution(level, pollutionType, 1);
-                        } else {
-                            changePollution(level, pollutionType, (int)pollutionAmount);
-                        };
-                    };
-                };
-            };
+            polluteMixture(level, fluidStack.getAmount(), fluidStack.getOrCreateTag());
         } else {
             for (PollutionType pollutionType : PollutionType.values()) {
                 if (fluidStack.getFluid().is(pollutionType.fluidTag)) {
                     float pollutionAmount = (float)fluidStack.getAmount() / 250f;
                     if (pollutionAmount < 1f) {
+                        if (level.random.nextFloat() <= pollutionAmount) changePollution(level, pollutionType, 1);
+                    } else {
+                        changePollution(level, pollutionType, (int)pollutionAmount);
+                    };
+                };
+            };
+        };
+    };
+
+    public static void polluteMixture(Level level, int amount, CompoundTag fluidTag) {
+        ReadOnlyMixture mixture = ReadOnlyMixture.readNBT(ReadOnlyMixture::new, fluidTag.getCompound("Mixture"));
+        for (Molecule molecule : mixture.getContents(true)) {
+            float pollutionAmount = mixture.getConcentrationOf(molecule) * amount / 1000; // One mole of polluting Molecule = one point of Pollution
+            for (PollutionType pollutionType : PollutionType.values()) {
+                if (molecule.hasTag(pollutionType.moleculeTag)) {
+                    if (pollutionAmount < 1) {
                         if (level.random.nextFloat() <= pollutionAmount) changePollution(level, pollutionType, 1);
                     } else {
                         changePollution(level, pollutionType, (int)pollutionAmount);

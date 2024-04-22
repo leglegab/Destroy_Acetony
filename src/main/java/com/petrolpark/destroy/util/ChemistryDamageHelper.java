@@ -78,7 +78,7 @@ public class ChemistryDamageHelper {
         };
 
     };
-
+    
     public static void contaminate(ItemStack stack, FluidStack fluidStack) {
         Item item = stack.getItem();
         if (LivingEntity.getEquipmentSlotForItem(stack) != null && (
