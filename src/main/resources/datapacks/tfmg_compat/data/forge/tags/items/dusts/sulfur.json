@@ -2,7 +2,7 @@
     "replace": false,
     "values": [
         {
-            "value": "tfmg:sulfur_dust",
+            "id": "tfmg:sulfur_dust",
             "required": false
         }
     ]

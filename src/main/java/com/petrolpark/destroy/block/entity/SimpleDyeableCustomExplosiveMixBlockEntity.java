@@ -9,14 +9,19 @@ import com.petrolpark.destroy.item.inventory.CustomExplosiveMixInventory;
 import com.simibubi.create.foundation.blockEntity.SmartBlockEntity;
 import com.simibubi.create.foundation.blockEntity.behaviour.BlockEntityBehaviour;
 
+import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.SectionPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.util.LazyOptional;
+import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.items.IItemHandler;
 
 public class SimpleDyeableCustomExplosiveMixBlockEntity extends SmartBlockEntity implements IDyeableCustomExplosiveMixBlockEntity {
@@ -80,7 +85,14 @@ public class SimpleDyeableCustomExplosiveMixBlockEntity extends SmartBlockEntity
     @Override
     public void setColor(int color) {
         this.color = color;
+        DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> reRender());
         notifyUpdate();
+    };
+
+    @OnlyIn(Dist.CLIENT)
+    public void reRender() {
+        SectionPos pos = SectionPos.of(getBlockPos());
+        if (getLevel() instanceof ClientLevel level) level.setSectionDirtyWithNeighbors(pos.x(), pos.y(), pos.z());
     };
 
     @Override

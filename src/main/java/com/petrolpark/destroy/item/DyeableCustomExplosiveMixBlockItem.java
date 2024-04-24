@@ -4,6 +4,7 @@ import com.petrolpark.destroy.item.inventory.CustomExplosiveMixInventory;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.Tag;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.DyeableLeatherItem;
 import net.minecraft.world.item.ItemStack;
@@ -15,6 +16,12 @@ public class DyeableCustomExplosiveMixBlockItem extends BlockItem implements Dye
 
     public DyeableCustomExplosiveMixBlockItem(Block block, Properties properties) {
         super(block, properties);
+    };
+
+    @Override
+    public int getColor(ItemStack pStack) {
+        CompoundTag compoundtag = pStack.getTagElement("display");
+        return compoundtag != null && compoundtag.contains("color", Tag.TAG_INT) ? compoundtag.getInt("color") : 0xFFFFFF;
     };
 
     @Override

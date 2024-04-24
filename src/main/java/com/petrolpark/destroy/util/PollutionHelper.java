@@ -11,6 +11,7 @@ import com.petrolpark.destroy.config.DestroyAllConfigs;
 import com.petrolpark.destroy.fluid.DestroyFluids;
 import com.petrolpark.destroy.network.DestroyMessages;
 import com.petrolpark.destroy.network.packet.EvaporatingFluidS2CPacket;
+import com.petrolpark.destroy.network.packet.LevelPollutionS2CPacket;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
@@ -51,14 +52,14 @@ public class PollutionHelper {
      */
     public static int setPollution(Level level, PollutionType pollutionType, int value) {
         return level.getCapability(LevelPollutionProvider.LEVEL_POLLUTION).map(levelPollution -> {
-            //int oldValue = levelPollution.get(pollutionType);
+            int oldValue = levelPollution.get(pollutionType);
             int newValue = levelPollution.set(pollutionType, value); // Actually set the Pollution level
 
             // This has been disabled as updating the SMOG level only updates the colours of unloaded chunks, which creates weird-looking boundaries if the change is large
             // For now this only happens when reloading the world
-            // if (oldValue != newValue) { // If there has been a change (which needs to be broadcast to clients)
-            //     DestroyMessages.sendToAllClients(new LevelPollutionS2CPacket(levelPollution));
-            // };
+            if (oldValue != newValue) { // If there has been a change (which needs to be broadcast to clients)
+                DestroyMessages.sendToAllClients(new LevelPollutionS2CPacket(levelPollution));
+            };
 
             // Award Advancements for fully polluting/repairing the world
             if (level instanceof ServerLevel serverLevel && levelPollution.hasPollutionEverBeenMaxed()) {

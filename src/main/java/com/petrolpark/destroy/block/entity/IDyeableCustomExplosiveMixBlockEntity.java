@@ -38,9 +38,8 @@ public interface IDyeableCustomExplosiveMixBlockEntity extends ICustomExplosiveM
         if (!(dyeStack.getItem() instanceof DyeItem dyeItem)) return InteractionResult.PASS;
         ItemStack stack = level.getBlockState(pos).getCloneItemStack(target, level, pos, player);
         if (stack.getItem() instanceof DyeableLeatherItem dyeableItem) {
-            DyeableLeatherItem.dyeArmor(stack, List.of(dyeItem));
-            setColor(dyeableItem.getColor(stack));
-            dyeStack.shrink(1);
+            setColor(dyeableItem.getColor(DyeableLeatherItem.dyeArmor(stack, List.of(dyeItem))));
+            if (!player.isCreative()) dyeStack.shrink(1);
             return InteractionResult.sidedSuccess(level.isClientSide());
         };
         return InteractionResult.PASS;

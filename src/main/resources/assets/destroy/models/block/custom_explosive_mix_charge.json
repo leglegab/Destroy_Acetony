@@ -1,0 +1,31 @@
+{   "parent": "block/block",
+    "textures": {
+        "particle": "destroy:block/custom_explosive_mix_charge",
+        "top": "destroy:block/custom_explosive_mix_charge_top",
+        "side": "destroy:block/custom_explosive_mix_charge",
+        "overlay": "destroy:block/custom_explosive_mix_charge_top_overlay"
+    },
+    "elements": [
+        {
+            "from": [3, 0, 3],
+            "to": [13, 16, 13],
+            "faces": {
+                "north": {"uv": [3, 0, 13, 16], "texture": "#side", "tintindex": 0, "cullface": "north"},
+                "east": {"uv": [3, 0, 13, 16], "texture": "#side", "tintindex": 0, "cullface": "north"},
+                "south": {"uv": [3, 0, 13, 16], "texture": "#side", "tintindex": 0, "cullface": "north"},
+                "west": {"uv": [3, 0, 13, 16], "texture": "#side", "tintindex": 0, "cullface": "north"},
+                "up": {"uv": [3, 3, 13, 13], "texture": "#top", "tintindex": 0, "cullface": "north"},
+                "down": {"uv": [3, 3, 13, 13], "texture": "#top", "tintindex": 0, "cullface": "north"}
+            }
+        },
+        {  
+            "from": [ 3, -0.01, 3 ],
+            "to": [ 13, 16.01, 13 ],
+            "faces": {
+                "up": {"uv": [3, 3, 13, 13], "texture": "#overlay", "tintindex": 1, "cullface": "up"},
+                "down": {"uv": [3, 3, 13, 13], "texture": "#overlay", "tintindex": 1, "cullface": "down"}
+            }
+        }
+    ],
+    "render_type": "cutout"
+}

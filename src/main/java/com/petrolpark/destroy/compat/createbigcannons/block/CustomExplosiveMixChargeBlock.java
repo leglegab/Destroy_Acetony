@@ -1,6 +1,9 @@
 package com.petrolpark.destroy.compat.createbigcannons.block;
 
 import java.util.List;
+
+import javax.annotation.Nullable;
+
 import java.util.Collections;
 
 import com.petrolpark.destroy.block.entity.SimpleDyeableCustomExplosiveMixBlockEntity;
@@ -20,6 +23,7 @@ import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.RotatedPillarBlock;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.entity.BlockEntityTicker;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplate.StructureBlockInfo;
@@ -35,6 +39,12 @@ public class CustomExplosiveMixChargeBlock extends PowderChargeBlock implements 
     public CustomExplosiveMixChargeBlock(Properties properties) {
         super(properties);
     };
+
+    @Nullable
+	@Override
+	public <S extends BlockEntity> BlockEntityTicker<S> getTicker(Level pLevel, BlockState pState, BlockEntityType<S> pBlockEntityType) {
+		return null; // This type of block does not need to tick
+	};
 
     @Override
     public BigCannonPropellantProperties getProperties() {
