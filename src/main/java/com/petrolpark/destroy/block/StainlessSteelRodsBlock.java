@@ -50,7 +50,7 @@ public class StainlessSteelRodsBlock extends RotatedPillarBlock {
 
     public static void solidify(Level level, BlockPos pos, RandomSource random) {
         BlockState oldState = level.getBlockState(pos);
-        if (oldState.getBlock() != DestroyBlocks.STAINLESS_STEEL_RODS.get()) return;
+        if (oldState.getBlock() != DestroyBlocks.STAINLESS_STEEL_RODS.get() || !oldState.getValue(MOLTEN)) return;
         if (oldState.getValue(MOLTEN)) return;
         level.setBlockAndUpdate(pos, DestroyBlocks.STAINLESS_STEEL_RODS.getDefaultState().setValue(AXIS, oldState.getValue(AXIS)).setValue(MOLTEN, false));
         level.playSound(null, pos, SoundEvents.LAVA_EXTINGUISH, SoundSource.BLOCKS);

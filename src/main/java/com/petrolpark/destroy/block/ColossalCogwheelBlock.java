@@ -4,17 +4,23 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 import java.util.function.BiFunction;
+import java.util.function.UnaryOperator;
+import java.util.EnumMap;
 
 import javax.annotation.Nullable;
 
+import org.joml.Matrix2d;
+
 import com.petrolpark.destroy.block.entity.ColossalCogwheelBlockEntity;
 import com.petrolpark.destroy.block.entity.DestroyBlockEntityTypes;
+import com.simibubi.create.AllShapes;
 import com.simibubi.create.content.equipment.goggles.IProxyHoveringInformation;
 import com.simibubi.create.content.kinetics.base.KineticBlock;
 import com.simibubi.create.content.kinetics.base.RotatedPillarKineticBlock;
 import com.simibubi.create.foundation.block.IBE;
 import com.simibubi.create.foundation.block.render.MultiPosDestructionHandler;
 import com.simibubi.create.foundation.utility.Lang;
+import com.simibubi.create.foundation.utility.VoxelShaper;
 
 import io.netty.util.internal.shaded.org.jctools.queues.MessagePassingQueue.Consumer;
 import net.minecraft.client.multiplayer.ClientLevel;
@@ -43,6 +49,9 @@ import net.minecraft.world.level.material.PushReaction;
 import net.minecraft.world.level.storage.loot.LootParams;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
+import net.minecraft.world.phys.shapes.CollisionContext;
+import net.minecraft.world.phys.shapes.Shapes;
+import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.extensions.common.IClientBlockExtensions;
@@ -82,11 +91,20 @@ public class ColossalCogwheelBlock extends KineticBlock implements IBE<ColossalC
     };
 
     /**
-     * Whether the position where the controller should be is still a controller.
+     * Whether the position where the controller should be is still a controller. 
      */
     public static boolean stillValid(BlockGetter level, BlockPos pos, BlockState state) {
         BlockState controllerState = level.getBlockState(getControllerPosition(pos, state));
         return (isController(controllerState) && controllerState.getValue(RotatedPillarKineticBlock.AXIS) == state.getValue(RotatedPillarKineticBlock.AXIS));
+    };
+
+    @Override
+    public VoxelShape getShape(BlockState state, BlockGetter level, BlockPos pos, CollisionContext context) {
+        Axis axis = state.getValue(RotatedPillarKineticBlock.AXIS);
+        Position.Clock clockPos = state.getValue(POSITION_CLOCK);
+        if (axis == Axis.X) clockPos = clockPos.getOpposite();
+        if (axis == Axis.Z && (clockPos == Position.Clock.TWELVE || clockPos == Position.Clock.SIX)) clockPos = clockPos.getOpposite();
+        return state.getValue(POSITION_TYPE).getShape(clockPos, axis);
     };
 
     @Override
@@ -254,19 +272,28 @@ public class ColossalCogwheelBlock extends KineticBlock implements IBE<ColossalC
         };
 
         public enum Clock implements Position {
-            TWELVE(Direction.UP, Direction.SOUTH, Direction.UP),
-            THREE(Direction.SOUTH, Direction.EAST, Direction.EAST),
-            SIX(Direction.DOWN, Direction.NORTH, Direction.DOWN),
-            NINE(Direction.NORTH, Direction.WEST, Direction.WEST);
+            TWELVE(Direction.UP, Direction.SOUTH, Direction.UP, m -> m),
+            THREE(Direction.SOUTH, Direction.EAST, Direction.EAST, m -> new Matrix2d(m.m10, m.m11, 16d - m.m01, 16d - m.m00)),
+            SIX(Direction.DOWN, Direction.NORTH, Direction.DOWN, m -> new Matrix2d(16d - m.m01, 16d - m.m00, 16d - m.m11, 16d - m.m10)),
+            NINE(Direction.NORTH, Direction.WEST, Direction.WEST, m -> new Matrix2d(16d - m.m11, 16d - m.m10, m.m00, m.m01));
 
             private final Direction xDirection;
             private final Direction yDirection;
             private final Direction zDirection;
 
-            private Clock(Direction xDirection, Direction yDirection, Direction zDirection) {
+            /**
+             * Matrix supplied is of the form:
+             * (lower x, upper x)
+             * (lower z, upper z)
+             * for a shape constructed for the position (twelve), in a cog on the Y axis
+             */
+            private final UnaryOperator<Matrix2d> voxelCuboidTransform;
+
+            private Clock(Direction xDirection, Direction yDirection, Direction zDirection, UnaryOperator<Matrix2d> voxelCuboidTransform) {
                 this.xDirection = xDirection;
                 this.yDirection = yDirection;
                 this.zDirection = zDirection;
+                this.voxelCuboidTransform = voxelCuboidTransform;
             };
 
             public Direction getDirection(Axis axis) {
@@ -281,23 +308,59 @@ public class ColossalCogwheelBlock extends KineticBlock implements IBE<ColossalC
             public String getSerializedName() {
                 return Lang.asId(name());
             };
+
+            public Clock getClockwise(boolean anti) {
+                return values()[(values().length + ordinal() + (anti ? -1 : 1)) % values().length];
+            };
+
+            public Clock getOpposite() {
+                return values()[(ordinal() + 2) % values().length];
+            };
         };
 
         public enum Type implements Position {
-            ANTICLOCKWISE((a, d) -> BlockPos.ZERO.relative(d.getOpposite(), 2).relative(d.getClockWise(a))),
-            MIDDLE((a, d) -> BlockPos.ZERO.relative(d.getOpposite(), 2)),
-            CLOCKWISE((a, d) -> BlockPos.ZERO.relative(d.getOpposite(), 2).relative(d.getCounterClockWise(a))),
-            INSIDE((a, d) -> BlockPos.ZERO.relative(d.getOpposite()).relative(d.getCounterClockWise(a)));
+            ANTICLOCKWISE(
+                (a, d) -> BlockPos.ZERO.relative(d.getOpposite(), 2).relative(d.getClockWise(a)),
+                new Matrix2d(0d, 14d, 0d, 12d)
+            ),
+            MIDDLE(
+                (a, d) -> BlockPos.ZERO.relative(d.getOpposite(), 2),
+                new Matrix2d(0d, 16d, 2d, 14d)
+            ),
+            CLOCKWISE(
+                (a, d) -> BlockPos.ZERO.relative(d.getOpposite(), 2).relative(d.getCounterClockWise(a)),
+                new Matrix2d(2d, 16d, 0d, 12d)
+            ),
+            INSIDE(
+                (a, d) -> BlockPos.ZERO.relative(d.getOpposite()).relative(d.getCounterClockWise(a)),
+                new Matrix2d(0d, 11d, 5d, 16d)
+            );
 
             public final BiFunction<Axis, Direction, BlockPos> relativeCenterPos;
 
-            private Type(BiFunction<Axis, Direction, BlockPos> relativeCenterPos) {
+            public final Matrix2d[] untransformedShapeCuboids;
+            public final EnumMap<Position.Clock, VoxelShaper> shapes;
+
+            private Type(BiFunction<Axis, Direction, BlockPos> relativeCenterPos, Matrix2d ...untransformedShapeCuboids) {
                 this.relativeCenterPos = relativeCenterPos;
+                this.untransformedShapeCuboids = untransformedShapeCuboids;
+                shapes = new EnumMap<>(Position.Clock.class);
             };
 
             @Override
             public String getSerializedName() {
                 return Lang.asId(name());
+            };
+
+            public VoxelShape getShape(Position.Clock clockPos, Axis axis) {
+                return shapes.computeIfAbsent(clockPos, c -> {
+                    AllShapes.Builder shapeBuilder = new AllShapes.Builder(Shapes.empty());
+                    for (Matrix2d untransformedCuboid : untransformedShapeCuboids) {
+                        Matrix2d cuboid = c.voxelCuboidTransform.apply(untransformedCuboid);
+                        shapeBuilder.add(cuboid.m00, 3d, cuboid.m10, cuboid.m01, 13d, cuboid.m11);
+                    };
+                    return shapeBuilder.forAxis();
+                }).get(axis);
             };
         };
     };

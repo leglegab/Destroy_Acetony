@@ -4,7 +4,8 @@
 	"flip_v": true,
 	"model": "destroy:models/block/colossal_cogwheel/colossal_cogwheel.obj",
 	"textures": {
-		"block_texture": "destroy:block/colossal_cogwheel"
+		"block_texture": "destroy:block/colossal_cogwheel",
+		"particle": "create:block/andesite_casing"
 	},
 	"render_type": "cutout"
 }

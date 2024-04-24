@@ -23,6 +23,7 @@ import com.petrolpark.destroy.util.DestroyTags.DestroyItemTags;
 import com.simibubi.create.AllBlocks;
 import com.simibubi.create.AllSpriteShifts;
 import com.simibubi.create.AllTags;
+import com.simibubi.create.AllTags.AllBlockTags;
 import com.simibubi.create.content.decoration.encasing.EncasedCTBehaviour;
 import com.simibubi.create.content.kinetics.BlockStressDefaults;
 import com.simibubi.create.content.kinetics.simpleRelays.BracketedKineticBlockModel;
@@ -503,6 +504,7 @@ public class DestroyBlocks {
         .tag(BlockTags.NEEDS_STONE_TOOL)
         .tag(Tags.Blocks.STORAGE_BLOCKS)
         .tag(BlockTags.BEACON_BASE_BLOCKS)
+        .tag(AllBlockTags.MOVABLE_EMPTY_COLLIDER.tag)
         .transform(TagGen.tagBlockAndItem("storage_blocks/stainless_steel"))
         .tag(Tags.Items.STORAGE_BLOCKS)
         .build()

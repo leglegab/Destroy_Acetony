@@ -11,11 +11,25 @@ import net.minecraft.core.Direction;
 import net.minecraft.core.Direction.Axis;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.AABB;
 
 public class ColossalCogwheelBlockEntity extends KineticBlockEntity {
 
     public ColossalCogwheelBlockEntity(BlockEntityType<?> typeIn, BlockPos pos, BlockState state) {
         super(typeIn, pos, state);
+    };
+
+    @Override
+    protected AABB createRenderBoundingBox() {
+        if (ColossalCogwheelBlock.isController(getBlockState())) {
+            AABB aabb = new AABB(getBlockPos().offset(ColossalCogwheelBlock.getRelativeCenterPosition(getBlockState())));
+            switch(getBlockState().getValue(RotatedPillarKineticBlock.AXIS)) {
+                case X: return aabb.inflate(0d, 2d, 2d);
+                case Y: return aabb.inflate(2d, 0d, 2d);
+                case Z: return aabb.inflate(2d, 2d, 0d);
+            };
+        };
+        return super.createRenderBoundingBox();
     };
 
     @Override
@@ -25,18 +39,7 @@ public class ColossalCogwheelBlockEntity extends KineticBlockEntity {
         Direction direction = stateFrom.getValue(ColossalCogwheelBlock.POSITION_CLOCK).getDirection(axis);
 
         switch (stateFrom.getValue(ColossalCogwheelBlock.POSITION_TYPE)) {
-            case MIDDLE: {
-                if (
-                    //&& diff.equals(BlockPos.ZERO.relative(direction.getOpposite()))
-                    ICogWheel.isSmallCog(stateTo)
-                    && stateTo.getValue(CogWheelBlock.AXIS) == axis
-                ) return -3f;
-            } case INSIDE: {
-                if (
-                    ICogWheel.isSmallCog(stateTo)
-                    && stateTo.getValue(CogWheelBlock.AXIS) == axis
-                ) return -3f;
-            } default: {}
+            
         };
 
         return 0f;

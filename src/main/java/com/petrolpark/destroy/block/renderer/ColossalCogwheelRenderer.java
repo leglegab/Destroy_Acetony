@@ -1,15 +1,19 @@
 package com.petrolpark.destroy.block.renderer;
 
+import com.jozufozu.flywheel.util.transform.TransformStack;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.petrolpark.destroy.block.ColossalCogwheelBlock;
 import com.petrolpark.destroy.block.entity.ColossalCogwheelBlockEntity;
 import com.simibubi.create.content.kinetics.base.KineticBlockEntityRenderer;
+import com.simibubi.create.content.kinetics.base.RotatedPillarKineticBlock;
 import com.simibubi.create.foundation.render.SuperByteBuffer;
 
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider.Context;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.core.Direction.AxisDirection;
 import net.minecraft.world.level.block.state.BlockState;
 
 public class ColossalCogwheelRenderer extends KineticBlockEntityRenderer<ColossalCogwheelBlockEntity> {
@@ -25,13 +29,19 @@ public class ColossalCogwheelRenderer extends KineticBlockEntityRenderer<Colossa
         //if (Backend.canUseInstancing(be.getLevel())) return; //TODO instance
         BlockPos relativeCenter = ColossalCogwheelBlock.getRelativeCenterPosition(state);
         ms.pushPose();
-        ms.translate(0f, -0.5f, 0f);
+        TransformStack.cast(ms)
+            .translate(Direction.get(AxisDirection.NEGATIVE, state.getValue(RotatedPillarKineticBlock.AXIS)).step().mul(0.5f));
         SuperByteBuffer cogBuffer = getRotatedModel(be, state);
         cogBuffer.translate(relativeCenter);
         standardKineticRotationTransform(getRotatedModel(be, state), be, light);
         cogBuffer.translateBack(relativeCenter).centre();
         cogBuffer.renderInto(ms, buffer.getBuffer(RenderType.cutout()));
         ms.popPose();
+    };
+
+    @Override
+    public boolean shouldRenderOffScreen(ColossalCogwheelBlockEntity pBlockEntity) {
+        return true;
     };
     
 };
