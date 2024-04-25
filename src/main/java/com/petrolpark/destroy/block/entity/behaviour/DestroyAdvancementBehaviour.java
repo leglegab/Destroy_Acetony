@@ -1,6 +1,7 @@
 package com.petrolpark.destroy.block.entity.behaviour;
 
 import java.util.Set;
+import java.util.function.Supplier;
 
 import com.petrolpark.destroy.advancement.DestroyAdvancementTrigger;
 import com.simibubi.create.foundation.blockEntity.SmartBlockEntity;
@@ -21,9 +22,19 @@ public class DestroyAdvancementBehaviour extends AbstractRememberPlacerBehaviour
     };
 
     public void awardDestroyAdvancement(DestroyAdvancementTrigger advancement) {
-		Player placer = getPlayer();
-		if (placer != null && placer instanceof ServerPlayer player) advancement.award(getWorld(), player);
+		awardDestroyAdvancementIf(advancement, () -> true);
 	};
+
+    /**
+     * Trigger the given Destroy Advancement trigger conditionally.
+     * @param advancement
+     * @param condition Computation of this is saved until after we have checked whether the Player actually exists and doesn't already have the Advancement
+     */
+    public void awardDestroyAdvancementIf(DestroyAdvancementTrigger advancement, Supplier<Boolean> condition) {
+        Player placer = getPlayer();
+        if (placer == null || !(placer instanceof ServerPlayer player) || advancement.isAlreadyAwardedTo(player)) return;
+        if (condition.get()) advancement.award(getWorld(), player);
+    };
 
     @Override
     public BehaviourType<?> getType() {

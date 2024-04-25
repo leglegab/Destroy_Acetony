@@ -1,0 +1,24 @@
+{
+    "conditions": [
+      {
+          "type": "forge:mod_loaded",
+          "modid": "createbigcannons"
+      }
+    ],
+    "type": "minecraft:crafting_shaped",
+    "pattern": [
+      "PSP"
+    ],
+    "key": {
+      "P": {
+        "tag": "destroy:plastic/textile"
+      },
+      "S": {
+        "tag": "forge:string"
+      }
+    },
+    "result": {
+      "item": "destroy:custom_explosive_mix_charge",
+      "count": 2
+    }
+  }

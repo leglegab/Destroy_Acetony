@@ -24,6 +24,7 @@ public enum DestroyAdvancementTrigger {
     SHOOT_HEFTY_BEETROOT("beetroot_potato_cannon"),
     CAPTURE_STRAY,
     USE_CENTRIFUGE("use_centrifuge", "centrifuge"),
+    COLOSSAL_COGWHEEL_POWER_MANY,
     COMPLETE_SEISMOGRAPH,
     CUT_ONIONS,
     DISTILL("distill", "distillations"),

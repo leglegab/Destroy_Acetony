@@ -12,6 +12,7 @@ import com.petrolpark.destroy.block.model.CopycatBlockModel;
 import com.petrolpark.destroy.block.spriteshifts.DestroySpriteShifts;
 import com.petrolpark.destroy.entity.PrimedBomb;
 import com.petrolpark.destroy.item.CoaxialGearBlockItem;
+import com.petrolpark.destroy.item.ColossalCogwheelBlockItem;
 import com.petrolpark.destroy.item.CombustibleBlockItem;
 import com.petrolpark.destroy.item.DestroyItems;
 import com.petrolpark.destroy.item.PeriodicTableBlockItem;
@@ -135,7 +136,7 @@ public class DestroyBlocks {
         .initialProperties(AllBlocks.LARGE_WATER_WHEEL)
         .properties(p -> p
             .noOcclusion()
-        ).item()
+        ).item(ColossalCogwheelBlockItem::new)
         .transform(customItemModel())
         .register();
 

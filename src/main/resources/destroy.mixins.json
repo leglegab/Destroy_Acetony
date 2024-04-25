@@ -54,6 +54,7 @@
         "HeatLevelMixin",
         "ItemDrainBlockMixin",
         "KineticBlockEntityMixin",
+        "LevelSettingsMixin",
         "MechanicalMixerBlockEntityMixin",
         "MillstoneBlockEntityMixin",
         "OpenEndedPipeMixin",

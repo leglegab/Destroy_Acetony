@@ -6,6 +6,7 @@ import java.util.Set;
 import java.util.function.BiFunction;
 import java.util.function.UnaryOperator;
 import java.util.EnumMap;
+import java.util.HashSet;
 
 import javax.annotation.Nullable;
 
@@ -13,13 +14,18 @@ import org.joml.Matrix2d;
 
 import com.petrolpark.destroy.block.entity.ColossalCogwheelBlockEntity;
 import com.petrolpark.destroy.block.entity.DestroyBlockEntityTypes;
+import com.petrolpark.destroy.item.ColossalCogwheelBlockItem;
 import com.simibubi.create.AllShapes;
 import com.simibubi.create.content.equipment.goggles.IProxyHoveringInformation;
 import com.simibubi.create.content.kinetics.base.KineticBlock;
 import com.simibubi.create.content.kinetics.base.RotatedPillarKineticBlock;
+import com.simibubi.create.content.kinetics.simpleRelays.ICogWheel;
 import com.simibubi.create.foundation.block.IBE;
 import com.simibubi.create.foundation.block.render.MultiPosDestructionHandler;
+import com.simibubi.create.foundation.placement.IPlacementHelper;
+import com.simibubi.create.foundation.placement.PlacementHelpers;
 import com.simibubi.create.foundation.utility.Lang;
+import com.simibubi.create.foundation.utility.Pair;
 import com.simibubi.create.foundation.utility.VoxelShaper;
 
 import io.netty.util.internal.shaded.org.jctools.queues.MessagePassingQueue.Consumer;
@@ -31,10 +37,13 @@ import net.minecraft.core.Direction.Axis;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.RandomSource;
 import net.minecraft.util.StringRepresentable;
+import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
@@ -129,6 +138,25 @@ public class ColossalCogwheelBlock extends KineticBlock implements IBE<ColossalC
 
 		return super.onSneakWrenched(state, context);
 	};
+
+    @Override
+    public InteractionResult use(BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
+        if (player.isShiftKeyDown() || !player.mayBuild()) return InteractionResult.PASS;
+        ItemStack stack = player.getItemInHand(hand);
+        if (ICogWheel.isSmallCogItem(stack) || ICogWheel.isLargeCogItem(stack)) {
+            IPlacementHelper helper = PlacementHelpers.get(((ColossalCogwheelBlockItem)asItem()).onColossalPlacementHelpers.get(ICogWheel.isLargeCogItem(stack)));
+            if (helper.matchesItem(stack) && helper.matchesState(state)) {
+                helper.getOffset(player, level, state, pos, hit, stack).placeInWorld(level, (BlockItem) stack.getItem(), player, hand, hit);
+                return InteractionResult.sidedSuccess(level.isClientSide());
+            };
+        };
+        return InteractionResult.PASS;
+    };
+
+    @Override
+    public BlockState getStateForPlacement(BlockPlaceContext context) {
+        return defaultBlockState().setValue(RotatedPillarKineticBlock.AXIS, context.getNearestLookingDirection().getAxis());
+    };
     
     @Override
 	public void onPlace(BlockState state, Level level, BlockPos pos, BlockState oldState, boolean isMoving) {
@@ -175,6 +203,13 @@ public class ColossalCogwheelBlock extends KineticBlock implements IBE<ColossalC
 		if (!level.getBlockTicks().hasScheduledTick(currentPos, this)) level.scheduleTick(currentPos, this, 1);
 		return state;
 	};
+
+    @Override
+    @SuppressWarnings("deprecation")
+    public void neighborChanged(BlockState state, Level level, BlockPos pos, Block pBlock, BlockPos pFromPos, boolean pIsMoving) {
+        withBlockEntityDo(level, getControllerPosition(pos, state), ColossalCogwheelBlockEntity::tryAwardCogsPoweringAdvancement);
+        super.neighborChanged(state, level, pos, pBlock, pFromPos, pIsMoving);
+    };
 
     @Override
 	public void tick(BlockState state, ServerLevel level, BlockPos pos, RandomSource random) {
@@ -362,6 +397,44 @@ public class ColossalCogwheelBlock extends KineticBlock implements IBE<ColossalC
                     return shapeBuilder.forAxis();
                 }).get(axis);
             };
+        };
+    };
+
+    public static record Connection(boolean toLargeCog, float ratio) {
+
+        public static enum Type {
+            INSIDE_SMALL(
+                new Connection(false, 3f),
+                (a, d) -> BlockPos.ZERO.relative(d.getOpposite(), 1)
+            ),
+            CORNER_SMALL(
+                new Connection(false, -6f),
+                (a, d) -> BlockPos.ZERO.relative(d.getOpposite(), 2).relative(d.getClockWise(a), 2)
+            ),
+            ANTICLOCKWISE_LARGE(
+                new Connection(true, -3f),
+                (a, d) -> BlockPos.ZERO.relative(d.getOpposite(), 3).relative(d.getClockWise(a))
+            ),
+            CLOCKWISE_LARGE(
+                new Connection(true, -3f),
+                (a, d) -> BlockPos.ZERO.relative(d.getOpposite(), 3).relative(d.getCounterClockWise(a))
+            );;
+    
+            public final Connection connection;
+            public final BiFunction<Axis, Direction, BlockPos> relativeCenterPos;
+    
+            private Type(Connection connection, BiFunction<Axis, Direction, BlockPos> relativeCenterPos) {
+                this.connection = connection;
+                this.relativeCenterPos = relativeCenterPos;
+            };
+        };
+
+        public static Set<Pair<BlockPos, Connection>> getAll(BlockPos centerPos, Axis axis) {
+            Set<Pair<BlockPos, Connection>> set = new HashSet<>(Connection.Type.values().length * Position.Clock.values().length);
+            for (Position.Clock posClock : Position.Clock.values()) {
+                for (Type connectionType : Type.values()) set.add(Pair.of(centerPos.subtract(connectionType.relativeCenterPos.apply(axis, posClock.getDirection(axis))), connectionType.connection));
+            };
+            return set;
         };
     };
 

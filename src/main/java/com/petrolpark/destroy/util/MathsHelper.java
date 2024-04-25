@@ -1,5 +1,7 @@
 package com.petrolpark.destroy.util;
 
+import java.util.Comparator;
+
 import net.minecraft.core.Vec3i;
 import net.minecraft.util.Mth;
 import net.minecraft.world.phys.Vec3;
@@ -33,5 +35,9 @@ public class MathsHelper {
 
     public static Vec3i add(Vec3i vec1, Vec3i vec2) {
         return new Vec3i(vec1.getX() + vec2.getX(), vec1.getY() + vec2.getY(), vec1.getZ() + vec2.getZ());
+    };
+
+    public static Comparator<Vec3> getClosest(Vec3 targetVector) {
+        return (v1, v2) -> Double.compare(v1.dot(targetVector), v2.dot(targetVector));
     };
 };
