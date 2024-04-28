@@ -6,15 +6,9 @@
     "destroy:cordite",
     "destroy:nitrocellulose_block",
     "destroy:picric_acid_block",
-    "destroy:yeast_mushroom",
-    "destroy:yeast_covered_agar_block",
     "destroy:chalk_dust",
-    "destroy:playwell",
     "destroy:magic_oxidant",
     "destroy:magic_reductant",
-    "destroy:white_wheat",
-    "destroy:bifuricated_carrot",
-    "destroy:potate_o",
     "destroy:discharged_voltaic_pile",
     "destroy:voltaic_pile"
   ]

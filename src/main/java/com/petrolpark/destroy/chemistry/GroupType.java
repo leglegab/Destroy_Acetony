@@ -3,7 +3,7 @@ package com.petrolpark.destroy.chemistry;
 import java.util.function.Supplier;
 
 import com.google.common.base.MoreObjects;
-import com.petrolpark.destroy.chemistry.error.ChemistryException.ExampleMoleculeMissingGroupException;
+import com.petrolpark.destroy.chemistry.api.error.ChemistryException.ExampleMoleculeMissingGroupException;
 
 public class GroupType<G extends Group<G>> {
 

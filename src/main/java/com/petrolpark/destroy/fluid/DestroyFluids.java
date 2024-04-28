@@ -67,15 +67,11 @@ public class DestroyFluids {
     NAPALM_SUNDAE = virtualFluid("napalm_sundae")
         .tag(DestroyFluidTags.AMPLIFIES_SMOG.tag)
         .register(),
-    ONCE_DISTILLED_MOONSHINE = coloredWaterFluid("once_distilled_moonshine", 0xE0684F31)
-        .register(),
     PERFUME = coloredSwirlingFluid("perfume", 0x80ffcff7)
         .register(),
     SKIMMED_MILK = coloredWaterFluid("skimmed_milk", 0x00000000)
         .register(),
-    THRICE_DISTILLED_MOONSHINE = coloredWaterFluid("thrice_distilled_moonshine", 0xC0A18666)
-        .register(),
-    TWICE_DISTILLED_MOONSHINE = coloredWaterFluid("twice_distilled_moonshine", 0xD08C6B46)
+    MOONSHINE = coloredWaterFluid("moonshine", 0xC0A18666)
         .register(),
     UNDISTILLED_MOONSHINE = coloredWaterFluid("undistilled_moonshine", 0xF053330D)
         .register(),

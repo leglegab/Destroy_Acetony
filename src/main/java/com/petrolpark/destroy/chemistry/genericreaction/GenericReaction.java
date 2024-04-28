@@ -8,7 +8,7 @@ import org.jetbrains.annotations.NotNull;
 import com.petrolpark.destroy.chemistry.Reaction;
 import com.petrolpark.destroy.chemistry.Molecule.MoleculeBuilder;
 import com.petrolpark.destroy.chemistry.Reaction.ReactionBuilder;
-import com.petrolpark.destroy.chemistry.error.ChemistryException;
+import com.petrolpark.destroy.chemistry.api.error.ChemistryException;
 
 import net.minecraft.resources.ResourceLocation;
 
@@ -58,7 +58,7 @@ public abstract class GenericReaction {
     };
 
     /**
-     * Instantiate a {@link com.petrolpark.destroy.chemistry.error.ChemistryException Chemistry Exception}. These kinds of exceptions are
+     * Instantiate a {@link com.petrolpark.destroy.chemistry.api.error.ChemistryException Chemistry Exception}. These kinds of exceptions are
      * ignored when a Mixture is generating generic Reactions.
      * @param string The message of the exception. The identifier of this Generic Reaction will be prepended if this error is logged.
      */

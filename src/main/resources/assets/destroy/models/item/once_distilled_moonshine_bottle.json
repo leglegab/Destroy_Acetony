@@ -1,6 +1,0 @@
-{
-    "parent": "minecraft:item/generated",
-    "textures": {
-      "layer0": "destroy:item/once_distilled_moonshine_bottle"
-    }
-  }

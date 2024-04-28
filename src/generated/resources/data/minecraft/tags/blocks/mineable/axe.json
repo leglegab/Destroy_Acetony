@@ -5,6 +5,7 @@
     "destroy:differential",
     "destroy:planetary_gearset",
     "destroy:vat_side",
-    "destroy:plywood"
+    "destroy:plywood",
+    "destroy:unvarnished_plywood"
   ]
 }

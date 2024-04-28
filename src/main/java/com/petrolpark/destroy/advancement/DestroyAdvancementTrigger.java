@@ -62,8 +62,8 @@ public enum DestroyAdvancementTrigger {
         trigger = new SimpleDestroyTrigger(triggerId);
     };
 
-    DestroyAdvancementTrigger(String id) {
-        this(id, id);
+    DestroyAdvancementTrigger(String triggerAndAdvancementId) {
+        this(triggerAndAdvancementId, triggerAndAdvancementId);
     };
 
     DestroyAdvancementTrigger(String triggerId, String ...advancementIds) {

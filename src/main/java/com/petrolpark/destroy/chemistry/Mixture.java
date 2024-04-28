@@ -13,7 +13,7 @@ import java.util.Set;
 
 import com.google.common.collect.ImmutableList;
 import com.petrolpark.destroy.Destroy;
-import com.petrolpark.destroy.chemistry.error.ChemistryException;
+import com.petrolpark.destroy.chemistry.api.error.ChemistryException;
 import com.petrolpark.destroy.chemistry.genericreaction.DoubleGroupGenericReaction;
 import com.petrolpark.destroy.chemistry.genericreaction.GenericReactant;
 import com.petrolpark.destroy.chemistry.genericreaction.GenericReaction;

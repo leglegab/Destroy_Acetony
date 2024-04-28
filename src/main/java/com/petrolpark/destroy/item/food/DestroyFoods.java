@@ -20,6 +20,7 @@ public class DestroyFoods {
     RAW_FRIES = new FoodProperties.Builder().nutrition(2).saturationMod(0.6f).build(),
     FRIES = new FoodProperties.Builder().nutrition(6).saturationMod(1.5f).build(),
     MASHED_POTATO = new FoodProperties.Builder().nutrition(5).saturationMod(1.4f).build(),
+    CHEWING_GUM = new FoodProperties.Builder().nutrition(1).saturationMod(0.1f).build(),
     POTATE_O = new FoodProperties.Builder().nutrition(2).saturationMod(0.6f).build(),
     BIFURICATED_CARROT = new FoodProperties.Builder().nutrition(6).saturationMod(1.2f).build(),
     BABY_BLUE_POWDER = new FoodProperties.Builder().nutrition(0).saturationMod(0.0F).effect(babyBlueHigh, 1.0f).build(),

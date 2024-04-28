@@ -12,7 +12,7 @@ import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 import com.petrolpark.destroy.Destroy;
-import com.petrolpark.destroy.chemistry.error.ChemistryException;
+import com.petrolpark.destroy.chemistry.api.error.ChemistryException;
 import com.petrolpark.destroy.chemistry.genericreaction.GenericReaction;
 import com.petrolpark.destroy.chemistry.index.DestroyMolecules;
 

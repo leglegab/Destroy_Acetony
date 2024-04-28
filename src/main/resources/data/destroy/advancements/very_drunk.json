@@ -12,7 +12,7 @@
         "translate": "advancement.destroy.very_drunk.description"
       },
       "icon": {
-        "item": "destroy:thrice_distilled_moonshine_bottle"
+        "item": "destroy:moonshine_bottle"
       },
       "frame": "goal",
       "title": {

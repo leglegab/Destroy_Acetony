@@ -6,6 +6,7 @@ import com.petrolpark.destroy.Destroy;
 import com.petrolpark.destroy.block.DestroyBlocks;
 import com.petrolpark.destroy.block.PeriodicTableBlock;
 import com.petrolpark.destroy.client.ponder.scene.DestroyScenes;
+import com.petrolpark.destroy.client.ponder.scene.KineticsScenes;
 import com.petrolpark.destroy.client.ponder.scene.OilScenes;
 import com.petrolpark.destroy.client.ponder.scene.TrypolithographyScenes;
 import com.petrolpark.destroy.item.DestroyItems;
@@ -14,7 +15,6 @@ import com.simibubi.create.Create;
 import com.simibubi.create.foundation.ponder.PonderRegistrationHelper;
 import com.simibubi.create.foundation.ponder.PonderRegistry;
 import com.simibubi.create.foundation.ponder.PonderStoryBoardEntry;
-import com.simibubi.create.infrastructure.ponder.scenes.KineticsScenes;
 
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
@@ -54,10 +54,13 @@ public class DestroyPonderIndex {
 
         // Coaxial Gear
         CREATE_HELPER.forComponents(DestroyBlocks.COAXIAL_GEAR)
-            .addStoryBoard("cog/small", KineticsScenes::cogAsRelay);
+            .addStoryBoard("cog/small", com.simibubi.create.infrastructure.ponder.scenes.KineticsScenes::cogAsRelay);
         HELPER.forComponents(DestroyBlocks.COAXIAL_GEAR)
             .addStoryBoard("coaxial_gear/shaftless", DestroyScenes::coaxialGearShaftless)
             .addStoryBoard("coaxial_gear/through", DestroyScenes::coaxialGearThrough);
+
+        HELPER.forComponents(DestroyBlocks.COLOSSAL_COGWHEEL)
+            .addStoryBoard("kinetics/colossal_cogwheel", KineticsScenes::colossalCogwheel);
 
         // Cooler
         HELPER.forComponents(DestroyBlocks.COOLER)
@@ -98,8 +101,8 @@ public class DestroyPonderIndex {
 
         // Planetary Gearset
         CREATE_HELPER.forComponents(DestroyBlocks.PLANETARY_GEARSET)
-            .addStoryBoard("cog/speedup", KineticsScenes::cogsSpeedUp)
-            .addStoryBoard("cog/large", KineticsScenes::largeCogAsRelay);
+            .addStoryBoard("cog/speedup", com.simibubi.create.infrastructure.ponder.scenes.KineticsScenes::cogsSpeedUp)
+            .addStoryBoard("cog/large", com.simibubi.create.infrastructure.ponder.scenes.KineticsScenes::largeCogAsRelay);
         HELPER.forComponents(DestroyBlocks.PLANETARY_GEARSET)
             .addStoryBoard("planetary_gearset", DestroyScenes::planetaryGearset);
 

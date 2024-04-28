@@ -325,13 +325,9 @@ public class DestroyItems {
             .durability(4)
         ).register();
 
-    public static final ItemEntry<Item>
-
-    PLAYWELL = REGISTRATE.item("playwell", Item::new)
-        .tag(DestroyItemTags.LIABLE_TO_CHANGE.tag)
-        .register(),
-
     // SPRAY BOTTLES
+
+    public static final ItemEntry<Item>
 
     SPRAY_BOTTLE = REGISTRATE.item("spray_bottle", Item::new)
         .tag(DestroyItemTags.SPRAY_BOTTLE.tag)
@@ -355,17 +351,8 @@ public class DestroyItems {
     
     // NON-SILICA CATALYSTS
 
-    // CONVERSION_CATALYST = REGISTRATE.item("conversion_catalyst", Item::new)
-    //     .tag(DestroyItemTags.LIABLE_TO_CHANGE.tag)
-    //     .register(),
-    // PALLADIUM_ON_CARBON = REGISTRATE.item("palladium_on_carbon", Item::new)
-    //     .tag(DestroyItemTags.LIABLE_TO_CHANGE.tag)
-    //     .register(),
     ZEOLITE = REGISTRATE.item("zeolite", Item::new)
         .register();
-    // ZIEGLER_NATTA = REGISTRATE.item("ziegler-natta", Item::new)
-    //     .tag(DestroyItemTags.LIABLE_TO_CHANGE.tag)
-    //     .register();
 
     public static final ItemEntry<SimpleFoiledItem>
 
@@ -395,24 +382,14 @@ public class DestroyItems {
     MASHED_POTATO = REGISTRATE.item("mashed_potato", Item::new)
         .properties(p -> p
             .food(DestroyFoods.MASHED_POTATO)
-        ).register(),
-    WHITE_WHEAT = REGISTRATE.item("white_wheat", Item::new)
-        .tag(Tags.Items.CROPS)
-        .tag(DestroyItemTags.LIABLE_TO_CHANGE.tag)
-        .removeTab(CreativeModeTabs.SEARCH)
-        .register(),
-    BIFURICATED_CARROT = REGISTRATE.item("bifuricated_carrot", Item::new)
-        .properties(p -> p
-            .food(DestroyFoods.BIFURICATED_CARROT)
-        ).tag(Tags.Items.CROPS, DestroyItemTags.LIABLE_TO_CHANGE.tag)
-        .removeTab(CreativeModeTabs.SEARCH)
-        .register(),
-    POTATE_O = REGISTRATE.item("potate_o", Item::new)
-        .properties(p -> p
-            .food(DestroyFoods.POTATE_O)
-        ).tag(Tags.Items.CROPS, DestroyItemTags.LIABLE_TO_CHANGE.tag)
-        .removeTab(CreativeModeTabs.SEARCH)
-        .register();
+        ).register();
+
+    public static final ItemEntry<ChewingGumItem>
+
+    CHEWING_GUM = REGISTRATE.item("chewing_gum", ChewingGumItem::new)
+    .properties(p -> p
+        .food(DestroyFoods.CHEWING_GUM)
+    ).register();
 
     public static final ItemEntry<BowlFoodItem>
     
@@ -430,21 +407,7 @@ public class DestroyItems {
             .stacksTo(16)
         ).tag(DestroyItemTags.ALCOHOLIC_DRINK.tag)
         .register(),
-    ONCE_DISTILLED_MOONSHINE_BOTTLE = REGISTRATE.item("once_distilled_moonshine_bottle", p -> new AlcoholicDrinkItem(p, 1))
-        .properties(p -> p
-            .food(DestroyFoods.MOONSHINE)
-            .craftRemainder(Items.GLASS_BOTTLE)
-            .stacksTo(16)
-        ).tag(DestroyItemTags.ALCOHOLIC_DRINK.tag)
-        .register(),
-    TWICE_DISTILLED_MOONSHINE_BOTTLE = REGISTRATE.item("twice_distilled_moonshine_bottle", p -> new AlcoholicDrinkItem(p, 2))
-        .properties(p -> p
-            .food(DestroyFoods.MOONSHINE)
-            .craftRemainder(Items.GLASS_BOTTLE)
-            .stacksTo(16)
-        ).tag(DestroyItemTags.ALCOHOLIC_DRINK.tag)
-        .register(),
-    THRICE_DISTILLED_MOONSHINE_BOTTLE = REGISTRATE.item("thrice_distilled_moonshine_bottle", p -> new AlcoholicDrinkItem(p, 3))
+    MOONSHINE_BOTTLE = REGISTRATE.item("moonshine_bottle", p -> new AlcoholicDrinkItem(p, 3))
         .properties(p -> p
             .food(DestroyFoods.MOONSHINE)
             .craftRemainder(Items.GLASS_BOTTLE)
@@ -479,9 +442,6 @@ public class DestroyItems {
         .tab(null)
         .register(),
     UNFINISHED_UNVARNISHED_PLYWOOD = REGISTRATE.item("unfinished_unvarnished_plywood", SequencedAssemblyItem::new)
-        .tab(null)
-        .register(),
-    UNPROCESSED_CONVERSION_CATALYST = REGISTRATE.item("unprocessed_conversion_catalyst", SequencedAssemblyItem::new)
         .tab(null)
         .register(),
     UNPROCESSED_MASHED_POTATO = REGISTRATE.item("unprocessed_mashed_potato", SequencedAssemblyItem::new)
@@ -608,10 +568,6 @@ public class DestroyItems {
         .tag(DestroyItemTags.BEETROOT_ASHES.tag)
         .register();
 
-    // static {
-    //     REGISTRATE.startSection(AllSections.CURIOSITIES);
-    // };
-
     // SYRINGES
 
     public static final ItemEntry<Item> SYRINGE = REGISTRATE.item("syringe", Item::new)
@@ -637,15 +593,8 @@ public class DestroyItems {
 
     // UNCATEGORISED
 
-    // static {
-    //     REGISTRATE.startSection(AllSections.CURIOSITIES);
-    // };
-
     public static final ItemEntry<Item>
 
-    AGAR = REGISTRATE.item("agar", Item::new)
-        .removeTab(CreativeModeTabs.SEARCH)
-        .register(),
     DISCHARGED_VOLTAIC_PILE = REGISTRATE.item("discharged_voltaic_pile", Item::new)
         .tag(DestroyItemTags.LIABLE_TO_CHANGE.tag)
         .register(),
@@ -661,9 +610,6 @@ public class DestroyItems {
     YEAST = REGISTRATE.item("yeast", Item::new)
         .tag(DestroyItemTags.FERTILIZER.tag)
         .register(),
-    // CHALK = REGISTRATE.item("chalk", Item::new)
-    //     .tag(DestroyItemTags.LIABLE_TO_CHANGE.tag)
-    //     .register(),
     NANODIAMONDS = REGISTRATE.item("nanodiamonds", Item::new)
         .register();
 

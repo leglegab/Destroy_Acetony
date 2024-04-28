@@ -1,5 +1,6 @@
 {
   "values": [
-    "destroy:plywood"
+    "destroy:plywood",
+    "destroy:unvarnished_plywood"
   ]
 }

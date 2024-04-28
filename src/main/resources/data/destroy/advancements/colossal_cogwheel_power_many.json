@@ -1,0 +1,26 @@
+{
+    "parent": "destroy:root",
+    "criteria": {
+      "power": {
+        "trigger": "destroy:colossal_cogwheel_power_many"
+      }
+    },
+    "display": {
+      "description": {
+        "color": "#DBA213",
+        "translate": "advancement.destroy.colossal_cogwheel_power_many.description"
+      },
+      "icon": {
+        "item": "destroy:colossal_cogwheel"
+      },
+      "title": {
+        "translate": "advancement.destroy.colossal_cogwheel_power_many"
+      },
+      "frame": "goal"
+    },
+    "requirements": [
+      [
+        "power"
+      ]
+    ]
+  }

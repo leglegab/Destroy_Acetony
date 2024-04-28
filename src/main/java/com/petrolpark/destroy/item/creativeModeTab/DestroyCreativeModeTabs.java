@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.petrolpark.destroy.Destroy;
-import com.petrolpark.destroy.block.DestroyBlocks;
 import com.petrolpark.destroy.item.BadgeItem;
 import com.petrolpark.destroy.item.DestroyItems;
 import com.tterrag.registrate.util.entry.ItemProviderEntry;
@@ -51,20 +50,12 @@ public class DestroyCreativeModeTabs {
 
 				// Temporary items
 				DestroyItems.UNFINISHED_BLACKLIGHT,
+				DestroyItems.UNFINISHED_CIRCUIT_BOARD,
 				DestroyItems.UNFINISHED_VOLTAIC_PILE,
-				DestroyItems.UNPROCESSED_CONVERSION_CATALYST,
+				DestroyItems.UNFINISHED_UNVARNISHED_PLYWOOD,
 				DestroyItems.UNPROCESSED_MASHED_POTATO,
 				DestroyItems.UNPROCESSED_NAPALM_SUNDAE,
-				DestroyItems.UNFINISHED_CARD_STOCK,
-
-				// Removal
-				DestroyItems.BIFURICATED_CARROT,
-				DestroyItems.POTATE_O,
-				DestroyItems.WHITE_WHEAT,
-				DestroyItems.AGAR,
-				DestroyBlocks.YEAST_MUSHROOM,
-				DestroyBlocks.YEAST_COVERED_AGAR_BLOCK,
-				DestroyBlocks.AGAR_BLOCK
+				DestroyItems.UNFINISHED_CARD_STOCK
 			));
 		};
 

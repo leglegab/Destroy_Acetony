@@ -5,7 +5,7 @@
         "item": "destroy:empty_bomb_bon"
       },
       {
-        "fluid": "destroy:twice_distilled_moonshine",
+        "fluid": "destroy:moonshine",
         "amount": 200
       }
     ],

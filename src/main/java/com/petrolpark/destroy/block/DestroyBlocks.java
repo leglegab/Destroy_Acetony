@@ -44,12 +44,10 @@ import com.tterrag.registrate.util.entry.BlockEntry;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.ItemTags;
-import net.minecraft.world.item.CreativeModeTabs;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
-import net.minecraft.world.level.block.HalfTransparentBlock;
 import net.minecraft.world.level.block.RotatedPillarBlock;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.state.properties.NoteBlockInstrument;
@@ -213,6 +211,7 @@ public class DestroyBlocks {
         .initialProperties(SharedProperties::wooden)
         .properties(p -> p
             .noOcclusion()
+            .noLootTable() // Handled in RedstoneProgrammerBlock class
         ).item(RedstoneProgrammerBlockItem::new)
         .build()
         .register();
@@ -638,29 +637,9 @@ public class DestroyBlocks {
         .initialProperties(() -> Blocks.BEETROOTS)
         .register();
 
-    public static final BlockEntry<YeastMushroomBlock>
-
-    YEAST_MUSHROOM = REGISTRATE.block("yeast_mushroom", YeastMushroomBlock::new)
-        .initialProperties(() -> Blocks.BROWN_MUSHROOM)
-        .item()
-        .tag(DestroyItemTags.LIABLE_TO_CHANGE.tag)
-        .removeTab(CreativeModeTabs.SEARCH)
-        .build()
-        .register();
-
     public static final BlockEntry<FullyGrownCropBlock>
-    
-    BIFURICATED_CARROTS = REGISTRATE.block("bifuricated_carrots", p -> new FullyGrownCropBlock(p, DestroyItems.BIFURICATED_CARROT))
-        .initialProperties(() -> Blocks.CARROTS)
-        .tag(BlockTags.CROPS)
-        .register(),
 
     GOLDEN_CARROTS = REGISTRATE.block("golden_carrots", p -> new FullyGrownCropBlock(p, () -> Items.GOLDEN_CARROT))
-        .initialProperties(() -> Blocks.CARROTS)
-        .tag(BlockTags.CROPS)
-        .register(),
-
-    POTATE_OS = REGISTRATE.block("potate_os", p -> new FullyGrownCropBlock(p, DestroyItems.POTATE_O))
         .initialProperties(() -> Blocks.CARROTS)
         .tag(BlockTags.CROPS)
         .register();
@@ -905,27 +884,6 @@ public class DestroyBlocks {
         .tag(BlockTags.MINEABLE_WITH_SHOVEL)
         .tag(BlockTags.MINEABLE_WITH_HOE)
         .item()
-        .build()
-        .register();
-
-    public static final BlockEntry<HalfTransparentBlock> AGAR_BLOCK = REGISTRATE.block("agar_block", HalfTransparentBlock::new)
-        .initialProperties(() -> Blocks.CLAY)
-        .properties(p -> p
-            .mapColor(MapColor.COLOR_LIGHT_BLUE)
-            .friction(0.5f)
-            .noOcclusion()
-            .sound(SoundType.SLIME_BLOCK)
-            .strength(0.1f)
-        ).transform(TagGen.tagBlockAndItem("storage_blocks/agar"))
-        .removeTab(CreativeModeTabs.SEARCH)
-        .build()
-        .register();
-
-    public static final BlockEntry<HalfTransparentBlock> YEAST_COVERED_AGAR_BLOCK = REGISTRATE.block("yeast_covered_agar_block", HalfTransparentBlock::new)
-        .initialProperties(AGAR_BLOCK)
-        .item()
-        .tag(DestroyItemTags.LIABLE_TO_CHANGE.tag)
-        .removeTab(CreativeModeTabs.SEARCH)
         .build()
         .register();
 
