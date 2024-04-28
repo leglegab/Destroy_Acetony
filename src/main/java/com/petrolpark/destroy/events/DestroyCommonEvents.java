@@ -61,6 +61,7 @@ import com.petrolpark.destroy.sound.DestroySoundEvents;
 import com.petrolpark.destroy.util.ChemistryDamageHelper;
 import com.petrolpark.destroy.util.DestroyLang;
 import com.petrolpark.destroy.util.DestroyTags.DestroyItemTags;
+import com.petrolpark.destroy.util.vat.VatMaterialResourceListener;
 import com.petrolpark.destroy.util.InebriationHelper;
 import com.petrolpark.destroy.util.PollutionHelper;
 import com.petrolpark.destroy.util.RedstoneProgrammerItemHandler;
@@ -913,6 +914,7 @@ public class DestroyCommonEvents {
         event.addListener(Destroy.CIRCUIT_PATTERN_HANDLER.RELOAD_LISTENER);
         event.addListener(new ExplosiveProperties.Listener(event.getConditionContext()));
         event.addListener(ManualOnlyShapedRecipe.ALLOWED_MENU_LISTENER);
+        event.addListener(new VatMaterialResourceListener(event.getConditionContext()));
     };
 
     @SubscribeEvent

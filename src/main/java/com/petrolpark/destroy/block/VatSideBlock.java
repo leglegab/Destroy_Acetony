@@ -37,6 +37,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.fml.DistExecutor;
 
 public class VatSideBlock extends CopycatBlock implements ISpecialBlockItemRequirement {
@@ -57,13 +58,16 @@ public class VatSideBlock extends CopycatBlock implements ISpecialBlockItemRequi
         return onBlockEntityUse(level, pos, be -> {
             if (!(be instanceof VatSideBlockEntity vbe)) return InteractionResult.PASS;
             if (vbe.getDisplayType().quantityObserved.isPresent()) {
-                DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> {
-                    ScreenOpener.open(new QuantityObservingVatSideScreen(vbe));
-                });
+                DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> openScreen(vbe));
                 return InteractionResult.SUCCESS;
             };
             return InteractionResult.PASS;
         });
+    };
+
+    @OnlyIn(Dist.CLIENT)
+    public void openScreen(VatSideBlockEntity vbe) {
+        ScreenOpener.open(new QuantityObservingVatSideScreen(vbe));
     };
 
     @Override

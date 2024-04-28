@@ -71,7 +71,8 @@ public class DestroyPartials {
     TREE_TAP_ARM = block("tree_tap/arm"),
     KEYPUNCH_PISTON = block("keypunch/piston"),
     GAS_MASK = block("gas_mask"),
-    STRAY_SKULL = block("cooler/skull");
+    STRAY_SKULL = block("cooler/skull"),
+    CUSTOM_EXPLOSIVE_MIX_SHELL = block("block/custom_explosive_mix_shell");
 
     // Atoms
     static {

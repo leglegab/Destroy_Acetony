@@ -2,7 +2,9 @@ package com.petrolpark.destroy.block.entity;
 
 import java.util.List;
 
+import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.SectionPos;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.DyeItem;
@@ -10,6 +12,8 @@ import net.minecraft.world.item.DyeableLeatherItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.HitResult;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 /**
  * You must call {@link IDyeableCustomExplosiveMixBlockEntity#onPlace} when the block associated with this Block Entity gets placed,
@@ -19,6 +23,12 @@ import net.minecraft.world.phys.HitResult;
 public interface IDyeableCustomExplosiveMixBlockEntity extends ICustomExplosiveMixBlockEntity {
     
     public void setColor(int color);
+
+    @OnlyIn(Dist.CLIENT)
+    public static void reRender(Level level, BlockPos blockPos) {
+        SectionPos pos = SectionPos.of(blockPos);
+        if (level instanceof ClientLevel clientLevel) clientLevel.setSectionDirtyWithNeighbors(pos.x(), pos.y(), pos.z());
+    };
 
     public int getColor();
 

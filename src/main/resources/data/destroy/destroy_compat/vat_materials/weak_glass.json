@@ -1,0 +1,9 @@
+{
+    "max_pressure_difference": 100000,
+    "conductivity": 15,
+    "transparent": true,
+    "blocks": [
+        "minecraft:glass",
+        "create:framed_glass"
+    ]
+}

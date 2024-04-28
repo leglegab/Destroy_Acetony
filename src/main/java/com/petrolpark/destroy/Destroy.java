@@ -7,8 +7,6 @@ import com.petrolpark.destroy.badge.DestroyBadges;
 import com.petrolpark.destroy.block.DestroyBlocks;
 import com.petrolpark.destroy.block.entity.DestroyBlockEntityTypes;
 import com.petrolpark.destroy.block.model.DestroyPartials;
-import com.petrolpark.destroy.chemistry.api.Chemistry;
-import com.petrolpark.destroy.chemistry.forge.event.ForgeChemistryEventFirer;
 import com.petrolpark.destroy.chemistry.index.DestroyGenericReactions;
 import com.petrolpark.destroy.chemistry.index.DestroyGroupFinder;
 import com.petrolpark.destroy.chemistry.index.DestroyMolecules;
@@ -154,6 +152,9 @@ public class Destroy {
         modEventBus.addListener(Destroy::clientInit);
         modEventBus.addListener(EventPriority.LOWEST, Destroy::gatherData);
 
+        // Chemistry
+        //Chemistry.initiate(new ForgeChemistryEventFirer(), LOGGER::info);
+
         // JEI compat
         if (FMLLoader.getLoadingModList().getModFileById("jei") != null) {
             forgeEventBus.register(DestroyJEI.ClientEvents.class);
@@ -181,7 +182,6 @@ public class Destroy {
         DestroyExtrusions.register();
 
         // Chemistry
-        Chemistry.initiate(new ForgeChemistryEventFirer(), LOGGER::info);
         DestroyGroupFinder.register();
         DestroyTopologies.register();
         DestroyMolecules.register();

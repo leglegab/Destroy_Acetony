@@ -2,6 +2,7 @@ package com.petrolpark.destroy.compat.createbigcannons;
 
 import com.petrolpark.destroy.compat.createbigcannons.block.CreateBigCannonsBlocks;
 import com.petrolpark.destroy.compat.createbigcannons.block.entity.CreateBigCannonBlockEntityTypes;
+import com.petrolpark.destroy.compat.createbigcannons.entity.CreateBigCannonsEntityTypes;
 import com.petrolpark.destroy.compat.createbigcannons.event.CreateBigCannonsClientModEvents;
 
 import net.minecraftforge.api.distmarker.Dist;
@@ -14,6 +15,7 @@ public class CreateBigCannons {
     public static void init(IEventBus modEventBus, IEventBus forgeEventBus) {
         CreateBigCannonsBlocks.register();
         CreateBigCannonBlockEntityTypes.register();
+        CreateBigCannonsEntityTypes.register();
 
         // Initiation events
         forgeEventBus.addListener(CreateBigCannons::onCommonSetup);
