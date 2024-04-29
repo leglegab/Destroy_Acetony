@@ -78,7 +78,7 @@ public abstract class RedstoneProgram {
 
     public RedstoneProgram() {
         mode = PlayMode.MANUAL;
-        ticksPerBeat = DestroyAllConfigs.SERVER.contraptions.minTicksPerBeat.get();
+        ticksPerBeat = DestroyAllConfigs.SERVER.contraptions.redstoneProgrammerMinTicksPerBeat.get();
         length = 20;
         playtime = 0;
         paused = true;
@@ -103,7 +103,7 @@ public abstract class RedstoneProgram {
     };
 
     public void setTicksPerBeat(int value) {
-        ticksPerBeat = Math.max(DestroyAllConfigs.SERVER.contraptions.minTicksPerBeat.get(), value);
+        ticksPerBeat = Math.max(DestroyAllConfigs.SERVER.contraptions.redstoneProgrammerMinTicksPerBeat.get(), value);
     };
 
     public void tick() {

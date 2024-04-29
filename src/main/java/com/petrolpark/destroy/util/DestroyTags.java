@@ -20,10 +20,17 @@ public class DestroyTags {
 
         ALCOHOLIC_DRINK,
         BEETROOT_ASHES,
-        CHEMICAL_PROTECTION_HEAD,
-        CHEMICAL_PROTECTION_TORSO,
-        CHEMICAL_PROTECTION_LEGS,
-        CHEMICAL_PROTECTION_FEET,
+
+
+        CHEMICAL_PROTECTION_EYES("chemical_protection/eyes"),
+        CHEMICAL_PROTECTION_NOSE("chemical_protection/nose"),
+        CHEMICAL_PROTECTION_MOUTH("chemical_protection/mouth"),
+        CHEMICAL_PROTECTION_HEAD("chemical_protection/head"),
+        CHEMICAL_PROTECTION_CHEST("chemical_protection/chest"),
+        CHEMICAL_PROTECTION_LEGS("chemical_protection/legs"),
+        CHEMICAL_PROTECTION_FEET("chemical_protection/feet"),
+        CONTAMINABLE,
+
         DESTROY_INGOTS,
         FERTILIZER,
         HEFTY_BEETROOT,

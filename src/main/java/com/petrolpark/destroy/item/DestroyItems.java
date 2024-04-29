@@ -268,7 +268,7 @@ public class DestroyItems {
         .properties(p -> p
             .stacksTo(1)
         ).onRegister(CreateRegistrate.itemModel(() -> GasMaskModel::new))
-        .tag(DestroyItemTags.CHEMICAL_PROTECTION_HEAD.tag)
+        .tag(DestroyItemTags.CHEMICAL_PROTECTION_HEAD.tag, DestroyItemTags.CHEMICAL_PROTECTION_EYES.tag, DestroyItemTags.CHEMICAL_PROTECTION_NOSE.tag, DestroyItemTags.CHEMICAL_PROTECTION_MOUTH.tag, DestroyItemTags.CONTAMINABLE.tag)
         .register();
 
     public static final ItemEntry<? extends HazmatSuitArmorItem>
@@ -276,17 +276,17 @@ public class DestroyItems {
     HAZMAT_SUIT = REGISTRATE.item("hazmat_suit", p -> new HazmatSuitArmorItem(Type.CHESTPLATE, p))
         .properties(p -> p
             .stacksTo(1)
-        ).tag(DestroyItemTags.CHEMICAL_PROTECTION_TORSO.tag)
+        ).tag(DestroyItemTags.CHEMICAL_PROTECTION_CHEST.tag, DestroyItemTags.CONTAMINABLE.tag)
         .register(),
     HAZMAT_LEGGINGS = REGISTRATE.item("hazmat_leggings", p -> new HazmatSuitArmorItem(Type.LEGGINGS, p))
         .properties(p -> p
             .stacksTo(1)
-        ).tag(DestroyItemTags.CHEMICAL_PROTECTION_LEGS.tag)
+        ).tag(DestroyItemTags.CHEMICAL_PROTECTION_LEGS.tag, DestroyItemTags.CONTAMINABLE.tag)
         .register(),
     WELLINGTON_BOOTS = REGISTRATE.item("wellington_boots", p -> new HazmatSuitArmorItem(Type.BOOTS, p))
         .properties(p -> p
             .stacksTo(1)
-        ).tag(DestroyItemTags.CHEMICAL_PROTECTION_FEET.tag)
+        ).tag(DestroyItemTags.CHEMICAL_PROTECTION_FEET.tag, DestroyItemTags.CONTAMINABLE.tag)
         .register();
 
     // public static final ItemEntry<ZirconiumPantsItem>

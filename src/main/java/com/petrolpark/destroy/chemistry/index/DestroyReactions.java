@@ -9,6 +9,7 @@ import com.petrolpark.destroy.chemistry.reactionresult.CombinedReactionResult;
 import com.petrolpark.destroy.chemistry.reactionresult.ExplosionReactionResult;
 import com.petrolpark.destroy.chemistry.reactionresult.PrecipitateReactionResult;
 import com.petrolpark.destroy.item.DestroyItems;
+import com.petrolpark.destroy.config.DestroySubstancesConfigs;
 import com.simibubi.create.AllItems;
 import com.simibubi.create.AllTags;
 
@@ -81,6 +82,7 @@ public class DestroyReactions {
         .addReactant(DestroyMolecules.METHYL_SALICYLATE)
         .addCatalyst(DestroyMolecules.SODIUM_ION, 0)
         .withResult(0.9f, PrecipitateReactionResult.of(DestroyItems.BABY_BLUE_CRYSTAL::asStack))
+        .includeInJeiIf(DestroySubstancesConfigs::babyBlueEnabled)
         .build(),
 
     BENZENE_ETHYLATION = builder()

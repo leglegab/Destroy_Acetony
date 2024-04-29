@@ -7,6 +7,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 
 import com.petrolpark.destroy.advancement.DestroyAdvancementTrigger;
+import com.petrolpark.destroy.config.DestroyAllConfigs;
 import com.petrolpark.destroy.effect.DestroyMobEffects;
 import com.simibubi.create.AllTags;
 
@@ -37,7 +38,7 @@ public class CuttingBoardMixin {
         locals = LocalCapture.CAPTURE_FAILSOFT
     )
     public void inUse(BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit, CallbackInfoReturnable<InteractionResult> cir, BlockEntity tileEntity, CuttingBoardBlockEntity cuttingBoardEntity, ItemStack heldStack, ItemStack offhandStack, ItemStack boardStack) {
-        if (boardStack.is(AllTags.forgeItemTag("crops/onion"))) {
+        if (DestroyAllConfigs.SERVER.compat.cuttingOnionsCausesCrying.get() && boardStack.is(AllTags.forgeItemTag("crops/onion"))) {
             DestroyAdvancementTrigger.CUT_ONIONS.award(level, player);
             level.getEntitiesOfClass(LivingEntity.class, new AABB(pos).inflate(2f)).forEach(entity -> entity.addEffect(new MobEffectInstance(DestroyMobEffects.CRYING.get(), 400, 0, false, false, true)));
         };

@@ -5,6 +5,7 @@ import javax.annotation.Nullable;
 import org.jetbrains.annotations.NotNull;
 
 import com.petrolpark.destroy.block.entity.IDyeableCustomExplosiveMixBlockEntity;
+import com.petrolpark.destroy.config.DestroyAllConfigs;
 import com.petrolpark.destroy.item.inventory.CustomExplosiveMixInventory;
 
 import net.minecraft.core.BlockPos;
@@ -36,7 +37,7 @@ public class CustomExplosiveMixShellBlockEntity extends FuzedBlockEntity impleme
     };
 
     public CustomExplosiveMixInventory createInv() {
-        return new CustomExplosiveMixInventory(16);
+        return new CustomExplosiveMixInventory(DestroyAllConfigs.SERVER.compat.customExplosiveMixShellSize.get());
     };
 
     public void refreshCapability() {

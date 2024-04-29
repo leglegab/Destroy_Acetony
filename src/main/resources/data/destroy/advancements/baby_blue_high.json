@@ -1,5 +1,12 @@
 {
     "parent": "destroy:baby_blue",
+    "conditions": [
+      {
+        "type": "destroy:config_boolean",
+        "mod": "destroy",
+        "value": "enableBabyBlue"
+      }
+    ],
     "criteria": {
       "take": {
         "conditions": {

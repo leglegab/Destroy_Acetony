@@ -17,6 +17,6 @@ public class CreateJEIMixin {
         remap = false
     )
     public void inLoadCategories(CallbackInfo ci) {
-        DestroyMysteriousItemConversions.register();
+        DestroyMysteriousItemConversions.addAll();
     };
 };

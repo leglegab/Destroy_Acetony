@@ -1,7 +1,6 @@
 package com.petrolpark.destroy.chemistry.api.nuclide;
 
 import com.petrolpark.destroy.chemistry.api.property.IElectronegativity;
-import com.petrolpark.destroy.chemistry.api.property.IStandardValenciesForFROWNS;
 import com.petrolpark.destroy.chemistry.api.registry.IChemistryRegistry;
 import com.petrolpark.destroy.chemistry.api.registry.IRegisteredChemistryObject;
 
@@ -15,7 +14,7 @@ import com.petrolpark.destroy.chemistry.api.registry.IRegisteredChemistryObject;
  * @since 1.0
  * @author petrolpark
  */
-public class ElementAveragedNuclide implements INuclide, IRegisteredChemistryObject<ElementAveragedNuclide, String>, IElectronegativity, IStandardValenciesForFROWNS {
+public class ElementAveragedNuclide implements INuclide, IRegisteredChemistryObject<ElementAveragedNuclide, String>, IElectronegativity {
 
     /**
      * The IUPAC symbol for this element
@@ -29,16 +28,11 @@ public class ElementAveragedNuclide implements INuclide, IRegisteredChemistryObj
      * The Pauling electronegativity value for this element.
      */
     public final float electronegativity;
-    /**
-     * The usual numbers of "bonds" (single bond equivalents) {@link IAtom}s of this element have.
-     */
-    public final float[] valencies;
 
-    public ElementAveragedNuclide(String symbol, float relativeAtomicMass, float electronegativity, float[] valencies) {
+    public ElementAveragedNuclide(String symbol, float relativeAtomicMass, float electronegativity) {
         this.symbol = symbol;
         this.relativeAtomicMass = relativeAtomicMass;
         this.electronegativity = electronegativity;
-        this.valencies = valencies;
     };
 
     @Override
@@ -60,12 +54,6 @@ public class ElementAveragedNuclide implements INuclide, IRegisteredChemistryObj
     @Override
     public float getElectronegativity() {
         return electronegativity;
-    };
-
-    @Override
-    public float getNextLowestValency(float valency) {
-        for (float validValency : valencies) if (validValency >= valency) return validValency;
-        return 0f;
     };
 
     @Override

@@ -3,6 +3,7 @@ package com.petrolpark.destroy.compat.createbigcannons.item;
 import java.util.List;
 import javax.annotation.Nullable;
 
+import com.petrolpark.destroy.config.DestroyAllConfigs;
 import com.petrolpark.destroy.item.DyeableCustomExplosiveMixBlockItem;
 
 import net.minecraft.network.chat.Component;
@@ -26,5 +27,10 @@ public class CustomExplosiveMixChargeBlockItem extends DyeableCustomExplosiveMix
 		CBCTooltip.appendPropellantStressText(stack, level, tooltipComponents, isAdvanced, CBCBlocks.POWDER_CHARGE.get());
         //TODO list contents of charge
 	};
+
+    @Override
+    public int getExplosiveInventorySize() {
+        return DestroyAllConfigs.SERVER.compat.customExplosiveMixChargeSize.get();
+    };
     
 };

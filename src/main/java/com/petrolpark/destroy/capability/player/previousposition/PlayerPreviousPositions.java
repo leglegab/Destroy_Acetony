@@ -61,7 +61,7 @@ public class PlayerPreviousPositions {
     };
 
     public static void updateQueueSize() {
-        QUEUE_SIZE = DestroyAllConfigs.COMMON.substances.teleportTime.get();
+        QUEUE_SIZE = DestroyAllConfigs.SERVER.substances.chorusWineTeleportTime.get();
     };
 
     public static int getQueueSize() {

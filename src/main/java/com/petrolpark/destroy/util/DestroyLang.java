@@ -43,6 +43,11 @@ public class DestroyLang {
     private static String[] subscriptNumbers = new String[]{"\u2080", "\u2081", "\u2082", "\u2083", "\u2084", "\u2085", "\u2086", "\u2087", "\u2088", "\u2089"};
     private static String[] superscriptNumbers = new String[]{"\u2070", "\u00b9", "\u00b2", "\u00b3", "\u2074", "\u2075", "\u2076", "\u2077", "\u2078", "\u2079"};
 
+    public static String pascal(String string) {
+        String s = Lang.asId(string);
+        return s.substring(0, 1).toUpperCase() + s.substring(1);
+    };
+    
     public static LangBuilder builder() {
         return new LangBuilder(Destroy.MOD_ID);
     };

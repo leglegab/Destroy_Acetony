@@ -37,6 +37,7 @@ import com.petrolpark.destroy.commands.PollutionCommand;
 import com.petrolpark.destroy.commands.RegenerateCircuitPatternCommand;
 import com.petrolpark.destroy.commands.RegenerateCircuitPatternCommand.CircuitPatternIdArgument;
 import com.petrolpark.destroy.config.DestroyAllConfigs;
+import com.petrolpark.destroy.config.DestroySubstancesConfigs;
 import com.petrolpark.destroy.effect.DestroyMobEffects;
 import com.petrolpark.destroy.fluid.DestroyFluids;
 import com.petrolpark.destroy.item.CircuitPatternItem;
@@ -56,6 +57,7 @@ import com.petrolpark.destroy.recipe.CircuitDeployerApplicationRecipe;
 import com.petrolpark.destroy.recipe.DestroyRecipeTypes;
 import com.petrolpark.destroy.recipe.DiscStampingRecipe;
 import com.petrolpark.destroy.recipe.ManualOnlyShapedRecipe;
+import com.petrolpark.destroy.recipe.condition.ConfigBooleanCondition;
 import com.petrolpark.destroy.recipe.ingredient.CircuitPatternIngredient;
 import com.petrolpark.destroy.sound.DestroySoundEvents;
 import com.petrolpark.destroy.util.ChemistryDamageHelper;
@@ -438,11 +440,12 @@ public class DestroyCommonEvents {
     @SubscribeEvent
     @SuppressWarnings("null") // Stop giving warnings for effects we've already checked exist
     public static void changeMiningSpeedWithBabyBlueEffects(PlayerEvent.BreakSpeed event) {
+        if (!DestroySubstancesConfigs.babyBlueEnabled()) return;
         Player player = event.getEntity();
         if (player.hasEffect(DestroyMobEffects.BABY_BLUE_HIGH.get())) {
-            event.setNewSpeed(event.getOriginalSpeed() + (0.5f * (player.getEffect(DestroyMobEffects.BABY_BLUE_HIGH.get()).getAmplifier() + 1))); // Increase Haste with Baby Blue High
+            event.setNewSpeed(event.getOriginalSpeed() + (DestroyAllConfigs.SERVER.substances.babyBlueMiningSpeedBonus.getF() * (player.getEffect(DestroyMobEffects.BABY_BLUE_HIGH.get()).getAmplifier() + 1))); // Increase Haste with Baby Blue High
         } else if (player.hasEffect(DestroyMobEffects.BABY_BLUE_WITHDRAWAL.get())) {
-            event.setNewSpeed(event.getOriginalSpeed() - (0.3f * (player.getEffect(DestroyMobEffects.BABY_BLUE_WITHDRAWAL.get()).getAmplifier() + 1))); // Decrease Haste with Baby Blue Withdrawal
+            event.setNewSpeed(event.getOriginalSpeed() + (DestroyAllConfigs.SERVER.substances.babyBlueWidthdrawalSpeedBonus.getF() * (player.getEffect(DestroyMobEffects.BABY_BLUE_WITHDRAWAL.get()).getAmplifier() + 1))); // Decrease Haste with Baby Blue Withdrawal
             if (event.getNewSpeed() <= 0f) { // Mining speed probably shouldn't be less than 0
                 event.setNewSpeed(0f);
             };
@@ -454,34 +457,17 @@ public class DestroyCommonEvents {
      */
     @SubscribeEvent
     public static void playerHearsSound(PlayLevelSoundEvent.AtPosition event) {
-        if (event.getOriginalVolume() < 0.5f) return;
-        switch (event.getSource()) {
-            // Ignore these sounds:
-            case AMBIENT:
-            case PLAYERS:
-            case MUSIC:
-            case VOICE:
-            case NEUTRAL:
-                break;
-            // Don't ignore these sounds:
-            case BLOCKS:
-            case HOSTILE:
-            case MASTER:
-            case RECORDS:
-            case WEATHER:
-            default:
-                Vec3 pos = event.getPosition();
-                List<Entity> nearbyEntities = event.getLevel().getEntities(null, new AABB(pos.add(new Vec3(-5,-5,-5)), pos.add(new Vec3(5,5,5))));
-                for (Entity entity : nearbyEntities) {
-                    if (entity instanceof Player) {
-                        Player player = (Player)entity;
-                        if (player.hasEffect(DestroyMobEffects.HANGOVER.get())) {
-                            player.hurt(DestroyDamageSources.headache(player.level()), 1f);
-                        };
-                    };
-                }; 
-                break;
-        };
+        if (event.getOriginalVolume() < DestroyAllConfigs.SERVER.substances.soundSourceThresholds.get(event.getSource()).getF()) return;
+        Vec3 pos = event.getPosition();
+        float radius = DestroyAllConfigs.SERVER.substances.hangoverNoiseTriggerRadius.getF();
+        List<Entity> nearbyEntities = event.getLevel().getEntities(null, new AABB(pos.add(new Vec3(-radius,-radius,-radius)), pos.add(new Vec3(radius, radius, radius))));
+        for (Entity entity : nearbyEntities) {
+            if (entity instanceof LivingEntity livingEntity) {
+                if (livingEntity.hasEffect(DestroyMobEffects.HANGOVER.get())) {
+                    livingEntity.hurt(DestroyDamageSources.headache(livingEntity.level()), DestroyAllConfigs.SERVER.substances.soundSourceDamage.get(event.getSource()).getF());
+                };
+            };
+        }; 
     };
 
     /**
@@ -492,12 +478,12 @@ public class DestroyCommonEvents {
         ItemStack stack = event.getItemStack();
         Player player = event.getEntity();
         if (stack.getItem().isEdible()) {
-            if (DestroyItemTags.CHEMICAL_PROTECTION_HEAD.matches(player.getItemBySlot(EquipmentSlot.HEAD).getItem())) {
-                player.displayClientMessage(DestroyLang.translate("tooltip.eating_prevented.gas_mask").component(), true);
+            if (DestroyItemTags.CHEMICAL_PROTECTION_MOUTH.matches(player.getItemBySlot(EquipmentSlot.HEAD).getItem())) {
+                player.displayClientMessage(DestroyLang.translate("tooltip.eating_prevented.mouth_protected").component(), true);
                 event.setCanceled(true);
                 return;
             };
-            if (stack.getItem() != DestroyItems.BABY_BLUE_POWDER.get() && player.hasEffect(DestroyMobEffects.BABY_BLUE_WITHDRAWAL.get())) {
+            if (DestroySubstancesConfigs.babyBlueEnabled() && stack.getItem() != DestroyItems.BABY_BLUE_POWDER.get() && player.hasEffect(DestroyMobEffects.BABY_BLUE_WITHDRAWAL.get())) {
                 player.displayClientMessage(DestroyLang.translate("tooltip.eating_prevented.baby_blue").component(), true);
                 event.setCanceled(true);
             };
@@ -528,7 +514,7 @@ public class DestroyCommonEvents {
         for (Player player : event.getLevel().players()) {
             MobEffectInstance effect = player.getEffect(DestroyMobEffects.INEBRIATION.get());
             if (effect != null) {
-                player.addEffect(new MobEffectInstance(DestroyMobEffects.HANGOVER.get(), DestroyAllConfigs.COMMON.substances.hangoverDuration.get() * (effect.getAmplifier() + 1)));
+                player.addEffect(new MobEffectInstance(DestroyMobEffects.HANGOVER.get(), DestroyAllConfigs.SERVER.substances.hangoverDuration.get() * (effect.getAmplifier() + 1)));
                 player.removeEffect(DestroyMobEffects.INEBRIATION.get());
                 DestroyAdvancementTrigger.HANGOVER.award(player.level(), player);
             };
@@ -547,18 +533,6 @@ public class DestroyCommonEvents {
         syringeItem.onInject(itemStack, attacker.level(), event.getEntity());
         livingAttacker.setItemInHand(InteractionHand.MAIN_HAND, new ItemStack(DestroyItems.SYRINGE.get()));
     };
-
-    // /**
-    //  * Award the silly little Tally Hall reference Advancement.
-    //  */
-    // @SubscribeEvent
-    // public static void onMechanicalHandAttack(LivingDeathEvent event) {
-    //     if (!(event.getSource().getEntity() instanceof Player player)) return;
-    //     if (AllBlocks.MECHANICAL_ARM.isIn(player.getMainHandItem()) && DestroyItems.ZIRCONIUM_PANTS.isIn(player.getItemBySlot(EquipmentSlot.LEGS))) {
-    //         event.getEntity().spawnAtLocation(new ItemStack(DestroyItems.CHALK_DUST.get()));
-    //         DestroyAdvancements.MECHANICAL_HANDS.award(player.level(), player);
-    //     };
-    // };
 
     /**
      * Award an Advancement for shooting Hefty Beetroots and allow Baby Villagers to build sandcastles.
@@ -675,7 +649,7 @@ public class DestroyCommonEvents {
                     if (program.getChannels().stream().anyMatch(channel -> channel.getNetworkKey().equals(key))) {
                         event.setCancellationResult(InteractionResult.FAIL);
                         if (level.isClientSide()) player.displayClientMessage(DestroyLang.translate("tooltip.redstone_programmer.add_frequency.failure.exists").style(ChatFormatting.RED).component(), true); 
-                    } else if (program.getChannels().size() >= DestroyAllConfigs.SERVER.contraptions.maxChannels.get()) {
+                    } else if (program.getChannels().size() >= DestroyAllConfigs.SERVER.contraptions.redstoneProgrammerMaxChannels.get()) {
                         event.setCancellationResult(InteractionResult.FAIL);
                         if (level.isClientSide()) player.displayClientMessage(DestroyLang.translate("tooltip.redstone_programmer.add_frequency.failure.full").style(ChatFormatting.RED).component(), true); 
                     } else {
@@ -832,7 +806,7 @@ public class DestroyCommonEvents {
      */
     @SubscribeEvent
     public static void onTreeGrown(SaplingGrowTreeEvent event) {
-        if (!(event.getLevel() instanceof Level level)) return;
+        if (!(event.getLevel() instanceof Level level) || !PollutionHelper.pollutionEnabled() || !DestroyAllConfigs.SERVER.pollution.growingTreesDecreasesPollution.get()) return;
         if (level.random.nextInt(3) == 0) PollutionHelper.changePollution(level, PollutionType.GREENHOUSE, -1);
         if (level.random.nextInt(3) == 0) PollutionHelper.changePollution(level, PollutionType.SMOG, -1);
         if (level.random.nextInt(3) == 0) PollutionHelper.changePollution(level, PollutionType.ACID_RAIN, -1);
@@ -851,7 +825,7 @@ public class DestroyCommonEvents {
 
         // Pollution
         for (PollutionType pollutionType : PollutionType.values()) {
-            if (level.random.nextInt(500) == 0) PollutionHelper.changePollution(event.level, pollutionType, -1);
+            if (level.random.nextInt(500) <= DestroyAllConfigs.SERVER.pollution.pollutionDecreaseRates.get(pollutionType).getF()) PollutionHelper.changePollution(event.level, pollutionType, -1);
         };
     };
 
@@ -946,6 +920,7 @@ public class DestroyCommonEvents {
             };
             IModFile modFile = modFileInfo.getFile();
 			if (event.getPackType() == PackType.CLIENT_RESOURCES) {
+                // Resource packs
                 event.addRepositorySource(consumer -> {
 					Pack pack = Pack.readMetaAndCreate(Destroy.asResource("create_patches").toString(), Components.literal("Destroy Patches For Create"), true, id -> new ModFilePackResources(id, modFile, "resourcepacks/create_patches"), PackType.CLIENT_RESOURCES, Pack.Position.TOP, PackSource.BUILT_IN);
 					if (pack != null) consumer.accept(pack);
@@ -962,12 +937,15 @@ public class DestroyCommonEvents {
         @SubscribeEvent
         public static void registerIngredientTypes(RegisterEvent event) {
             if (event.getRegistryKey().equals(ForgeRegistries.Keys.RECIPE_SERIALIZERS)) {
+                // Conditions
+                CraftingHelper.register(ConfigBooleanCondition.SERIALIZER);
+                // Ingredient types
                 CraftingHelper.register(Destroy.asResource("circuit_pattern_item"), CircuitPatternIngredient.SERIALIZER);
             };
         };
 
         @SubscribeEvent
-        public static void registerArgumentTypes(RegisterEvent event) {
+        public static void registerCommandArgumentTypes(RegisterEvent event) {
             event.register(Registries.COMMAND_ARGUMENT_TYPE, Destroy.asResource("circuit_pattern_resource_location"), () -> {
                 return ArgumentTypeInfos.registerByClass(CircuitPatternIdArgument.class, SingletonArgumentInfo.contextFree(CircuitPatternIdArgument::create));
             });

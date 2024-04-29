@@ -43,7 +43,7 @@ public class RedstoneProgramSyncC2SPacket extends C2SPacket {
                 program.load();
                 program.whenChanged();
                 DestroyMessages.sendToClient(new RedstoneProgramSyncReplyS2CPacket(), player);
-                if (Math.min(program.getChannels().size() + 1, DestroyAllConfigs.SERVER.contraptions.maxChannels.get()) * 2 > programMenu.slots.size()) programMenu.refreshSlots();
+                if (Math.min(program.getChannels().size() + 1, DestroyAllConfigs.SERVER.contraptions.redstoneProgrammerMaxChannels.get()) * 2 > programMenu.slots.size()) programMenu.refreshSlots();
             };
         });
         return true;

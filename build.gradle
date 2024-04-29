@@ -11,6 +11,7 @@ buildscript {
         classpath "net.minecraftforge.gradle:ForgeGradle:${forgegradle_version}" // Forge
         classpath "org.spongepowered:mixingradle:${mixingradle_version}" // Mixins
         classpath "org.parchmentmc:librarian:${librarian_version}" // Parchment
+        classpath files("libs/openbabel.jar") // OpenBabel
     }
 }
 
@@ -169,6 +170,9 @@ dependencies {
 
     // Registrate
     implementation fg.deobf("com.tterrag.registrate:Registrate:${registrate_version}")
+
+    // OpenBabel
+    implementation fileTree(dir: 'libs', include: '*.jar')
 
     // OPTIONAL DEPENDENCIES
 

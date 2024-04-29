@@ -1,5 +1,12 @@
 {
     "parent": "destroy:vat",
+    "conditions": [
+      {
+        "type": "destroy:config_boolean",
+        "mod": "destroy",
+        "value": "enableBabyBlue"
+      }
+    ],
     "criteria": {
       "take": {
         "conditions": {},

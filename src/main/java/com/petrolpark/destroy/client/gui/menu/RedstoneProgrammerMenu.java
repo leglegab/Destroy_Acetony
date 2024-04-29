@@ -79,7 +79,7 @@ public class RedstoneProgrammerMenu extends GhostItemMenu<RedstoneProgram> {
         remoteSlots.clear();
         int i = 0;
         int position = RedstoneProgrammerScreen.ITEM_AREA.getY() - 16 - this.offset;
-        for (int channel = 0; channel < Math.min(contentHolder.getChannels().size() + 1, DestroyAllConfigs.SERVER.contraptions.maxChannels.get()); channel++) {
+        for (int channel = 0; channel < Math.min(contentHolder.getChannels().size() + 1, DestroyAllConfigs.SERVER.contraptions.redstoneProgrammerMaxChannels.get()); channel++) {
             position += RedstoneProgrammerScreen.distanceBetweenChannels;
             Slot slot1 = addSlot(new FrequencySlotItemHandler(i++, RedstoneProgrammerScreen.ITEM_AREA.getX() + 32, position, channel, true));
             Slot slot2 = addSlot(new FrequencySlotItemHandler(i++, RedstoneProgrammerScreen.ITEM_AREA.getX() + 50, position, channel, false));
@@ -158,7 +158,7 @@ public class RedstoneProgrammerMenu extends GhostItemMenu<RedstoneProgram> {
     };
 
     public static int maxSlots(RedstoneProgram program) {
-        return 2 * Math.min(program.getChannels().size() + 1, DestroyAllConfigs.SERVER.contraptions.maxChannels.get());
+        return 2 * Math.min(program.getChannels().size() + 1, DestroyAllConfigs.SERVER.contraptions.redstoneProgrammerMaxChannels.get());
     };
 
     public static class DummyRedstoneProgram extends RedstoneProgram {

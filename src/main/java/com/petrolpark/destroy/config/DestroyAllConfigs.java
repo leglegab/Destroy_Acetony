@@ -22,7 +22,7 @@ public class DestroyAllConfigs extends AllConfigs {
 
     public static DestroyClientConfigs CLIENT;
     public static DestroyCommonConfigs COMMON;
-    public static DestroyServerConfigs SERVER;
+    public static DestroyWorldConfigs SERVER;
 
     //This is all copied directly from the Create source code
     private static <T extends DestroyConfigBase> T register(Supplier<T> factory, ModConfig.Type side) {
@@ -41,7 +41,7 @@ public class DestroyAllConfigs extends AllConfigs {
     public static void register(ModLoadingContext context) {
 		CLIENT = register(DestroyClientConfigs::new, ModConfig.Type.CLIENT);
 		COMMON = register(DestroyCommonConfigs::new, ModConfig.Type.COMMON);
-		SERVER = register(DestroyServerConfigs::new, ModConfig.Type.SERVER);
+		SERVER = register(DestroyWorldConfigs::new, ModConfig.Type.SERVER);
 
 		for (Entry<ModConfig.Type, DestroyConfigBase> pair : CONFIGS.entrySet()) {
 			context.registerConfig(pair.getKey(), pair.getValue().specification);

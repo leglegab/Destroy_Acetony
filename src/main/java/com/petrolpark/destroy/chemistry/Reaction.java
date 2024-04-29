@@ -102,7 +102,7 @@ public class Reaction {
      * com.petrolpark.destroy.chemistry.genericreaction.GenericReaction generated Reactions}, and reverse Reactions
      * whose corresponding Reactions are already shown in JEI.
      */
-    private boolean includeInJei;
+    private Supplier<Boolean> includeInJei;
     /**
      * Whether this Reaction should use an equilibrium arrow when displayed in JEI, rather than the normal one. This
      * is just for display, and has no effect on the behaviour of the Reaction in a {@link Mixture}.
@@ -257,7 +257,7 @@ public class Reaction {
      * Whether this Reaction should be displayed in the list of Reactions in JEI.
      */
     public boolean includeInJei() {
-        return includeInJei;
+        return includeInJei.get();
     };
 
     /**
@@ -283,8 +283,8 @@ public class Reaction {
      * @return The Reaction which appears in JEI, or {@code null}
      */
     public Reaction getReactionDisplayedInJEI() {
-        if (includeInJei) return this;
-        return getReverseReactionForDisplay().map(reaction -> reaction.includeInJei ? reaction : null).orElse(null);
+        if (includeInJei.get()) return this;
+        return getReverseReactionForDisplay().map(reaction -> reaction.includeInJei.get() ? reaction : null).orElse(null);
     };
 
     /**
@@ -389,7 +389,7 @@ public class Reaction {
             reaction.itemReactants = new ArrayList<>();
             reaction.molesPerItem = 0f;
 
-            reaction.includeInJei = !generated && !declaredAsReverse;
+            reaction.includeInJei = () -> !generated && !declaredAsReverse;
             reaction.displayAsReversible = false;
 
             hasForcedPreExponentialFactor = false;
@@ -567,11 +567,20 @@ public class Reaction {
         };
 
         /**
+         * Include this Reaction in JEI only if the condition is matched.
+         * @return This Reaction Builder
+         */
+        public ReactionBuilder includeInJeiIf(Supplier<Boolean> condition) {
+            reaction.includeInJei = condition;
+            return this;
+        };
+
+        /**
          * Don't include this Reaction in the list of Reactions shown in JEI.
          * @return This Reaction Builder
          */
         public ReactionBuilder dontIncludeInJei() {
-            reaction.includeInJei = false;
+            reaction.includeInJei = () -> false;
             return this;
         };
 

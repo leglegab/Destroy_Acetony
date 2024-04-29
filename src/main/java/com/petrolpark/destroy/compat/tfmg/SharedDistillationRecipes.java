@@ -1,11 +1,13 @@
 package com.petrolpark.destroy.compat.tfmg;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import com.petrolpark.destroy.Destroy;
+import com.petrolpark.destroy.config.DestroyAllConfigs;
 import com.petrolpark.destroy.recipe.DestroyRecipeTypes;
 import com.petrolpark.destroy.recipe.DistillationRecipe;
 import com.simibubi.create.content.processing.burner.BlazeBurnerBlock.HeatLevel;
@@ -28,10 +30,12 @@ public class SharedDistillationRecipes {
     private static final Map<Level, List<ProcessingRecipe<?>>> DESTROY_TO_TFMG_RECIPES = new HashMap<>();
 
     public static final List<DistillationRecipe> getTFMGToDestroyRecipes(Level level) {
+        if (!DestroyAllConfigs.SERVER.compat.TFMGDistillationInDestroy.get()) return Collections.emptyList();
         return TFMG_TO_DESTROY_RECIPES.computeIfAbsent(level, SharedDistillationRecipes::convertTFMGToDestroyRecipes);
     };
 
     public static final List<ProcessingRecipe<?>> getDestroyToTFMGRecipes(Level level) {
+        if (!DestroyAllConfigs.SERVER.compat.destroyDistillationInTFMG.get()) return Collections.emptyList();
         return DESTROY_TO_TFMG_RECIPES.computeIfAbsent(level, SharedDistillationRecipes::convertDestroyToTFMGRecipes);
     };
     

@@ -21,7 +21,7 @@ import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.items.IItemHandler;
 
-public class SimpleDyeableCustomExplosiveMixBlockEntity extends SmartBlockEntity implements IDyeableCustomExplosiveMixBlockEntity {
+public abstract class SimpleDyeableCustomExplosiveMixBlockEntity extends SmartBlockEntity implements IDyeableCustomExplosiveMixBlockEntity {
 
     public LazyOptional<IItemHandler> itemCapability;
 
@@ -35,9 +35,7 @@ public class SimpleDyeableCustomExplosiveMixBlockEntity extends SmartBlockEntity
         refreshCapability();
     };
 
-    public CustomExplosiveMixInventory createInv() {
-        return new CustomExplosiveMixInventory(16);
-    };
+    public abstract CustomExplosiveMixInventory createInv();
 
     public void refreshCapability() {
         itemCapability = LazyOptional.of(() -> inv);

@@ -12,10 +12,12 @@ public class CreateBigCannonsClientModEvents {
     @SubscribeEvent
     public static void changeBlockColors(RegisterColorHandlersEvent.Block event) {
         event.register(DyeableCustomExplosiveMixBlockColor.INSTANCE, CreateBigCannonsBlocks.CUSTOM_EXPLOSIVE_MIX_CHARGE.get());
+        event.register(DyeableCustomExplosiveMixBlockColor.INSTANCE, CreateBigCannonsBlocks.CUSTOM_EXPLOSIVE_MIX_SHELL.get());
     };
 
     @SubscribeEvent
     public static void changeItemColors(RegisterColorHandlersEvent.Item event) {
         event.register(DyeableCustomExplosiveMixItemColor.INSTANCE, CreateBigCannonsBlocks.CUSTOM_EXPLOSIVE_MIX_CHARGE.asItem());
+        event.register(DyeableCustomExplosiveMixItemColor.INSTANCE, CreateBigCannonsBlocks.CUSTOM_EXPLOSIVE_MIX_SHELL.asItem());
     };
 };

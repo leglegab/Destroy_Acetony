@@ -2,10 +2,13 @@ package com.petrolpark.destroy.item.creativeModeTab;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Supplier;
 
 import com.petrolpark.destroy.Destroy;
+import com.petrolpark.destroy.config.DestroySubstancesConfigs;
 import com.petrolpark.destroy.item.BadgeItem;
 import com.petrolpark.destroy.item.DestroyItems;
+import com.simibubi.create.foundation.utility.Pair;
 import com.tterrag.registrate.util.entry.ItemProviderEntry;
 import com.tterrag.registrate.util.entry.RegistryEntry;
 
@@ -41,6 +44,7 @@ public class DestroyCreativeModeTabs {
 	public static class DestroyDisplayItemsGenerator implements DisplayItemsGenerator {
 
 		public static List<ItemProviderEntry<?>> excludedItems = new ArrayList<>();
+		public static List<Pair<ItemProviderEntry<?>, Supplier<Boolean>>> conditionallyExcludedItems = new ArrayList<>();
 
 		static {
 			excludedItems.addAll(List.of(
@@ -59,9 +63,20 @@ public class DestroyCreativeModeTabs {
 			));
 		};
 
+		static {
+			conditionallyExcludedItems.addAll(List.of(
+				// Baby Blue-related Items
+				Pair.of(DestroyItems.BABY_BLUE_CRYSTAL, DestroySubstancesConfigs::babyBlueEnabled),
+				Pair.of(DestroyItems.BABY_BLUE_POWDER, DestroySubstancesConfigs::babyBlueEnabled),
+				Pair.of(DestroyItems.BABY_BLUE_SYRINGE, DestroySubstancesConfigs::babyBlueEnabled)
+			));
+		};
+
+		
 		@Override
 		public void accept(ItemDisplayParameters parameters, Output output) {
 			for (RegistryEntry<Item> entry : Destroy.REGISTRATE.getAll(Registries.ITEM)) {
+				if (conditionallyExcludedItems.stream().filter(p -> p.getFirst().equals(entry)).map(pair -> pair.getSecond().get()).findFirst().orElse(false)) continue;
 				if (!excludedItems.contains(entry) && !(entry.get() instanceof BadgeItem)) {
 					output.accept(new ItemStack(entry.get().asItem()));
 				};
