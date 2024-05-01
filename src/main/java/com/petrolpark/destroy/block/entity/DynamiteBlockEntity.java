@@ -4,6 +4,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import com.petrolpark.destroy.block.entity.behaviour.SidedScrollValueBehaviour;
+import com.petrolpark.destroy.config.DestroyAllConfigs;
 import com.petrolpark.destroy.util.DestroyLang;
 import com.simibubi.create.CreateClient;
 import com.simibubi.create.foundation.blockEntity.SmartBlockEntity;
@@ -44,7 +45,7 @@ public class DynamiteBlockEntity extends SmartBlockEntity implements ISpecialWhe
     @Override
     public void addBehaviours(List<BlockEntityBehaviour> behaviours) {
         scrollValueBehaviour = new SidedScrollValueBehaviour(DestroyLang.translate("tooltip.dynamite.excavation_radius").component(), this, new DynamiteValueBox())
-            .between(0, 10)
+            .between(0, DestroyAllConfigs.SERVER.blocks.dynamiteMaxRadius.get())
             .oppositeSides()
             .withCallback((d, i) -> updateExcavationArea());
         Arrays.fill(scrollValueBehaviour.values, 2); // Set default values

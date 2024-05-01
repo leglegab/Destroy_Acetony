@@ -148,15 +148,24 @@ public class DestroyItems {
         .tag(AllItemTags.CRUSHED_RAW_MATERIALS.tag)
         .register(),
     PURE_GOLD_DUST = REGISTRATE.item("pure_gold_dust", Item::new)
-        .tag(Tags.Items.DUSTS, ItemTags.PIGLIN_LOVED)
+        .tag(forgeItemTag("dusts/gold"), Tags.Items.DUSTS, ItemTags.PIGLIN_LOVED)
         .register(),
-    // ZIRCON = REGISTRATE.item("zircon", Item::new)
-    //     .tag(forgeItemTag("raw_materials/zircon"))
-    //     .register(),
     NETHER_CROCOITE = REGISTRATE.item("nether_crocoite", Item::new)
+        .register(),
+    BORAX = REGISTRATE.item("borax", Item::new)
+        .tag(forgeItemTag("raw_materials/borax"))
+        .register(),
+    SILICA = REGISTRATE.item("silica", Item::new)
+        .tag(forgeItemTag("dusts/silica"), forgeItemTag("raw_materials/silica"))
+        .register(),
+    ZEOLITE = REGISTRATE.item("zeolite", Item::new)
         .register();
 
-    public static final ItemEntry<SolidBucketItem> MOLTEN_STAINLESS_STEEL_BUCKET = REGISTRATE.item("molten_stainless_steel_bucket", p -> new SolidBucketItem(DestroyBlocks.MOLTEN_STAINLESS_STEEL.get(), SoundEvents.BUCKET_EMPTY_LAVA, p))
+    public static final ItemEntry<SolidBucketItem>
+    
+    MOLTEN_STAINLESS_STEEL_BUCKET = REGISTRATE.item("molten_stainless_steel_bucket", p -> new SolidBucketItem(DestroyBlocks.MOLTEN_STAINLESS_STEEL.get(), SoundEvents.BUCKET_EMPTY_LAVA, p))
+        .register(),
+    MOLTEN_BOROSILICATE_GLASS_BUCKET = REGISTRATE.item("molten_borosilicate_glass_bucket", p -> new SolidBucketItem(DestroyBlocks.MOLTEN_BOROSILICATE_GLASS.get(), SoundEvents.BUCKET_EMPTY_LAVA, p))
         .register();
 
     // DUSTS
@@ -289,14 +298,6 @@ public class DestroyItems {
         ).tag(DestroyItemTags.CHEMICAL_PROTECTION_FEET.tag, DestroyItemTags.CONTAMINABLE.tag)
         .register();
 
-    // public static final ItemEntry<ZirconiumPantsItem>
-
-    // ZIRCONIUM_PANTS = REGISTRATE.item("zirconium_pants", ZirconiumPantsItem::new)
-    //     .properties(p -> p
-    //         .stacksTo(1)
-    //     ).tag(DestroyItemTags.LIABLE_TO_CHANGE.tag)
-    //     .register();
-
     public static final ItemEntry<SeismometerItem>
 
     SEISMOMETER = REGISTRATE.item("seismometer", SeismometerItem::new)
@@ -340,18 +341,6 @@ public class DestroyItems {
         .register(),
     SUNSCREEN_BOTTLE = REGISTRATE.item("sunscreen_bottle", p -> new SprayBottleItem(p, new MobEffectInstance(DestroyMobEffects.SUN_PROTECTION.get(), 12000, 0, false, false, true)))
         .tag(DestroyItemTags.SPRAY_BOTTLE.tag)
-        .register();
-
-    // SILICA
-
-    public static final ItemEntry<Item>
-
-    SILICA = REGISTRATE.item("silica", Item::new)
-        .register(),
-    
-    // NON-SILICA CATALYSTS
-
-    ZEOLITE = REGISTRATE.item("zeolite", Item::new)
         .register();
 
     public static final ItemEntry<SimpleFoiledItem>

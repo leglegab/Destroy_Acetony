@@ -246,7 +246,7 @@ public class VatControllerBlockEntity extends SmartBlockEntity implements IHaveG
             };
 
             // Check for Explosion
-            if (DestroyAllConfigs.SERVER.contraptions.vatExplodesAtHighPressure.get() && Math.abs(getPercentagePressure()) >= 1f) explode();
+            if (DestroyAllConfigs.SERVER.blocks.vatExplodesAtHighPressure.get() && Math.abs(getPercentagePressure()) >= 1f) explode();
 
             sendData();
         };
@@ -266,7 +266,7 @@ public class VatControllerBlockEntity extends SmartBlockEntity implements IHaveG
     };
 
     public static int getSimulationLevel() {
-        return DestroyAllConfigs.SERVER.contraptions.simulationLevel.get();
+        return DestroyAllConfigs.SERVER.blocks.simulationLevel.get();
     };
 
     @Override

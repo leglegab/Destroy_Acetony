@@ -303,7 +303,7 @@ public class VatScreen extends AbstractSimiScreen {
         background.render(graphics, guiLeft, guiTop);
 
         // Title
-        graphics.drawString(font, title, guiLeft + 21, guiTop + 4, 0x54214F, false);
+        graphics.drawString(font, title, guiLeft + 21, guiTop + 4, 0x828c97, false);
 
         UIRenderHelper.swapAndBlitColor(minecraft.getMainRenderTarget(), UIRenderHelper.framebuffer);
         

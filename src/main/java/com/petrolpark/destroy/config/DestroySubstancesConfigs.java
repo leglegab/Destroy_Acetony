@@ -9,13 +9,13 @@ import net.minecraft.sounds.SoundSource;
 public class DestroySubstancesConfigs extends DestroyConfigBase {
 
     public final ConfigInt chorusWineTeleportTime = i(20, 1, 60, "teleportTime", Comments.inSeconds, Comments.teleportTime);
-    public final ConfigFloat aspirinHeal = f(5f, 0f, Float.MAX_VALUE, "aspirinHeal", "How many half-hearts using an Aspirin Syringe heals");
+    public final ConfigFloat aspirinHeal = f(5f, 0f, "aspirinHeal", "How many half-hearts using an Aspirin Syringe heals");
     public final ConfigBool burnIodineForDragonsBreath = b(true, "burnIodineForDragonsBreath", "Whether burning Iodine will release Dragon's Breath");
 
     public final ConfigGroup babyBlue = group(0, "babyBlue", Comments.babyBlue);
     public final ConfigInt babyBlueMaxAddictionLevel = i(590, 0, "maxAddictionLevel", Comments.toDisable, Comments.maxAddictionLevel);
-    public final ConfigFloat babyBlueMiningSpeedBonus = f(0.5f, Float.MIN_VALUE, Float.MAX_VALUE, "babyBlueMiningSpeedBonus", "The proportion by which mining speed is boosted for every level of Baby Blue High", "For example, 0.5 gives +50% per level");
-    public final ConfigFloat babyBlueWidthdrawalSpeedBonus = f(0.5f, Float.MIN_VALUE, Float.MAX_VALUE, "babyBlueMiningSpeedBonus", "The proportion by which mining speed is \"boosted\" for every level of Baby Blue Withdrawal", "For example, -0.3 gives -30% per level");
+    public final ConfigFloat babyBlueMiningSpeedBonus = f(0.5f, Float.MIN_VALUE, "babyBlueMiningSpeedBonus", "The proportion by which mining speed is boosted for every level of Baby Blue High", "For example, 0.5 gives +50% per level");
+    public final ConfigFloat babyBlueWidthdrawalSpeedBonus = f(-0.3f, Float.MIN_VALUE, "babyBlueMiningSpeedBonus", "The proportion by which mining speed is \"boosted\" for every level of Baby Blue Withdrawal", "For example, -0.3 gives -30% per level");
 
     public final ConfigGroup alcohol = group(0, "alcohol", Comments.alcohol);
     public final ConfigInt inebriationDuration = i(1200, 0, "inebriationDuration", Comments.inTicks, Comments.inebriationDuration);

@@ -45,6 +45,13 @@ public class DestroyFluids {
         MoltenStainlessSteelFluid::new
         ).register();
 
+    public static final FluidEntry<MoltenBorosilicateGlassFluid> MOLTEN_BOROSILICATE_GLASS = REGISTRATE.virtualFluid("molten_borosilicate_glass",
+        Destroy.asResource("block/molten_borosilicate_glass"),
+        Destroy.asResource("block/molten_borosilicate_glass"),
+        CreateRegistrate::defaultFluidType,
+        MoltenBorosilicateGlassFluid::new
+        ).register();
+
     public static final FluidEntry<VirtualFluid>
     
     URINE = virtualFluid("urine")

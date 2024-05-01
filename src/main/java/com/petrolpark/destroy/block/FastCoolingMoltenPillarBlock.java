@@ -17,11 +17,11 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition.Builder;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
 
-public class StainlessSteelRodsBlock extends RotatedPillarBlock {
+public class FastCoolingMoltenPillarBlock extends RotatedPillarBlock {
 
     public static final BooleanProperty MOLTEN = BooleanProperty.create("molten");
 
-    public StainlessSteelRodsBlock(Properties properties) {
+    public FastCoolingMoltenPillarBlock(Properties properties) {
         super(properties);
         registerDefaultState(defaultBlockState().setValue(AXIS, Axis.Y).setValue(MOLTEN, false));
     };
@@ -48,11 +48,11 @@ public class StainlessSteelRodsBlock extends RotatedPillarBlock {
         solidify(level, pos, random);
     };
 
-    public static void solidify(Level level, BlockPos pos, RandomSource random) {
+    public void solidify(Level level, BlockPos pos, RandomSource random) {
         BlockState oldState = level.getBlockState(pos);
-        if (oldState.getBlock() != DestroyBlocks.STAINLESS_STEEL_RODS.get() || !oldState.getValue(MOLTEN)) return;
+        if (oldState.getBlock() != this || !oldState.getValue(MOLTEN)) return;
         if (oldState.getValue(MOLTEN)) return;
-        level.setBlockAndUpdate(pos, DestroyBlocks.STAINLESS_STEEL_RODS.getDefaultState().setValue(AXIS, oldState.getValue(AXIS)).setValue(MOLTEN, false));
+        level.setBlockAndUpdate(pos, defaultBlockState().setValue(AXIS, oldState.getValue(AXIS)).setValue(MOLTEN, false));
         level.playSound(null, pos, SoundEvents.LAVA_EXTINGUISH, SoundSource.BLOCKS);
         if (level instanceof ServerLevel serverLevel) for (int i = 0; i < 8; i++) serverLevel.sendParticles(ParticleTypes.LARGE_SMOKE, (double)pos.getX() + random.nextDouble(), (double)pos.getY() + 1.2d, (double)pos.getZ() + random.nextDouble(), 1,0d, 0d, 0d, 0d);
     };

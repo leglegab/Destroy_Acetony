@@ -205,13 +205,6 @@ public class ColossalCogwheelBlock extends KineticBlock implements IBE<ColossalC
 	};
 
     @Override
-    @SuppressWarnings("deprecation")
-    public void neighborChanged(BlockState state, Level level, BlockPos pos, Block pBlock, BlockPos pFromPos, boolean pIsMoving) {
-        withBlockEntityDo(level, getControllerPosition(pos, state), ColossalCogwheelBlockEntity::tryAwardCogsPoweringAdvancement);
-        super.neighborChanged(state, level, pos, pBlock, pFromPos, pIsMoving);
-    };
-
-    @Override
 	public void tick(BlockState state, ServerLevel level, BlockPos pos, RandomSource random) {
         if (isController(state)) {
             Axis axis = state.getValue(RotatedPillarKineticBlock.AXIS);

@@ -114,7 +114,7 @@ public class QuantityObservingVatSideScreen extends AbstractSimiScreen {
     protected void renderWindow(GuiGraphics graphics, int mouseX, int mouseY, float partialTicks) {
         background.render(graphics, guiLeft, guiTop);
 
-        graphics.drawString(font, title, guiLeft + 16, guiTop + 4, 0x54214F, false);
+        graphics.drawString(font, title, guiLeft + 16, guiTop + 4, 0x828c97, false);
     };
     
 };

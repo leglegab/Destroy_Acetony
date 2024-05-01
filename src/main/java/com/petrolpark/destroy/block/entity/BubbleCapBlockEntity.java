@@ -57,7 +57,6 @@ public class BubbleCapBlockEntity extends SmartBlockEntity implements IHaveGoggl
         df.setMaximumFractionDigits(0);
     };
 
-    private static final int TANK_CAPACITY = 1000;
     private static final int TRANSFER_SPEED = 20; // The rate (mB/tick) at which Fluid is transferred from the internal Tank to the actual Tank
 
     private Direction pipeFace;
@@ -90,9 +89,9 @@ public class BubbleCapBlockEntity extends SmartBlockEntity implements IHaveGoggl
 
     @Override
     public void addBehaviours(List<BlockEntityBehaviour> behaviours) {
-        tank = new GeniusFluidTankBehaviour(SmartFluidTankBehaviour.OUTPUT, this, 1, TANK_CAPACITY, true)
+        tank = new GeniusFluidTankBehaviour(SmartFluidTankBehaviour.OUTPUT, this, 1, getTankCapacity(), true)
             .whenFluidUpdates(this::notifyUpdate);
-        internalTank = new GeniusFluidTankBehaviour(SmartFluidTankBehaviour.INPUT, this, 1, TANK_CAPACITY, true)
+        internalTank = new GeniusFluidTankBehaviour(SmartFluidTankBehaviour.INPUT, this, 1, getTankCapacity(), true)
             .forbidExtraction()
             .forbidInsertion()
             .whenFluidUpdates(this::notifyUpdate);
@@ -202,7 +201,7 @@ public class BubbleCapBlockEntity extends SmartBlockEntity implements IHaveGoggl
     };
 
     public static int getTankCapacity() {
-        return TANK_CAPACITY;
+        return DestroyAllConfigs.SERVER.blocks.bubbleCapCapacity.get();
     };
 
     /**

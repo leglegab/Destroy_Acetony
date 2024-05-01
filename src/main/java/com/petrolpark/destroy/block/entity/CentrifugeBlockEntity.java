@@ -24,6 +24,7 @@ import com.petrolpark.destroy.block.entity.behaviour.fluidTankBehaviour.GeniusFl
 import com.petrolpark.destroy.chemistry.Mixture;
 import com.petrolpark.destroy.chemistry.Molecule;
 import com.petrolpark.destroy.chemistry.Mixture.Phases;
+import com.petrolpark.destroy.config.DestroyAllConfigs;
 import com.petrolpark.destroy.effect.potion.PotionSeparationRecipes;
 import com.petrolpark.destroy.fluid.DestroyFluids;
 import com.petrolpark.destroy.fluid.MixtureFluid;
@@ -71,7 +72,6 @@ import net.minecraftforge.registries.ForgeRegistries;
 public class CentrifugeBlockEntity extends KineticBlockEntity implements IDirectionalOutputFluidBlockEntity {
 
     private static final Object centrifugationRecipeKey = new Object();
-    private static final int TANK_CAPACITY = 1000;
 
     private SmartFluidTankBehaviour inputTank, denseOutputTank, lightOutputTank;
     protected LazyOptional<IFluidHandler> allFluidCapability;
@@ -98,12 +98,12 @@ public class CentrifugeBlockEntity extends KineticBlockEntity implements IDirect
 
     @Override
     public void addBehaviours(List<BlockEntityBehaviour> behaviours) {
-        inputTank = new GeniusFluidTankBehaviour(SmartFluidTankBehaviour.INPUT, this, 1, TANK_CAPACITY, true)
+        inputTank = new GeniusFluidTankBehaviour(SmartFluidTankBehaviour.INPUT, this, 1, getEachTankCapacity(), true)
             .whenFluidUpdates(this::onFluidStackChanged);
-        denseOutputTank = new GeniusFluidTankBehaviour(SmartFluidTankBehaviour.OUTPUT, this, 1, TANK_CAPACITY, true)
+        denseOutputTank = new GeniusFluidTankBehaviour(SmartFluidTankBehaviour.OUTPUT, this, 1, getEachTankCapacity(), true)
             .whenFluidUpdates(this::onFluidStackChanged)
             .forbidInsertion();
-        lightOutputTank = new GeniusFluidTankBehaviour(SmartFluidTankBehaviour.OUTPUT, this, 1, TANK_CAPACITY, true)
+        lightOutputTank = new GeniusFluidTankBehaviour(SmartFluidTankBehaviour.OUTPUT, this, 1, getEachTankCapacity(), true)
             .whenFluidUpdates(this::onFluidStackChanged)
             .forbidInsertion();
         behaviours.addAll(List.of(inputTank, denseOutputTank, lightOutputTank));
@@ -508,7 +508,7 @@ public class CentrifugeBlockEntity extends KineticBlockEntity implements IDirect
     };
 
     public int getEachTankCapacity() {
-        return TANK_CAPACITY;
+        return DestroyAllConfigs.SERVER.blocks.centrifugeCapacity.get();
     };
 
     private void onFluidStackChanged() {

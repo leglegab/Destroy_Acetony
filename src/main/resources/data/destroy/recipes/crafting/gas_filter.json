@@ -1,14 +1,13 @@
 {
-    "type": "create:mechanical_crafting",
+    "type": "minecraft:crafting_shaped",
     "pattern": [
-      "BFB",
-      "BCB",
-      "BZB",
-      "BFB"
+      " C ",
+      "PFP",
+      " Z "
     ],
     "key": {
-      "B": {
-        "tag": "forge:plates/brass"
+      "P": {
+        "tag": "forge:plates/stainless_steel"
       },
       "F": {
         "item": "create:filter"
@@ -23,6 +22,5 @@
     "result": {
       "item": "destroy:gas_filter",
       "count": 1
-    },
-    "acceptMirrored": false
+    }
   }

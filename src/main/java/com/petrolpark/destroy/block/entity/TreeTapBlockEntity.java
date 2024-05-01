@@ -9,6 +9,7 @@ import com.petrolpark.destroy.advancement.DestroyAdvancementTrigger;
 import com.petrolpark.destroy.block.TreeTapBlock;
 import com.petrolpark.destroy.block.entity.behaviour.DestroyAdvancementBehaviour;
 import com.petrolpark.destroy.block.entity.behaviour.fluidTankBehaviour.GeniusFluidTankBehaviour;
+import com.petrolpark.destroy.config.DestroyAllConfigs;
 import com.petrolpark.destroy.util.BlockTapping;
 import com.simibubi.create.content.kinetics.base.BlockBreakingKineticBlockEntity;
 import com.simibubi.create.foundation.blockEntity.behaviour.BlockEntityBehaviour;
@@ -73,7 +74,7 @@ public class TreeTapBlockEntity extends BlockBreakingKineticBlockEntity implemen
     public void addBehaviours(List<BlockEntityBehaviour> behaviours) {
         super.addBehaviours(behaviours);
 
-        tank = new GeniusFluidTankBehaviour(GeniusFluidTankBehaviour.TYPE, this, 1, 1000, false);
+        tank = new GeniusFluidTankBehaviour(GeniusFluidTankBehaviour.TYPE, this, 1, getCapacity(), false);
         tank.forbidInsertion();
         behaviours.add(tank);
 
@@ -103,5 +104,9 @@ public class TreeTapBlockEntity extends BlockBreakingKineticBlockEntity implemen
 		if (cap == ForgeCapabilities.FLUID_HANDLER) return fluidCapability.cast();
 		return super.getCapability(cap, side);
 	};
+
+    public int getCapacity() {
+        return DestroyAllConfigs.SERVER.blocks.treeTapCapacity.get();
+    };
     
 };

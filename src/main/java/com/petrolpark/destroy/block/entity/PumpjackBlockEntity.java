@@ -14,6 +14,7 @@ import com.petrolpark.destroy.block.entity.behaviour.AbstractRememberPlacerBehav
 import com.petrolpark.destroy.block.entity.behaviour.DestroyAdvancementBehaviour;
 import com.petrolpark.destroy.block.entity.behaviour.PollutingBehaviour;
 import com.petrolpark.destroy.capability.chunk.ChunkCrudeOil;
+import com.petrolpark.destroy.config.DestroyAllConfigs;
 import com.petrolpark.destroy.fluid.DestroyFluids;
 import com.petrolpark.destroy.sound.DestroySoundEvents;
 import com.simibubi.create.content.equipment.goggles.IHaveGoggleInformation;
@@ -63,7 +64,7 @@ public class PumpjackBlockEntity extends SmartBlockEntity implements IHaveGoggle
 
     @Override
     public void addBehaviours(List<BlockEntityBehaviour> behaviours) {
-        tank = new SmartFluidTankBehaviour(SmartFluidTankBehaviour.OUTPUT, this, 1, 2000, false)
+        tank = new SmartFluidTankBehaviour(SmartFluidTankBehaviour.OUTPUT, this, 1, getTankCapacity(), false)
             .forbidInsertion();
         behaviours.add(tank);
 
@@ -117,7 +118,7 @@ public class PumpjackBlockEntity extends SmartBlockEntity implements IHaveGoggle
         advancementBehaviour.awardDestroyAdvancement(DestroyAdvancementTrigger.USE_PUMPJACK);
         // Add the oil to the Pumpjack's internal tank
         tank.allowInsertion();
-        int amountPumped = tank.getPrimaryHandler().fill(new FluidStack(DestroyFluids.CRUDE_OIL.get(), (int)Math.min(oilAmount, Math.abs(cam.getSpeed() / 16))), FluidAction.EXECUTE);
+        int amountPumped = tank.getPrimaryHandler().fill(new FluidStack(DestroyFluids.CRUDE_OIL.get(), (int)Math.min(oilAmount, DestroyAllConfigs.SERVER.blocks.pumpjackExtractionSpeed.getF() * Math.abs(cam.getSpeed() / 16f))), FluidAction.EXECUTE);
         tank.forbidInsertion();
         crudeOilOptional.ifPresent(crudeOilCap -> crudeOilCap.decreaseAmount(amountPumped));
     };
@@ -205,6 +206,10 @@ public class PumpjackBlockEntity extends SmartBlockEntity implements IHaveGoggle
             return TYPE;
         };
 
+    };
+
+    public int getTankCapacity() {
+        return DestroyAllConfigs.SERVER.blocks.pumpjackCapacity.get();
     };
     
 };

@@ -138,7 +138,7 @@ public class RedstoneProgrammerScreen extends AbstractSimiContainerScreen<Redsto
             })
             .titled(DestroyLang.translate("tooltip.redstone_programmer.ticks_per_beat").component())
             .addHint(DestroyLang.translate("tooltip.redstone_programmer.ticks_per_beat.hint").component())
-            .withRange(DestroyAllConfigs.SERVER.contraptions.redstoneProgrammerMinTicksPerBeat.get(), 81);
+            .withRange(DestroyAllConfigs.SERVER.blocks.redstoneProgrammerMinTicksPerBeat.get(), 81);
         ticksPerBeatScroller.setState(program.getTicksPerBeat());
         addRenderableWidget(ticksPerBeatScroller);
 
@@ -390,7 +390,7 @@ public class RedstoneProgrammerScreen extends AbstractSimiContainerScreen<Redsto
 
         // Additional item slots for adding a new channel
         GuiHelper.startStencil(graphics, ITEM_AREA.getX(), ITEM_AREA.getY(), ITEM_AREA.getWidth(), ITEM_AREA.getHeight());
-        if (channelNo < DestroyAllConfigs.SERVER.contraptions.redstoneProgrammerMaxChannels.get()) {
+        if (channelNo < DestroyAllConfigs.SERVER.blocks.redstoneProgrammerMaxChannels.get()) {
             ms.pushPose();
             ms.translate(ITEM_AREA.getX(), NOTE_AREA.getY() + yOffset + channelNo * distanceBetweenChannels, 0f);
             DestroyGuiTextures.REDSTONE_PROGRAMMER_ITEM_SLOTS.render(graphics, 31, 3);
@@ -425,7 +425,7 @@ public class RedstoneProgrammerScreen extends AbstractSimiContainerScreen<Redsto
     };
 
     public void clampVerticalScroll(int newScroll) {
-        verticalScroll = Mth.clamp(newScroll, 0, Math.max(0, 6 + Math.min(program.getChannels().size() + 1, DestroyAllConfigs.SERVER.contraptions.redstoneProgrammerMaxChannels.get()) * distanceBetweenChannels - ITEM_AREA.getHeight()));
+        verticalScroll = Mth.clamp(newScroll, 0, Math.max(0, 6 + Math.min(program.getChannels().size() + 1, DestroyAllConfigs.SERVER.blocks.redstoneProgrammerMaxChannels.get()) * distanceBetweenChannels - ITEM_AREA.getHeight()));
     };
 
     public void setPlayPauseButtonIcon() {

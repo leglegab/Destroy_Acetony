@@ -65,7 +65,7 @@ public class CogwheelChainingHandler {
         return axis1 == axis2
             && !pos1.equals(pos2)
             && pos1.get(axis1) == pos2.get(axis1)
-            //&& pos1.distToCenterSqr(pos2.getCenter()) <= Math.pow(DestroyAllConfigs.SERVER.contraptions.maxChainLength.get(), 2) //TODO uncomment once chains fully implemented
+            //&& pos1.distToCenterSqr(pos2.getCenter()) <= Math.pow(DestroyAllConfigs.SERVER.blocks.maxChainLength.get(), 2) //TODO uncomment once chains fully implemented
         ;
     };
 };

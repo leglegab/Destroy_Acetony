@@ -6,8 +6,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-import com.petrolpark.destroy.block.DestroyBlocks;
-import com.petrolpark.destroy.fluid.DestroyFluids;
+import com.petrolpark.destroy.fluid.ICustomBlockStateFluid;
 import com.simibubi.create.content.fluids.OpenEndedPipe;
 import com.simibubi.create.infrastructure.config.AllConfigs;
 
@@ -35,11 +34,11 @@ public abstract class OpenEndedPipeMixin {
             world != null
             && world.isLoaded(outputPos)
             && world.getBlockState(outputPos).canBeReplaced()
-            && stack.getFluid().isSame(DestroyFluids.MOLTEN_STAINLESS_STEEL.get())
+            && stack.getFluid() instanceof ICustomBlockStateFluid customBlockStateFluid
             && AllConfigs.server().fluids.pipesPlaceFluidSourceBlocks.get()
             && (simulate || stack.getAmount() == 1000)
         ) {
-            if (!simulate) world.setBlockAndUpdate(outputPos, DestroyBlocks.MOLTEN_STAINLESS_STEEL.getDefaultState());
+            if (!simulate) world.setBlockAndUpdate(outputPos, customBlockStateFluid.getBlockState());
             cir.setReturnValue(true);
             cir.cancel();
             return;

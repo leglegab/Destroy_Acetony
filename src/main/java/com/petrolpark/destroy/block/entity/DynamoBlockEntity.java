@@ -158,7 +158,7 @@ public class DynamoBlockEntity extends BasinOperatingBlockEntity implements Char
 
     @Override
     public boolean canProcessInBulk() {
-        return DestroyAllConfigs.SERVER.contraptions.dynamoBulkCharging.get();
+        return DestroyAllConfigs.SERVER.blocks.dynamoBulkCharging.get();
     };
 
     @Override

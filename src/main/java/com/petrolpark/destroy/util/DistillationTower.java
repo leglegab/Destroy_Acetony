@@ -11,6 +11,7 @@ import com.petrolpark.destroy.chemistry.Mixture;
 import com.petrolpark.destroy.chemistry.Molecule;
 import com.petrolpark.destroy.chemistry.ReadOnlyMixture;
 import com.petrolpark.destroy.compat.tfmg.SharedDistillationRecipes;
+import com.petrolpark.destroy.config.DestroyAllConfigs;
 import com.petrolpark.destroy.fluid.DestroyFluids;
 import com.petrolpark.destroy.fluid.MixtureFluid;
 import com.petrolpark.destroy.recipe.DestroyRecipeTypes;
@@ -34,7 +35,6 @@ import net.minecraftforge.fluids.capability.IFluidHandler.FluidAction;
 public class DistillationTower {
 
     private static final Object distillationRecipeKey = new Object();
-    private static final int PROCESS_TIME = 100; // How often (in ticks) to attempt processing
 
     private BlockPos position; // The bottom of the Distillation Tower
     private List<BubbleCapBlockEntity> bubbleCaps;
@@ -44,7 +44,7 @@ public class DistillationTower {
     public DistillationTower(Level level, BlockPos controllerPos) { // Create a new Distillation Tower from scratch
         position = controllerPos;
         bubbleCaps = new ArrayList<>();
-        tick = PROCESS_TIME;
+        tick = getProcessingTime();
         int i = 0;
         while (true) {
             BlockEntity be = level.getBlockEntity(controllerPos.above(i));
@@ -55,6 +55,10 @@ public class DistillationTower {
             };
             i++;
         };
+    };
+
+    public int getProcessingTime() {
+        return DestroyAllConfigs.SERVER.blocks.bubbleCapRecipeFrequency.get();
     };
 
     public DistillationTower(CompoundTag compound, Level level, BlockPos pos) { // Create a new Distillation Tower from NBT
@@ -116,7 +120,7 @@ public class DistillationTower {
         if (tick <= 0) {
             findRecipe(level);
             process();
-            tick = PROCESS_TIME; // Reset counter
+            tick = getProcessingTime(); // Reset counter
         };
     };
 

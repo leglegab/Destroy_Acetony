@@ -23,8 +23,11 @@ public class ColossalCogwheelBlockEntity extends KineticBlockEntity {
 
     DestroyAdvancementBehaviour advancementBehaviour;
 
+    private int checkAdvancementTimer = 100;
+
     public ColossalCogwheelBlockEntity(BlockEntityType<?> typeIn, BlockPos pos, BlockState state) {
         super(typeIn, pos, state);
+        checkAdvancementTimer = 100;
     };
 
     @Override
@@ -68,6 +71,16 @@ public class ColossalCogwheelBlockEntity extends KineticBlockEntity {
             };
         };
         return 0f;
+    };
+
+    @Override
+    public void tick() {
+        super.tick();
+        if (checkAdvancementTimer > 0) checkAdvancementTimer--;
+        if (checkAdvancementTimer <= 0) {
+            tryAwardCogsPoweringAdvancement();
+            checkAdvancementTimer = 100;
+        };
     };
 
     public void tryAwardCogsPoweringAdvancement() {

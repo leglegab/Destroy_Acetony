@@ -649,7 +649,7 @@ public class DestroyCommonEvents {
                     if (program.getChannels().stream().anyMatch(channel -> channel.getNetworkKey().equals(key))) {
                         event.setCancellationResult(InteractionResult.FAIL);
                         if (level.isClientSide()) player.displayClientMessage(DestroyLang.translate("tooltip.redstone_programmer.add_frequency.failure.exists").style(ChatFormatting.RED).component(), true); 
-                    } else if (program.getChannels().size() >= DestroyAllConfigs.SERVER.contraptions.redstoneProgrammerMaxChannels.get()) {
+                    } else if (program.getChannels().size() >= DestroyAllConfigs.SERVER.blocks.redstoneProgrammerMaxChannels.get()) {
                         event.setCancellationResult(InteractionResult.FAIL);
                         if (level.isClientSide()) player.displayClientMessage(DestroyLang.translate("tooltip.redstone_programmer.add_frequency.failure.full").style(ChatFormatting.RED).component(), true); 
                     } else {

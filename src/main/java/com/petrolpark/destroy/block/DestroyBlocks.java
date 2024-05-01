@@ -22,9 +22,9 @@ import com.petrolpark.destroy.sound.DestroySoundTypes;
 import com.petrolpark.destroy.util.DestroyTags.DestroyBlockTags;
 import com.petrolpark.destroy.util.DestroyTags.DestroyItemTags;
 import com.simibubi.create.AllBlocks;
-import com.simibubi.create.AllSpriteShifts;
 import com.simibubi.create.AllTags;
 import com.simibubi.create.AllTags.AllBlockTags;
+import com.simibubi.create.content.decoration.encasing.CasingBlock;
 import com.simibubi.create.content.decoration.encasing.EncasedCTBehaviour;
 import com.simibubi.create.content.kinetics.BlockStressDefaults;
 import com.simibubi.create.content.kinetics.simpleRelays.BracketedKineticBlockModel;
@@ -48,6 +48,7 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.GlassBlock;
 import net.minecraft.world.level.block.RotatedPillarBlock;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.state.properties.NoteBlockInstrument;
@@ -291,8 +292,8 @@ public class DestroyBlocks {
         .initialProperties(SharedProperties::copperMetal)
         .properties(p -> p
             .noOcclusion()
-        ).onRegister(CreateRegistrate.connectedTextures(() -> new EncasedCTBehaviour(AllSpriteShifts.COPPER_CASING)))
-        .onRegister(CreateRegistrate.casingConnectivity((block, cc) -> cc.make(block, AllSpriteShifts.COPPER_CASING,
+        ).onRegister(CreateRegistrate.connectedTextures(() -> new EncasedCTBehaviour(DestroySpriteShifts.STAINLESS_STEEL_BLOCK)))
+        .onRegister(CreateRegistrate.casingConnectivity((block, cc) -> cc.make(block, DestroySpriteShifts.STAINLESS_STEEL_BLOCK,
 			(s, f) -> f != s.getValue(VatControllerBlock.FACING)))
         ).onRegister(AllDisplayBehaviours.assignDataBehaviour(VatControllerBlockEntity.ALL_DISPLAY_SOURCE, "vat_controller_all_contents"))
         .onRegister(AllDisplayBehaviours.assignDataBehaviour(VatControllerBlockEntity.SOLUTION_DISPLAY_SOURCE, "vat_controller_solution_contents"))
@@ -494,37 +495,20 @@ public class DestroyBlocks {
         .build()
         .register();
 
-    public static final BlockEntry<Block> STAINLESS_STEEL_BLOCK = REGISTRATE.block("stainless_steel_block", Block::new)
+    public static final BlockEntry<CasingBlock> STAINLESS_STEEL_BLOCK = REGISTRATE.block("stainless_steel_block", CasingBlock::new)
         .initialProperties(() -> Blocks.IRON_BLOCK)
         .properties(p -> p
             .instrument(NoteBlockInstrument.IRON_XYLOPHONE)
             .strength(7f, 8f)
-        ).onRegister(CreateRegistrate.connectedTextures(() -> new SimpleCTBehaviour(DestroySpriteShifts.STAINLESS_STEEL_BLOCK)))
-        .transform(TagGen.pickaxeOnly())
+        ).transform(TagGen.pickaxeOnly())
+        .transform(BuilderTransformers.casing(() -> DestroySpriteShifts.STAINLESS_STEEL_BLOCK))
         .tag(BlockTags.NEEDS_STONE_TOOL)
         .tag(Tags.Blocks.STORAGE_BLOCKS)
         .tag(BlockTags.BEACON_BASE_BLOCKS)
-        .tag(AllBlockTags.MOVABLE_EMPTY_COLLIDER.tag)
         .transform(TagGen.tagBlockAndItem("storage_blocks/stainless_steel"))
         .tag(Tags.Items.STORAGE_BLOCKS)
         .build()
         .register();
-
-    // public static final BlockEntry<Block> ZIRCONIUM_BLOCK = REGISTRATE.block("zirconium_block", Block::new)
-    //     .initialProperties(() -> Blocks.NETHERITE_BLOCK)
-    //     .properties(p -> p
-    //         .mapColor(MapColor.STONE)
-    //         .requiresCorrectToolForDrops()
-    //         .strength(6f, 6f)
-    //     ).transform(TagGen.pickaxeOnly())
-    //     .tag(BlockTags.NEEDS_DIAMOND_TOOL)
-    //     .tag(Tags.Blocks.STORAGE_BLOCKS)
-    //     .tag(BlockTags.BEACON_BASE_BLOCKS)
-    //     .transform(TagGen.tagBlockAndItem("storage_blocks/zirconium"))
-    //     .tag(DestroyItemTags.LIABLE_TO_CHANGE.tag)
-    //     .tag(Tags.Items.STORAGE_BLOCKS)
-    //     .build()
-    //     .register();
 
     // ORES
 
@@ -798,7 +782,7 @@ public class DestroyBlocks {
             .mapColor(MapColor.COLOR_YELLOW)
             .sound(SoundType.SLIME_BLOCK)
             .strength(0.2f)
-        ).tag(BlockTags.MINEABLE_WITH_SHOVEL)
+        ).tag(BlockTags.MINEABLE_WITH_SHOVEL, BlockTags.MINEABLE_WITH_HOE)
         .item()
         .build()
         .register();
@@ -810,12 +794,25 @@ public class DestroyBlocks {
             .sound(SoundType.SLIME_BLOCK)
             .strength(0.2f)
         ).loot((lt, b) -> lt.add(b, RegistrateBlockLootTables.createSilkTouchDispatchTable(b, LootItem.lootTableItem(DestroyItems.RAW_FRIES).apply(SetItemCountFunction.setCount(ConstantValue.exactly(5f))))))
-        .tag(BlockTags.MINEABLE_WITH_SHOVEL)
+        .tag(BlockTags.MINEABLE_WITH_SHOVEL, BlockTags.MINEABLE_WITH_HOE)
         .item()
         .build()
         .register();
 
     // UNCATEGORISED
+
+    public static final BlockEntry<GlassBlock>
+    
+    BOROSILICATE_GLASS = REGISTRATE.block("borosilicate_glass", GlassBlock::new)
+        .initialProperties(() -> Blocks.GLASS)
+        .properties(p -> p
+            .strength(2f)
+        ).tag(Tags.Blocks.GLASS, Tags.Blocks.GLASS_COLORLESS, BlockTags.MINEABLE_WITH_PICKAXE)
+        .onRegister(CreateRegistrate.connectedTextures(() -> new SimpleCTBehaviour(DestroySpriteShifts.BOROSILICATE_GLASS)))
+        .item()
+        .tag(Tags.Items.GLASS, Tags.Items.GLASS_COLORLESS)
+        .build()
+        .register();
 
     public static final BlockEntry<FlippableRotatedPillarBlock>
     
@@ -850,15 +847,40 @@ public class DestroyBlocks {
             .lightLevel(state -> 15)
             .noLootTable()
             .dynamicShape()
-        ).register();
+        ).tag(AllBlockTags.MOVABLE_EMPTY_COLLIDER.tag)
+        .register();
 
-    public static final BlockEntry<StainlessSteelRodsBlock> STAINLESS_STEEL_RODS = REGISTRATE.block("stainless_steel_rods_block", StainlessSteelRodsBlock::new)
+    public static final BlockEntry<MoltenBorosilicateGlassBlock> MOLTEN_BOROSILICATE_GLASS = REGISTRATE.block("molten_borosilicate_glass", MoltenBorosilicateGlassBlock::new)
+        .properties(p -> p
+            .mapColor(MapColor.COLOR_ORANGE)
+            .instrument(NoteBlockInstrument.IRON_XYLOPHONE)
+            .lightLevel(state -> 15)
+            .noLootTable()
+            .dynamicShape()
+        ).tag(AllBlockTags.MOVABLE_EMPTY_COLLIDER.tag)
+        .register();
+
+    public static final BlockEntry<FastCoolingMoltenPillarBlock>
+    
+    STAINLESS_STEEL_RODS = REGISTRATE.block("stainless_steel_rods_block", FastCoolingMoltenPillarBlock::new)
         .initialProperties(STAINLESS_STEEL_BLOCK)
         .properties(p -> p
-            .mapColor(state -> state.getValue(StainlessSteelRodsBlock.MOLTEN) ? MapColor.COLOR_ORANGE : MapColor.METAL)
-            .instrument(NoteBlockInstrument.IRON_XYLOPHONE)
-            .lightLevel(state -> state.getValue(StainlessSteelRodsBlock.MOLTEN) ? 15 : 0)
-        ).item()
+            .mapColor(state -> state.getValue(FastCoolingMoltenPillarBlock.MOLTEN) ? MapColor.COLOR_ORANGE : MapColor.METAL)
+            .lightLevel(state -> state.getValue(FastCoolingMoltenPillarBlock.MOLTEN) ? 15 : 0)
+        ).tag(BlockTags.MINEABLE_WITH_PICKAXE)
+        .item()
+        .build()
+        .register();
+
+    public static final BlockEntry<BorosilicateGlassFiberBlock>
+
+    BOROSILICATE_GLASS_FIBER = REGISTRATE.block("borosilicate_glass_fiber", BorosilicateGlassFiberBlock::new)
+        .initialProperties(MOLTEN_BOROSILICATE_GLASS)
+        .properties(p -> p
+            .mapColor(state -> state.getValue(FastCoolingMoltenPillarBlock.MOLTEN) ? MapColor.COLOR_RED : MapColor.NONE)
+            .lightLevel(state -> state.getValue(FastCoolingMoltenPillarBlock.MOLTEN) ? 15 : 0)
+        ).tag(BlockTags.MINEABLE_WITH_PICKAXE)
+        .item()
         .build()
         .register();
 
