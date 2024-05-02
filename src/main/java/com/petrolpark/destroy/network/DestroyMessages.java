@@ -20,6 +20,7 @@ import com.petrolpark.destroy.network.packet.RequestKeypunchNamePacket;
 import com.petrolpark.destroy.network.packet.S2CPacket;
 import com.petrolpark.destroy.network.packet.SeismometerSpikeS2CPacket;
 import com.petrolpark.destroy.network.packet.SwissArmyKnifeToolC2SPacket;
+import com.petrolpark.destroy.network.packet.SyncVatMaterialsS2CPacket;
 import com.petrolpark.destroy.network.packet.VatSideQuantityThresholdChangeC2SPacket;
 
 import net.minecraft.network.FriendlyByteBuf;
@@ -58,6 +59,7 @@ public class DestroyMessages {
         addS2CPacket(net, CircuitPatternsS2CPacket.class, CircuitPatternsS2CPacket::read);
         addS2CPacket(net, RequestKeypunchNamePacket.class, RequestKeypunchNamePacket::new);
         addS2CPacket(net, RedstoneProgramSyncReplyS2CPacket.class, RedstoneProgramSyncReplyS2CPacket::new);
+        addS2CPacket(net, SyncVatMaterialsS2CPacket.class, SyncVatMaterialsS2CPacket::new);
 
         addC2SPacket(net, SwissArmyKnifeToolC2SPacket.class, SwissArmyKnifeToolC2SPacket::new);
         addC2SPacket(net, ChainCogwheelsC2SPacket.class, ChainCogwheelsC2SPacket::new);

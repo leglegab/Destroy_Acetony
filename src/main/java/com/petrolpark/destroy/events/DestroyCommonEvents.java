@@ -1,6 +1,8 @@
 package com.petrolpark.destroy.events;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Stream;
 
@@ -53,6 +55,7 @@ import com.petrolpark.destroy.network.packet.CircuitPatternsS2CPacket;
 import com.petrolpark.destroy.network.packet.LevelPollutionS2CPacket;
 import com.petrolpark.destroy.network.packet.RefreshPeriodicTablePonderSceneS2CPacket;
 import com.petrolpark.destroy.network.packet.SeismometerSpikeS2CPacket;
+import com.petrolpark.destroy.network.packet.SyncVatMaterialsS2CPacket;
 import com.petrolpark.destroy.recipe.CircuitDeployerApplicationRecipe;
 import com.petrolpark.destroy.recipe.DestroyRecipeTypes;
 import com.petrolpark.destroy.recipe.DiscStampingRecipe;
@@ -63,6 +66,7 @@ import com.petrolpark.destroy.sound.DestroySoundEvents;
 import com.petrolpark.destroy.util.ChemistryDamageHelper;
 import com.petrolpark.destroy.util.DestroyLang;
 import com.petrolpark.destroy.util.DestroyTags.DestroyItemTags;
+import com.petrolpark.destroy.util.vat.VatMaterial;
 import com.petrolpark.destroy.util.vat.VatMaterialResourceListener;
 import com.petrolpark.destroy.util.InebriationHelper;
 import com.petrolpark.destroy.util.PollutionHelper;
@@ -131,6 +135,7 @@ import net.minecraft.world.item.MapItem;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
@@ -258,6 +263,13 @@ public class DestroyCommonEvents {
 
         // Update the circuit pattern crafting recipes
         DestroyMessages.sendToClient(new CircuitPatternsS2CPacket(Destroy.CIRCUIT_PATTERN_HANDLER.getAllPatterns()), serverPlayer);
+
+        // Update the known Vat Materials
+        Map<Block, VatMaterial> datapackMaterials = new HashMap<>(VatMaterial.BLOCK_MATERIALS.size());
+        VatMaterial.BLOCK_MATERIALS.entrySet().stream()
+        .filter(entry -> !entry.getValue().builtIn())
+        .forEach(entry -> datapackMaterials.put(entry.getKey(), entry.getValue()));
+        DestroyMessages.sendToClient(new SyncVatMaterialsS2CPacket(datapackMaterials), serverPlayer);
     };
 
     /**
@@ -888,7 +900,8 @@ public class DestroyCommonEvents {
         event.addListener(Destroy.CIRCUIT_PATTERN_HANDLER.RELOAD_LISTENER);
         event.addListener(new ExplosiveProperties.Listener(event.getConditionContext()));
         event.addListener(ManualOnlyShapedRecipe.ALLOWED_MENU_LISTENER);
-        event.addListener(new VatMaterialResourceListener(event.getConditionContext()));
+        VatMaterialResourceListener vatMaterialListener = new VatMaterialResourceListener(event.getConditionContext());
+        event.addListener(vatMaterialListener);
     };
 
     @SubscribeEvent

@@ -34,6 +34,8 @@ import net.minecraftforge.fluids.capability.templates.FluidTank;
 @MoveToPetrolparkLibrary
 public class DestroyLang {
 
+    public static final Palette WHITE_AND_WHITE = Palette.ofColors(ChatFormatting.WHITE, ChatFormatting.WHITE);
+    
     private static DecimalFormat df = new DecimalFormat();
     static {
         df.setMaximumFractionDigits(2);
@@ -176,9 +178,9 @@ public class DestroyLang {
     private static final float conductivityMin = 0f;
     private static final float conductivityMax = 100f;
 
-    private static final Palette GRAYS = Palette.ofColors(ChatFormatting.DARK_GRAY, ChatFormatting.GRAY);
+    public static final Palette GRAYS = Palette.ofColors(ChatFormatting.DARK_GRAY, ChatFormatting.GRAY);
 
-    public static List<Component> vatMaterialTooltip(ItemStack stack) {
+    public static List<Component> vatMaterialTooltip(ItemStack stack, Palette palette) {
         List<Component> tooltip = new ArrayList<>();
         tooltip.add(stack.getHoverName());
 
@@ -186,45 +188,52 @@ public class DestroyLang {
         tooltip.add(Component.literal(""));
 
         if (DestroyBlocks.VAT_CONTROLLER.isIn(stack)) {
-            tooltip.addAll(TooltipHelper.cutTextComponent(DestroyLang.translate("tooltip.vat_material.vat_controller").component(), DestroyLang.GRAYS));
+            tooltip.addAll(TooltipHelper.cutTextComponent(DestroyLang.translate("tooltip.vat_material.vat_controller").component(), palette));
             return tooltip;
         };
 
         boolean nerdMode = DestroyAllConfigs.CLIENT.chemistry.nerdMode.get();
         VatMaterial material = VatMaterial.BLOCK_MATERIALS.get(blockItem.getBlock());
 
-        float conductivityPercent = Mth.clamp((material.thermalConductivity() - conductivityMin) / (conductivityMax - conductivityMin), 0f, 1f);
-        float pressurePercent = Mth.clamp((material.maxPressure() - pressureMin) / (pressureMax - pressureMin), 0f, 1f);
-
-        tooltip.add(
-            DestroyLang.translate("tooltip.vat_material.pressure").style(ChatFormatting.WHITE)
-            .space()
-            .add(Component.literal(TooltipHelper.makeProgressBar(5, (int)(5 * pressurePercent + 0.5f))).withStyle(getStatColor(pressurePercent, false)))
-            .component()
-        );
-        if (nerdMode) tooltip.add(DestroyLang.translate("tooltip.vat_material.pressure.nerd_mode", material.maxPressure() / 1000f).component());
-        tooltip.addAll(TooltipHelper.cutStringTextComponent(DestroyLang.translate("tooltip.vat_material.pressure.description").string(), GRAYS));
+        tooltip.add(vatMaterialMaxPressure(material, palette));
+        if (nerdMode) tooltip.add(DestroyLang.translate("tooltip.vat_material.pressure.nerd_mode", material.maxPressure() / 1000f).component().withStyle(palette.primary()));
+        tooltip.addAll(TooltipHelper.cutStringTextComponent(DestroyLang.translate("tooltip.vat_material.pressure.description").string(), palette));
         tooltip.add(Component.literal("")); 
 
-        tooltip.add(
-            DestroyLang.translate("tooltip.vat_material.conductivity").style(ChatFormatting.WHITE)
+        tooltip.add(vatMaterialConductivity(material, palette));
+        if (nerdMode) tooltip.add(DestroyLang.translate("tooltip.vat_material.conductivity.nerd_mode", material.thermalConductivity()).component().withStyle(palette.primary()));
+        tooltip.addAll(TooltipHelper.cutStringTextComponent(DestroyLang.translate("tooltip.vat_material.conductivity.description").string(), palette));
+        tooltip.add(Component.literal(""));
+
+        tooltip.add(vatMaterialTransparent(material, palette));
+        tooltip.addAll(TooltipHelper.cutStringTextComponent(DestroyLang.translate("tooltip.vat_material.transparent.description").string(), palette));
+
+        return tooltip;
+    };
+
+    public static Component vatMaterialConductivity(VatMaterial material, Palette palette) {
+        float conductivityPercent = Mth.clamp((material.thermalConductivity() - conductivityMin) / (conductivityMax - conductivityMin), 0f, 1f);
+        return DestroyLang.translate("tooltip.vat_material.conductivity")
             .space()
             .add(Component.literal(TooltipHelper.makeProgressBar(5, (int)(5 * conductivityPercent + 0.5f))).withStyle(getStatColor(conductivityPercent, true)))
             .component()
-        );
-        if (nerdMode) tooltip.add(DestroyLang.translate("tooltip.vat_material.conductivity.nerd_mode", material.thermalConductivity()).component());
-        tooltip.addAll(TooltipHelper.cutStringTextComponent(DestroyLang.translate("tooltip.vat_material.conductivity.description").string(), GRAYS));
-        tooltip.add(Component.literal(""));
+            .withStyle(palette.highlight());
+    };
 
-        tooltip.add(
-            DestroyLang.translate("tooltip.vat_material.transparent").style(ChatFormatting.WHITE)
+    public static Component vatMaterialMaxPressure(VatMaterial material, Palette palette) {
+        float pressurePercent = Mth.clamp((material.maxPressure() - pressureMin) / (pressureMax - pressureMin), 0f, 1f);
+        return DestroyLang.translate("tooltip.vat_material.pressure")
+            .space()
+            .add(Component.literal(TooltipHelper.makeProgressBar(5, (int)(5 * pressurePercent + 0.5f))).withStyle(getStatColor(pressurePercent, false)))
+            .component().withStyle(palette.highlight());
+    };
+
+    public static Component vatMaterialTransparent(VatMaterial material, Palette palette) {
+        return DestroyLang.translate("tooltip.vat_material.transparent")
             .space()
             .add(material.transparent() ? tick() : cross())
             .component()
-        );
-        tooltip.addAll(TooltipHelper.cutStringTextComponent(DestroyLang.translate("tooltip.vat_material.transparent.description").string(), GRAYS));
-
-        return tooltip;
+            .withStyle(palette.highlight());
     };
 
     public static MutableComponent tick() {

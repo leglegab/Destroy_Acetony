@@ -32,6 +32,8 @@ import com.petrolpark.destroy.compat.jei.category.MutationCategory;
 import com.petrolpark.destroy.compat.jei.category.ObliterationCategory;
 import com.petrolpark.destroy.compat.jei.category.ReactionCategory;
 import com.petrolpark.destroy.compat.jei.category.TappingCategory;
+import com.petrolpark.destroy.compat.jei.category.VatMaterialCategory;
+import com.petrolpark.destroy.compat.jei.category.VatMaterialCategory.VatMaterialRecipe;
 import com.petrolpark.destroy.compat.jei.category.CartographyTableCategory.CartographyTableRecipe;
 import com.petrolpark.destroy.compat.tfmg.SharedDistillationRecipes;
 import com.petrolpark.destroy.effect.potion.PotionSeparationRecipes;
@@ -250,7 +252,14 @@ public class DestroyJEI implements IModPlugin {
             .catalyst(() -> Items.CARTOGRAPHY_TABLE)
             .itemIcon(Items.CARTOGRAPHY_TABLE)
             .emptyBackground(125, 20)
-            .build("cartography_table", CartographyTableCategory::new);
+            .build("cartography_table", CartographyTableCategory::new),
+
+        vat_material = builder(VatMaterialRecipe.class)
+            .addRecipes(VatMaterialCategory::getAllRecipes)
+            .catalyst(DestroyBlocks.VAT_CONTROLLER::get)
+            .itemIcon(DestroyBlocks.VAT_CONTROLLER.get())
+            .emptyBackground(180, 83)
+            .build("vat_material", VatMaterialCategory::new);
 
         DestroyJEI.MOLECULE_RECIPES_NEED_PROCESSING = false;
     };

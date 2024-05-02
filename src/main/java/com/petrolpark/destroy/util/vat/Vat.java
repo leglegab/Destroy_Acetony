@@ -72,7 +72,7 @@ public class Vat {
         Vat vat = new Vat(NbtUtils.readBlockPos(tag.getCompound("LowerCorner")), NbtUtils.readBlockPos(tag.getCompound("UpperCorner")));
         vat.conductance = tag.getFloat("Conductance");
         vat.weakestBlockState = NbtUtils.readBlockState(BuiltInRegistries.BLOCK.asLookup(), tag.getCompound("WeakestBlock"));
-        vat.maximumPressure = VatMaterial.BLOCK_MATERIALS.get(vat.weakestBlockState.getBlock()).maxPressure();
+        vat.maximumPressure = VatMaterial.getMaterial(vat.weakestBlockState.getBlock()).map(VatMaterial::maxPressure).orElseGet(() -> 0f);
         return Optional.of(vat);
     };
 

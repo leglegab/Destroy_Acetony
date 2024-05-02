@@ -1,8 +1,10 @@
 package com.petrolpark.destroy.client.sprites;
 
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.Reader;
 import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Map;
@@ -14,8 +16,11 @@ import java.util.function.Supplier;
 
 import com.google.common.base.Suppliers;
 import com.google.gson.Gson;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import com.google.gson.JsonSyntaxException;
 import com.mojang.blaze3d.platform.NativeImage;
+import com.mojang.blaze3d.platform.NativeImage.Format;
 import com.mojang.serialization.Codec;
 import com.petrolpark.destroy.Destroy;
 import com.simibubi.create.foundation.utility.Lang;
@@ -28,9 +33,12 @@ import net.minecraft.client.renderer.texture.atlas.sources.LazyLoadedImage;
 import net.minecraft.client.renderer.texture.atlas.sources.PalettedPermutations;
 import net.minecraft.client.resources.metadata.animation.AnimationMetadataSection;
 import net.minecraft.client.resources.metadata.animation.FrameSize;
+import net.minecraft.resources.FileToIdConverter;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.Resource;
 import net.minecraft.server.packs.resources.ResourceManager;
+import net.minecraft.util.GsonHelper;
+import net.minecraftforge.client.textures.ForgeTextureMetadata;
 
 public class DestroySpriteSource implements SpriteSource {
 
@@ -62,6 +70,8 @@ public class DestroySpriteSource implements SpriteSource {
     @Override
     public void run(ResourceManager resourceManager, Output output) {
         Destroy.LOGGER.info("Supplying custom Destroy sprites to "+atlas.name());
+
+        // ARMOR TRIMS
 
         Supplier<int[]> paletteKeySupplier = Suppliers.memoize(() -> {
             return PalettedPermutations.loadPaletteEntryFromImage(resourceManager, new ResourceLocation("minecraft", "trims/color_palettes/trim_palette"));
@@ -106,6 +116,56 @@ public class DestroySpriteSource implements SpriteSource {
                 output.add(permutationLocation, new PalettedSpriteSupplier(lazyloadedimage, trimMaterial.getValue(), permutationLocation));
             };
         };
+
+        // CIRCUIT MASK ITEMS
+
+        for (Entry<ResourceLocation, Resource> entry : new FileToIdConverter("textures/item/circuit_mask", ".png").listMatchingResources(resourceManager).entrySet()) {
+            ResourceLocation file = entry.getKey();
+            ResourceLocation id = TEXTURE_ID_CONVERTER.fileToId(file);
+
+            int xStart = 3;
+            int yStart = 3;
+            int tileWidth = 2;
+            int tileHeight = 2;
+
+            // Gather the information on how to split up the texture
+            ResourceLocation metaFile = new ResourceLocation(file.getNamespace(), file.getPath() + ".mcmeta");
+            Optional<Resource> metaFileOpened = resourceManager.getResource(metaFile);
+            if (metaFileOpened.isPresent()) {
+                try (Reader reader = resourceManager.getResource(metaFile).get().openAsReader()) {
+                    JsonObject object = GsonHelper.fromJson(GSON, reader, JsonElement.class).getAsJsonObject();
+                    if (object.has("tiles_start_x")) xStart = object.get("tiles_start_x").getAsInt();
+                    if (object.has("tiles_start_y")) yStart = object.get("tiles_start_y").getAsInt();
+                    if (object.has("tiles_width")) tileWidth = object.get("tile_width").getAsInt();
+                    if (object.has("tiles_height")) tileHeight = object.get("tile_height").getAsInt();
+                } catch (JsonSyntaxException | IOException e) {
+                    Destroy.LOGGER.error("Failed to read .mcmeta file for Circuit Pattern texture: "+file, e);
+                    continue;
+                };
+            } else {
+                Destroy.LOGGER.error("No .mcmeta file for Circuit Pattern texture: "+file, new FileNotFoundException());
+                continue;
+            };
+
+            // Generate each texture and put it in the atlas
+            try (NativeImage image = new LazyLoadedImage(file, entry.getValue(), trimMaterials.size()).get()) {
+                for (int x = 0; x < 4; x++) {
+                    for (int y = 0; y < 4; y++) {
+                        NativeImage partialImage = new NativeImage(Format.RGBA, image.getWidth(), image.getHeight(), false); // Another (usually 16x16) texture containing only a single tile
+                        int xPos = xStart + x * tileWidth;
+                        int yPos = yStart + y * tileHeight;
+                        image.copyRect(partialImage, xPos, yPos, xPos, yPos, tileWidth, tileHeight, false, false);
+                        ResourceLocation sectionId = new ResourceLocation(id.getNamespace(), id.getPath() + "/" + y * 4 + x);
+                        output.add(sectionId, () -> new SpriteContents(sectionId, new FrameSize(image.getWidth(), image.getHeight()), partialImage, AnimationMetadataSection.EMPTY, ForgeTextureMetadata.EMPTY));
+                    };
+                };
+            } catch (IOException e) {
+                Destroy.LOGGER.error("Failed to open Circuit Pattern texture: "+ file, e);
+                continue;
+            };
+        };
+        
+
     };
 
     @Override

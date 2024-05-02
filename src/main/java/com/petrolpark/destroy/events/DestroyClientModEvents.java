@@ -58,7 +58,9 @@ public class DestroyClientModEvents {
     public static final ResourceLocation trimTypePredicateLocation = new ResourceLocation("trim_type");
 
     @SubscribeEvent
-    public static void onModelBakel(ModelEvent.ModifyBakingResult event) {
+    public static void onModelBake(ModelEvent.ModifyBakingResult event) {
+
+        // Armor trim stuff
         List<Entry<ResourceLocation, BakedModel>> modelsToReplace = event.getModels().entrySet()
             .stream()
             .filter(entry ->
@@ -68,6 +70,9 @@ public class DestroyClientModEvents {
             ) .toList();
         for (Entry<ResourceLocation, BakedModel> entry : modelsToReplace) 
             event.getModels().put(entry.getKey(), new UniversalArmorTrimModel(entry.getValue())); // Replace the model with one which wraps the old one but also provides the additional Armor Trims
+    
+        // Circuit Pattern fragment models
+        
     };
 
 };

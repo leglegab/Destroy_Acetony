@@ -2,7 +2,7 @@
     "type": "create:pressing",
     "ingredients": [
       {
-        "tag": "forge:plates/stainless_steel"
+        "tag": "forge:ingots/stainless_steel"
       }
     ],
     "results": [

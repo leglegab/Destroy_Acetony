@@ -104,5 +104,9 @@ public class DestroyPonderTags {
             .add(DestroyBlocks.EXTRUSION_DIE)
         ;
     };
+
+    public static final void refreshVatMaterialsTag() {
+        VatMaterial.BLOCK_MATERIALS.keySet().forEach(PonderRegistry.TAGS.forTag(VAT_SIDE_BLOCKS)::add);
+    };
     
 };

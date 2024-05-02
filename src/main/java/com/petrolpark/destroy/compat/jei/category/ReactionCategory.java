@@ -46,7 +46,6 @@ public class ReactionCategory<T extends ReactionRecipe> extends HoverableTextCat
 
     public static final Palette DARK_GRAY_AND_BLUE = Palette.ofColors(ChatFormatting.DARK_GRAY, ChatFormatting.BLUE);
     public static final Palette WHITE_AND_AQUA = Palette.ofColors(ChatFormatting.WHITE, ChatFormatting.AQUA);
-    public static final Palette WHITE_AND_WHITE = Palette.ofColors(ChatFormatting.WHITE, ChatFormatting.WHITE);
 
     public static RecipeType<? extends ReactionRecipe> TYPE;
 
@@ -78,14 +77,14 @@ public class ReactionCategory<T extends ReactionRecipe> extends HoverableTextCat
         
         if (reaction.needsUV()) {
             Vector2i pos = getCatalystRenderPosition(0, getNumberOfCatalysts(reaction));
-            paragraphs.add(AbstractStackedTextBox.getTextAndActivationAreas(DestroyLang.translate("tooltip.reaction.ultraviolet").string(), pos.x + 3, pos.y + 4, 100, minecraft.screen, minecraft.font, WHITE_AND_WHITE, false));
+            paragraphs.add(AbstractStackedTextBox.getTextAndActivationAreas(DestroyLang.translate("tooltip.reaction.ultraviolet").string(), pos.x + 3, pos.y + 4, 100, minecraft.screen, minecraft.font, DestroyLang.WHITE_AND_WHITE, false));
         };
 
         if (reaction.isHalfReaction()) {
             int reactants = getNumberOfReactants(reaction);
             Vector2i pos = getReactantRenderPosition(reactants - 1, reactants);
-            paragraphs.add(AbstractStackedTextBox.getTextAndActivationAreas(DestroyLang.translate("tooltip.reaction.electrons", DestroyLang.nothingIfOne(reaction.getElectronsTransferred())).string(), pos.x + 3, pos.y + 4, 100, minecraft.screen, minecraft.font, WHITE_AND_WHITE, false));
-            paragraphs.add(AbstractStackedTextBox.getTextAndActivationAreas(DestroyLang.translate("tooltip.reaction.standard_half_cell_potential_hoverable", reaction.getStandardHalfCellPotential()).string(), 72, 36, 100, minecraft.screen, minecraft.font, WHITE_AND_WHITE, false));
+            paragraphs.add(AbstractStackedTextBox.getTextAndActivationAreas(DestroyLang.translate("tooltip.reaction.electrons", DestroyLang.nothingIfOne(reaction.getElectronsTransferred())).string(), pos.x + 3, pos.y + 4, 100, minecraft.screen, minecraft.font, DestroyLang.WHITE_AND_WHITE, false));
+            paragraphs.add(AbstractStackedTextBox.getTextAndActivationAreas(DestroyLang.translate("tooltip.reaction.standard_half_cell_potential_hoverable", reaction.getStandardHalfCellPotential()).string(), 72, 36, 100, minecraft.screen, minecraft.font, DestroyLang.WHITE_AND_WHITE, false));
         };
 
         return paragraphs;

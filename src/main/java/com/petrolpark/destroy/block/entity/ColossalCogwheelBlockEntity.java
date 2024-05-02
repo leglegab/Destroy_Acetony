@@ -94,7 +94,7 @@ public class ColossalCogwheelBlockEntity extends KineticBlockEntity {
                     return (sourceState.getBlock() instanceof ColossalCogwheelBlock && kbe.source.offset(ColossalCogwheelBlock.getRelativeCenterPosition(sourceState)).equals(center));
                 };
                 return false;
-            }).count() >= 7
+            }).count() >= 6
         );
     };
     
