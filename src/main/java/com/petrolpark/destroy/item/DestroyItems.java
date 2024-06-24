@@ -371,7 +371,9 @@ public class DestroyItems {
     MASHED_POTATO = REGISTRATE.item("mashed_potato", Item::new)
         .properties(p -> p
             .food(DestroyFoods.MASHED_POTATO)
-        ).register();
+        ).register(),
+    EMPTY_CARTON = REGISTRATE.item("empty_carton", Item::new)
+        .register();
 
     public static final ItemEntry<ChewingGumItem>
 
@@ -385,6 +387,22 @@ public class DestroyItems {
     BANGERS_AND_MASH = REGISTRATE.item("bangers_and_mash", BowlFoodItem::new)
         .properties(p -> p
             .food(DestroyFoods.BANGERS_AND_MASH)
+        ).register();
+
+    public static final ItemEntry<DrinkItem>
+
+    APPLE_JUICE_CARTON = REGISTRATE.item("apple_juice_carton", DrinkItem::new)
+        .properties(p -> p
+            .food(DestroyFoods.APPLE_JUICE)
+            .craftRemainder(EMPTY_CARTON.get())
+        ).register();
+
+    public static final ItemEntry<MilkCartonItem>
+
+    MILK_CARTON = REGISTRATE.item("milk_carton", MilkCartonItem::new)
+        .properties(p -> p
+            .food(DestroyFoods.MILK_CARTON)
+            .craftRemainder(EMPTY_CARTON.get())
         ).register();
 
     public static final ItemEntry<AlcoholicDrinkItem>
@@ -609,7 +627,11 @@ public class DestroyItems {
     public static final ItemEntry<CircuitBoardItem> CIRCUIT_BOARD = REGISTRATE.item("circuit_board", CircuitBoardItem::new)
         .register();
 
-    public static final ItemEntry<Item> RUINED_CIRCUIT_MASK = REGISTRATE.item("ruined_circuit_mask", Item::new)
+    public static final ItemEntry<Item>
+    
+    RUINED_CIRCUIT_MASK = REGISTRATE.item("ruined_circuit_mask", Item::new)
+        .register(),
+    RUINED_CIRCUIT_BOARD = REGISTRATE.item("ruined_circuit_board", Item::new)
         .register();
 
     public static final ItemEntry<HyperaccumulatingFertilizerItem> HYPERACCUMULATING_FERTILIZER = REGISTRATE.item("hyperaccumulating_fertilizer", HyperaccumulatingFertilizerItem::new)

@@ -294,7 +294,7 @@ public class VatSideBlockEntity extends CopycatBlockEntity implements IHaveGoggl
     public boolean isPipeSubmerged(boolean client, @Nullable Float partialTicks) {
         VatControllerBlockEntity controller = getController();
         if (controller == null) return false;
-        if (direction == Direction.DOWN) return true;
+        if (direction == Direction.DOWN) return true;//!controller.getLiquidTank().isEmpty();
         if (direction == Direction.UP) return !controller.canFitFluid();
         return pipeHeightAboveVatBase() < (client ? controller.getRenderedFluidLevel(partialTicks == null ? 0f : partialTicks) : controller.getFluidLevel());
     };

@@ -23,10 +23,13 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 
 public enum DestroyGuiTextures implements ScreenElement {
 
-	// CIRCUIT MASK
-	CIRCUIT_MASK_BORDER("circuit_mask", 48, 48),
-	CIRCUIT_MASK_CELL_SHADING("circuit_mask", 48, 0, 10, 10),
-	CIRCUIT_MASK_CELL("circuit_mask", 48, 16, 8, 8),
+	// CIRCUITS
+	CIRCUIT_BOARD_BORDER("circuit", 48, 48),
+	CIRCUIT_BOARD_CELL_SHADING("circuit", 48, 0, 10, 10),
+	CIRCUIT_BOARD_CELL("circuit", 48, 16, 8, 8),
+	CIRCUIT_MASK_BORDER("circuit", 0, 48, 48, 48),
+	CIRCUIT_MASK_CELL_SHADING("circuit", 48, 48, 10, 10),
+	CIRCUIT_MASK_CELL("circuit", 48, 64, 8, 8),
 	
 	// KEYPUNCH
 	KEYPUNCH("keypunch", 187, 169),
@@ -91,6 +94,17 @@ public enum DestroyGuiTextures implements ScreenElement {
 	SEISMOGRAPH_HIGHLIGHT_COLUMMN("seismograph_symbols", 57, 0, 7, 57, 64, 64),
 	SEISMOGRAPH_HIGHLIGHT_CROSS("seismograph_symbols", 0, 38, 19, 19, 64, 64),
 	SEISMOGRAPH_HIGHLIGHT_CELL("seismograph_symbols", 0, 31, 7, 7, 64, 64),
+
+	// Custom Explosive Mixtures
+	CUSTOM_EXPLOSIVE_BACKGROUND("custom_explosive", 0, 0, 187, 135),
+	CUSTOM_EXPLOSIVE_CHART("custom_explosive", 0, 135, 76, 76),
+	CUSTOM_EXPLOSIVE_FULFILLED_LESS("custom_explosive", 187, 0, 7, 12),
+	CUSTOM_EXPLOSIVE_FULFILLED_ZERO("custom_explosive", 194, 0, 12, 12),
+	CUSTOM_EXPLOSIVE_FULFILLED_GREATER("custom_explosive", 206, 0, 7, 12),
+	CUSTOM_EXPLOSIVE_UNFULFILLED_LESS("custom_explosive", 187, 12, 7, 12),
+	CUSTOM_EXPLOSIVE_UNFULFILLED_ZERO("custom_explosive", 194, 12, 12, 12),
+	CUSTOM_EXPLOSIVE_UNFULFILLED_GREATER("custom_explosive", 206, 12, 7, 12),
+	CUSTOM_EXPLOSIVE_BAR("custom_explosive", 213, 0, 2, 4),
 
     // JEI
 	JEI_POINTING_HAND("jei/widgets", 40, 40, 18, 14),

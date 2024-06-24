@@ -5,6 +5,7 @@ import com.petrolpark.destroy.Destroy;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectCategory;
 import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
@@ -24,6 +25,9 @@ public class DestroyMobEffects {
     FRAGRANCE = MOB_EFFECTS.register("fragrance",
         () -> new DestroyMobEffect(MobEffectCategory.BENEFICIAL, 0xF294D9)
     ),
+    FULL_BLADDER = MOB_EFFECTS.register("full_bladder",
+        () -> new DestroyMobEffect(MobEffectCategory.NEUTRAL, 0xF7F75D)
+    ),
     HANGOVER = MOB_EFFECTS.register("hangover", HangoverMobEffect::new),
     INEBRIATION = MOB_EFFECTS.register("inebriation", InebriationMobEffect::new),
     BABY_BLUE_HIGH = MOB_EFFECTS.register("baby_blue_high", BabyBlueHighMobEffect::new),
@@ -39,4 +43,18 @@ public class DestroyMobEffects {
     public static MobEffectInstance cancerInstance() {
         return new MobEffectInstance(CANCER.get(), MobEffectInstance.INFINITE_DURATION, 0, false, false, true);
     };
-}
+
+    @SuppressWarnings("null")
+    public static void increaseEffectLevel(LivingEntity entity, final MobEffect effect, int level, int addedDurationPerLevel) {
+        if (entity.hasEffect(effect)) {
+            int currentAmplifier = entity.getEffect(effect).getAmplifier(); // This is warned as being null
+            int currentDuration = entity.getEffect(effect).getDuration(); // So is this
+            entity.removeEffect(effect);
+            int newLevel = currentAmplifier + level;
+            if (newLevel <= 0) return;
+            entity.addEffect(new MobEffectInstance(effect, Math.max(currentDuration + (addedDurationPerLevel * level), 0), Math.max(currentAmplifier + level, 0), false, false, true));
+        } else if (level >= 1) { // If the Entity is not already inebriated and we are attempting to add levels
+            entity.addEffect(new MobEffectInstance(effect, addedDurationPerLevel * level, level - 1, false, false, true));
+        };
+    };
+};

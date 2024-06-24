@@ -11,7 +11,7 @@
         "type": "destroy:circuit_deploying",
         "ingredients": [
           {
-            "item": "destroy:unfinished_circuit_board"
+            "tag": "forge:plates/copper"
           },
           {
             "item": "destroy:circuit_mask"
@@ -47,7 +47,12 @@
     ],
     "results": [
       {
+        "chance": 1.0,
         "item": "destroy:circuit_board"
+      },
+      {
+        "chance": 9.0,
+        "item": "destroy:ruined_circuit_board"
       }
     ],
     "loops": 1

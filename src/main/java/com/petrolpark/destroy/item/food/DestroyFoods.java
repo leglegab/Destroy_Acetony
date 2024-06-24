@@ -16,10 +16,12 @@ public class DestroyFoods {
 
     // Foods
     public static final FoodProperties
+    APPLE_JUICE = new FoodProperties.Builder().nutrition(5).saturationMod(0.4f).effect(() -> new MobEffectInstance(DestroyMobEffects.FULL_BLADDER.get(), 600, 0, false, false, true), 1.0f).build(),
     BUTTER = new FoodProperties.Builder().nutrition(6).saturationMod(0.1f).build(),
     RAW_FRIES = new FoodProperties.Builder().nutrition(2).saturationMod(0.6f).build(),
     FRIES = new FoodProperties.Builder().nutrition(6).saturationMod(1.5f).build(),
     MASHED_POTATO = new FoodProperties.Builder().nutrition(5).saturationMod(1.4f).build(),
+    MILK_CARTON = new FoodProperties.Builder().nutrition(2).saturationMod(0.3f).build(),
     CHEWING_GUM = new FoodProperties.Builder().nutrition(1).saturationMod(0.1f).build(),
     POTATE_O = new FoodProperties.Builder().nutrition(2).saturationMod(0.6f).build(),
     BIFURICATED_CARROT = new FoodProperties.Builder().nutrition(6).saturationMod(1.2f).build(),

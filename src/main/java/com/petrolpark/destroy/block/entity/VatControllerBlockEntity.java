@@ -209,7 +209,7 @@ public class VatControllerBlockEntity extends SmartBlockEntity implements IHaveG
 
             // Dissolve new Items
             if (inventoryChanged) {
-                cachedMixture.dissolveItems(context, fluidAmount);
+                availableItemStacks = cachedMixture.dissolveItems(context, fluidAmount);
                 cachedMixture.disturbEquilibrium(); // Disturb the equilibrium anyway as even if an Item Stack is not dissolved, it may still be a new catalyst
             };
             inventory.clearContent(); // Clear all Items as they may get re-inserted

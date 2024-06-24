@@ -105,6 +105,7 @@ public class LevelRendererMixin {
 
     private Color getRainColor() {
         LevelPollution levelPollution = ClientLevelPollutionData.getLevelPollution();
+        if (levelPollution == null) return new Color(0xFF3E5EB8);
         return new Color(Color.mixColors(0xFF3E5EB8, 0xFF00FF00, (float)levelPollution.get(PollutionType.ACID_RAIN) / (float)PollutionType.ACID_RAIN.max));
     };
 

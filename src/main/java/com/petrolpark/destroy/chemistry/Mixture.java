@@ -471,10 +471,11 @@ public class Mixture extends ReadOnlyMixture {
      * include dissolutions, but Item-catalyzed Reactions too.
      * @param availableStacks The Item Stacks available to this Mixture. This Stacks in this List will be modified
      * @param volume The amount of this Mixture there is, in buckets
+     * @return The resultant Item Stacks after dissolution has occured
      */
-    public void dissolveItems(ReactionContext context, double volume) {
+    public List<ItemStack> dissolveItems(ReactionContext context, double volume) {
         List<ItemStack> availableStacks = List.copyOf(context.availableItemStacks);
-        if (availableStacks.isEmpty()) return;
+        if (availableStacks.isEmpty()) return availableStacks;
         boolean shouldRefreshReactions = false;
 
         List<Reaction> orderedReactions = new ArrayList<>();
@@ -484,7 +485,7 @@ public class Mixture extends ReadOnlyMixture {
             orderedReactions.add(possibleReaction); // Add the Reaction to the list of possible Reactions, which is currently not ordered
         };
 
-        if (orderedReactions.isEmpty()) return; // Don't go any further if there aren't any items to dissolve
+        if (orderedReactions.isEmpty()) return availableStacks; // Don't go any further if there aren't any items to dissolve
 
         Collections.sort(possibleReactions, (r1, r2) -> ((Float)calculateReactionRate(r1, context)).compareTo(calculateReactionRate(r2, context))); // Order the list of Item-consuming Reactions by rate, in case multiple of them want the same Item
 
@@ -543,6 +544,8 @@ public class Mixture extends ReadOnlyMixture {
         updateColor();
         
         if (shouldRefreshReactions) refreshPossibleReactions();
+
+        return availableStacks;
     };
 
     /**
@@ -641,8 +644,9 @@ public class Mixture extends ReadOnlyMixture {
         // Add Reaction Results to new Mixtures
         for (Entry<ReactionResult, Float> entry : reactionResults.entrySet()) {
             double resultMoles = entry.getValue() * initialVolume;
-            liquidMixture.reactionResults.put(entry.getKey(), (float)(resultMoles / newLiquidVolume));
-            gasMixture.reactionResults.put(entry.getKey(), (float)(resultMoles / newGasVolume));
+            double newTotalVolume = newLiquidVolume * newGasVolume;
+            liquidMixture.reactionResults.put(entry.getKey(), (float)(resultMoles / newTotalVolume)); // A cancelled-out expression for (resultMoles / liquidVolume)  * (liquidVolume / (liquidVolume + gasVolume)). Essentially we just divvy out the results based on the volumes of the two phases
+            gasMixture.reactionResults.put(entry.getKey(), (float)(resultMoles / newTotalVolume));
         };
 
         liquidMixture.temperature = temperature;

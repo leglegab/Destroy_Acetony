@@ -57,7 +57,10 @@ public class DestroyFluids {
     URINE = virtualFluid("urine")
         .tag(AllTags.forgeFluidTag("urine"))
         .register(),
-    CHORUS_WINE = coloredSwirlingFluid("chorus_wine", 0x808000c0)
+    APPLE_JUICE = coloredWaterFluid("apple_juice", 0xC0F2DB46)
+        .tag(AllTags.forgeFluidTag("apple_juice"))
+        .register(),
+    CHORUS_WINE = coloredSwirlingFluid("chorus_wine", 0x808000C0)
         .register(),
     CREAM = virtualFluid("cream")
         .register(),
@@ -76,7 +79,7 @@ public class DestroyFluids {
         .register(),
     PERFUME = coloredSwirlingFluid("perfume", 0x80ffcff7)
         .register(),
-    SKIMMED_MILK = coloredWaterFluid("skimmed_milk", 0x00000000)
+    SKIMMED_MILK = coloredWaterFluid("skimmed_milk", 0xFF000000)
         .register(),
     MOONSHINE = coloredWaterFluid("moonshine", 0xC0A18666)
         .register(),

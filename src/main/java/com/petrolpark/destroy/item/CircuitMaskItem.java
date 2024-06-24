@@ -1,24 +1,20 @@
 package com.petrolpark.destroy.item;
 
-import java.util.function.Consumer;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.function.Consumer;
 
-import com.mojang.blaze3d.vertex.PoseStack;
 import com.petrolpark.destroy.Destroy;
 import com.petrolpark.destroy.client.gui.DestroyGuiTextures;
 import com.petrolpark.destroy.item.directional.DirectionalTransportedItemStack;
-import com.petrolpark.destroy.item.renderer.CircuitMaskItemRenderer;
-import com.petrolpark.destroy.item.tooltip.DestroyTooltipComponent;
+import com.petrolpark.destroy.item.renderer.CircuitPatternItemRenderer;
+import com.petrolpark.destroy.item.tooltip.CircuitPatternTooltip;
 import com.petrolpark.destroy.util.DestroyLang;
 import com.simibubi.create.foundation.item.render.SimpleCustomRenderer;
 
 import net.minecraft.ChatFormatting;
-import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Direction.Axis;
 import net.minecraft.nbt.CompoundTag;
@@ -72,7 +68,7 @@ public class CircuitMaskItem extends CircuitPatternItem {
         // If it is 'flipped', the Item has been rotated around 180 the north-south axis before being rotated around the up-down axis
         CompoundTag tag = stack.stack.getOrCreateTag();
         boolean alreadyFlipped = tag.contains("Flipped");
-        tag.remove("Flipped");
+        tag.remove("Flipped"); 
 
         Rotation rotation = stack.getRotation();
         if (
@@ -115,62 +111,13 @@ public class CircuitMaskItem extends CircuitPatternItem {
 
     @Override
     public Optional<TooltipComponent> getTooltipImage(ItemStack stack) {
-        return Optional.of(new CircuitMaskTooltip(getPattern(stack)));
+        return Optional.of(new CircuitPatternTooltip(getPattern(stack), false, DestroyGuiTextures.CIRCUIT_MASK_BORDER, DestroyGuiTextures.CIRCUIT_MASK_CELL, DestroyGuiTextures.CIRCUIT_MASK_CELL_SHADING));
     };
 
     @Override
     @OnlyIn(Dist.CLIENT)
     public void initializeClient(Consumer<IClientItemExtensions> consumer) {
-        consumer.accept(SimpleCustomRenderer.create(this, new CircuitMaskItemRenderer()));
-    };
-
-    public static void renderCircuitMask(int pattern, GuiGraphics graphics) {
-        for (int i = 0; i < 16; i++) {
-            if (isPunched(pattern, i)) continue;
-            DestroyGuiTextures.CIRCUIT_MASK_CELL_SHADING.render(graphics, 7 + (i % 4) * 8, 7 + (i / 4) * 8);
-        };
-        DestroyGuiTextures.CIRCUIT_MASK_BORDER.render(graphics, 0, 0);
-        for (int i = 0; i < 16; i++) {
-            if (isPunched(pattern, i)) continue;
-            DestroyGuiTextures.CIRCUIT_MASK_CELL.render(graphics, 8 + (i % 4) * 8, 8 + (i / 4) * 8);
-        };
-    };
-
-    public static class CircuitMaskTooltip extends DestroyTooltipComponent<CircuitMaskTooltip, ClientCircuitMaskTooltipComponent> {
-
-        public CircuitMaskTooltip(int pattern) {
-            super(tooltip -> new ClientCircuitMaskTooltipComponent(pattern));
-        };
-
-    };
-
-    public static class ClientCircuitMaskTooltipComponent implements ClientTooltipComponent {
-
-        public final int pattern;
-
-        public ClientCircuitMaskTooltipComponent(int pattern) {
-            this.pattern = pattern;
-        };
-
-        @Override
-        public void renderImage(Font font, int x, int y, GuiGraphics guiGraphics) {
-            PoseStack ms = guiGraphics.pose();
-            ms.pushPose();
-            ms.translate(x, y, 250f);
-            renderCircuitMask(pattern, guiGraphics);
-            ms.popPose();
-        };
-
-        @Override
-        public int getHeight() {
-            return 58;
-        };
-
-        @Override
-        public int getWidth(Font font) {
-            return 48;
-        };
-
+        consumer.accept(SimpleCustomRenderer.create(this, new CircuitPatternItemRenderer(true, Destroy.asResource("item/circuit_pattern/circuit_mask"))));
     };
     
 };

@@ -68,7 +68,6 @@ import com.petrolpark.destroy.util.DestroyLang;
 import com.petrolpark.destroy.util.DestroyTags.DestroyItemTags;
 import com.petrolpark.destroy.util.vat.VatMaterial;
 import com.petrolpark.destroy.util.vat.VatMaterialResourceListener;
-import com.petrolpark.destroy.util.InebriationHelper;
 import com.petrolpark.destroy.util.PollutionHelper;
 import com.petrolpark.destroy.util.RedstoneProgrammerItemHandler;
 import com.petrolpark.destroy.world.damage.DestroyDamageSources;
@@ -86,6 +85,7 @@ import com.simibubi.create.content.fluids.spout.SpoutBlockEntity;
 import com.simibubi.create.content.kinetics.deployer.DeployerRecipeSearchEvent;
 import com.simibubi.create.content.processing.basin.BasinBlockEntity;
 import com.simibubi.create.content.processing.burner.BlazeBurnerBlockItem;
+import com.simibubi.create.content.processing.sequenced.SequencedAssemblyRecipe;
 import com.simibubi.create.content.redstone.link.LinkBehaviour;
 import com.simibubi.create.content.redstone.link.RedstoneLinkNetworkHandler.Frequency;
 import com.simibubi.create.foundation.ModFilePackResources;
@@ -412,7 +412,7 @@ public class DestroyCommonEvents {
         // Update the time this Player has been crouching/urinating
         BlockPos posOn = player.getOnPos();
         BlockState stateOn = level.getBlockState(posOn);
-        boolean urinating = (stateOn.getBlock() == Blocks.WATER_CAULDRON || stateOn.getBlock() == Blocks.CAULDRON) && player.hasEffect(DestroyMobEffects.INEBRIATION.get());
+        boolean urinating = (stateOn.getBlock() == Blocks.WATER_CAULDRON || stateOn.getBlock() == Blocks.CAULDRON) && player.hasEffect(DestroyMobEffects.FULL_BLADDER.get());
         if (player.isCrouching()) {
             player.getCapability(PlayerCrouching.Provider.PLAYER_CROUCHING).ifPresent(crouchingCap -> {
                 crouchingCap.ticksCrouching++;
@@ -434,7 +434,7 @@ public class DestroyCommonEvents {
             if (ticksUrinating % 40 == 0)
                 DestroySoundEvents.URINATE.playOnServer(level, posOn);
             if (ticksUrinating == 119) {
-                InebriationHelper.increaseInebriation(player, -1);
+                DestroyMobEffects.increaseEffectLevel(player, DestroyMobEffects.FULL_BLADDER.get(), -1, 0);
                 DestroyAdvancementTrigger.URINATE.award(level, player);
                 level.setBlockAndUpdate(posOn, DestroyBlocks.URINE_CAULDRON.getDefaultState());
             };
@@ -856,6 +856,7 @@ public class DestroyCommonEvents {
         if (inv.hasAnyMatching(stack -> stack.getItem() instanceof CircuitPatternItem)) {
             Recipe<?> recipe = event.getRecipe() instanceof CircuitDeployerApplicationRecipe ? event.getRecipe() : null;
             if (recipe == null) recipe = DestroyRecipeTypes.CIRCUIT_DEPLOYING.find(event.getInventory(), event.getBlockEntity().getLevel()).orElse(null);
+            if (recipe == null) recipe = SequencedAssemblyRecipe.getRecipe(event.getBlockEntity().getLevel(), event.getInventory(), DestroyRecipeTypes.CIRCUIT_DEPLOYING.getType(), CircuitDeployerApplicationRecipe.class).orElse(null);
             if (recipe != null && recipe instanceof CircuitDeployerApplicationRecipe circuitRecipe) event.addRecipe(() -> Optional.of(circuitRecipe.specify(inv)), 150);
         };
     };

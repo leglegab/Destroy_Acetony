@@ -119,7 +119,7 @@ public class DestroySpriteSource implements SpriteSource {
 
         // CIRCUIT MASK ITEMS
 
-        for (Entry<ResourceLocation, Resource> entry : new FileToIdConverter("textures/item/circuit_mask", ".png").listMatchingResources(resourceManager).entrySet()) {
+        for (Entry<ResourceLocation, Resource> entry : new FileToIdConverter("textures/item/circuit_pattern", ".png").listMatchingResources(resourceManager).entrySet()) {
             ResourceLocation file = entry.getKey();
             ResourceLocation id = TEXTURE_ID_CONVERTER.fileToId(file);
 
@@ -155,7 +155,7 @@ public class DestroySpriteSource implements SpriteSource {
                         int xPos = xStart + x * tileWidth;
                         int yPos = yStart + y * tileHeight;
                         image.copyRect(partialImage, xPos, yPos, xPos, yPos, tileWidth, tileHeight, false, false);
-                        ResourceLocation sectionId = new ResourceLocation(id.getNamespace(), id.getPath() + "/" + y * 4 + x);
+                        ResourceLocation sectionId = new ResourceLocation(id.getNamespace(), id.getPath() + "/" + ((y * 4) + x));
                         output.add(sectionId, () -> new SpriteContents(sectionId, new FrameSize(image.getWidth(), image.getHeight()), partialImage, AnimationMetadataSection.EMPTY, ForgeTextureMetadata.EMPTY));
                     };
                 };

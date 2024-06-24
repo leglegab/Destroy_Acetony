@@ -7,9 +7,10 @@ import java.util.stream.Stream;
 import com.petrolpark.destroy.Destroy;
 import com.petrolpark.destroy.block.color.SmogAffectedBlockColor;
 import com.petrolpark.destroy.chemistry.naming.SaltNameOverrides;
+import com.petrolpark.destroy.client.model.CircuitPatternItemModel;
 import com.petrolpark.destroy.client.model.UniversalArmorTrimModel;
-import com.petrolpark.destroy.item.CircuitMaskItem.CircuitMaskTooltip;
 import com.petrolpark.destroy.item.MoleculeDisplayItem.MoleculeTooltip;
+import com.petrolpark.destroy.item.tooltip.CircuitPatternTooltip;
 import com.petrolpark.destroy.util.NameLists;
 
 import net.minecraft.client.resources.model.BakedModel;
@@ -52,7 +53,12 @@ public class DestroyClientModEvents {
     @SubscribeEvent
     public static void onRegisterClientTooltipComponentFactories(RegisterClientTooltipComponentFactoriesEvent event) {
         event.register(MoleculeTooltip.class, MoleculeTooltip::getClientTooltipComponent);
-        event.register(CircuitMaskTooltip.class, CircuitMaskTooltip::getClientTooltipComponent);
+        event.register(CircuitPatternTooltip.class, CircuitPatternTooltip::getClientTooltipComponent);
+    };
+
+    @SubscribeEvent
+    public static final void onRegisterModelLoaders(ModelEvent.RegisterGeometryLoaders event) {
+        event.register("circuit_pattern", CircuitPatternItemModel.Loader.INSTANCE);
     };
 
     public static final ResourceLocation trimTypePredicateLocation = new ResourceLocation("trim_type");
@@ -60,7 +66,7 @@ public class DestroyClientModEvents {
     @SubscribeEvent
     public static void onModelBake(ModelEvent.ModifyBakingResult event) {
 
-        // Armor trim stuff
+        // Armor Trim stuff
         List<Entry<ResourceLocation, BakedModel>> modelsToReplace = event.getModels().entrySet()
             .stream()
             .filter(entry ->
@@ -70,9 +76,6 @@ public class DestroyClientModEvents {
             ) .toList();
         for (Entry<ResourceLocation, BakedModel> entry : modelsToReplace) 
             event.getModels().put(entry.getKey(), new UniversalArmorTrimModel(entry.getValue())); // Replace the model with one which wraps the old one but also provides the additional Armor Trims
-    
-        // Circuit Pattern fragment models
-        
     };
 
 };

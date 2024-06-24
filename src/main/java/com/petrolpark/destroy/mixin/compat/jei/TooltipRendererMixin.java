@@ -1,6 +1,8 @@
 package com.petrolpark.destroy.mixin.compat.jei;
 
 import mezz.jei.api.ingredients.IIngredientRenderer;
+import mezz.jei.api.ingredients.ITypedIngredient;
+import mezz.jei.api.runtime.IIngredientManager;
 import mezz.jei.common.gui.TooltipRenderer;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
@@ -27,12 +29,13 @@ public abstract class TooltipRendererMixin {
      * This allows {@link com.petrolpark.destroy.item.MoleculeDisplayItem Molecule tooltips} to be rendered - usually tooltips are only rendered for Item Stack ingredients.
      */
     @Inject(
-        method = "Lmezz/jei/common/gui/TooltipRenderer;drawHoveringText(Lnet/minecraft/client/gui/GuiGraphics;Ljava/util/List;IILjava/lang/Object;Lmezz/jei/api/ingredients/IIngredientRenderer;)V",
+        method = "Lmezz/jei/common/gui/TooltipRenderer;drawHoveringText(Lnet/minecraft/client/gui/GuiGraphics;Ljava/util/List;IILmezz/jei/api/ingredients/ITypedIngredient;Lmezz/jei/api/ingredients/IIngredientRenderer;Lmezz/jei/api/runtime/IIngredientManager;)V",
         at = @At("HEAD"),
         cancellable = true,
         remap = false
     )
-    private static <T> void inDrawHoveringText(GuiGraphics graphics, List<Component> textLines, int x, int y, T ingredient, IIngredientRenderer<T> ingredientRenderer, CallbackInfo ci) {
+    private static <T> void inDrawHoveringText(GuiGraphics graphics, List<Component> textLines, int x, int y, ITypedIngredient<T> typedIngredient, IIngredientRenderer<T> ingredientRenderer, IIngredientManager ingredientManager, CallbackInfo ci) {
+        T ingredient = typedIngredient.getIngredient();
         if (ingredient instanceof Molecule molecule) {
             Minecraft minecraft = Minecraft.getInstance();
             Font font = ingredientRenderer.getFontRenderer(minecraft, ingredient);

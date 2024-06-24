@@ -390,7 +390,8 @@ public class DestroyReactions {
         .addProduct(DestroyMolecules.IODINE)
         .reverseReaction(reaction -> reaction
             .withResult(2.1f, PrecipitateReactionResult.of(DestroyItems.IODINE::asStack))
-        ).build(),
+        )
+        .build(),
 
     IRON_DISSOLUTION = builder() //TODO replace with redox
         .id("iron_dissolution")

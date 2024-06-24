@@ -2,8 +2,6 @@ package com.petrolpark.destroy.client.model;
 
 import java.util.function.Function;
 
-import org.jetbrains.annotations.NotNull;
-
 import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
@@ -14,24 +12,20 @@ import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.client.resources.model.Material;
 import net.minecraft.client.resources.model.ModelBaker;
 import net.minecraft.client.resources.model.ModelState;
-import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.level.BlockAndTintGetter;
-import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.client.model.BakedModelWrapper;
 import net.minecraftforge.client.model.ItemLayerModel;
-import net.minecraftforge.client.model.data.ModelData;
-import net.minecraftforge.client.model.data.ModelProperty;
 import net.minecraftforge.client.model.geometry.IGeometryBakingContext;
 import net.minecraftforge.client.model.geometry.IGeometryLoader;
 import net.minecraftforge.client.model.geometry.IUnbakedGeometry;
 
+/**
+ * A wrapped for a regular Forge {@link ItemLayerModel Item model}, which also references a location of fragment textures, which will have models automatically created and registered.
+ */
 public class CircuitPatternItemModel implements IUnbakedGeometry<CircuitPatternItemModel> {
 
     public final ResourceLocation fragmentTextureResourceLocation;
     public final IUnbakedGeometry<?> wrapped;
-
-    public static final ModelProperty<ResourceLocation> FRAGMENT_TEXTURE_RESOURCE_LOCATION_PROPERTY = new ModelProperty<>();
 
     public CircuitPatternItemModel(IUnbakedGeometry<?> wrapped, ResourceLocation fragmentTextureResourceLocation) {
         this.wrapped = wrapped;
@@ -39,7 +33,7 @@ public class CircuitPatternItemModel implements IUnbakedGeometry<CircuitPatternI
     };
 
     @Override
-    public BakedModel bake(IGeometryBakingContext context, ModelBaker baker, Function<Material, TextureAtlasSprite> spriteGetter, ModelState modelState, ItemOverrides overrides, ResourceLocation modelLocation) {
+    public CircuitPatternItemModel.Baked bake(IGeometryBakingContext context, ModelBaker baker, Function<Material, TextureAtlasSprite> spriteGetter, ModelState modelState, ItemOverrides overrides, ResourceLocation modelLocation) {
         return new Baked(wrapped.bake(context, baker, spriteGetter, modelState, overrides, modelLocation));
     };
 
@@ -49,13 +43,15 @@ public class CircuitPatternItemModel implements IUnbakedGeometry<CircuitPatternI
             super(originalModel);
         };
 
-        @Override
-        public @NotNull ModelData getModelData(@NotNull BlockAndTintGetter level, @NotNull BlockPos pos, @NotNull BlockState state, @NotNull ModelData modelData) {
-            return ModelData.builder().with(FRAGMENT_TEXTURE_RESOURCE_LOCATION_PROPERTY, fragmentTextureResourceLocation).build();
+        public ResourceLocation getFragmentTextureResourceLocation() {
+            return fragmentTextureResourceLocation;
         };
+
     };
 
     public static class Loader implements IGeometryLoader<CircuitPatternItemModel> {
+
+        public static final Loader INSTANCE = new Loader();
 
         @Override
         public CircuitPatternItemModel read(JsonObject jsonObject, JsonDeserializationContext deserializationContext) throws JsonParseException {

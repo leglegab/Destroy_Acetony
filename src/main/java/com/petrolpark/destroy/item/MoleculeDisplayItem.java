@@ -93,12 +93,16 @@ public class MoleculeDisplayItem extends Item {
         private final Molecule molecule;
     
         public MoleculeTooltip(Molecule molecule) {
-            super(ClientMoleculeTooltipComponent::new);
             this.molecule = molecule;
         };
 
         public Molecule getMolecule() {
             return this.molecule;
+        }
+
+        @Override
+        public ClientMoleculeTooltipComponent getClientTooltipComponent() {
+            return new ClientMoleculeTooltipComponent(this);
         };
     };
 
