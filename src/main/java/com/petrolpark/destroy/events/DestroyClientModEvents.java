@@ -11,6 +11,7 @@ import com.petrolpark.destroy.client.model.CircuitPatternItemModel;
 import com.petrolpark.destroy.client.model.UniversalArmorTrimModel;
 import com.petrolpark.destroy.item.MoleculeDisplayItem.MoleculeTooltip;
 import com.petrolpark.destroy.item.tooltip.CircuitPatternTooltip;
+import com.petrolpark.destroy.item.tooltip.ExplosivePropertiesTooltip;
 import com.petrolpark.destroy.util.NameLists;
 
 import net.minecraft.client.resources.model.BakedModel;
@@ -54,6 +55,7 @@ public class DestroyClientModEvents {
     public static void onRegisterClientTooltipComponentFactories(RegisterClientTooltipComponentFactoriesEvent event) {
         event.register(MoleculeTooltip.class, MoleculeTooltip::getClientTooltipComponent);
         event.register(CircuitPatternTooltip.class, CircuitPatternTooltip::getClientTooltipComponent);
+        event.register(ExplosivePropertiesTooltip.class, ExplosivePropertiesTooltip::getClientTooltipComponent);
     };
 
     @SubscribeEvent

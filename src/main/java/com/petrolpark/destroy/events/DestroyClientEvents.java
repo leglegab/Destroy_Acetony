@@ -5,21 +5,27 @@ import javax.annotation.Nonnull;
 import org.apache.commons.lang3.mutable.MutableObject;
 
 import com.jozufozu.flywheel.util.Color;
+import com.mojang.datafixers.util.Either;
 import com.petrolpark.destroy.block.renderer.BlockEntityBehaviourRenderer;
 import com.petrolpark.destroy.capability.level.pollution.ClientLevelPollutionData;
 import com.petrolpark.destroy.capability.level.pollution.LevelPollution;
 import com.petrolpark.destroy.capability.level.pollution.LevelPollution.PollutionType;
 import com.petrolpark.destroy.client.gui.button.OpenDestroyMenuButton;
+import com.petrolpark.destroy.client.gui.screen.CustomExplosiveScreen;
 import com.petrolpark.destroy.config.DestroyAllConfigs;
+import com.petrolpark.destroy.item.ICustomExplosiveMixItem;
 import com.petrolpark.destroy.item.SwissArmyKnifeItem;
 import com.petrolpark.destroy.item.renderer.SeismometerItemRenderer;
+import com.petrolpark.destroy.item.tooltip.ExplosivePropertiesTooltip;
 import com.petrolpark.destroy.mixin.accessor.MenuRowsAccessor;
 import com.petrolpark.destroy.util.CogwheelChainingHandler;
 import com.petrolpark.destroy.util.DestroyLang;
 import com.petrolpark.destroy.util.PollutionHelper;
+import com.petrolpark.destroy.world.explosion.ExplosiveProperties;
 import com.simibubi.create.infrastructure.gui.OpenCreateMenuButton.MenuRows;
 
 import net.minecraft.ChatFormatting;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.screens.PauseScreen;
@@ -29,6 +35,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.material.FogType;
 import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.client.event.RenderTooltipEvent;
 import net.minecraftforge.client.event.ScreenEvent;
 import net.minecraftforge.client.event.ViewportEvent.ComputeFogColor;
 import net.minecraftforge.client.event.ViewportEvent.RenderFog;
@@ -142,5 +149,18 @@ public class DestroyClientEvents {
     public static void onItemTooltip(ItemTooltipEvent event) {
         Item item = event.getItemStack().getItem();
         if (item.equals(Items.TNT)) event.getToolTip().add(DestroyLang.translate("tooltip.tnt").style(ChatFormatting.GRAY).component());
+    };
+
+    @SubscribeEvent
+    public static void onGatherTooltips(RenderTooltipEvent.GatherComponents event) {
+        Minecraft mc = Minecraft.getInstance();
+        ExplosiveProperties properties = null;
+        if (event.getItemStack().getItem() instanceof ICustomExplosiveMixItem mixItem) {
+            properties = mixItem.getExplosiveInventory(event.getItemStack()).getExplosiveProperties().withConditions(mixItem.getApplicableExplosionConditions());
+        };
+        if (mc.screen instanceof CustomExplosiveScreen) {
+            properties = ExplosiveProperties.ITEM_EXPLOSIVE_PROPERTIES.get(event.getItemStack().getItem());
+        };
+        if (properties != null) event.getTooltipElements().add(Either.right(new ExplosivePropertiesTooltip(properties)));
     };
 };

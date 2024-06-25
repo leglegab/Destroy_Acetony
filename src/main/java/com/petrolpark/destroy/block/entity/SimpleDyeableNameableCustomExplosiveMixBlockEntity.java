@@ -12,6 +12,8 @@ import com.simibubi.create.foundation.blockEntity.behaviour.BlockEntityBehaviour
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.Tag;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.api.distmarker.Dist;
@@ -21,14 +23,15 @@ import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.items.IItemHandler;
 
-public abstract class SimpleDyeableCustomExplosiveMixBlockEntity extends SmartBlockEntity implements IDyeableCustomExplosiveMixBlockEntity {
+public abstract class SimpleDyeableNameableCustomExplosiveMixBlockEntity extends SmartBlockEntity implements IDyeableCustomExplosiveMixBlockEntity {
 
     public LazyOptional<IItemHandler> itemCapability;
 
     protected CustomExplosiveMixInventory inv;
     protected int color;
+    protected Component name;
 
-    public SimpleDyeableCustomExplosiveMixBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState state) {
+    public SimpleDyeableNameableCustomExplosiveMixBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState state) {
         super(type, pos, state);
         color = 0xFFFFFF;
         inv = createInv();
@@ -54,6 +57,7 @@ public abstract class SimpleDyeableCustomExplosiveMixBlockEntity extends SmartBl
     protected void read(CompoundTag tag, boolean clientPacket) {
         super.read(tag, clientPacket);
         color = tag.getInt("Color");
+        if (tag.contains("CustomName", Tag.TAG_STRING)) name = Component.Serializer.fromJson(tag.getString("CustomName"));
         inv = createInv();
         inv.deserializeNBT(tag.getCompound("ExplosiveMix"));
     };
@@ -62,6 +66,7 @@ public abstract class SimpleDyeableCustomExplosiveMixBlockEntity extends SmartBl
     protected void write(CompoundTag tag, boolean clientPacket) {
         super.write(tag, clientPacket);
         tag.putInt("Color", color);
+        if (name != null) tag.putString("CustomName", Component.Serializer.toJson(name));
         tag.put("ExplosiveMix", inv.serializeNBT());
     };
 
@@ -87,6 +92,11 @@ public abstract class SimpleDyeableCustomExplosiveMixBlockEntity extends SmartBl
     @Override
     public int getColor() {
         return color;
+    };
+
+    @Override
+    public Component getDisplayName() {
+        return name != null ? name : getLevel().getBlockState(getBlockPos()).getBlock().getName();
     };
     
 };

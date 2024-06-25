@@ -5,6 +5,7 @@ import org.jetbrains.annotations.NotNull;
 import com.petrolpark.destroy.world.explosion.ExplosiveProperties;
 import com.petrolpark.destroy.world.explosion.ExplosiveProperties.ExplosiveProperty;
 
+import net.minecraft.util.Mth;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.items.ItemStackHandler;
 
@@ -25,6 +26,7 @@ public class CustomExplosiveMixInventory extends ItemStackHandler {
             ExplosiveProperties itemProperties = ExplosiveProperties.ITEM_EXPLOSIVE_PROPERTIES.getOrDefault(stack.getItem(), new ExplosiveProperties());
             for (ExplosiveProperty property : ExplosiveProperty.values()) properties.merge(property, itemProperties.get(property), Float::sum);
         };
+        properties.replaceAll((ep, v) -> Mth.clamp(v, -10f, 10f));
         return properties;
     };
 

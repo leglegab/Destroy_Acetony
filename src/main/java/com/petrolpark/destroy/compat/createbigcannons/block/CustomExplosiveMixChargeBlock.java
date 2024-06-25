@@ -6,7 +6,7 @@ import javax.annotation.Nullable;
 
 import java.util.Collections;
 
-import com.petrolpark.destroy.block.entity.SimpleDyeableCustomExplosiveMixBlockEntity;
+import com.petrolpark.destroy.block.entity.SimpleDyeableNameableCustomExplosiveMixBlockEntity;
 import com.petrolpark.destroy.compat.createbigcannons.block.entity.CreateBigCannonBlockEntityTypes;
 import com.petrolpark.destroy.compat.createbigcannons.item.CustomExplosiveMixChargeBlockItem;
 import com.petrolpark.destroy.world.explosion.ExplosiveProperties;
@@ -14,6 +14,7 @@ import com.simibubi.create.foundation.block.IBE;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.LivingEntity;
@@ -31,10 +32,11 @@ import net.minecraft.world.level.storage.loot.LootParams;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
+import net.minecraftforge.network.NetworkHooks;
 import rbasamoyai.createbigcannons.munitions.big_cannon.propellant.BigCannonPropellantProperties;
 import rbasamoyai.createbigcannons.munitions.big_cannon.propellant.PowderChargeBlock;
 
-public class CustomExplosiveMixChargeBlock extends PowderChargeBlock implements IBE<SimpleDyeableCustomExplosiveMixBlockEntity> {
+public class CustomExplosiveMixChargeBlock extends PowderChargeBlock implements IBE<SimpleDyeableNameableCustomExplosiveMixBlockEntity> {
 
     public CustomExplosiveMixChargeBlock(Properties properties) {
         super(properties);
@@ -61,14 +63,17 @@ public class CustomExplosiveMixChargeBlock extends PowderChargeBlock implements 
     public InteractionResult use(BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult pHit) {
         InteractionResult dyeingResult = onBlockEntityUse(level, pos, be -> be.tryDye(player.getItemInHand(hand), pHit, level, pos, player));
         if (dyeingResult != InteractionResult.PASS) return dyeingResult;
-        //TODO gui
+        if (!level.isClientSide() && player instanceof ServerPlayer serverPlayer) {
+            withBlockEntityDo(level, pos, be -> NetworkHooks.openScreen(serverPlayer, be, be::writeToBuffer));
+            return InteractionResult.SUCCESS;
+        };
         return InteractionResult.PASS;
     };
 
     @Override
     public List<ItemStack> getDrops(BlockState state, LootParams.Builder params) {
         BlockEntity be = params.getOptionalParameter(LootContextParams.BLOCK_ENTITY);
-        if (!(be instanceof SimpleDyeableCustomExplosiveMixBlockEntity ebe)) return Collections.emptyList();
+        if (!(be instanceof SimpleDyeableNameableCustomExplosiveMixBlockEntity ebe)) return Collections.emptyList();
         return Collections.singletonList(ebe.getFilledItemStack(CreateBigCannonsBlocks.CUSTOM_EXPLOSIVE_MIX_CHARGE.asStack()));
     };
 
@@ -83,7 +88,7 @@ public class CustomExplosiveMixChargeBlock extends PowderChargeBlock implements 
     };
 
     public ItemStack getCloneItemStack(BlockGetter level, BlockPos pos) {
-        SimpleDyeableCustomExplosiveMixBlockEntity be = getBlockEntity(level, pos);
+        SimpleDyeableNameableCustomExplosiveMixBlockEntity be = getBlockEntity(level, pos);
         if (be == null) return ItemStack.EMPTY;
         return be.getFilledItemStack(CreateBigCannonsBlocks.CUSTOM_EXPLOSIVE_MIX_CHARGE.asStack());
     };
@@ -130,12 +135,12 @@ public class CustomExplosiveMixChargeBlock extends PowderChargeBlock implements 
 	};
 
     @Override
-    public Class<SimpleDyeableCustomExplosiveMixBlockEntity> getBlockEntityClass() {
-        return SimpleDyeableCustomExplosiveMixBlockEntity.class;
+    public Class<SimpleDyeableNameableCustomExplosiveMixBlockEntity> getBlockEntityClass() {
+        return SimpleDyeableNameableCustomExplosiveMixBlockEntity.class;
     };
 
     @Override
-    public BlockEntityType<? extends SimpleDyeableCustomExplosiveMixBlockEntity> getBlockEntityType() {
+    public BlockEntityType<? extends SimpleDyeableNameableCustomExplosiveMixBlockEntity> getBlockEntityType() {
         return CreateBigCannonBlockEntityTypes.CUSTOM_EXPLOSIVE_MIX_CHARGE.get();
     };
 

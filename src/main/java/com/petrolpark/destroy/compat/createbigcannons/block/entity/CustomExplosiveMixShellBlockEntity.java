@@ -7,10 +7,13 @@ import org.jetbrains.annotations.NotNull;
 import com.petrolpark.destroy.block.entity.IDyeableCustomExplosiveMixBlockEntity;
 import com.petrolpark.destroy.config.DestroyAllConfigs;
 import com.petrolpark.destroy.item.inventory.CustomExplosiveMixInventory;
+import com.petrolpark.destroy.world.explosion.ExplosiveProperties.ExplosivePropertyCondition;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.Tag;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
@@ -28,6 +31,7 @@ public class CustomExplosiveMixShellBlockEntity extends FuzedBlockEntity impleme
 
     protected CustomExplosiveMixInventory inv;
     protected int color;
+    protected Component name;
 
     public CustomExplosiveMixShellBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState state) {
         super(type, pos, state);
@@ -54,14 +58,16 @@ public class CustomExplosiveMixShellBlockEntity extends FuzedBlockEntity impleme
     public void load(CompoundTag tag) {
         super.load(tag);
         color = tag.getInt("Color");
+        if (tag.contains("CustomName", Tag.TAG_STRING)) name = Component.Serializer.fromJson(tag.getString("CustomName"));
         inv = createInv();
         inv.deserializeNBT(tag.getCompound("ExplosiveMix"));
     };
 
     @Override
-    public void saveAdditional(CompoundTag tag) {
+    protected void saveAdditional(CompoundTag tag) {
         super.saveAdditional(tag);
         tag.putInt("Color", color);
+        if (name != null) tag.putString("CustomName", Component.Serializer.toJson(name));
         tag.put("ExplosiveMix", inv.serializeNBT());
     };
 
@@ -91,6 +97,16 @@ public class CustomExplosiveMixShellBlockEntity extends FuzedBlockEntity impleme
 
     public ItemStack getFuze() {
         return getItem(0);
+    }
+
+    @Override
+    public Component getDisplayName() {
+        return name != null ? name : getLevel().getBlockState(getBlockPos()).getBlock().getName();
+    }
+
+    @Override
+    public ExplosivePropertyCondition[] getApplicableExplosionConditions() {
+        return new ExplosivePropertyCondition[]{}; //TODO conditinos
     };
     
 };

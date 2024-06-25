@@ -1,6 +1,7 @@
 package com.petrolpark.destroy.item;
 
 import com.petrolpark.destroy.item.inventory.CustomExplosiveMixInventory;
+import com.petrolpark.destroy.world.explosion.ExplosiveProperties.ExplosivePropertyCondition;
 
 import net.minecraft.world.item.ItemStack;
 
@@ -18,4 +19,6 @@ public interface ICustomExplosiveMixItem {
     };
 
     public int getExplosiveInventorySize();
+
+    public ExplosivePropertyCondition[] getApplicableExplosionConditions();
 };

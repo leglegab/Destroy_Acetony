@@ -1,10 +1,12 @@
 package com.petrolpark.destroy.compat.createbigcannons.item;
 
 import java.util.List;
+
 import javax.annotation.Nullable;
 
 import com.petrolpark.destroy.config.DestroyAllConfigs;
 import com.petrolpark.destroy.item.DyeableCustomExplosiveMixBlockItem;
+import com.petrolpark.destroy.world.explosion.ExplosiveProperties.ExplosivePropertyCondition;
 
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
@@ -31,6 +33,11 @@ public class CustomExplosiveMixChargeBlockItem extends DyeableCustomExplosiveMix
     @Override
     public int getExplosiveInventorySize() {
         return DestroyAllConfigs.SERVER.compat.customExplosiveMixChargeSize.get();
+    }
+
+    @Override
+    public ExplosivePropertyCondition[] getApplicableExplosionConditions() {
+        return new ExplosivePropertyCondition[]{};
     };
     
 };

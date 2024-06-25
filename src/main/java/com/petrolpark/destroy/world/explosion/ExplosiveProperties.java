@@ -11,8 +11,10 @@ import java.util.stream.Collectors;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import com.petrolpark.destroy.Destroy;
 import com.petrolpark.destroy.util.DestroyLang;
 import com.petrolpark.destroy.util.DestroyReloadListener;
+import com.simibubi.create.foundation.utility.Lang;
 
 import net.minecraft.core.Holder;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -28,14 +30,15 @@ import net.minecraftforge.common.crafting.conditions.ICondition.IContext;
 public class ExplosiveProperties extends EnumMap<ExplosiveProperties.ExplosiveProperty, Float> {
 
     public static final Map<Item, ExplosiveProperties> ITEM_EXPLOSIVE_PROPERTIES = new HashMap<>();
+    public static final Map<ResourceLocation, ExplosivePropertyCondition> EXPLOSIVE_PROPERTY_CONDITIONS = new HashMap<>();
 
     public static final ExplosivePropertyCondition
 
-    CAN_EXPLODE = new ExplosivePropertyCondition(ExplosiveProperty.SENSITIVTY, 0f, "destroy.explosion_condition.can_explode"),
-    EXPLODES_RANDOMLY = new ExplosivePropertyCondition(ExplosiveProperty.SENSITIVTY, 10f, "destroy.explosion_condition.explodes_randomly"),
-    EVAPORATES_FLUIDS = new ExplosivePropertyCondition(ExplosiveProperty.TEMPERATURE, 5f, "destroy.explosion_condition.evaporates_fluids"),
-    OBLITERATES = new ExplosivePropertyCondition(ExplosiveProperty.BRISANCE, 5f, "destroy.explosion_condition.obliterates"),
-    SILK_TOUCH = new ExplosivePropertyCondition(ExplosiveProperty.BRISANCE, -5f, "destroy.explosion_condition.silk_touch");
+    CAN_EXPLODE = register(new ExplosivePropertyCondition(ExplosiveProperty.SENSITIVITY, 0f, Destroy.asResource("can_explode"))),
+    EXPLODES_RANDOMLY = register(new ExplosivePropertyCondition(ExplosiveProperty.SENSITIVITY, 10f, Destroy.asResource("explodes_randomly"))),
+    EVAPORATES_FLUIDS = register(new ExplosivePropertyCondition(ExplosiveProperty.TEMPERATURE, 5f, Destroy.asResource("evaporates_fluids"))),
+    OBLITERATES = register(new ExplosivePropertyCondition(ExplosiveProperty.BRISANCE, 5f, Destroy.asResource("obliterates"))),
+    SILK_TOUCH = register(new ExplosivePropertyCondition(ExplosiveProperty.BRISANCE, -5f, Destroy.asResource("silk_touch")));
 
     public Set<ExplosivePropertyCondition> conditions = new HashSet<>();
   
@@ -74,8 +77,8 @@ public class ExplosiveProperties extends EnumMap<ExplosiveProperties.ExplosivePr
     public static ExplosiveProperties fromJson(JsonObject json) {
         ExplosiveProperties properties = new ExplosiveProperties();
         for (ExplosiveProperty property : ExplosiveProperty.values()) {
-            if (json.has(property.name())) {
-                try { properties.put(property, json.get(property.name()).getAsFloat()); } catch (Throwable e) {};
+            if (json.has(Lang.asId(property.name()))) {
+                try { properties.put(property, json.get(Lang.asId(property.name())).getAsFloat()); } catch (Throwable e) {};
             };
         };
         return properties;
@@ -85,12 +88,12 @@ public class ExplosiveProperties extends EnumMap<ExplosiveProperties.ExplosivePr
 
         public final ExplosiveProperty property;
         public final float threshhold;
-        protected final String translationKey;
+        public final ResourceLocation rl;
 
-        public ExplosivePropertyCondition(ExplosiveProperty property, float threshhold, String translationKey) {
+        public ExplosivePropertyCondition(ExplosiveProperty property, float threshhold, ResourceLocation rl) {
             this.property = property;
             this.threshhold = threshhold;
-            this.translationKey = translationKey;
+            this.rl = rl;
         };
 
         public boolean negative() {
@@ -98,8 +101,12 @@ public class ExplosiveProperties extends EnumMap<ExplosiveProperties.ExplosivePr
         };
 
         public Component getDescription() {
-            return Component.translatable(translationKey);
+            return Component.translatable(rl.getNamespace()+".explosion_condition."+rl.getPath());
         };
+    };
+
+    public static ExplosivePropertyCondition register(ExplosivePropertyCondition condition) {
+        return EXPLOSIVE_PROPERTY_CONDITIONS.put(condition.rl, condition);
     };
 
     public static enum ExplosiveProperty {
@@ -108,10 +115,14 @@ public class ExplosiveProperties extends EnumMap<ExplosiveProperties.ExplosivePr
         OXYGEN_BALANCE,
         TEMPERATURE,
         BRISANCE,
-        SENSITIVTY;
+        SENSITIVITY;
 
         public Component getName() {
-            return DestroyLang.translate("explosive_property."+name()).component();
+            return DestroyLang.translate("explosive_property."+Lang.asId(name())).component();
+        };
+
+        public Component getSymbol() {
+            return DestroyLang.translate("explosive_property."+Lang.asId(name())+".symbol").component();
         };
     };
 

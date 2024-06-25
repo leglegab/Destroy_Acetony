@@ -12,7 +12,7 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplate.StructureBlockInfo;
  
-public class DyeableCustomExplosiveMixBlockItem extends BlockItem implements DyeableLeatherItem, ICustomExplosiveMixItem {
+public abstract class DyeableCustomExplosiveMixBlockItem extends BlockItem implements DyeableLeatherItem, ICustomExplosiveMixItem {
 
     public DyeableCustomExplosiveMixBlockItem(Block block, Properties properties) {
         super(block, properties);
