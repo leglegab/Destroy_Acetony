@@ -208,12 +208,8 @@ public class DestroyBlocks {
         .onRegister(CreateRegistrate.blockModel(() -> BracketedKineticBlockModel::new))
         .register();
 
-    public static final BlockEntry<RedstoneProgrammerBlock> REDSTONE_PROGRAMMER = REGISTRATE.block("redstone_programmer", RedstoneProgrammerBlock::new)
-        .initialProperties(SharedProperties::wooden)
-        .properties(p -> p
-            .noOcclusion()
-            .noLootTable() // Handled in RedstoneProgrammerBlock class
-        ).item(RedstoneProgrammerBlockItem::new)
+    public static final BlockEntry<Block> MEASURING_CYLINDER = REGISTRATE.block("measuring_cylinder", Block::new)
+        .item()
         .build()
         .register();
 
@@ -272,6 +268,15 @@ public class DestroyBlocks {
             .forAllStatesExcept(BlockStateGen.mapToAir(p), PumpjackStructuralBlock.FACING)
         ).register();
 
+    public static final BlockEntry<RedstoneProgrammerBlock> REDSTONE_PROGRAMMER = REGISTRATE.block("redstone_programmer", RedstoneProgrammerBlock::new)
+        .initialProperties(SharedProperties::wooden)
+        .properties(p -> p
+            .noOcclusion()
+            .noLootTable() // Handled in RedstoneProgrammerBlock class
+        ).item(RedstoneProgrammerBlockItem::new)
+        .build()
+        .register();
+
     public static final BlockEntry<SandCastleBlock> SAND_CASTLE = REGISTRATE.block("sand_castle", SandCastleBlock::new)
         .initialProperties(() -> Blocks.POPPY)
         .properties(p -> p
@@ -281,6 +286,14 @@ public class DestroyBlocks {
             .instabreak()
             .sound(SoundType.SAND)
         ).register();
+
+    public static final BlockEntry<TestTubeRackBlock> TEST_TUBE_RACK = REGISTRATE.block("test_tube_rack", TestTubeRackBlock::new)
+        .initialProperties(() -> Blocks.OAK_PLANKS)
+        .properties(p -> p
+        ).tag(BlockTags.MINEABLE_WITH_AXE)
+        .item()
+        .build()
+        .register();
 
     public static final BlockEntry<TreeTapBlock> TREE_TAP = REGISTRATE.block("tree_tap", TreeTapBlock::new)
         .initialProperties(AllBlocks.DEPLOYER)

@@ -1,0 +1,19 @@
+{
+    "type": "minecraft:crafting_shaped",
+    "pattern": [
+      "SSS",
+      "S S",
+      "WWW"
+    ],
+    "key": {
+      "S": {
+        "tag": "forge:rods/wood"
+      },
+      "W": {
+        "tag": "minecraft:wooden_slabs"
+      }
+    },
+    "result": {
+      "item": "destroy:test_tube_rack"
+    }
+  }

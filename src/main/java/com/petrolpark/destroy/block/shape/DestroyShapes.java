@@ -55,6 +55,15 @@ public class DestroyShapes {
         .build(),
 
     SEMI_MOLTEN_BLOCK_COLLISION = shape(0, 0, 0, 16, 14, 16)
+        .build(),
+
+    TEST_TUBE_RACK_X = shape(0, 0, 6, 16, 8, 10)
+        .build(),
+
+    TEST_TUBE_RACK_Z = shape(6, 0, 0, 10, 8, 16)
+        .build(),
+
+    MEASURING_CYLINDER = shape(5, 0, 5, 11, 14, 11)
         .build();
 
     public static final VoxelShaper COAXIAL_GEAR = shape(2, 6, 2, 14, 10, 14)

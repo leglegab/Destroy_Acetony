@@ -317,7 +317,8 @@ public class DestroyItems {
     TEST_TUBE = REGISTRATE.item("test_tube", TestTubeItem::new)
         .properties(p -> p
             .stacksTo(1)
-        ).register();
+        ).tag(DestroyItemTags.TEST_TUBE_RACK_STORABLE.tag)
+        .register();
 
     // TOYS
 

@@ -161,6 +161,11 @@ public class DestroyBlockEntityTypes {
         .validBlocks(DestroyBlocks.SAND_CASTLE)
         .register();
 
+    public static final BlockEntityEntry<TestTubeRackBlockEntity> TEST_TUBE_RACK = REGISTRATE
+        .blockEntity("test_tube_rack", TestTubeRackBlockEntity::new)
+        .validBlocks(DestroyBlocks.TEST_TUBE_RACK)
+        .register();
+
     public static final BlockEntityEntry<TreeTapBlockEntity> TREE_TAP = REGISTRATE
         .blockEntity("tree_tap", TreeTapBlockEntity::new)
         .validBlock(DestroyBlocks.TREE_TAP)

@@ -21,7 +21,6 @@ public class DestroyTags {
         ALCOHOLIC_DRINK,
         BEETROOT_ASHES,
 
-
         CHEMICAL_PROTECTION_EYES("chemical_protection/eyes"),
         CHEMICAL_PROTECTION_NOSE("chemical_protection/nose"),
         CHEMICAL_PROTECTION_MOUTH("chemical_protection/mouth"),
@@ -52,6 +51,7 @@ public class DestroyTags {
 
         SPRAY_BOTTLE,
         SYRINGE,
+        TEST_TUBE_RACK_STORABLE,
         YEAST,
         ;
 
