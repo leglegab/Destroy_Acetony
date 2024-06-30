@@ -22,6 +22,7 @@ import com.petrolpark.destroy.block.renderer.PlanetaryGearsetRenderer;
 import com.petrolpark.destroy.block.renderer.PollutometerRenderer;
 import com.petrolpark.destroy.block.renderer.PumpjackRenderer;
 import com.petrolpark.destroy.block.renderer.RedstoneProgrammerRenderer;
+import com.petrolpark.destroy.block.renderer.TestTubeRackRenderer;
 import com.petrolpark.destroy.block.renderer.TreeTapRenderer;
 import com.petrolpark.destroy.block.renderer.VatRenderer;
 import com.petrolpark.destroy.block.renderer.VatSideRenderer;
@@ -164,6 +165,7 @@ public class DestroyBlockEntityTypes {
     public static final BlockEntityEntry<TestTubeRackBlockEntity> TEST_TUBE_RACK = REGISTRATE
         .blockEntity("test_tube_rack", TestTubeRackBlockEntity::new)
         .validBlocks(DestroyBlocks.TEST_TUBE_RACK)
+        .renderer(() -> TestTubeRackRenderer::new)
         .register();
 
     public static final BlockEntityEntry<TreeTapBlockEntity> TREE_TAP = REGISTRATE

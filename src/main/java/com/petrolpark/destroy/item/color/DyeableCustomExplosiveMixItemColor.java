@@ -1,4 +1,4 @@
-package com.petrolpark.destroy.item.colors;
+package com.petrolpark.destroy.item.color;
 
 import net.minecraft.client.color.item.ItemColor;
 import net.minecraft.world.item.DyeableLeatherItem;

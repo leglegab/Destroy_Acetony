@@ -1,0 +1,7 @@
+{
+    "parent": "destroy:block/periodic_table/tank_base",
+    "textures": {
+      "front": "destroy:block/periodic_table/mercury",
+      "fluid": "destroy:fluid/mixture_still"
+    }
+  }

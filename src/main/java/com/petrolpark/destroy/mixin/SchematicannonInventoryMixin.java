@@ -25,6 +25,6 @@ public class SchematicannonInventoryMixin {
         remap = false
     )
     public void isItemValid(int slot, ItemStack stack, CallbackInfoReturnable<Boolean> ci) {
-        if (slot == 4) ci.setReturnValue(DestroyItemTags.SCHEMATICANNON_FUEL.matches(stack.getItem()));
+        if (slot == 4) ci.setReturnValue(DestroyItemTags.SCHEMATICANNON_FUELS.matches(stack.getItem()));
     };
 };

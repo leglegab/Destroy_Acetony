@@ -47,43 +47,43 @@ public class DestroyItems {
     // PLASTICS
     
     POLYETHENE_TEREPHTHALATE = REGISTRATE.item("polyethene_terephthalate", Item::new)
-        .tag(DestroyItemTags.PLASTIC.tag, DestroyItemTags.TEXTILE_PLASTIC.tag)
+        .tag(DestroyItemTags.PLASTICS.tag, DestroyItemTags.TEXTILE_PLASTICS.tag)
         .register(),
     POLYVINYL_CHLORIDE = REGISTRATE.item("polyvinyl_chloride", Item::new)
-        .tag(DestroyItemTags.PLASTIC.tag, DestroyItemTags.RIGID_PLASTIC.tag)
+        .tag(DestroyItemTags.PLASTICS.tag, DestroyItemTags.RIGID_PLASTICS.tag)
         .register(),
     POLYETHENE = REGISTRATE.item("polyethene", Item::new)
-        .tag(DestroyItemTags.PLASTIC.tag, DestroyItemTags.RIGID_PLASTIC.tag)
+        .tag(DestroyItemTags.PLASTICS.tag, DestroyItemTags.RIGID_PLASTICS.tag)
         .register(),
     POLYPROPENE = REGISTRATE.item("polypropene", Item::new)
-        .tag(DestroyItemTags.PLASTIC.tag, DestroyItemTags.RIGID_PLASTIC.tag)
+        .tag(DestroyItemTags.PLASTICS.tag, DestroyItemTags.RIGID_PLASTICS.tag)
         .register(),
     POLYSTYRENE = REGISTRATE.item("polystyrene", Item::new)
-        .tag(DestroyItemTags.PLASTIC.tag, DestroyItemTags.RIGID_PLASTIC.tag, DestroyItemTags.POROUS_PLASTIC.tag)
+        .tag(DestroyItemTags.PLASTICS.tag, DestroyItemTags.RIGID_PLASTICS.tag, DestroyItemTags.POROUS_PLASTICS.tag)
         .register(),
     ABS = REGISTRATE.item("abs", Item::new)
-        .tag(DestroyItemTags.PLASTIC.tag, DestroyItemTags.RIGID_PLASTIC.tag)
+        .tag(DestroyItemTags.PLASTICS.tag, DestroyItemTags.RIGID_PLASTICS.tag)
         .register(),
     POLYTETRAFLUOROETHENE = REGISTRATE.item("polytetrafluoroethene", Item::new)
-        .tag(DestroyItemTags.PLASTIC.tag, DestroyItemTags.RIGID_PLASTIC.tag, DestroyItemTags.INERT_PLASTIC.tag)
+        .tag(DestroyItemTags.PLASTICS.tag, DestroyItemTags.RIGID_PLASTICS.tag, DestroyItemTags.INERT_PLASTICS.tag)
         .register(),
     NYLON = REGISTRATE.item("nylon", Item::new)
-        .tag(DestroyItemTags.PLASTIC.tag, DestroyItemTags.RIGID_PLASTIC.tag, DestroyItemTags.TEXTILE_PLASTIC.tag)
+        .tag(DestroyItemTags.PLASTICS.tag, DestroyItemTags.RIGID_PLASTICS.tag, DestroyItemTags.TEXTILE_PLASTICS.tag)
         .register(),
     POLYSTYRENE_BUTADIENE = REGISTRATE.item("polystyrene_butadiene", Item::new)
-        .tag(DestroyItemTags.PLASTIC.tag, DestroyItemTags.RUBBER_PLASTIC.tag)
+        .tag(DestroyItemTags.PLASTICS.tag, DestroyItemTags.RUBBER_PLASTICS.tag)
         .register(),
     POLYACRYLONITRILE = REGISTRATE.item("polyacrylonitrile", Item::new)
-        .tag(DestroyItemTags.PLASTIC.tag)
+        .tag(DestroyItemTags.PLASTICS.tag)
         .register(),
     POLYISOPRENE = REGISTRATE.item("polyisoprene", Item::new)
-        .tag(DestroyItemTags.PLASTIC.tag, DestroyItemTags.TEXTILE_PLASTIC.tag, DestroyItemTags.RUBBER_PLASTIC.tag)
+        .tag(DestroyItemTags.PLASTICS.tag, DestroyItemTags.TEXTILE_PLASTICS.tag, DestroyItemTags.RUBBER_PLASTICS.tag)
         .register(),
     POLYURETHANE = REGISTRATE.item("polyurethane", Item::new)
-        .tag(DestroyItemTags.PLASTIC.tag, DestroyItemTags.RIGID_PLASTIC.tag, DestroyItemTags.TEXTILE_PLASTIC.tag, DestroyItemTags.POROUS_PLASTIC.tag)
+        .tag(DestroyItemTags.PLASTICS.tag, DestroyItemTags.RIGID_PLASTICS.tag, DestroyItemTags.TEXTILE_PLASTICS.tag, DestroyItemTags.POROUS_PLASTICS.tag)
         .register(),
     POLYMETHYL_METHACRYLATE = REGISTRATE.item("polymethyl_methacrylate", Item::new)
-        .tag(DestroyItemTags.PLASTIC.tag, DestroyItemTags.RIGID_PLASTIC.tag)
+        .tag(DestroyItemTags.PLASTICS.tag, DestroyItemTags.RIGID_PLASTICS.tag)
         .register(),
 
     CARD_STOCK = REGISTRATE.item("card_stock", Item::new)
@@ -203,19 +203,19 @@ public class DestroyItems {
     // PRIMARY EXPLOSIVES
 
     ACETONE_PEROXIDE = REGISTRATE.item("acetone_peroxide", Item::new)
-        .tag(DestroyItemTags.PRIMARY_EXPLOSIVE.tag, Tags.Items.DUSTS)
+        .tag(DestroyItemTags.PRIMARY_EXPLOSIVES.tag, Tags.Items.DUSTS)
         .register(),
     FULMINATED_MERCURY = REGISTRATE.item("fulminated_mercury", Item::new)
-        .tag(DestroyItemTags.PRIMARY_EXPLOSIVE.tag, Tags.Items.DUSTS)
+        .tag(DestroyItemTags.PRIMARY_EXPLOSIVES.tag, Tags.Items.DUSTS)
         .register(),
     NICKEL_HYDRAZINE_NITRATE = REGISTRATE.item("nickel_hydrazine_nitrate", Item::new)
-        .tag(DestroyItemTags.PRIMARY_EXPLOSIVE.tag, Tags.Items.DUSTS)
+        .tag(DestroyItemTags.PRIMARY_EXPLOSIVES.tag, Tags.Items.DUSTS)
         .register();
 
     public static final ItemEntry<ContactExplosiveItem>
 
     TOUCH_POWDER = REGISTRATE.item("touch_powder", ContactExplosiveItem::new)
-        .tag(DestroyItemTags.PRIMARY_EXPLOSIVE.tag, Tags.Items.DUSTS)
+        .tag(DestroyItemTags.PRIMARY_EXPLOSIVES.tag, Tags.Items.DUSTS)
         .register();
 
     // SECONDARY EXPLOSIVES
@@ -223,22 +223,22 @@ public class DestroyItems {
     public static final ItemEntry<Item>
 
     ANFO = REGISTRATE.item("anfo", Item::new)
-        .tag(DestroyItemTags.SECONDARY_EXPLOSIVE.tag, Tags.Items.DUSTS)
+        .tag(DestroyItemTags.SECONDARY_EXPLOSIVES.tag, Tags.Items.DUSTS)
         .register(),
     CORDITE = REGISTRATE.item("cordite_rods", Item::new)
-        .tag(DestroyItemTags.SECONDARY_EXPLOSIVE.tag)
+        .tag(DestroyItemTags.SECONDARY_EXPLOSIVES.tag)
         .register(),
     DYNAMITE = REGISTRATE.item("dynamite", Item::new)
-        .tag(DestroyItemTags.SECONDARY_EXPLOSIVE.tag)
+        .tag(DestroyItemTags.SECONDARY_EXPLOSIVES.tag)
         .register(),
     NITROCELLULOSE = REGISTRATE.item("nitrocellulose", Item::new)
-        .tag(DestroyItemTags.SECONDARY_EXPLOSIVE.tag)
+        .tag(DestroyItemTags.SECONDARY_EXPLOSIVES.tag)
         .register(),
     PICRIC_ACID_TABLET = REGISTRATE.item("picric_acid_tablet", Item::new)
-        .tag(DestroyItemTags.SECONDARY_EXPLOSIVE.tag)
+        .tag(DestroyItemTags.SECONDARY_EXPLOSIVES.tag)
         .register(),
     TNT_TABLET = REGISTRATE.item("tnt_tablet", Item::new)
-        .tag(DestroyItemTags.SECONDARY_EXPLOSIVE.tag)
+        .tag(DestroyItemTags.SECONDARY_EXPLOSIVES.tag)
         .register(),
 
     // COMPOUNDS
@@ -332,16 +332,16 @@ public class DestroyItems {
     public static final ItemEntry<Item>
 
     SPRAY_BOTTLE = REGISTRATE.item("spray_bottle", Item::new)
-        .tag(DestroyItemTags.SPRAY_BOTTLE.tag)
+        .tag(DestroyItemTags.SPRAY_BOTTLES.tag)
         .register();
 
     public static final ItemEntry<SprayBottleItem>
     
     PERFUME_BOTTLE = REGISTRATE.item("perfume_bottle", p -> new SprayBottleItem(p, new MobEffectInstance(DestroyMobEffects.FRAGRANCE.get(), 12000, 0)))
-        .tag(DestroyItemTags.SPRAY_BOTTLE.tag)
+        .tag(DestroyItemTags.SPRAY_BOTTLES.tag)
         .register(),
     SUNSCREEN_BOTTLE = REGISTRATE.item("sunscreen_bottle", p -> new SprayBottleItem(p, new MobEffectInstance(DestroyMobEffects.SUN_PROTECTION.get(), 12000, 0, false, false, true)))
-        .tag(DestroyItemTags.SPRAY_BOTTLE.tag)
+        .tag(DestroyItemTags.SPRAY_BOTTLES.tag)
         .register();
 
     public static final ItemEntry<SimpleFoiledItem>
@@ -413,14 +413,14 @@ public class DestroyItems {
             .food(DestroyFoods.MOONSHINE)
             .craftRemainder(Items.GLASS_BOTTLE)
             .stacksTo(16)
-        ).tag(DestroyItemTags.ALCOHOLIC_DRINK.tag)
+        ).tag(DestroyItemTags.ALCOHOLIC_DRINKS.tag)
         .register(),
     MOONSHINE_BOTTLE = REGISTRATE.item("moonshine_bottle", p -> new AlcoholicDrinkItem(p, 3))
         .properties(p -> p
             .food(DestroyFoods.MOONSHINE)
             .craftRemainder(Items.GLASS_BOTTLE)
             .stacksTo(16)
-        ).tag(DestroyItemTags.ALCOHOLIC_DRINK.tag)
+        ).tag(DestroyItemTags.ALCOHOLIC_DRINKS.tag)
         .register();
     
     public static final ItemEntry<ChorusWineItem>
@@ -430,7 +430,7 @@ public class DestroyItems {
             .food(DestroyFoods.MOONSHINE)
             .craftRemainder(Items.GLASS_BOTTLE)
             .stacksTo(16)
-        ).tag(DestroyItemTags.ALCOHOLIC_DRINK.tag)
+        ).tag(DestroyItemTags.ALCOHOLIC_DRINKS.tag)
         .register();
 
     // SEQUENCED ASSEMBLY INTERMEDIATES
@@ -493,43 +493,43 @@ public class DestroyItems {
     public static final ItemEntry<Item>
 
     HEFTY_BEETROOT = REGISTRATE.item("hefty_beetroot", Item::new)
-        .tag(DestroyItemTags.HEFTY_BEETROOT.tag)
+        .tag(DestroyItemTags.HEFTY_BEETROOTS.tag)
         .register();
 
     public static final ItemEntry<WithSecondaryItem> 
 
     COAL_INFUSED_BEETROOT = REGISTRATE.item("coal_infused_beetroot", p -> new WithSecondaryItem(p, i -> new ItemStack(Items.COAL)))
-        .tag(DestroyItemTags.HEFTY_BEETROOT.tag)
+        .tag(DestroyItemTags.HEFTY_BEETROOTS.tag)
         .register(),
     COPPER_INFUSED_BEETROOT = REGISTRATE.item("copper_infused_beetroot", p -> new WithSecondaryItem(p, i -> new ItemStack(Items.RAW_COPPER)))
-        .tag(DestroyItemTags.HEFTY_BEETROOT.tag)
+        .tag(DestroyItemTags.HEFTY_BEETROOTS.tag)
         .register(),
     DIAMOND_INFUSED_BEETROOT = REGISTRATE.item("diamond_infused_beetroot", p -> new WithSecondaryItem(p, i -> new ItemStack(Items.DIAMOND)))
-        .tag(DestroyItemTags.HEFTY_BEETROOT.tag)
+        .tag(DestroyItemTags.HEFTY_BEETROOTS.tag)
         .register(),
     EMERALD_INFUSED_BEETROOT = REGISTRATE.item("emerald_infused_beetroot", p -> new WithSecondaryItem(p, i -> new ItemStack(Items.EMERALD)))
-        .tag(DestroyItemTags.HEFTY_BEETROOT.tag)
+        .tag(DestroyItemTags.HEFTY_BEETROOTS.tag)
         .register(),
     FLUORITE_INFUSED_BEETROOT = REGISTRATE.item("fluorite_infused_beetroot", p -> new WithSecondaryItem(p, i -> FLUORITE.asStack()))
-        .tag(DestroyItemTags.HEFTY_BEETROOT.tag)
+        .tag(DestroyItemTags.HEFTY_BEETROOTS.tag)
         .register(),
     GOLD_INFUSED_BEETROOT = REGISTRATE.item("gold_infused_beetroot", p -> new WithSecondaryItem(p, i -> new ItemStack(Items.RAW_GOLD)))
-        .tag(DestroyItemTags.HEFTY_BEETROOT.tag)
+        .tag(DestroyItemTags.HEFTY_BEETROOTS.tag)
         .register(),
     IRON_INFUSED_BEETROOT = REGISTRATE.item("iron_infused_beetroot", p -> new WithSecondaryItem(p, i -> new ItemStack(Items.RAW_IRON)))
-        .tag(DestroyItemTags.HEFTY_BEETROOT.tag)
+        .tag(DestroyItemTags.HEFTY_BEETROOTS.tag)
         .register(),
     LAPIS_INFUSED_BEETROOT = REGISTRATE.item("lapis_infused_beetroot", p -> new WithSecondaryItem(p, i -> new ItemStack(Items.LAPIS_LAZULI)))
-        .tag(DestroyItemTags.HEFTY_BEETROOT.tag)
+        .tag(DestroyItemTags.HEFTY_BEETROOTS.tag)
         .register(),
     NICKEL_INFUSED_BEETROOT = REGISTRATE.item("nickel_infused_beetroot", p -> new WithSecondaryItem(p, i -> RAW_NICKEL.asStack()))
-        .tag(DestroyItemTags.HEFTY_BEETROOT.tag)
+        .tag(DestroyItemTags.HEFTY_BEETROOTS.tag)
         .register(),
     REDSTONE_INFUSED_BEETROOT = REGISTRATE.item("redstone_infused_beetroot", p -> new WithSecondaryItem(p, i -> new ItemStack(Items.REDSTONE)))
-        .tag(DestroyItemTags.HEFTY_BEETROOT.tag)
+        .tag(DestroyItemTags.HEFTY_BEETROOTS.tag)
         .register(),
     ZINC_INFUSED_BEETROOT = REGISTRATE.item("zinc_infused_beetroot", p -> new WithSecondaryItem(p, i -> AllItems.RAW_ZINC.asStack()))
-        .tag(DestroyItemTags.HEFTY_BEETROOT.tag)
+        .tag(DestroyItemTags.HEFTY_BEETROOTS.tag)
         .register();
     
     // BEETROOT ASHES
@@ -579,23 +579,23 @@ public class DestroyItems {
     // SYRINGES
 
     public static final ItemEntry<Item> SYRINGE = REGISTRATE.item("syringe", Item::new)
-        .tag(DestroyItemTags.SYRINGE.tag)
+        .tag(DestroyItemTags.SYRINGES.tag)
         .register();
 
     public static final ItemEntry<? extends SyringeItem>
 
     ASPIRIN_SYRINGE = REGISTRATE.item("aspirin_syringe", AspirinSyringeItem::new)
-        .tag(DestroyItemTags.SYRINGE.tag)
+        .tag(DestroyItemTags.SYRINGES.tag)
         .color(() -> () -> (stack, tintIndex) -> tintIndex == 0 ? 16716136 : -1)
         .register(),
 
     BABY_BLUE_SYRINGE = REGISTRATE.item("baby_blue_syringe", p -> new BabyBlueSyringeItem(p, 1200, 1))
-        .tag(DestroyItemTags.SYRINGE.tag)
+        .tag(DestroyItemTags.SYRINGES.tag)
         .color(() -> () -> (stack, tintIndex) -> tintIndex == 0 ? 8825802 : -1)
         .register(),
 
     CISPLATIN_SYRINGE = REGISTRATE.item("cisplatin_syringe", CisplatinSyringeItem::new)
-        .tag(DestroyItemTags.SYRINGE.tag)
+        .tag(DestroyItemTags.SYRINGES.tag)
         .color(() -> () -> (stack, tintIndex) -> tintIndex == 0 ? 11459547 : -1)
         .register();
 
@@ -616,7 +616,7 @@ public class DestroyItems {
         .tag(DestroyItemTags.LIABLE_TO_CHANGE.tag)
         .register(),
     YEAST = REGISTRATE.item("yeast", Item::new)
-        .tag(DestroyItemTags.FERTILIZER.tag)
+        .tag(DestroyItemTags.FERTILIZERS.tag, DestroyItemTags.YEAST.tag)
         .register(),
     NANODIAMONDS = REGISTRATE.item("nanodiamonds", Item::new)
         .register();

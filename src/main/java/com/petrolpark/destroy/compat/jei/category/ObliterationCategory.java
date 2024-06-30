@@ -32,7 +32,7 @@ public class ObliterationCategory extends DestroyRecipeCategory<ObliterationReci
             .addIngredients(recipe.getIngredients().get(0));
         
         List<ItemStack> explosives = new ArrayList<>();
-        ForgeRegistries.ITEMS.tags().getTag(DestroyItemTags.OBLITERATION_EXPLOSIVE.tag).forEach(item -> {
+        ForgeRegistries.ITEMS.tags().getTag(DestroyItemTags.OBLITERATION_EXPLOSIVES.tag).forEach(item -> {
             explosives.add(new ItemStack(item));
         });
         builder.addSlot(RecipeIngredientRole.CATALYST, 77, 26)

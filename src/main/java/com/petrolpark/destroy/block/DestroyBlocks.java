@@ -18,6 +18,7 @@ import com.petrolpark.destroy.item.DestroyItems;
 import com.petrolpark.destroy.item.PeriodicTableBlockItem;
 import com.petrolpark.destroy.item.PumpjackBlockItem;
 import com.petrolpark.destroy.item.RedstoneProgrammerBlockItem;
+import com.petrolpark.destroy.item.TankPeriodicTableBlockItem;
 import com.petrolpark.destroy.sound.DestroySoundTypes;
 import com.petrolpark.destroy.util.DestroyTags.DestroyBlockTags;
 import com.petrolpark.destroy.util.DestroyTags.DestroyItemTags;
@@ -42,15 +43,19 @@ import com.tterrag.registrate.providers.loot.RegistrateBlockLootTables;
 import com.tterrag.registrate.util.entry.BlockEntry;
 
 import net.minecraft.client.renderer.RenderType;
+import net.minecraft.core.BlockPos;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.ItemTags;
+import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.enchantment.Enchantments;
+import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.GlassBlock;
 import net.minecraft.world.level.block.RotatedPillarBlock;
 import net.minecraft.world.level.block.SoundType;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.NoteBlockInstrument;
 import net.minecraft.world.level.material.MapColor;
 import net.minecraft.world.level.storage.loot.entries.LootItem;
@@ -148,6 +153,12 @@ public class DestroyBlocks {
         ).transform(TagGen.pickaxeOnly())
         .item()
         .transform(customItemModel())
+        .register();
+
+    public static final BlockEntry<CustomMixExplosiveBlock> CUSTOM_MIX_EXPLOSIVE = REGISTRATE.block("custom_mix_explosive", CustomMixExplosiveBlock::new)
+        .initialProperties(() -> Blocks.TNT)
+        .item()
+        .build()
         .register();
 
     public static final BlockEntry<DoubleCardanShaftBlock> DOUBLE_CARDAN_SHAFT = REGISTRATE.block("double_cardan_shaft", DoubleCardanShaftBlock::new)
@@ -372,7 +383,7 @@ public class DestroyBlocks {
             .mapColor(MapColor.COLOR_LIGHT_GREEN)
         ).item()
         .tag(DestroyItemTags.LIABLE_TO_CHANGE.tag)
-        .tag(DestroyItemTags.OBLITERATION_EXPLOSIVE.tag)
+        .tag(DestroyItemTags.OBLITERATION_EXPLOSIVES.tag)
         .build()
         .register();
 
@@ -386,6 +397,16 @@ public class DestroyBlocks {
         .register();
 
     // STORAGE BLOCKS
+
+    public static final BlockEntry<Block> CARBON_FIBER_BLOCK = REGISTRATE.block("carbon_fiber_block", Block::new)
+        .initialProperties(() -> Blocks.OBSIDIAN)
+        .properties(p -> p
+            .strength(40f, 800f)
+        ).transform(TagGen.pickaxeOnly())
+        .transform(TagGen.tagBlockAndItem("storage_blocks/carbon_fiber"))
+        .tag(Tags.Items.STORAGE_BLOCKS)
+        .build()
+        .register();
 
     public static final BlockEntry<Block> FLUORITE_BLOCK = REGISTRATE.block("fluorite_block", Block::new)
         .initialProperties(() -> Blocks.IRON_BLOCK)
@@ -427,6 +448,19 @@ public class DestroyBlocks {
         .tag(Tags.Blocks.STORAGE_BLOCKS)
         .tag(BlockTags.BEACON_BASE_BLOCKS)
         .transform(TagGen.tagBlockAndItem("storage_blocks/chromium"))
+        .tag(Tags.Items.STORAGE_BLOCKS)
+        .build()
+        .register();
+
+    public static final BlockEntry<Block> IODINE_BLOCK = REGISTRATE.block("iodine_block", Block::new)
+        .initialProperties(() -> Blocks.RAW_IRON_BLOCK)
+        .properties(p -> p
+            .mapColor(MapColor.COLOR_GRAY)
+            .strength(2f, 2f)
+        ).transform(TagGen.pickaxeOnly())
+        .tag(BlockTags.NEEDS_STONE_TOOL)
+        .tag(Tags.Blocks.STORAGE_BLOCKS)
+        .transform(TagGen.tagBlockAndItem("storage_blocks/iodine"))
         .tag(Tags.Items.STORAGE_BLOCKS)
         .build()
         .register();
@@ -705,6 +739,63 @@ public class DestroyBlocks {
 
     // Periodic Table blocks
 
+    public static final BlockEntry<TankPeriodicTableBlock>
+
+    HYDROGEN_PERIODIC_TABLE_BLOCK = REGISTRATE.block("hydrogen_periodic_table_block", p -> new TankPeriodicTableBlock(p, 0x20FFFFFF))
+        .initialProperties(SharedProperties::stone)
+        .properties(p -> p
+            .strength(2f)
+            .sound(SoundType.GLASS)
+            .noOcclusion()
+            .isValidSpawn(DestroyBlocks::never)
+            .isRedstoneConductor(DestroyBlocks::never)
+            .isSuffocating(DestroyBlocks::never)
+            .isViewBlocking(DestroyBlocks::never)
+        ).transform(TagGen.pickaxeOnly())
+        .item(TankPeriodicTableBlockItem::new)
+        .build()
+        .register();
+
+    public static final BlockEntry<PeriodicTableBlock>
+
+    CARBON_PERIODIC_TABLE_BLOCK = REGISTRATE.block("carbon_periodic_table_block", PeriodicTableBlock::new)
+        .initialProperties(CARBON_FIBER_BLOCK)
+        .tag(Tags.Blocks.STORAGE_BLOCKS, AllTags.forgeBlockTag("storage_blocks/carbon_fiber"))
+        .item(PeriodicTableBlockItem::new)
+        .tag(Tags.Items.STORAGE_BLOCKS, forgeItemTag("storage_blocks/carbon_fiber"))
+        .build()
+        .register();
+
+    public static final BlockEntry<TankPeriodicTableBlock>
+
+    NITROGEN_PERIODIC_TABLE_BLOCK = REGISTRATE.block("nitrogen_periodic_table_block", p -> new TankPeriodicTableBlock(p, 0x20FFFFFF))
+        .initialProperties(HYDROGEN_PERIODIC_TABLE_BLOCK)
+        .transform(TagGen.pickaxeOnly())
+        .item(TankPeriodicTableBlockItem::new)
+        .build()
+        .register(),
+
+    OXYGEN_PERIODIC_TABLE_BLOCK = REGISTRATE.block("oxygen_periodic_table_block", p -> new TankPeriodicTableBlock(p, 0x20FFFFFF))
+        .initialProperties(HYDROGEN_PERIODIC_TABLE_BLOCK)
+        .transform(TagGen.pickaxeOnly())
+        .item(TankPeriodicTableBlockItem::new)
+        .build()
+        .register(),
+
+    FLUORINE_PERIODIC_TABLE_BLOCK = REGISTRATE.block("fluorine_periodic_table_block", p -> new TankPeriodicTableBlock(p, 0x40F8F9A7))
+        .initialProperties(HYDROGEN_PERIODIC_TABLE_BLOCK)
+        .transform(TagGen.pickaxeOnly())
+        .item(TankPeriodicTableBlockItem::new)
+        .build()
+        .register(),
+
+    CHLORINE_PERIODIC_TABLE_BLOCK = REGISTRATE.block("chlorine_periodic_table_block", p -> new TankPeriodicTableBlock(p, 0x40C0F9A7))
+        .initialProperties(HYDROGEN_PERIODIC_TABLE_BLOCK)
+        .transform(TagGen.pickaxeOnly())
+        .item(TankPeriodicTableBlockItem::new)
+        .build()
+        .register();
+
     public static final BlockEntry<PeriodicTableBlock>
 
     CHROMIUM_PERIODIC_TABLE_BLOCK = REGISTRATE.block("chromium_periodic_table_block", PeriodicTableBlock::new)
@@ -763,6 +854,14 @@ public class DestroyBlocks {
         .build()
         .register(),
 
+    IODINE_PERIODIC_TABLE_BLOCK = REGISTRATE.block("iodine_periodic_table_block", PeriodicTableBlock::new)
+        .initialProperties(IODINE_BLOCK)
+        .tag(Tags.Blocks.STORAGE_BLOCKS, AllTags.forgeBlockTag("storage_blocks/iodine"))
+        .item(PeriodicTableBlockItem::new)
+        .tag(Tags.Items.STORAGE_BLOCKS, forgeItemTag("storage_blocks/iodine"))
+        .build()
+        .register(),
+
     PLATINUM_PERIODIC_TABLE_BLOCK = REGISTRATE.block("platinum_periodic_table_block", PeriodicTableBlock::new)
         .initialProperties(CHROMIUM_BLOCK)
         .tag(Tags.Blocks.STORAGE_BLOCKS, AllTags.forgeBlockTag("storage_blocks/platinum"))
@@ -777,7 +876,18 @@ public class DestroyBlocks {
         .item(PeriodicTableBlockItem::new)
         .tag(Tags.Items.STORAGE_BLOCKS, Tags.Items.STORAGE_BLOCKS_GOLD)
         .build()
-        .register(),
+        .register();
+
+    public static final BlockEntry<TankPeriodicTableBlock>
+
+    MERCURY_PERIODIC_TABLE_BLOCK = REGISTRATE.block("mercury_periodic_table_block", p -> new TankPeriodicTableBlock(p, 0xFFB3B3B3))
+        .initialProperties(HYDROGEN_PERIODIC_TABLE_BLOCK)
+        .transform(TagGen.pickaxeOnly())
+        .item(TankPeriodicTableBlockItem::new)
+        .build()
+        .register();
+
+    public static final BlockEntry<PeriodicTableBlock>
 
     LEAD_PERIODIC_TABLE_BLOCK = REGISTRATE.block("lead_periodic_table_block", PeriodicTableBlock::new)
         .initialProperties(CHROMIUM_BLOCK)
@@ -922,5 +1032,13 @@ public class DestroyBlocks {
         .build()
         .register();
 
+    public static boolean never(BlockState state, BlockGetter level, BlockPos pos) {
+        return false;
+    };
+
+    public static boolean never(BlockState state, BlockGetter level, BlockPos pos, EntityType<?> entity) {
+        return false;
+    };
+
     public static void register() {};
-}
+};

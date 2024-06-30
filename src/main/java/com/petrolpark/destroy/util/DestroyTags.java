@@ -18,7 +18,7 @@ public class DestroyTags {
 
     public enum DestroyItemTags {
 
-        ALCOHOLIC_DRINK,
+        ALCOHOLIC_DRINKS,
         BEETROOT_ASHES,
 
         CHEMICAL_PROTECTION_EYES("chemical_protection/eyes"),
@@ -31,26 +31,25 @@ public class DestroyTags {
         CONTAMINABLE,
 
         DESTROY_INGOTS,
-        FERTILIZER,
-        HEFTY_BEETROOT,
+        FERTILIZERS,
+        HEFTY_BEETROOTS,
         LIABLE_TO_CHANGE,
         PAPER_PULPABLE,
-        PERIODIC_TABLE_BLOCK,
 
-        PLASTIC,
-        RIGID_PLASTIC("plastic/rigid"),
-        TEXTILE_PLASTIC("plastic/textile"),
-        POROUS_PLASTIC("plastic/porous"),
-        INERT_PLASTIC("plastic/inert"),
-        RUBBER_PLASTIC("plastic/rubber"),
+        PLASTICS,
+        RIGID_PLASTICS("plastics/rigid"),
+        TEXTILE_PLASTICS("plastics/textile"),
+        POROUS_PLASTICS("plastics/porous"),
+        INERT_PLASTICS("plastics/inert"),
+        RUBBER_PLASTICS("plastics/rubber"),
 
-        PRIMARY_EXPLOSIVE("explosive/primary"),
-        SCHEMATICANNON_FUEL,
-        SECONDARY_EXPLOSIVE("explosive/secondary"),
-        OBLITERATION_EXPLOSIVE,  // This tag is only used to display the right Blocks in JEI.
+        PRIMARY_EXPLOSIVES("explosives/primary"),
+        SCHEMATICANNON_FUELS,
+        SECONDARY_EXPLOSIVES("explosives/secondary"),
+        OBLITERATION_EXPLOSIVES,  // This tag is only used to display the right Blocks in JEI.
 
-        SPRAY_BOTTLE,
-        SYRINGE,
+        SPRAY_BOTTLES,
+        SYRINGES,
         TEST_TUBE_RACK_STORABLE,
         YEAST,
         ;

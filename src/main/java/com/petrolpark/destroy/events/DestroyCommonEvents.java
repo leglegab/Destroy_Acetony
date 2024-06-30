@@ -553,7 +553,7 @@ public class DestroyCommonEvents {
     public static void onJoinEntity(EntityJoinLevelEvent event) {
 
         // Award achievement for shooting a Hefty Beetroot
-        if (event.getEntity() instanceof PotatoProjectileEntity projectile && projectile.getOwner() instanceof ServerPlayer player && DestroyItemTags.HEFTY_BEETROOT.matches(projectile.getItem().getItem())) {
+        if (event.getEntity() instanceof PotatoProjectileEntity projectile && projectile.getOwner() instanceof ServerPlayer player && DestroyItemTags.HEFTY_BEETROOTS.matches(projectile.getItem().getItem())) {
             DestroyAdvancementTrigger.SHOOT_HEFTY_BEETROOT.award(player.level(), player);
         };
 

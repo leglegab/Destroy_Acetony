@@ -1,9 +1,12 @@
 package com.petrolpark.destroy.util;
 
 import java.util.Comparator;
+import java.util.List;
+import java.util.Optional;
 
 import net.minecraft.core.Vec3i;
 import net.minecraft.util.Mth;
+import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 
 public class MathsHelper {
@@ -39,5 +42,30 @@ public class MathsHelper {
 
     public static Comparator<Vec3> getClosest(Vec3 targetVector) {
         return (v1, v2) -> Double.compare(v1.dot(targetVector), v2.dot(targetVector));
+    };
+
+    /**
+     * @param boxes
+     * @param start
+     * @param end
+     * @return The index of the box which was hit, or {@code -1} if there was no hit
+     */
+    public static int getHit(List<AABB> boxes, Vec3 start, Vec3 end) {
+        int hit = -1;
+        int boxNo = 0;
+        double minimumDistance = Double.MAX_VALUE;
+        for (AABB box : boxes) {
+            if (box.contains(start)) return boxNo;
+            Optional<Vec3> hitVec = box.clip(start, end);
+            if (hitVec.isPresent()) {
+                double distance = start.distanceToSqr(hitVec.get());
+                if (distance < minimumDistance) {
+                    hit = boxNo;
+                    minimumDistance = distance;
+                };
+            };
+            boxNo++;
+        };
+        return hit;
     };
 };

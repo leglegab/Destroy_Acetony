@@ -1,28 +1,28 @@
 {
   "variants": {
     "facing=down": {
-      "model": "destroy:custom_explosive_mix_shell",
+      "model": "destroy:block/custom_explosive_mix_shell",
       "x": 180
     },
     "facing=up": {
-      "model": "destroy:custom_explosive_mix_shell"
+      "model": "destroy:block/custom_explosive_mix_shell"
     },
     "facing=north": {
-      "model": "destroy:custom_explosive_mix_shell",
+      "model": "destroy:block/custom_explosive_mix_shell",
       "x": 90
     },
     "facing=south": {
-      "model": "destroy:custom_explosive_mix_shell",
+      "model": "destroy:block/custom_explosive_mix_shell",
       "x": 90,
       "y": 180
     },
     "facing=west": {
-      "model": "destroy:custom_explosive_mix_shell",
+      "model": "destroy:block/custom_explosive_mix_shell",
       "x": 90,
       "y": 270
     },
     "facing=east": {
-      "model": "destroy:custom_explosive_mix_shell",
+      "model": "destroy:block/custom_explosive_mix_shell",
       "x": 90,
       "y": 90
     }

@@ -2,7 +2,7 @@ package com.petrolpark.destroy.compat.createbigcannons.event;
 
 import com.petrolpark.destroy.block.color.DyeableCustomExplosiveMixBlockColor;
 import com.petrolpark.destroy.compat.createbigcannons.block.CreateBigCannonsBlocks;
-import com.petrolpark.destroy.item.colors.DyeableCustomExplosiveMixItemColor;
+import com.petrolpark.destroy.item.color.DyeableCustomExplosiveMixItemColor;
 
 import net.minecraftforge.client.event.RegisterColorHandlersEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
