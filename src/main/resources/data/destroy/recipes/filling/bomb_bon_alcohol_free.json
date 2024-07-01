@@ -2,9 +2,12 @@
     "type": "create:filling",
     "conditions": [
       {
-        "type": "destroy:config_boolean",
-        "mod": "destroy",
-        "value": "enableAlcohol"
+        "type": "forge:not",
+        "value": {
+          "type": "destroy:config_boolean",
+          "mod": "destroy",
+          "value": "enableAlcohol"
+        }
       }
     ],
     "ingredients": [
@@ -12,7 +15,7 @@
         "item": "destroy:empty_bomb_bon"
       },
       {
-        "fluid": "destroy:moonshine",
+        "fluidTag": "forge:chocolate",
         "amount": 200
       }
     ],

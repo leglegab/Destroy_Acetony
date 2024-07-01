@@ -1,6 +1,7 @@
 package com.petrolpark.destroy.item;
 
 import com.petrolpark.destroy.config.DestroyAllConfigs;
+import com.petrolpark.destroy.config.DestroySubstancesConfigs;
 import com.petrolpark.destroy.effect.DestroyMobEffects;
 
 import net.minecraft.advancements.CriteriaTriggers;
@@ -35,7 +36,7 @@ public class AlcoholicDrinkItem extends DrinkItem {
         };
    
         if (!level.isClientSide) {
-            DestroyMobEffects.increaseEffectLevel(entityLiving, DestroyMobEffects.INEBRIATION.get(), strength, DestroyAllConfigs.SERVER.substances.inebriationDuration.get());
+            if (DestroySubstancesConfigs.alcoholEnabled()) DestroyMobEffects.increaseEffectLevel(entityLiving, DestroyMobEffects.INEBRIATION.get(), strength, DestroyAllConfigs.SERVER.substances.inebriationDuration.get());
             DestroyMobEffects.increaseEffectLevel(entityLiving, DestroyMobEffects.FULL_BLADDER.get(), strength, DestroyAllConfigs.SERVER.substances.inebriationDuration.get());
         };
    

@@ -1,4 +1,11 @@
 {
+    "conditions": [
+      {
+        "type": "destroy:config_boolean",
+        "mod": "destroy",
+        "value": "enableAlcohol"
+      }
+    ],
     "parent": "destroy:drunk",
     "criteria": {
       "drunk": {

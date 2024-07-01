@@ -319,4 +319,19 @@ public class DestroyLang {
             return df.format(conversionFromKelvins.apply(temperature)) + symbol;
         };
     };
-}
+
+    public static LangBuilder quantity(float quantity, boolean useMoles, DecimalFormat concentrationFormatter) {
+        String translationKey = useMoles ? "tooltip.mixture_contents.moles" : "tooltip.mixture_contents.concentration";
+        double smallestVisibleQuantity = Math.pow(10, -concentrationFormatter.getMaximumFractionDigits());
+        if (quantity != 0f) {
+            if (Math.abs(quantity) <= smallestVisibleQuantity / 1000f) {
+                quantity *= 1000000f;
+                translationKey += ".micro";
+            } else if (Math.abs(quantity) <= smallestVisibleQuantity) {
+                quantity *= 1000f;
+                translationKey += ".milli";
+            };
+        };
+        return translate(translationKey, concentrationFormatter.format(quantity));
+    };
+};

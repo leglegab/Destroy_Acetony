@@ -3,7 +3,6 @@ package com.petrolpark.destroy.chemistry;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.function.Function;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -291,13 +290,13 @@ public class ReadOnlyMixture {
         List<Component> tooltip = new ArrayList<>();
         List<Molecule> molecules = new ArrayList<>(contents.keySet());
         Collections.sort(molecules, (m1, m2) -> contents.get(m2).compareTo(contents.get(m1)));
-        Function<Float, String> quantityTranslator = q -> DestroyLang.translate(useMoles ? "tooltip.mixture_contents.moles" : "tooltip.mixture_contents.concentration", concentrationFormatter.format(q)).string();
-        int quantityLabelLength = quantityTranslator.apply(0f).length() + 2;
+        
+        int quantityLabelLength = DestroyLang.quantity(0f, useMoles, concentrationFormatter).string().length() + 2;
         for (Molecule molecule : molecules) {
             float quantity = contents.get(molecule) * (useMoles ? amount / 1000f: 1);
             tooltip.add(i, DestroyLang.builder()
                 .space().space()
-                .add(Component.literal(monospace ? String.format("%1$"+quantityLabelLength+"s", quantityTranslator.apply(quantity)) : quantityTranslator.apply(quantity))) // Show concentration
+                .add(Component.literal(monospace ? String.format("%1$"+quantityLabelLength+"s", DestroyLang.quantity(quantity, useMoles, concentrationFormatter).string()) : DestroyLang.quantity(quantity, useMoles, concentrationFormatter).string())) // Show concentration
                 .space()
                 .add(molecule.getName(iupac).plainCopy())
                 .add(Component.literal(

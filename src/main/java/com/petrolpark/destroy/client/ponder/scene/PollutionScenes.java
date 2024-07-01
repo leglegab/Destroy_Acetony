@@ -50,4 +50,42 @@ public class PollutionScenes {
         scene.configureBasePlate(0, 0, 9);
         scene.showBasePlate();
     };
+
+    public static final void smog(SceneBuilder scene, SceneBuildingUtil util) {
+        scene.title("pollution.smog", "This text is defined in a language file.");
+    };
+
+    public static final void cropGrowthFailure(SceneBuilder scene, SceneBuildingUtil util) {
+        scene.title("pollution.crop_growth_failure", "This text is defined in a language file.");
+    };
+
+    public static final void fishingFailure(SceneBuilder scene, SceneBuildingUtil util) {
+        scene.title("pollution.fishing_failure", "This text is defined in a language file.");
+    };
+
+    public static final void breedingFailure(SceneBuilder scene, SceneBuildingUtil util) {
+        scene.title("pollution.breeding_failure", "This text is defined in a language file.");
+    };
+
+    public static final void villagerPriceIncrease(SceneBuilder scene, SceneBuildingUtil util) {
+        scene.title("pollution.villager_price_increase", "This text is defined in a language file.");
+    };
+
+    public static final void cancer(SceneBuilder scene, SceneBuildingUtil util) {
+        scene.title("pollution.cancer", "This text is defined in a language file.");
+    };
+
+    public static final void acidRain(SceneBuilder scene, SceneBuildingUtil util) {
+        scene.title("pollution.acid_rain", "This text is defined in a language file.");
+    };
+
+    public static final void reduction(SceneBuilder scene, SceneBuildingUtil util) {
+        scene.title("pollution.reduction", "This text is defined in a language file.");
+    };
+
+    public static final void catalyticConverter(SceneBuilder scene, SceneBuildingUtil util) {
+        scene.title("pollution.catalytic_converter", "This text is defined in a language file.");
+    };
+
+
 };

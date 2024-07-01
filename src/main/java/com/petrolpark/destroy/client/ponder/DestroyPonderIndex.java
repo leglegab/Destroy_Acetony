@@ -5,9 +5,11 @@ import java.util.List;
 import com.petrolpark.destroy.Destroy;
 import com.petrolpark.destroy.block.DestroyBlocks;
 import com.petrolpark.destroy.block.PeriodicTableBlock;
+import com.petrolpark.destroy.client.ponder.scene.ChemistryScenes;
 import com.petrolpark.destroy.client.ponder.scene.DestroyScenes;
 import com.petrolpark.destroy.client.ponder.scene.KineticsScenes;
 import com.petrolpark.destroy.client.ponder.scene.OilScenes;
+import com.petrolpark.destroy.client.ponder.scene.PollutionScenes;
 import com.petrolpark.destroy.client.ponder.scene.TrypolithographyScenes;
 import com.petrolpark.destroy.item.DestroyItems;
 import com.simibubi.create.AllBlocks;
@@ -36,7 +38,7 @@ public class DestroyPonderIndex {
 
         // Blacklight
         HELPER.forComponents(DestroyBlocks.BLACKLIGHT)
-            .addStoryBoard("vat/uv", DestroyScenes::uv);
+            .addStoryBoard("vat/uv", ChemistryScenes::uv);
 
         // Blaze Burner
         HELPER.forComponents(AllBlocks.BLAZE_BURNER)
@@ -45,7 +47,8 @@ public class DestroyPonderIndex {
         // Bubble Cap
         HELPER.forComponents(DestroyBlocks.BUBBLE_CAP)
             .addStoryBoard("bubble_cap/generic", DestroyScenes::bubbleCapGeneric)
-            .addStoryBoard("bubble_cap/mixtures", DestroyScenes::bubbleCapMixtures);
+            .addStoryBoard("bubble_cap/mixtures", DestroyScenes::bubbleCapMixtures)
+            .addStoryBoard("pollution/room_temperature", ChemistryScenes::roomTemperature);
 
         // Centrifuge
         HELPER.forComponents(DestroyBlocks.CENTRIFUGE)
@@ -59,6 +62,10 @@ public class DestroyPonderIndex {
             .addStoryBoard("coaxial_gear/shaftless", DestroyScenes::coaxialGearShaftless)
             .addStoryBoard("coaxial_gear/through", DestroyScenes::coaxialGearThrough);
 
+        HELPER.forComponents(DestroyBlocks.COLORIMETER)
+            .addStoryBoard("colorimeter", ChemistryScenes::colorimeter);
+
+        // Colossal Cogwheel
         HELPER.forComponents(DestroyBlocks.COLOSSAL_COGWHEEL)
             .addStoryBoard("kinetics/colossal_cogwheel", KineticsScenes::colossalCogwheel);
 
@@ -89,7 +96,7 @@ public class DestroyPonderIndex {
         HELPER.forComponents(DestroyItems.HYPERACCUMULATING_FERTILIZER)
             .addStoryBoard("phytomining", DestroyScenes::phytomining);
 
-        // Keypunch
+        // Circuit Mask and Keypunch
         HELPER.forComponents(DestroyItems.CIRCUIT_MASK, DestroyBlocks.KEYPUNCH)
             .addStoryBoard("trypolithography/intro", TrypolithographyScenes::intro)
             .addStoryBoard("trypolithography/rotating", TrypolithographyScenes::rotating)
@@ -97,7 +104,23 @@ public class DestroyPonderIndex {
 
         // Mechanical Mixer
         HELPER.forComponents(AllBlocks.MECHANICAL_MIXER)
-            .addStoryBoard("reactions", DestroyScenes::reactions);
+            .addStoryBoard("reactions", DestroyScenes::reactions)
+            .addStoryBoard("pollution/basins_and_vats", PollutionScenes::basinsAndVats);
+
+        // Pollution
+        HELPER.forComponents(DestroyItems.POLLUTION_SYMBOL)
+            .addStoryBoard("pollution/tanks", PollutionScenes::pipesAndTanks)
+            .addStoryBoard("pollution/basins_and_vats", PollutionScenes::basinsAndVats)
+            .addStoryBoard("pollution/smog", PollutionScenes::smog)
+            .addStoryBoard("pollution/crop_growth_failure", PollutionScenes::cropGrowthFailure)
+            .addStoryBoard("pollution/fishing_failure", PollutionScenes::fishingFailure)
+            .addStoryBoard("pollution/breeding_failure", PollutionScenes::breedingFailure)
+            .addStoryBoard("pollution/villager_price_increase", PollutionScenes::villagerPriceIncrease)
+            .addStoryBoard("pollution/cancer", PollutionScenes::cancer)
+            .addStoryBoard("pollution/acid_rain", PollutionScenes::acidRain)
+            .addStoryBoard("pollution/room_temperature", ChemistryScenes::roomTemperature)
+            .addStoryBoard("pollution/reduction", PollutionScenes::reduction)
+            .addStoryBoard("pollution/catalytic_converter", PollutionScenes::catalyticConverter);
 
         // Planetary Gearset
         CREATE_HELPER.forComponents(DestroyBlocks.PLANETARY_GEARSET)
@@ -126,15 +149,23 @@ public class DestroyPonderIndex {
             .addStoryBoard("oil/seismograph", OilScenes::seismograph);
 
         // Tree Tap
-        HELPER.forComponents(DestroyBlocks.TREE_TAP)
+        HELPER.forComponents(DestroyBlocks.TREE_TAP)      
             .addStoryBoard("tree_tap", DestroyScenes::treeTap);
 
         // Vat Controller
         HELPER.forComponents(DestroyBlocks.VAT_CONTROLLER)
-            .addStoryBoard("vat/construction", DestroyScenes::vatConstruction)
-            .addStoryBoard("reactions", DestroyScenes::reactions)
-            .addStoryBoard("vat/interaction", DestroyScenes::vatInteraction)
-            .addStoryBoard("vat/uv", DestroyScenes::uv);
+            .addStoryBoard("vat/construction", ChemistryScenes::vatConstruction)
+            .addStoryBoard("vat/heating", ChemistryScenes::vatHeating)
+            .addStoryBoard("bunsen_burner", ChemistryScenes::bunsenBurner)
+            .addStoryBoard("pollution/room_temperature", ChemistryScenes::roomTemperature)
+            .addStoryBoard("pollution/basins_and_vats", PollutionScenes::basinsAndVats)
+            .addStoryBoard("vat/monitoring", ChemistryScenes::vatMonitoring)
+            .addStoryBoard("colorimeter", ChemistryScenes::colorimeter)
+            .addStoryBoard("vat/uv", ChemistryScenes::uv);
+            //.addStoryBoard("vat/construction", DestroyScenes::vatConstruction)
+            //.addStoryBoard("reactions", DestroyScenes::reactions)
+            //.addStoryBoard("vat/interaction", DestroyScenes::vatInteraction)
+            //.addStoryBoard("vat/uv", DestroyScenes::uv);
     };
 
     private static final ResourceLocation periodicTableSchematicLocation = Destroy.asResource("periodic_table");

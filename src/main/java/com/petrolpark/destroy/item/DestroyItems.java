@@ -34,7 +34,15 @@ import net.minecraftforge.common.Tags;
 
 public class DestroyItems {
 
-    public static final ItemEntry<Item> LOGO = REGISTRATE.item("logo", Item::new)
+    // DUMMY ITEMS
+
+    public static final ItemEntry<Item>
+    
+    LOGO = REGISTRATE.item("logo", Item::new)
+        .removeTab(CreativeModeTabs.SEARCH)
+        .register(),
+
+    POLLUTION_SYMBOL = REGISTRATE.item("pollution_symbol", Item::new)
         .removeTab(CreativeModeTabs.SEARCH)
         .register();
 
@@ -268,7 +276,7 @@ public class DestroyItems {
 
     public static final ItemEntry<Item>
 
-    GAS_FLITER = REGISTRATE.item("gas_filter", Item::new)
+    GAS_FILTER = REGISTRATE.item("gas_filter", Item::new)
         .register();
 
     public static final ItemEntry<GasMaskItem>

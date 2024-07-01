@@ -1,7 +1,9 @@
 package com.petrolpark.destroy.client.gui.screen;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Map.Entry;
 
 import com.google.common.collect.ImmutableList;
@@ -27,6 +29,7 @@ import com.simibubi.create.foundation.utility.animation.LerpedFloat;
 import com.simibubi.create.foundation.utility.animation.LerpedFloat.Chaser;
 
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.renderer.Rect2i;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.Mth;
@@ -106,6 +109,10 @@ public class RedstoneProgrammerScreen extends AbstractSimiContainerScreen<Redsto
             .withCallback(() -> {
                 program.restart();
                 playhead.setValue(0f);
+                if (!followPlayHead) {
+                    horizontalScroll.setValue(0d);
+                    horizontalScroll.chase(0d, 1d, Chaser.LINEAR);
+                };
                 shouldSend = true;
             });
         addRenderableWidgets(restartButton);
@@ -177,8 +184,11 @@ public class RedstoneProgrammerScreen extends AbstractSimiContainerScreen<Redsto
         super.containerTick();
 
         // Tick chasers
-        playhead.chase((float)noteWidth * (float)program.getAbsolutePlaytime(), (float)noteWidth / program.getTicksPerBeat(), Chaser.LINEAR);
-        if (playhead.getChaseTarget() == 0f) playhead.setValue(playhead.getChaseTarget()); //TODO fix
+        float speed = (float)noteWidth / program.getTicksPerBeat();
+        playhead.chase((float)noteWidth * (float)program.getAbsolutePlaytime(), speed, Chaser.LINEAR);
+        if (followPlayHead) clampHorizontalScroll(playhead.getChaseTarget() - 20d, speed);
+        if (Math.abs(playhead.getValue() - playhead.getChaseTarget()) > speed * 2f) playhead.setValue(playhead.getChaseTarget());
+        if (followPlayHead && Math.abs(horizontalScroll.getValue() - horizontalScroll.getChaseTarget()) > speed * 2f) horizontalScroll.setValue(horizontalScroll.getChaseTarget());
         horizontalScroll.tickChaser();
         playhead.tickChaser();
 
@@ -210,21 +220,48 @@ public class RedstoneProgrammerScreen extends AbstractSimiContainerScreen<Redsto
 
         // Adding/deleting Notes and Channels
         if (inItemArea || inNoteArea) {
+            double relativeMouseX = mX - NOTE_AREA.getX() + horizontalScroll.getChaseTarget();
+            
+            // Altering length of program
+            if (inNoteArea && mY > NOTE_AREA.getY() + 70 && mY < NOTE_AREA.getY() + 82) {
+                int programWidth = program.getLength() * noteWidth;
+                if (relativeMouseX > programWidth + 10 && relativeMouseX < programWidth + 22) {
+                    if (program.getLength() <= 1) return super.mouseClicked(mouseX, mouseY, button);
+                    if (program.beatsPerLine == 0 || program.linesPerBar == 0 || Screen.hasShiftDown()) {
+                        program.setDuration(program.getLength() - 1);
+                    } else {
+                        program.setDuration(Math.max(1, program.beatsPerLine * program.linesPerBar * ((program.getLength() - 1) / (program.beatsPerLine * program.linesPerBar)))); // Shorten the program to one fewer whole or partial bars
+                    };
+                } else if (relativeMouseX > programWidth + 26 && relativeMouseX < programWidth + 38) {
+                    if (program.beatsPerLine == 0 || program.linesPerBar == 0 || Screen.hasShiftDown()) {
+                        program.setDuration(program.getLength() + 1);
+                    } else {
+                        program.setDuration(program.beatsPerLine * program.linesPerBar * ((program.getLength() / (program.beatsPerLine * program.linesPerBar)) + 1));
+                    };
+                };
+                shouldSend = true;
+                return true;
+            };
+
+            // Determine the channel on which we are clicking
             ImmutableList<Channel> channels = program.getChannels();
-            double posInList = mouseY - topPos - NOTE_AREA.getY() + verticalScroll;
+            double posInList = mY - NOTE_AREA.getY() + verticalScroll;
             int channelNo = (int)(posInList / distanceBetweenChannels);
             if (channelNo < 0 || channelNo >= channels.size()) return super.mouseClicked(mouseX, mouseY, button);
             Channel channel = channels.get(channelNo);
 
+            // Adding/removing notes
             if (inNoteArea) {
-                int note = (int)((mouseX - leftPos - NOTE_AREA.getX() - horizontalScroll.getChaseTarget()) / noteWidth);
+                int note = (int)(relativeMouseX / noteWidth);
                 if (note < 0 || note >= program.getLength()) return super.mouseClicked(mouseX, mouseY, button);
                 dragging = true;
                 draggingChannel = channelNo;
                 draggingDeleting = channel.getStrength(note) != 0;
                 channel.setStrength(note, draggingDeleting ? 0 : 15);
+                followPlayHead = false;
                 shouldSend = true;
                 return true;
+            // Deleting and reordering channels
             } else if (inItemArea) {
                 boolean success = false;
                 if (mX > ITEM_AREA.getX() + 4) {
@@ -253,11 +290,14 @@ public class RedstoneProgrammerScreen extends AbstractSimiContainerScreen<Redsto
     @Override
     public boolean mouseDragged(double mouseX, double mouseY, int button, double dragX, double dragY) {
 
-        if (dragging && NOTE_AREA.contains((int)mouseX, (int)mouseY)) {
+        double mX = mouseX - getGuiLeft();
+        double mY = mouseY - getGuiTop();
+
+        if (dragging && NOTE_AREA.contains((int)mX, (int)mY)) {
             ImmutableList<Channel> channels = program.getChannels();
             if (draggingChannel < 0 || draggingChannel >= channels.size()) return super.mouseDragged(mouseX, mouseY, button, dragX, dragY);
             Channel channel = channels.get(draggingChannel);
-            int leftNote = (int)((mouseX - leftPos - NOTE_AREA.getX() - horizontalScroll.getChaseTarget()) / noteWidth);
+            int leftNote = (int)((mX - NOTE_AREA.getX() + horizontalScroll.getChaseTarget()) / noteWidth);
             for (int i = 0; i <= Math.abs(dragX) / noteWidth; i++) {
                 int note = leftNote + i * (int)Math.signum(dragX);
                 if (note < 0 || note >= program.getLength()) continue;
@@ -288,6 +328,10 @@ public class RedstoneProgrammerScreen extends AbstractSimiContainerScreen<Redsto
                 shouldSend = true;
             };
             return true;
+        } else if (NOTE_AREA.contains(mX, mY)) {
+            followPlayHead = false;
+            //TODO adjust note strengths
+            clampHorizontalScroll(horizontalScroll.getChaseTarget() + delta * 5, 10d);
         };
         return super.mouseScrolled(mouseX, mouseY, delta);
     };
@@ -318,13 +362,13 @@ public class RedstoneProgrammerScreen extends AbstractSimiContainerScreen<Redsto
         UIRenderHelper.swapAndBlitColor(minecraft.getMainRenderTarget(), UIRenderHelper.framebuffer);
 
         // Lines
+        GuiHelper.startStencil(graphics, NOTE_AREA.getX(), NOTE_AREA.getY() - 11, NOTE_AREA.getWidth(), NOTE_AREA.getHeight() + 11);
+        ms.pushPose();
+        ms.translate(NOTE_AREA.getX(), NOTE_AREA.getY() - 10, 0f);
         if (program.beatsPerLine > 0) {
-            GuiHelper.startStencil(graphics, NOTE_AREA.getX(), NOTE_AREA.getY() - 11, NOTE_AREA.getWidth(), NOTE_AREA.getHeight() + 11);
-            ms.pushPose();
-            ms.translate(NOTE_AREA.getX(), NOTE_AREA.getY() - 10, 0f);
             int time = 0;
             while (time < program.getLength()) {
-                float horizontalOffset = xOffset + time * noteWidth;
+                float horizontalOffset = -xOffset + time * noteWidth;
                 if (horizontalOffset < 0f || horizontalOffset > NOTE_AREA.getWidth()) {
                     time += program.beatsPerLine;
                     continue;
@@ -336,13 +380,13 @@ public class RedstoneProgrammerScreen extends AbstractSimiContainerScreen<Redsto
                 ms.popPose();
                 time += program.beatsPerLine;
             };
-            ms.pushPose();
-            ms.translate(xOffset + program.getLength() * noteWidth, 0f, 0f);
-            DestroyGuiTextures.REDSTONE_PROGRAMMER_BARLINE.render(graphics, 0, 0);
-            ms.popPose();
-            ms.popPose();
-            GuiHelper.endStencil();
         };
+        ms.pushPose();
+        ms.translate(-xOffset + program.getLength() * noteWidth, 0f, 0f);
+        DestroyGuiTextures.REDSTONE_PROGRAMMER_BARLINE.render(graphics, 0, 0);
+        ms.popPose();
+        ms.popPose();
+        GuiHelper.endStencil();
         
         // Channels
         int channelNo = 0;
@@ -368,8 +412,9 @@ public class RedstoneProgrammerScreen extends AbstractSimiContainerScreen<Redsto
             // Sequence
             GuiHelper.startStencil(graphics, NOTE_AREA.getX(), NOTE_AREA.getY(), NOTE_AREA.getWidth(), NOTE_AREA.getHeight());
             renderNotes: for (int i = 0; i < program.getLength(); i++) {
-                float horizontalOffset = xOffset + i * noteWidth;
-                if (horizontalOffset < 0 || horizontalOffset > NOTE_AREA.getWidth()) break renderNotes;
+                float horizontalOffset = -xOffset + i * noteWidth;
+                if (horizontalOffset < -5) continue;
+                if (horizontalOffset > NOTE_AREA.getWidth()) break renderNotes;
                 int strength = channel.getStrength(i);
                 if (strength == 0) continue;
 
@@ -401,10 +446,24 @@ public class RedstoneProgrammerScreen extends AbstractSimiContainerScreen<Redsto
         // Playhead and length buttons
         GuiHelper.startStencil(graphics, NOTE_AREA.getX(), NOTE_AREA.getY() - 11, NOTE_AREA.getWidth(), NOTE_AREA.getHeight() + 11);
         ms.pushPose();
-        ms.translate(NOTE_AREA.getX() - horizontalScroll.getValue(partialTicks), NOTE_AREA.getY() - 10, channelNo);
+        ms.translate(NOTE_AREA.getX() - xOffset, NOTE_AREA.getY() - 10, channelNo);
 
-        DestroyGuiTextures.REDSTONE_PROGRAMMER_REMOVE_BAR.render(graphics, 80, 80);
-        DestroyGuiTextures.REDSTONE_PROGRAMMER_ADD_BAR.render(graphics, 96, 80);
+        int programWidth = program.getLength() * noteWidth;
+        if (program.getLength() > 1) DestroyGuiTextures.REDSTONE_PROGRAMMER_REMOVE_BAR.render(graphics, programWidth + 10, 80);
+        DestroyGuiTextures.REDSTONE_PROGRAMMER_ADD_BAR.render(graphics, programWidth + 26, 80);
+
+        double relativeMouseX = mouseX - getGuiLeft() - NOTE_AREA.getX() + xOffset;
+        double relativeMouseY = mouseY - getGuiTop() - NOTE_AREA.getY();
+
+        // Deciding on tooltip for adding/removing bars
+        String renderedTooltip = "none";
+        if (relativeMouseY > 70 && relativeMouseY < 82) {
+            if (program.getLength() > 1 && relativeMouseX > programWidth + 10 && relativeMouseX < programWidth + 22) {
+                renderedTooltip = "remove";
+            } else if (relativeMouseX > programWidth + 26 && relativeMouseX < programWidth + 38) {
+                renderedTooltip = "add";
+            };
+        };
 
         ms.pushPose();
         ms.translate(program.paused ? playhead.getValue() : playhead.getValue(partialTicks), 0f, 0f);
@@ -418,14 +477,25 @@ public class RedstoneProgrammerScreen extends AbstractSimiContainerScreen<Redsto
         // Shadows
         graphics.fillGradient(ITEM_AREA.getX(), ITEM_AREA.getY(), ITEM_AREA.getX() + ITEM_AREA.getWidth(), ITEM_AREA.getY() + 10, 200, 0x77000000, 0x00000000);
         graphics.fillGradient(ITEM_AREA.getX(), ITEM_AREA.getY() + ITEM_AREA.getHeight() - 10, ITEM_AREA.getX() + ITEM_AREA.getWidth(), ITEM_AREA.getY() + ITEM_AREA.getHeight(), 200, 0x00000000, 0x70000000);
-
+        
         UIRenderHelper.swapAndBlitColor(UIRenderHelper.framebuffer, minecraft.getMainRenderTarget());
 
         ms.popPose();
+
+        // Aforementioned tooltips for adding/removing bars
+        if (renderedTooltip.equals("remove")) {
+            graphics.renderTooltip(font, List.of(DestroyLang.translate("tooltip.redstone_programmer.remove_bar").component(), DestroyLang.translate("tooltip.redstone_programmer.remove_bar.hint").component()), Optional.empty(), mouseX, mouseY);
+        } else if (renderedTooltip.equals("add")) {
+            graphics.renderTooltip(font, List.of(DestroyLang.translate("tooltip.redstone_programmer.add_bar").component(), DestroyLang.translate("tooltip.redstone_programmer.add_bar.hint").component()), Optional.empty(), mouseX, mouseY);
+        };
     };
 
     public void clampVerticalScroll(int newScroll) {
         verticalScroll = Mth.clamp(newScroll, 0, Math.max(0, 6 + Math.min(program.getChannels().size() + 1, DestroyAllConfigs.SERVER.blocks.redstoneProgrammerMaxChannels.get()) * distanceBetweenChannels - ITEM_AREA.getHeight()));
+    };
+
+    public void clampHorizontalScroll(double newScroll, double speed) {
+        horizontalScroll.chase(Mth.clamp(newScroll, 0d, Math.max(46d - NOTE_AREA.getWidth() + program.getLength() * noteWidth, 0d)), speed, Chaser.LINEAR);
     };
 
     public void setPlayPauseButtonIcon() {

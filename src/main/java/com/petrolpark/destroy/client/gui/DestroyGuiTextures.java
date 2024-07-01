@@ -106,6 +106,9 @@ public enum DestroyGuiTextures implements ScreenElement {
 	CUSTOM_EXPLOSIVE_UNFULFILLED_GREATER("custom_explosive", 206, 12, 7, 12),
 	CUSTOM_EXPLOSIVE_BAR("custom_explosive", 213, 0, 2, 4),
 
+	// CREATIVE MODE TAB
+	CREATIVE_MODE_TAB_BLANK_ROW("creative_inventory", 0, 0, 162, 18),
+
     // JEI
 	JEI_POINTING_HAND("jei/widgets", 40, 40, 18, 14),
     JEI_SHORT_DOWN_ARROW("jei/widgets", 0, 64, 18, 18),

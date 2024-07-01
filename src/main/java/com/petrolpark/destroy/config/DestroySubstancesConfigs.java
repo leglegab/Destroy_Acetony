@@ -50,6 +50,10 @@ public class DestroySubstancesConfigs extends DestroyConfigBase {
         return DestroyAllConfigs.COMMON.enableBabyBlue.get();  
     };
 
+    public static boolean alcoholEnabled() {
+        return DestroyAllConfigs.COMMON.enableAlcohol.get();
+    };
+
     public static boolean iodineDragonsBreath() {
         return DestroyAllConfigs.SERVER.substances.burnIodineForDragonsBreath.get();
     };
