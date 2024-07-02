@@ -40,8 +40,9 @@ public class DestroyClientModEvents {
         event.registerReloadListener(NameLists.RELOAD_LISTENER);
     };
 
+    @SubscribeEvent
     public static void changeItemColors(RegisterColorHandlersEvent.Item event) {
-        event.register(TankPeriodicTableBlockItemColor.INSTANCE, DestroyBlocks.HYDROGEN_PERIODIC_TABLE_BLOCK, DestroyBlocks.NITROGEN_PERIODIC_TABLE_BLOCK, DestroyBlocks.OXYGEN_PERIODIC_TABLE_BLOCK, DestroyBlocks.FLUORINE_PERIODIC_TABLE_BLOCK, DestroyBlocks.CHLORINE_PERIODIC_TABLE_BLOCK, DestroyBlocks.MERCURY_PERIODIC_TABLE_BLOCK);
+        event.register(TankPeriodicTableBlockItemColor.INSTANCE, DestroyBlocks.HYDROGEN_PERIODIC_TABLE_BLOCK.asItem(), DestroyBlocks.NITROGEN_PERIODIC_TABLE_BLOCK.asItem(), DestroyBlocks.OXYGEN_PERIODIC_TABLE_BLOCK.asItem(), DestroyBlocks.FLUORINE_PERIODIC_TABLE_BLOCK.asItem(), DestroyBlocks.CHLORINE_PERIODIC_TABLE_BLOCK.asItem(), DestroyBlocks.MERCURY_PERIODIC_TABLE_BLOCK.asItem());
         event.register(DyeableCustomExplosiveMixItemColor.INSTANCE, DestroyBlocks.CUSTOM_MIX_EXPLOSIVE);
     };
 

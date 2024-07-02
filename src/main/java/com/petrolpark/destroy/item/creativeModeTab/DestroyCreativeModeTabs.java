@@ -7,7 +7,6 @@ import java.util.function.Supplier;
 import com.petrolpark.destroy.Destroy;
 import com.petrolpark.destroy.block.DestroyBlocks;
 import com.petrolpark.destroy.config.DestroySubstancesConfigs;
-import com.petrolpark.destroy.fluid.DestroyFluids;
 import com.petrolpark.destroy.item.BadgeItem;
 import com.petrolpark.destroy.item.DestroyItems;
 import com.petrolpark.destroy.item.creativeModeTab.CustomTab.ITabEntry;
@@ -59,26 +58,27 @@ public class DestroyCreativeModeTabs {
 				i(DestroyBlocks.AGING_BARREL), i(DestroyBlocks.EXTRUSION_DIE), i(DestroyBlocks.KEYPUNCH), i(DestroyBlocks.PUMPJACK), i(DestroyBlocks.TREE_TAP), i(DestroyItems.SEISMOMETER), i(DestroyBlocks.REDSTONE_PROGRAMMER), i(DestroyBlocks.POLLUTOMETER),
 
 				s("kinetics"),
-				i(DestroyBlocks.COAXIAL_GEAR), i(DestroyBlocks.COLOSSAL_COGWHEEL), i(DestroyBlocks.DIFFERENTIAL), i(DestroyBlocks.DOUBLE_CARDAN_SHAFT), i(DestroyBlocks.COLOSSAL_COGWHEEL),
+				i(DestroyBlocks.COAXIAL_GEAR), i(DestroyBlocks.COLOSSAL_COGWHEEL), i(DestroyBlocks.DIFFERENTIAL), i(DestroyBlocks.DOUBLE_CARDAN_SHAFT), i(DestroyBlocks.PLANETARY_GEARSET),
 
 				s("metals"),
-				n(), i(DestroyItems.CHROMIUM_INGOT), i(DestroyBlocks.CHROMIUM_BLOCK), i(DestroyItems.CHROMIUM_POWDER), i(DestroyItems.CRUSHED_RAW_CHROMIUM), d(DestroyItems.CHROMIUM_NUGGET), 
-				n(), d(Items.COPPER_INGOT), d(Blocks.COPPER_BLOCK), i(DestroyItems.COPPER_POWDER), d(AllItems.COPPER_SHEET), d(AllItems.CRUSHED_COPPER),
-				n(), i(DestroyItems.STAINLESS_STEEL_INGOT), r(DestroyBlocks.STAINLESS_STEEL_BLOCK), e(), i(DestroyItems.STAINLESS_STEEL_SHEET), i(DestroyItems.STAINLESS_STEEL_ROD), i(DestroyBlocks.STAINLESS_STEEL_RODS), i(DestroyItems.MOLTEN_STAINLESS_STEEL_BUCKET),
+				n(), i(DestroyItems.CHROMIUM_INGOT), i(DestroyBlocks.CHROMIUM_BLOCK), i(DestroyItems.CHROMIUM_POWDER), i(DestroyItems.CRUSHED_RAW_CHROMIUM), d(DestroyItems.CHROMIUM_NUGGET),
+				n(), d(Items.COPPER_INGOT), d(Blocks.COPPER_BLOCK), i(DestroyItems.COPPER_POWDER), d(AllItems.CRUSHED_COPPER), d(AllItems.COPPER_SHEET), d(Items.RAW_COPPER), d(Blocks.RAW_COPPER_BLOCK), d(Items.COPPER_ORE), d(Blocks.DEEPSLATE_COPPER_ORE), 
+				n(), i(DestroyItems.STAINLESS_STEEL_INGOT), r(DestroyBlocks.STAINLESS_STEEL_BLOCK), e(), e(), i(DestroyItems.STAINLESS_STEEL_SHEET), i(DestroyItems.STAINLESS_STEEL_ROD), i(DestroyBlocks.STAINLESS_STEEL_RODS), i(DestroyItems.MOLTEN_STAINLESS_STEEL_BUCKET),
 				n(), d(Items.IRON_INGOT), d(Blocks.IRON_BLOCK), i(DestroyItems.IRON_POWDER), d(AllItems.CRUSHED_IRON), d(AllItems.IRON_SHEET),d(Items.RAW_IRON), d(Blocks.RAW_IRON_BLOCK), d(Blocks.IRON_ORE), d(Blocks.DEEPSLATE_IRON_ORE),
-				n(), i(DestroyItems.LEAD_INGOT), i(DestroyBlocks.LEAD_BLOCK), i(DestroyItems.LEAD_POWDER), d(AllItems.CRUSHED_LEAD), e(), e(), i(DestroyItems.NETHER_CROCOITE), i(DestroyBlocks.NETHER_CROCOITE_BLOCK),
+				n(), i(DestroyItems.LEAD_INGOT), i(DestroyBlocks.LEAD_BLOCK), i(DestroyItems.LEAD_POWDER), d(AllItems.CRUSHED_LEAD), e(), i(DestroyItems.NETHER_CROCOITE), e(), i(DestroyBlocks.NETHER_CROCOITE_BLOCK),
 				n(), i(DestroyItems.NICKEL_INGOT), i(DestroyBlocks.NICKEL_BLOCK), i(DestroyItems.NICKEL_POWDER), d(AllItems.CRUSHED_NICKEL), e(), i(DestroyItems.RAW_NICKEL), d(DestroyBlocks.RAW_NICKEL_BLOCK), d(DestroyBlocks.NICKEL_ORE), d(DestroyBlocks.DEEPSLATE_NICKEL_ORE),
 				n(), i(DestroyItems.PALLADIUM_INGOT), i(DestroyBlocks.PALLADIUM_BLOCK), i(DestroyItems.PALLADIUM_POWDER), i(DestroyItems.CRUSHED_RAW_PALLADIUM),
 				n(), i(DestroyItems.PLATINUM_INGOT), i(DestroyBlocks.PLATINUM_BLOCK), i(DestroyItems.PLATINUM_POWDER), d(AllItems.CRUSHED_PLATINUM),
 				n(), i(DestroyItems.RHODIUM_INGOT), i(DestroyBlocks.RHODIUM_BLOCK), i(DestroyItems.RHODIUM_POWDER), i(DestroyItems.CRUSHED_RAW_RHODIUM), 
-				n(), d(AllItems.ZINC_INGOT), d(AllBlocks.ZINC_BLOCK), i(DestroyItems.ZINC_POWDER), i(DestroyItems.ZINC_SHEET), d(AllItems.CRUSHED_ZINC), d(AllItems.RAW_ZINC), d(AllBlocks.RAW_ZINC_BLOCK), d(AllBlocks.ZINC_ORE), d(AllBlocks.DEEPSLATE_ZINC_ORE),
+				n(), d(AllItems.ZINC_INGOT), d(AllBlocks.ZINC_BLOCK), i(DestroyItems.ZINC_POWDER), d(AllItems.CRUSHED_ZINC), i(DestroyItems.ZINC_SHEET), d(AllItems.RAW_ZINC), d(AllBlocks.RAW_ZINC_BLOCK), d(AllBlocks.ZINC_ORE), d(AllBlocks.DEEPSLATE_ZINC_ORE), //107?
 				//TODO pure gold
 
 				s("plastics"),
 				i(DestroyItems.POLYETHENE_TEREPHTHALATE), i(DestroyItems.POLYVINYL_CHLORIDE), i(DestroyItems.POLYETHENE), i(DestroyItems.POLYPROPENE), i(DestroyItems.POLYSTYRENE), i(DestroyItems.ABS), i(DestroyItems.POLYTETRAFLUOROETHENE), i(DestroyItems.NYLON), i(DestroyItems.POLYSTYRENE_BUTADIENE), i(DestroyItems.POLYACRYLONITRILE), i(DestroyItems.POLYISOPRENE), i(DestroyItems.POLYURETHANE), i(DestroyItems.POLYMETHYL_METHACRYLATE), i(DestroyItems.CARD_STOCK),
 
 				s("resources"),
-				i(DestroyItems.FLUORITE), i(DestroyBlocks.FLUORITE_BLOCK), i(DestroyBlocks.FLUORITE_ORE), i(DestroyBlocks.DEEPSLATE_FLUORITE_ORE), i(DestroyBlocks.END_FLUORITE_ORE), i(() -> new ItemStack(DestroyFluids.CRUDE_OIL.getBucket().get())), i(DestroyItems.BORAX), i(DestroyItems.SILICA), i(DestroyItems.MOLTEN_BOROSILICATE_GLASS_BUCKET), i(DestroyBlocks.BOROSILICATE_GLASS_FIBER), r(DestroyBlocks.BOROSILICATE_GLASS), i(DestroyItems.IODINE), i(DestroyBlocks.IODINE_BLOCK), i(DestroyItems.CARBON_FIBER), i(DestroyBlocks.CARBON_FIBER_BLOCK), i(DestroyBlocks.UNVARNISHED_PLYWOOD), i(DestroyBlocks.PLYWOOD), i(DestroyItems.CHALK_DUST), i(DestroyItems.ZEOLITE), i(DestroyItems.NANODIAMONDS),
+				i(DestroyItems.FLUORITE), i(DestroyBlocks.FLUORITE_BLOCK), i(DestroyBlocks.FLUORITE_ORE), i(DestroyBlocks.DEEPSLATE_FLUORITE_ORE), i(DestroyBlocks.END_FLUORITE_ORE), i(DestroyItems.BORAX), i(DestroyItems.SILICA), i(DestroyItems.MOLTEN_BOROSILICATE_GLASS_BUCKET), i(DestroyBlocks.BOROSILICATE_GLASS_FIBER), r(DestroyBlocks.BOROSILICATE_GLASS), i(DestroyItems.IODINE), i(DestroyBlocks.IODINE_BLOCK), i(DestroyItems.CARBON_FIBER), i(DestroyBlocks.CARBON_FIBER_BLOCK), i(DestroyBlocks.UNVARNISHED_PLYWOOD), i(DestroyBlocks.PLYWOOD), i(DestroyItems.CHALK_DUST), i(DestroyItems.ZEOLITE), i(DestroyItems.NANODIAMONDS),
+				//TODO crude oil bucket
 
 				s("explosives"),
 				n(), i(DestroyItems.ACETONE_PEROXIDE), i(DestroyItems.FULMINATED_MERCURY), i(DestroyItems.NICKEL_HYDRAZINE_NITRATE), i(DestroyItems.TOUCH_POWDER),
@@ -99,7 +99,7 @@ public class DestroyCreativeModeTabs {
 				n(), i(DestroyItems.NICKEL_INFUSED_BEETROOT), i(DestroyItems.REDSTONE_INFUSED_BEETROOT), i(DestroyItems.ZINC_INFUSED_BEETROOT), i(DestroyItems.HYPERACCUMULATING_FERTILIZER), i(DestroyItems.MAGIC_BEETROOT_SEEDS),
 				n(), i(DestroyItems.NICKEL_INFUSED_BEETROOT_ASHES), i(DestroyItems.REDSTONE_INFUSED_BEETROOT_ASHES), i(DestroyItems.ZINC_INFUSED_BEETROOT_ASHES),
 
-				s("periodic_table"),
+				s("periodic_table_blocks"),
 				i(DestroyBlocks.HYDROGEN_PERIODIC_TABLE_BLOCK), i(DestroyBlocks.CARBON_PERIODIC_TABLE_BLOCK), i(DestroyBlocks.NITROGEN_PERIODIC_TABLE_BLOCK), i(DestroyBlocks.OXYGEN_PERIODIC_TABLE_BLOCK), i(DestroyBlocks.FLUORINE_PERIODIC_TABLE_BLOCK), i(DestroyBlocks.CHLORINE_PERIODIC_TABLE_BLOCK), i(DestroyBlocks.CHROMIUM_PERIODIC_TABLE_BLOCK), i(DestroyBlocks.IRON_PERIODIC_TABLE_BLOCK), i(DestroyBlocks.NICKEL_PERIODIC_TABLE_BLOCK), i(DestroyBlocks.COPPER_PERIODIC_TABLE_BLOCK), i(DestroyBlocks.ZINC_PERIODIC_TABLE_BLOCK), i(DestroyBlocks.RHODIUM_PERIODIC_TABLE_BLOCK), i(DestroyBlocks.PALLADIUM_PERIODIC_TABLE_BLOCK), i(DestroyBlocks.IODINE_PERIODIC_TABLE_BLOCK), i(DestroyBlocks.PLATINUM_PERIODIC_TABLE_BLOCK), i(DestroyBlocks.GOLD_PERIODIC_TABLE_BLOCK), i(DestroyBlocks.MERCURY_PERIODIC_TABLE_BLOCK), i(DestroyBlocks.LEAD_PERIODIC_TABLE_BLOCK),
 				
 				s("misc"),

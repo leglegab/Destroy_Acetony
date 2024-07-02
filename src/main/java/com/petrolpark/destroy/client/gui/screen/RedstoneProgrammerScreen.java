@@ -38,7 +38,7 @@ import net.minecraft.world.entity.player.Inventory;
 public class RedstoneProgrammerScreen extends AbstractSimiContainerScreen<RedstoneProgrammerMenu> {
 
     protected final RedstoneProgrammerMenu menu;
-    protected final RedstoneProgram program;
+    public final RedstoneProgram program;
 
     private DestroyGuiTextures background;
     private int width;
@@ -76,7 +76,6 @@ public class RedstoneProgrammerScreen extends AbstractSimiContainerScreen<Redsto
 
     // Syncing
     private boolean shouldSend;
-
     
     public RedstoneProgrammerScreen(RedstoneProgrammerMenu container, Inventory inv, Component title) {
         super(container, inv, title);
@@ -185,7 +184,7 @@ public class RedstoneProgrammerScreen extends AbstractSimiContainerScreen<Redsto
 
         // Tick chasers
         float speed = (float)noteWidth / program.getTicksPerBeat();
-        playhead.chase((float)noteWidth * (float)program.getAbsolutePlaytime(), speed, Chaser.LINEAR);
+        playhead.chase((float)noteWidth * (float)program.getAbsolutePlaytime() / program.getTicksPerBeat(), speed, Chaser.LINEAR);
         if (followPlayHead) clampHorizontalScroll(playhead.getChaseTarget() - 20d, speed);
         if (Math.abs(playhead.getValue() - playhead.getChaseTarget()) > speed * 2f) playhead.setValue(playhead.getChaseTarget());
         if (followPlayHead && Math.abs(horizontalScroll.getValue() - horizontalScroll.getChaseTarget()) > speed * 2f) horizontalScroll.setValue(horizontalScroll.getChaseTarget());
@@ -261,6 +260,7 @@ public class RedstoneProgrammerScreen extends AbstractSimiContainerScreen<Redsto
                 followPlayHead = false;
                 shouldSend = true;
                 return true;
+
             // Deleting and reordering channels
             } else if (inItemArea) {
                 boolean success = false;
@@ -330,7 +330,45 @@ public class RedstoneProgrammerScreen extends AbstractSimiContainerScreen<Redsto
             return true;
         } else if (NOTE_AREA.contains(mX, mY)) {
             followPlayHead = false;
-            //TODO adjust note strengths
+
+            // Changing strengths of notes
+            ImmutableList<Channel> channels = program.getChannels();
+            double posInList = mY - NOTE_AREA.getY() + verticalScroll;
+            int channelNo = (int)(posInList / distanceBetweenChannels);
+            if (channelNo >= 0 && channelNo < channels.size()) { // If we're scrolling on a valid channel
+                Channel channel = channels.get(channelNo);
+                int note = (int)((mX - NOTE_AREA.getX() + horizontalScroll.getChaseTarget()) / noteWidth);
+                if (note >= 0 && note < program.getLength()) { // If we're scrolling on a valid note
+                    int strength = channel.getStrength(note);
+                    if (strength != 0) {
+                        int minSelectedNote = note;
+                        int maxSelectedNote = note;
+                        if (!Screen.hasShiftDown()) {
+                            while (minSelectedNote > 0) {
+                                if (channel.getStrength(minSelectedNote) != strength) {
+                                    minSelectedNote++;
+                                    break;
+                                };
+                                minSelectedNote--;
+                            };
+                            while (maxSelectedNote < program.getLength() - 1) {
+                                if (channel.getStrength(maxSelectedNote) != strength) {
+                                    maxSelectedNote--;
+                                    break;
+                                };
+                                maxSelectedNote++;
+                            };
+                        };
+                        for (int i = minSelectedNote; i <= maxSelectedNote; i++) {
+                            channel.setStrength(i, Mth.clamp(strength + (int)delta, 1, 15));
+                        };
+                        shouldSend = true;
+                        return true;
+                    };
+                };
+            };
+
+            // Scrolling horizontally
             clampHorizontalScroll(horizontalScroll.getChaseTarget() + delta * 5, 10d);
         };
         return super.mouseScrolled(mouseX, mouseY, delta);
@@ -353,6 +391,10 @@ public class RedstoneProgrammerScreen extends AbstractSimiContainerScreen<Redsto
         // Labels
         graphics.drawString(font, DestroyLang.translate("tooltip.redstone_programmer.playback").component(), 6, background.height - 34, AllGuiTextures.FONT_COLOR, false);
         graphics.drawString(font, DestroyLang.translate("tooltip.redstone_programmer.editor").component(), 156, background.height - 34, AllGuiTextures.FONT_COLOR, false);
+        // Play time
+        int playtimeSeconds = program.getAbsolutePlaytime() / 20;
+        int durationSeconds = program.getLength() * program.getTicksPerBeat() / 20;
+        graphics.drawString(font, String.format("%02d:%02d / %02d:%02d", playtimeSeconds / 60, playtimeSeconds % 60, durationSeconds / 60, durationSeconds % 60), 128, 6, AllGuiTextures.FONT_COLOR, false);
 
         // Scroll values
         graphics.drawString(font, Component.literal(""+program.getTicksPerBeat()), 9, background.height - 19, 0xE0E0E0, true);

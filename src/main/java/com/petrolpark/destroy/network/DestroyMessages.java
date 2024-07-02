@@ -15,6 +15,7 @@ import com.petrolpark.destroy.network.packet.MarkSeismographC2SPacket;
 import com.petrolpark.destroy.network.packet.NameKeypunchC2SPacket;
 import com.petrolpark.destroy.network.packet.RedstoneProgramSyncC2SPacket;
 import com.petrolpark.destroy.network.packet.RedstoneProgramSyncReplyS2CPacket;
+import com.petrolpark.destroy.network.packet.RedstoneProgrammerPowerChangedS2CPacket;
 import com.petrolpark.destroy.network.packet.RefreshPeriodicTablePonderSceneS2CPacket;
 import com.petrolpark.destroy.network.packet.RequestKeypunchNamePacket;
 import com.petrolpark.destroy.network.packet.S2CPacket;
@@ -60,6 +61,7 @@ public class DestroyMessages {
         addS2CPacket(net, RequestKeypunchNamePacket.class, RequestKeypunchNamePacket::new);
         addS2CPacket(net, RedstoneProgramSyncReplyS2CPacket.class, RedstoneProgramSyncReplyS2CPacket::new);
         addS2CPacket(net, SyncVatMaterialsS2CPacket.class, SyncVatMaterialsS2CPacket::new);
+        addS2CPacket(net, RedstoneProgrammerPowerChangedS2CPacket.class, RedstoneProgrammerPowerChangedS2CPacket::new);
 
         addC2SPacket(net, SwissArmyKnifeToolC2SPacket.class, SwissArmyKnifeToolC2SPacket::new);
         addC2SPacket(net, ChainCogwheelsC2SPacket.class, ChainCogwheelsC2SPacket::new);

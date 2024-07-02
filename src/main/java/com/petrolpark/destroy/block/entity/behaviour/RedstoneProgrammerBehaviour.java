@@ -107,6 +107,11 @@ public class RedstoneProgrammerBehaviour extends BlockEntityBehaviour implements
             blockEntity.notifyUpdate();
             program.load();
         };
+
+        @Override
+        public void tick() {
+            super.tick();
+        };
         
     };
 

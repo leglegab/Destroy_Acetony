@@ -70,7 +70,10 @@ public class RedstoneProgrammerBlockItem extends BlockItem {
     public static void openScreen(ItemStack stack, Level level, Player player) {
         getProgram(stack, level, player).ifPresent(program -> {
             if (!level.isClientSide() && player instanceof ServerPlayer serverPlayer) {
-                NetworkHooks.openScreen(serverPlayer, new ItemStackRedstoneProgramMenuOpener(program), program::write);
+                NetworkHooks.openScreen(serverPlayer, new ItemStackRedstoneProgramMenuOpener(program), buffer -> {
+                    program.write(buffer);
+                    buffer.writeBoolean(false); // The menu expects to read whether the program is powered or not; when in Item form, the programmer is never powered
+                });
             };
         });
     };

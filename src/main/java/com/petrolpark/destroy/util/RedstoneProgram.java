@@ -98,8 +98,11 @@ public abstract class RedstoneProgram {
         return ticksPerBeat;
     };
 
+    /**
+     * The number of ticks this program has been playing for.
+     */
     public int getAbsolutePlaytime() {
-        return playtime + (ticksPerBeat - ticksToNextBeat);
+        return ticksPerBeat * playtime + (ticksPerBeat - ticksToNextBeat);
     };
 
     public void setTicksPerBeat(int value) {
@@ -313,6 +316,10 @@ public abstract class RedstoneProgram {
         beatsPerLine = otherProgram.beatsPerLine;
         linesPerBar = otherProgram.linesPerBar;
         notifiedChange = false;
+    };
+
+    public boolean hasPowerChanged() {
+        return hasPower() != poweredLastTick;
     };
 
     // As redstone powers only go up to 16, we can fit eight of them in one integer. We only fit seven to avoid messing with the sign bit.

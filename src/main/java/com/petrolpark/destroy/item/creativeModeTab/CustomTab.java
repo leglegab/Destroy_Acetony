@@ -11,6 +11,7 @@ import java.util.function.IntConsumer;
 import java.util.function.Supplier;
 
 import com.google.common.collect.ImmutableList;
+import com.petrolpark.destroy.Destroy;
 import com.petrolpark.destroy.MoveToPetrolparkLibrary;
 import com.petrolpark.destroy.client.gui.DestroyGuiTextures;
 
@@ -39,10 +40,13 @@ public class CustomTab extends CreativeModeTab {
     public void buildContents(ItemDisplayParameters parameters) {
         List<ItemStack> items = new ArrayList<>(entries.size());
         displayItemsSearchTab = new HashSet<>(entries.size());
-        entries.forEach(entry -> {
+        for (ITabEntry entry : entries) {
             entry.addItems(items, parameters, i -> renderedEntries.put(i, entry));
+            if (entry.getItemsToAddToSearch(parameters).stream().anyMatch(ItemStack::isEmpty)) {
+                Destroy.LOGGER.info("yeeeeeowchie!");
+            };
             displayItemsSearchTab.addAll(entry.getItemsToAddToSearch(parameters));
-        });
+        };
         displayItems = items;
         rebuildSearchTree();
     };

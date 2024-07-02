@@ -1,11 +1,14 @@
 package com.petrolpark.destroy.client.gui.menu;
 
+import java.util.WeakHashMap;
+
 import org.jetbrains.annotations.NotNull;
 
 import com.petrolpark.destroy.client.gui.screen.RedstoneProgrammerScreen;
 import com.petrolpark.destroy.config.DestroyAllConfigs;
 import com.petrolpark.destroy.network.DestroyMessages;
 import com.petrolpark.destroy.network.packet.RedstoneProgramSyncC2SPacket;
+import com.petrolpark.destroy.network.packet.RedstoneProgrammerPowerChangedS2CPacket;
 import com.petrolpark.destroy.util.RedstoneProgram;
 import com.petrolpark.destroy.util.RedstoneProgram.Channel;
 import com.simibubi.create.content.redstone.link.RedstoneLinkNetworkHandler.Frequency;
@@ -14,6 +17,7 @@ import com.simibubi.create.foundation.utility.Couple;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.ClickType;
@@ -21,9 +25,15 @@ import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.LevelAccessor;
+import net.minecraftforge.event.TickEvent.Phase;
+import net.minecraftforge.event.TickEvent.PlayerTickEvent;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.LogicalSide;
+import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
 import net.minecraftforge.items.ItemStackHandler;
 import net.minecraftforge.items.SlotItemHandler;
 
+@EventBusSubscriber
 public class RedstoneProgrammerMenu extends GhostItemMenu<RedstoneProgram> {
 
     private int offset = 0;
@@ -44,6 +54,7 @@ public class RedstoneProgrammerMenu extends GhostItemMenu<RedstoneProgram> {
     protected RedstoneProgram createOnClient(FriendlyByteBuf extraData) {
         DummyRedstoneProgram program = new DummyRedstoneProgram();
         program.read(extraData);
+        program.powered = extraData.readBoolean();
         return program;
     };
 
@@ -163,6 +174,8 @@ public class RedstoneProgrammerMenu extends GhostItemMenu<RedstoneProgram> {
 
     public static class DummyRedstoneProgram extends RedstoneProgram {
 
+        public boolean powered;
+
         @Override
         public void load() {
             // Do nothing, this should never be on a network
@@ -170,7 +183,7 @@ public class RedstoneProgrammerMenu extends GhostItemMenu<RedstoneProgram> {
 
         @Override
         public boolean hasPower() {
-            return false;
+            return powered;
         };
 
         @Override
@@ -188,6 +201,29 @@ public class RedstoneProgrammerMenu extends GhostItemMenu<RedstoneProgram> {
             return null;
         };
 
+        @Override
+        public void read(FriendlyByteBuf buf) {
+            super.read(buf);
+        };
+
+    };
+
+    private static WeakHashMap<ServerPlayer, Boolean> programmersPowered = new WeakHashMap<>();
+
+    @SubscribeEvent
+    public static void onPlayerTick(PlayerTickEvent event) {
+        if (event.side == LogicalSide.SERVER && event.phase == Phase.END && event.player instanceof ServerPlayer player) {
+            if (player.containerMenu instanceof RedstoneProgrammerMenu menu) {
+                boolean currentPower = menu.contentHolder.hasPower();
+                Boolean oldPower = programmersPowered.get(player);
+                if (oldPower == null || currentPower != oldPower) {
+                    DestroyMessages.sendToClient(new RedstoneProgrammerPowerChangedS2CPacket(menu.contentHolder.hasPower()), player);
+                    programmersPowered.put(player, currentPower);
+                };
+            } else {
+                programmersPowered.remove(player);
+            };
+        };
     };
     
 };
