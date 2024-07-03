@@ -126,6 +126,11 @@ public class DestroyBlockEntityTypes {
         .renderer(() -> BracketedKineticBlockEntityRenderer::new)
         .register();
 
+    public static final BlockEntityEntry<MeasuringCylinderBlockEntity> MEASURING_CYLINDER = REGISTRATE
+        .blockEntity("measuring_cylinder", MeasuringCylinderBlockEntity::new)
+        .validBlock(DestroyBlocks.MEASURING_CYLINDER)
+        .register();
+
     public static final BlockEntityEntry<PlanetaryGearsetBlockEntity> PLANETARY_GEARSET = REGISTRATE
         .blockEntity("planetary_gearset", PlanetaryGearsetBlockEntity::new)
         .instance(() -> PlanetaryGearsetInstance::new, false)

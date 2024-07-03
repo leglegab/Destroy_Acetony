@@ -5,6 +5,7 @@ import java.util.UUID;
 import java.util.function.Consumer;
 
 import com.petrolpark.destroy.block.DestroyBlocks;
+import com.petrolpark.destroy.block.IPickUpPutDownBlock;
 import com.petrolpark.destroy.block.RedstoneProgrammerBlock;
 import com.petrolpark.destroy.client.gui.menu.RedstoneProgrammerMenu;
 import com.petrolpark.destroy.item.renderer.RedstoneProgrammerItemRenderer;
@@ -53,11 +54,7 @@ public class RedstoneProgrammerBlockItem extends BlockItem {
 
     @Override
     public InteractionResult place(BlockPlaceContext context) {
-        InteractionResult result = super.place(context);
-        if (result == InteractionResult.sidedSuccess(context.getLevel().isClientSide()) && context.getPlayer() != null && context.getPlayer().getAbilities().instabuild) {
-            context.getItemInHand().shrink(1); // Remove the Item from the Inventory even if in Creative
-        };
-        return result;
+        return IPickUpPutDownBlock.removeItemFromInventory(context, super.place(context));
     };
 
     @Override

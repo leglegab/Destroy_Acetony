@@ -47,7 +47,7 @@ import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraftforge.network.NetworkHooks;
 
-public class RedstoneProgrammerBlock extends HorizontalDirectionalBlock implements IBE<RedstoneProgrammerBlockEntity>, IWrenchable, ProperWaterloggedBlock {
+public class RedstoneProgrammerBlock extends HorizontalDirectionalBlock implements IBE<RedstoneProgrammerBlockEntity>, IWrenchable, ProperWaterloggedBlock, IPickUpPutDownBlock {
 
     public static final BooleanProperty POWERED = BlockStateProperties.POWERED;
 

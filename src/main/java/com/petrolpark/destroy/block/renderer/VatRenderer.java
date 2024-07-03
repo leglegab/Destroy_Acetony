@@ -121,14 +121,14 @@ public class VatRenderer extends SafeBlockEntityRenderer<VatControllerBlockEntit
         };
 
         // Fluids
-        FluidStack fluidStack = controller.getLiquidTank().getFluid();
+        FluidStack fluidStack = controller.getLiquidTankContents();
         if (!fluidStack.isEmpty()) {
             FluidRenderer.renderFluidBox(fluidStack,
                 (float)relativeInternalLowerCorner.x, (float)relativeInternalLowerCorner.y, (float)relativeInternalLowerCorner.z,
                 (float)relativeInternalUpperCorner.x, relativeFluidLevel, (float)relativeInternalUpperCorner.z,
                 bufferSource, ms, light, true);
         };
-        FluidStack gasStack = MixtureFluid.gasOf(controller.getGasTank().getFluid());
+        FluidStack gasStack = MixtureFluid.gasOf(controller.getGasTankContents());
         if (!gasStack.isEmpty()) {
             FluidRenderer.renderFluidBox(gasStack,
                 (float)relativeInternalLowerCorner.x, relativeFluidLevel, (float)relativeInternalLowerCorner.z,

@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.function.BiFunction;
 import java.util.function.Function;
+import java.util.function.Supplier;
 
 import javax.annotation.Nullable;
 
@@ -23,7 +24,10 @@ import com.petrolpark.destroy.chemistry.Reaction;
 import com.petrolpark.destroy.chemistry.ReadOnlyMixture;
 import com.petrolpark.destroy.chemistry.Mixture.ReactionContext;
 import com.petrolpark.destroy.config.DestroyAllConfigs;
+import com.petrolpark.destroy.fluid.DestroyFluids;
 import com.petrolpark.destroy.fluid.MixtureFluid;
+import com.petrolpark.destroy.recipe.DestroyRecipeTypes;
+import com.petrolpark.destroy.recipe.MixtureConversionRecipe;
 import com.petrolpark.destroy.util.DestroyLang;
 import com.petrolpark.destroy.util.ExplosionHelper;
 import com.petrolpark.destroy.util.PollutionHelper;
@@ -34,9 +38,11 @@ import com.simibubi.create.content.equipment.goggles.IHaveGoggleInformation;
 import com.simibubi.create.content.redstone.displayLink.DisplayLinkContext;
 import com.simibubi.create.foundation.blockEntity.SmartBlockEntity;
 import com.simibubi.create.foundation.blockEntity.behaviour.BlockEntityBehaviour;
+import com.simibubi.create.foundation.fluid.CombinedTankWrapper;
 import com.simibubi.create.foundation.item.ItemHelper;
 import com.simibubi.create.foundation.item.SmartInventory;
 import com.simibubi.create.foundation.item.TooltipHelper;
+import com.simibubi.create.foundation.recipe.RecipeFinder;
 import com.simibubi.create.foundation.utility.Lang;
 import com.simibubi.create.foundation.utility.Pair;
 import com.simibubi.create.foundation.utility.animation.LerpedFloat;
@@ -495,12 +501,26 @@ public class VatControllerBlockEntity extends SmartBlockEntity implements IHaveG
     };
 
     // Nullable, just not annotated so VSC stops giving me ugly yellow lines
-    public VatFluidTank getLiquidTank() {
+    protected VatFluidTank getLiquidTank() {
         return tankBehaviour.getLiquidHandler();
     };
 
-    public VatFluidTank getGasTank() {
+    /**
+     * Not modifiable. To modify, see {@link VatTankWrapper}.
+     */
+    public FluidStack getLiquidTankContents() {
+        return getLiquidTank().getFluid();
+    };
+
+    protected VatFluidTank getGasTank() {
         return tankBehaviour.getGasHandler();
+    };
+
+    /**
+     * Not modifiable. To modify, see {@link VatTankWrapper}.
+     */
+    public FluidStack getGasTankContents() {
+        return getGasTank().getFluid().copy();
     };
 
     @Nullable
@@ -639,6 +659,91 @@ public class VatControllerBlockEntity extends SmartBlockEntity implements IHaveG
 			.forGoggles(tooltip);
         DestroyLang.tankInfoTooltip(tooltip, DestroyLang.translate("tooltip.vat.contents_liquid"), vatController.getLiquidTank().getFluid(), vatController.getCapacity());
         DestroyLang.tankInfoTooltip(tooltip, DestroyLang.translate("tooltip.vat.contents_gas"), vatController.getGasTank().getFluid(), vatController.getCapacity());
+    };
+
+    /**
+     * A wrapper for inserting and draining fluid from a Vat.
+     */
+    public static abstract class VatTankWrapper extends CombinedTankWrapper {
+
+        public final Object recipeCacheKey = new Object();
+        public MixtureConversionRecipe lastRecipe;
+
+        protected final Supplier<VatControllerBlockEntity> vatControllerGetter;
+        /**
+         * Something which eats Mixture we are putting into the Vat.
+         * For direct insertion, this can just be {@link VatControllerBlockEntity#addFluid}, but for Vat Sides, for example, inserted Fluid is stored in a buffer first.
+         */
+        protected final FluidConsumer consumer;
+
+        public VatTankWrapper(Supplier<VatControllerBlockEntity> vatControllerGetter, FluidConsumer consumer, IFluidHandler ...tanks) {
+            super(tanks);
+            this.vatControllerGetter = vatControllerGetter;
+            this.consumer = consumer;
+        };
+
+        @Override
+        public boolean isFluidValid(int tank, FluidStack stack) {
+            return DestroyFluids.isMixture(stack);
+        };
+
+        @Override
+        public int fill(FluidStack stack, FluidAction fluidAction) {
+            VatControllerBlockEntity controller = vatControllerGetter.get();
+            if (controller == null || !controller.canFitFluid()) return 0;
+
+            // Non-Mixture -> Mixture conversion
+            if (lastRecipe == null || !lastRecipe.getFluidIngredients().get(0).test(stack)) {
+                lastRecipe = RecipeFinder.get(recipeCacheKey, controller.getLevel(), r -> r.getType() == DestroyRecipeTypes.MIXTURE_CONVERSION.getType())
+                    .stream()
+                    .map(r -> (MixtureConversionRecipe)r)
+                    .filter(r -> r.getFluidIngredients().get(0).test(stack))
+                    .findFirst()
+                    .orElse(null);
+            };
+            if (lastRecipe != null) return consumer.fill(lastRecipe.apply(stack), fluidAction);
+
+            // Mixtures
+            if (!DestroyFluids.isMixture(stack)) return 0;
+            return consumer.fill(stack, fluidAction);
+        };
+
+        protected FluidStack drainLiquidTank(FluidStack resource, FluidAction action) {
+            FluidStack stack = vatControllerGetter.get().getLiquidTank().drain(resource, action);
+            updateVatGasVolume(stack, action);
+            return stack;
+        };
+
+        protected FluidStack drainLiquidTank(int amount, FluidAction action) {
+            FluidStack stack = vatControllerGetter.get().getLiquidTank().drain(amount, action);
+            updateVatGasVolume(stack, action);
+            return stack;
+        };
+
+        protected FluidStack drainGasTank(FluidStack resource, FluidAction action) {
+            FluidStack stack = vatControllerGetter.get().getGasTank().drain(resource, action);
+            updateVatGasVolume(stack, action);
+            return stack;
+        };
+
+        protected FluidStack drainGasTank(int amount, FluidAction action) {
+            FluidStack stack = vatControllerGetter.get().getGasTank().drain(amount, action);
+            updateVatGasVolume(stack, action);
+            return stack;
+        };
+
+        protected void updateVatGasVolume(FluidStack drained, FluidAction action) {
+            VatControllerBlockEntity vatController = vatControllerGetter.get();
+            if (action == FluidAction.EXECUTE && !drained.isEmpty() && vatController != null && !vatController.getLevel().isClientSide()) {
+                vatController.updateCachedMixture();
+                vatController.updateGasVolume();
+            };
+        };
+
+        @FunctionalInterface
+        public static interface FluidConsumer {
+            public int fill(FluidStack stack, FluidAction action);
+        };
     };
     
     public class VatAdvancementBehaviour extends DestroyAdvancementBehaviour {

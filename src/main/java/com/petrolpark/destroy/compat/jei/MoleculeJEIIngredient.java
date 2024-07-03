@@ -11,6 +11,7 @@ import com.petrolpark.destroy.chemistry.Molecule;
 import com.petrolpark.destroy.chemistry.index.DestroyMolecules;
 import com.petrolpark.destroy.config.DestroyAllConfigs;
 import com.petrolpark.destroy.fluid.MixtureFluid;
+import com.petrolpark.destroy.item.DestroyItems;
 import com.petrolpark.destroy.item.MoleculeDisplayItem;
 import com.petrolpark.destroy.item.TestTubeItem;
 
@@ -84,7 +85,7 @@ public class MoleculeJEIIngredient {
         @Override
         public ItemStack getCheatItemStack(Molecule ingredient) {
             if (ingredient.isHypothetical() || ingredient == DestroyMolecules.PROTON) return illegalFish;
-            return TestTubeItem.of(MixtureFluid.of(TestTubeItem.CAPACITY, Mixture.pure(ingredient), ""));
+            return DestroyItems.TEST_TUBE.get().of(MixtureFluid.of(TestTubeItem.CAPACITY, Mixture.pure(ingredient), ""));
         };
     };
 

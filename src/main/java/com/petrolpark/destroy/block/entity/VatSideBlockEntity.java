@@ -12,7 +12,7 @@ import org.joml.Math;
 
 import com.petrolpark.destroy.block.DestroyBlocks;
 import com.petrolpark.destroy.block.entity.behaviour.RedstoneQuantityMonitorBehaviour;
-import com.petrolpark.destroy.capability.blockEntity.VatSideTankCapability;
+import com.petrolpark.destroy.capability.blockEntity.VatSideFluidCapability;
 import com.petrolpark.destroy.config.DestroyAllConfigs;
 import com.petrolpark.destroy.util.DestroyLang;
 import com.petrolpark.destroy.util.DestroyLang.TemperatureUnit;
@@ -143,7 +143,7 @@ public class VatSideBlockEntity extends CopycatBlockEntity implements IHaveGoggl
                 liquidOutputCap = LazyOptional.of(() -> vatController.getLiquidTank());
                 gasOutputCap = LazyOptional.of(() -> vatController.getGasTank());
             };
-			return new VatSideTankCapability(this, liquidOutputCap.orElse(null), gasOutputCap.orElse(null), inputCap.orElse(null));
+			return new VatSideFluidCapability(this, liquidOutputCap.orElse(null), gasOutputCap.orElse(null), inputCap.orElse(null));
         });
     };
 

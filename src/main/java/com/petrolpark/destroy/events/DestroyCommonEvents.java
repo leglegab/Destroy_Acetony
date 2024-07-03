@@ -8,11 +8,11 @@ import java.util.stream.Stream;
 
 import com.petrolpark.destroy.Destroy;
 import com.petrolpark.destroy.MoveToPetrolparkLibrary;
-import com.petrolpark.destroy.advancement.DestroyAdvancementTrigger;
+import com.petrolpark.destroy.advancement.DestroyAdvancementTrigger; 
 import com.petrolpark.destroy.badge.BadgeHandler;
 import com.petrolpark.destroy.block.DestroyBlocks;
 import com.petrolpark.destroy.block.PeriodicTableBlock;
-import com.petrolpark.destroy.block.RedstoneProgrammerBlock;
+import com.petrolpark.destroy.block.IPickUpPutDownBlock;
 import com.petrolpark.destroy.block.PeriodicTableBlock.PeriodicTableEntry;
 import com.petrolpark.destroy.block.entity.VatControllerBlockEntity;
 import com.petrolpark.destroy.block.entity.VatSideBlockEntity;
@@ -619,7 +619,7 @@ public class DestroyCommonEvents {
     };
 
     /**
-     * Instantly destroy and recieve the Item when right-clicking a Redstone Programmer, even if in Creative
+     * Instantly destroy and recieve the Item when right-clicking a Redstone Programmer or Measuring Cylinder, even if in Creative
      */
     @SubscribeEvent
 	public static void onLeftClickBlock(PlayerInteractEvent.LeftClickBlock event) {
@@ -627,7 +627,7 @@ public class DestroyCommonEvents {
         Level world = event.getLevel();
         BlockPos pos = event.getPos();
         BlockState state = world.getBlockState(pos);
-        if (state.getBlock() instanceof RedstoneProgrammerBlock) {
+        if (state.getBlock() instanceof IPickUpPutDownBlock) {
             if (player instanceof FakePlayer) return;
             if (world.isClientSide()) return;
             if (world instanceof ServerLevel) {
@@ -680,13 +680,13 @@ public class DestroyCommonEvents {
         };
 
         // Fill Test Tubes from any Fluid-containing block
-        if (stack.getItem() instanceof TestTubeItem && TestTubeItem.isEmpty(stack) && player.isCreative()) {
+        if (stack.getItem() instanceof TestTubeItem && DestroyItems.TEST_TUBE.get().isEmpty(stack) && player.isCreative()) {
             BlockEntity be = level.getBlockEntity(pos);
             if (be == null) return;
             if (!(be instanceof VatSideBlockEntity) && !(be instanceof VatControllerBlockEntity) && be.getCapability(ForgeCapabilities.FLUID_HANDLER, event.getFace()).map(handler -> {
                 FluidStack drained = handler.drain(200, FluidAction.SIMULATE);
                 if (DestroyFluids.isMixture(drained)) {
-                    player.setItemInHand(event.getHand(), TestTubeItem.of(drained));
+                    player.setItemInHand(event.getHand(), DestroyItems.TEST_TUBE.get().of(drained));
                     return true;
                 };
                 return false;

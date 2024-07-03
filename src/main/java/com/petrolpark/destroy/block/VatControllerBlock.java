@@ -6,6 +6,7 @@ import com.petrolpark.destroy.block.entity.DestroyBlockEntityTypes;
 import com.petrolpark.destroy.block.entity.VatControllerBlockEntity;
 import com.petrolpark.destroy.block.entity.behaviour.AbstractRememberPlacerBehaviour;
 import com.petrolpark.destroy.client.gui.screen.VatScreen;
+import com.petrolpark.destroy.item.IMixtureStorageItem;
 import com.simibubi.create.AllSoundEvents;
 import com.simibubi.create.foundation.block.IBE;
 import com.simibubi.create.foundation.gui.ScreenOpener;
@@ -21,6 +22,7 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.BlockPlaceContext;
+import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.HorizontalDirectionalBlock;
@@ -30,9 +32,10 @@ import net.minecraft.world.level.block.state.StateDefinition.Builder;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fml.DistExecutor;
 
-public class VatControllerBlock extends HorizontalDirectionalBlock implements IBE<VatControllerBlockEntity> {
+public class VatControllerBlock extends HorizontalDirectionalBlock implements IBE<VatControllerBlockEntity>, ISpecialMixtureContainerBlock {
 
     public VatControllerBlock(Properties properties) {
         super(properties);
@@ -101,6 +104,11 @@ public class VatControllerBlock extends HorizontalDirectionalBlock implements IB
     @Override
     public BlockEntityType<? extends VatControllerBlockEntity> getBlockEntityType() {
         return DestroyBlockEntityTypes.VAT_CONTROLLER.get();
+    }
+
+    @Override
+    public IFluidHandler getTankForMixtureStorageItems(IMixtureStorageItem item, UseOnContext context, boolean rightClick) {
+        return item.selectVatTank(context, getBlockEntity(context.getLevel(), context.getClickedPos()), rightClick);
     };
     
 };

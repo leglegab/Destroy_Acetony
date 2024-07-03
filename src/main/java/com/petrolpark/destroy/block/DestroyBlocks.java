@@ -219,7 +219,7 @@ public class DestroyBlocks {
         .onRegister(CreateRegistrate.blockModel(() -> BracketedKineticBlockModel::new))
         .register();
 
-    public static final BlockEntry<Block> MEASURING_CYLINDER = REGISTRATE.block("measuring_cylinder", Block::new)
+    public static final BlockEntry<MeasuringCylinderBlock> MEASURING_CYLINDER = REGISTRATE.block("measuring_cylinder", MeasuringCylinderBlock::new)
         .item()
         .build()
         .register();

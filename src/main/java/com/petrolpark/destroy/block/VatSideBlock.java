@@ -3,10 +3,12 @@ package com.petrolpark.destroy.block;
 import javax.annotation.Nullable;
 
 import com.petrolpark.destroy.block.entity.DestroyBlockEntityTypes;
+import com.petrolpark.destroy.block.entity.VatControllerBlockEntity;
 import com.petrolpark.destroy.block.entity.VatSideBlockEntity;
 import com.petrolpark.destroy.block.entity.VatSideBlockEntity.DisplayType;
 import com.petrolpark.destroy.client.gui.screen.QuantityObservingVatSideScreen;
 import com.petrolpark.destroy.item.DestroyItems;
+import com.petrolpark.destroy.item.IMixtureStorageItem;
 import com.simibubi.create.AllItems;
 import com.simibubi.create.content.decoration.copycat.CopycatBlock;
 import com.simibubi.create.content.decoration.copycat.CopycatBlockEntity;
@@ -38,9 +40,10 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fml.DistExecutor;
 
-public class VatSideBlock extends CopycatBlock implements ISpecialBlockItemRequirement {
+public class VatSideBlock extends CopycatBlock implements ISpecialBlockItemRequirement, ISpecialMixtureContainerBlock {
 
     public VatSideBlock(Properties properties) {
         super(properties);
@@ -209,6 +212,15 @@ public class VatSideBlock extends CopycatBlock implements ISpecialBlockItemRequi
     @Override
     public ItemRequirement getRequiredItems(BlockState state, BlockEntity blockEntity) {
         return ItemRequirement.NONE;
+    }
+
+    @Override
+    public IFluidHandler getTankForMixtureStorageItems(IMixtureStorageItem item, UseOnContext context, boolean rightClick) {
+        if (getBlockEntity(context.getLevel(), context.getClickedPos()) instanceof VatSideBlockEntity vatSide) {
+            VatControllerBlockEntity vatController = vatSide.getController();
+            if (vatController != null) return item.selectVatTank(context, vatController, rightClick);
+        };
+        return null;
     };
     
 };

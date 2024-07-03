@@ -5,6 +5,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.function.Consumer;
 
+import com.petrolpark.destroy.block.entity.VatControllerBlockEntity;
 import com.petrolpark.destroy.block.entity.behaviour.fluidTankBehaviour.VatFluidTankBehaviour.VatTankSegment.VatFluidTank;
 import com.petrolpark.destroy.chemistry.Mixture;
 import com.petrolpark.destroy.chemistry.Molecule;
@@ -12,7 +13,6 @@ import com.petrolpark.destroy.chemistry.ReadOnlyMixture;
 import com.petrolpark.destroy.chemistry.Mixture.Phases;
 import com.petrolpark.destroy.fluid.DestroyFluids;
 import com.petrolpark.destroy.fluid.MixtureFluid;
-import com.simibubi.create.foundation.blockEntity.SmartBlockEntity;
 import com.simibubi.create.foundation.blockEntity.behaviour.fluid.SmartFluidTankBehaviour;
 import com.simibubi.create.foundation.fluid.SmartFluidTank;
 
@@ -27,7 +27,7 @@ public class VatFluidTankBehaviour extends GeniusFluidTankBehaviour {
     protected boolean liquidFull;
     protected int vatCapacity;
 
-    public VatFluidTankBehaviour(SmartBlockEntity be, int vatCapacity) {
+    public VatFluidTankBehaviour(VatControllerBlockEntity be, int vatCapacity) {
         super(SmartFluidTankBehaviour.TYPE, be, 2, vatCapacity, false);
 
         IFluidHandler[] handlers = new IFluidHandler[2];

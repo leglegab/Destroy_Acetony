@@ -28,6 +28,9 @@ public abstract class CreativeModeInventoryScreenMixin extends EffectRenderingIn
         throw new AssertionError(); // Should never be called
     };
 
+    /**
+     * Render fancy things in {@link CustomTab Custom Tabs}.
+     */
     @Inject(
         method = "Lnet/minecraft/client/gui/screens/inventory/CreativeModeInventoryScreen;render(Lnet/minecraft/client/gui/GuiGraphics;IIF)V",
         at = @At("RETURN")

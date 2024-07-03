@@ -11,7 +11,6 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.petrolpark.destroy.block.DestroyBlocks;
 import com.petrolpark.destroy.block.VatControllerBlock;
 import com.petrolpark.destroy.block.entity.VatControllerBlockEntity;
-import com.petrolpark.destroy.block.entity.behaviour.fluidTankBehaviour.VatFluidTankBehaviour.VatTankSegment.VatFluidTank;
 import com.petrolpark.destroy.chemistry.ClientMixture;
 import com.petrolpark.destroy.chemistry.Molecule;
 import com.petrolpark.destroy.chemistry.ReadOnlyMixture;
@@ -171,21 +170,20 @@ public class VatScreen extends AbstractSimiScreen {
     protected void updateMoleculeList() {
         ReadOnlyMixture mixture = new ReadOnlyMixture();
         int amount = 0;
-        VatFluidTank tank = null;
+        FluidStack fluid = null;
         switch (selectedView) {
             case BOTH: {
                 mixture = blockEntity.getCombinedReadOnlyMixture();
                 amount = blockEntity.getVatOptional().map(Vat::getCapacity).orElse(0);
                 break;
             } case GAS: {
-                tank = blockEntity.getGasTank();
+                fluid = blockEntity.getGasTankContents();
             } case LIQUID: {
-                if (selectedView == View.LIQUID) tank = blockEntity.getLiquidTank();
+                if (selectedView == View.LIQUID) fluid = blockEntity.getLiquidTankContents();
             } default: {
-                if (tank != null) {
-                    amount = tank.getFluidAmount();
-                    FluidStack stack = tank.getFluid();
-                    if (DestroyFluids.isMixture(stack)) mixture = ReadOnlyMixture.readNBT(ClientMixture::new, stack.getOrCreateChildTag("Mixture"));
+                if (fluid != null) {
+                    amount = fluid.getAmount();
+                    if (DestroyFluids.isMixture(fluid)) mixture = ReadOnlyMixture.readNBT(ClientMixture::new, fluid.getOrCreateChildTag("Mixture"));
                 };
             };
         };
