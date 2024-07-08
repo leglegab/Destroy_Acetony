@@ -2,6 +2,8 @@ package com.petrolpark.destroy.util;
 
 import java.util.List;
 
+import org.joml.Vector3f;
+
 import com.petrolpark.destroy.advancement.DestroyAdvancementTrigger;
 import com.petrolpark.destroy.capability.level.pollution.LevelPollutionProvider;
 import com.petrolpark.destroy.capability.level.pollution.LevelPollution.PollutionType;
@@ -14,6 +16,7 @@ import com.petrolpark.destroy.network.packet.EvaporatingFluidS2CPacket;
 import com.petrolpark.destroy.network.packet.LevelPollutionS2CPacket;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.particles.DustParticleOptions;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.server.level.ServerLevel;
@@ -57,17 +60,20 @@ public class PollutionHelper {
 
             // This has been disabled as updating the SMOG level only updates the colours of unloaded chunks, which creates weird-looking boundaries if the change is large
             // For now this only happens when reloading the world
-            if (oldValue != newValue) { // If there has been a change (which needs to be broadcast to clients)
-                DestroyMessages.sendToAllClients(new LevelPollutionS2CPacket(levelPollution));
-            };
-
-            // Award Advancements for fully polluting/repairing the world
-            if (level instanceof ServerLevel serverLevel && levelPollution.hasPollutionEverBeenMaxed()) {
-                serverLevel.players().forEach(player -> DestroyAdvancementTrigger.FULLY_POLLUTE.award(serverLevel, player));
-                if (levelPollution.hasPollutionEverBeenFullyReduced()) {
-                    serverLevel.players().forEach(player -> DestroyAdvancementTrigger.UNPOLLUTE.award(serverLevel, player));
+            if (level instanceof ServerLevel serverLevel) {
+                if (oldValue != newValue) { // If there has been a change (which needs to be broadcast to clients)
+                    DestroyMessages.sendToAllClientsInDimension(new LevelPollutionS2CPacket(levelPollution), serverLevel);
+                };
+    
+                // Award Advancements for fully polluting/repairing the world
+                if (levelPollution.hasPollutionEverBeenMaxed()) {
+                    serverLevel.players().forEach(player -> DestroyAdvancementTrigger.FULLY_POLLUTE.award(serverLevel, player));
+                    if (levelPollution.hasPollutionEverBeenFullyReduced()) {
+                        serverLevel.players().forEach(player -> DestroyAdvancementTrigger.UNPOLLUTE.award(serverLevel, player));
+                    };
                 };
             };
+
             return newValue;
         }).orElse(0);
     };
@@ -151,5 +157,9 @@ public class PollutionHelper {
      */
     public static void pollute(Level level, BlockPos blockPos, FluidStack ...fluidStacks) {
         pollute(level, blockPos, 1, fluidStacks);
+    };
+
+    public static DustParticleOptions cropGrowthFailureParticles() {
+        return new DustParticleOptions(new Vector3f(109 / 256f, 77 / 256f, 14 / 256f), 1f);
     };
 };

@@ -82,7 +82,7 @@ public class TestTubeItem extends Item implements ILayerTintsWithAlphaItem, IMix
 
             if (fluidStack.isEmpty()) return;
 
-            String temperature = "";
+            float temperature = 289f;
 
             tooltip.add(Component.literal(""));
         
@@ -91,11 +91,11 @@ public class TestTubeItem extends Item implements ILayerTintsWithAlphaItem, IMix
                 ReadOnlyMixture mixture = ReadOnlyMixture.readNBT(ClientMixture::new, mixtureTag);
 
                 boolean iupac = DestroyAllConfigs.CLIENT.chemistry.iupacNames.get();
-                temperature = df.format(mixture.getTemperature());
+                temperature = mixture.getTemperature();
                 tooltip.addAll(mixture.getContentsTooltip(iupac, false, false, fluidStack.getAmount(), df).stream().map(c -> c.copy()).toList());
             };
 
-            tooltip.add(2, Component.literal(" "+fluidStack.getAmount()).withStyle(ChatFormatting.GRAY).append(Lang.translateDirect("generic.unit.millibuckets")).append(" "+temperature+"K"));
+            tooltip.add(2, Component.literal(" "+fluidStack.getAmount()).withStyle(ChatFormatting.GRAY).append(Lang.translateDirect("generic.unit.millibuckets")).append(" "+DestroyAllConfigs.CLIENT.chemistry.temperatureUnit.get().of(temperature, df)));
         });
     };
 

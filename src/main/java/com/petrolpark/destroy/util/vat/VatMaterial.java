@@ -7,8 +7,10 @@ import java.util.Optional;
 import java.util.Iterator;
 
 import com.petrolpark.destroy.block.DestroyBlocks;
+import com.petrolpark.destroy.recipe.ingredient.BlockIngredient;
+import com.petrolpark.destroy.recipe.ingredient.BlockIngredient.SingleBlockIngredient;
 
-import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.state.BlockState;
 
 /**
  * Information about a Block from which a Vat can be construced.
@@ -19,7 +21,7 @@ import net.minecraft.world.level.block.Block;
  */
 public record VatMaterial(float maxPressure, float thermalConductivity, boolean transparent, boolean builtIn) {
 
-    public static final Map<Block, VatMaterial> BLOCK_MATERIALS = new HashMap<>();
+    public static final Map<BlockIngredient<?>, VatMaterial> BLOCK_MATERIALS = new HashMap<>();
 
     public static final VatMaterial UNBREAKABLE = new VatMaterial(Float.MAX_VALUE, 0f, false, true);
 
@@ -27,21 +29,21 @@ public record VatMaterial(float maxPressure, float thermalConductivity, boolean 
      * Whether the given Block can be used to construct a Vat.
      * @param block
      */
-    public static boolean isValid(Block block) {
-        return BLOCK_MATERIALS.containsKey(block);
+    public static boolean isValid(BlockState state) {
+        return BLOCK_MATERIALS.keySet().stream().anyMatch(ingredient -> ingredient.isValid(state));
     };
 
-    public static Optional<VatMaterial> getMaterial(Block block) {
-        return Optional.ofNullable(BLOCK_MATERIALS.get(block));
+    public static Optional<VatMaterial> getMaterial(BlockState state) {
+        return BLOCK_MATERIALS.entrySet().stream().filter(entry -> entry.getKey().isValid(state)).map(Entry::getValue).findFirst();
     };
 
     public static void clearDatapackMaterials() {
-        for (Iterator<Entry<Block, VatMaterial>> iterator = BLOCK_MATERIALS.entrySet().iterator(); iterator.hasNext();) {
+        for (Iterator<Entry<BlockIngredient<?>, VatMaterial>> iterator = BLOCK_MATERIALS.entrySet().iterator(); iterator.hasNext();) {
             if (!iterator.next().getValue().builtIn()) iterator.remove();
         };
     };
 
     public static void registerDestroyVatMaterials() {
-        BLOCK_MATERIALS.put(DestroyBlocks.VAT_CONTROLLER.get(), UNBREAKABLE);
+        BLOCK_MATERIALS.put(new SingleBlockIngredient(DestroyBlocks.VAT_CONTROLLER.get()), UNBREAKABLE);
     };
 };

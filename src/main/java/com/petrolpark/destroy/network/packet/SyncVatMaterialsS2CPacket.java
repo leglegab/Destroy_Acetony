@@ -5,19 +5,17 @@ import java.util.Map;
 import java.util.function.Supplier;
 
 import com.petrolpark.destroy.client.ponder.DestroyPonderTags;
+import com.petrolpark.destroy.recipe.ingredient.BlockIngredient;
 import com.petrolpark.destroy.util.vat.VatMaterial;
-import com.simibubi.create.foundation.utility.RegisteredObjects;
 
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.world.level.block.Block;
 import net.minecraftforge.network.NetworkEvent.Context;
-import net.minecraftforge.registries.ForgeRegistries;
 
 public class SyncVatMaterialsS2CPacket extends S2CPacket {
 
-    private final Map<Block, VatMaterial> materials;
+    private final Map<BlockIngredient<?>, VatMaterial> materials;
 
-    public SyncVatMaterialsS2CPacket(Map<Block, VatMaterial> materials) {
+    public SyncVatMaterialsS2CPacket(Map<BlockIngredient<?>, VatMaterial> materials) {
         this.materials = materials;
     };
 
@@ -25,15 +23,15 @@ public class SyncVatMaterialsS2CPacket extends S2CPacket {
         int count = buffer.readVarInt();
         materials = new HashMap<>(count);
         for (int i = 0; i < count; i++) {
-            materials.put(ForgeRegistries.BLOCKS.getValue(buffer.readResourceLocation()), new VatMaterial(buffer.readFloat(), buffer.readFloat(), buffer.readBoolean(), false));
+            materials.put(BlockIngredient.read(buffer), new VatMaterial(buffer.readFloat(), buffer.readFloat(), buffer.readBoolean(), false));
         };
     };
 
     @Override
     public void toBytes(FriendlyByteBuf buffer) {
         buffer.writeVarInt(materials.size());
-        materials.forEach((block, material) -> {
-            buffer.writeResourceLocation(RegisteredObjects.getKeyOrThrow(block));
+        materials.forEach((blockIngredient, material) -> {
+            BlockIngredient.write(blockIngredient, buffer);
             buffer.writeFloat(material.maxPressure());
             buffer.writeFloat(material.thermalConductivity());
             buffer.writeBoolean(material.transparent());

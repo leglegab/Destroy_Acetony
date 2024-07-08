@@ -5,8 +5,9 @@ import javax.annotation.Nullable;
 
 import com.petrolpark.destroy.capability.level.pollution.ClientLevelPollutionData;
 import com.petrolpark.destroy.capability.level.pollution.LevelPollution;
+import com.petrolpark.destroy.capability.level.pollution.LevelPollutionProvider;
 import com.petrolpark.destroy.capability.level.pollution.LevelPollution.PollutionType;
-import com.petrolpark.destroy.events.DestroyClientEvents;
+import com.simibubi.create.foundation.ponder.PonderWorld;
 import com.simibubi.create.foundation.utility.Color;
 
 import net.minecraft.client.color.block.BlockColor;
@@ -18,6 +19,7 @@ import net.minecraft.world.level.GrassColor;
 import net.minecraft.world.level.block.DoublePlantBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.DoubleBlockHalf;
+import net.minecraftforge.common.util.LazyOptional;
 
 public class SmogAffectedBlockColor implements BlockColor {
 
@@ -43,20 +45,22 @@ public class SmogAffectedBlockColor implements BlockColor {
 
     @Override
     public int getColor(BlockState state, @Nullable BlockAndTintGetter level, @Nullable BlockPos pos, int tintIndex) {
-        return level != null && pos != null ? withSmogTint(originalColor.getColor(state, level, pos, tintIndex)) : originalColor.getColor(state, level, pos, tintIndex);
+        int color = originalColor.getColor(state, level, pos, tintIndex);
+        if (level == null || pos == null) return color;
+        return getColor(color, level);
     };
 
+    public static int getColor(int originalColor, BlockAndTintGetter level) {
+        LevelPollution pollution = ClientLevelPollutionData.getLevelPollution();
+        if (level instanceof PonderWorld ponder) {
+            LazyOptional<LevelPollution> pollutionOp = ponder.getCapability(LevelPollutionProvider.LEVEL_POLLUTION);
+            if (pollutionOp.isPresent()) pollution = pollutionOp.resolve().get();
+        };
+        if (pollution == null) return originalColor;
+        return Color.mixColors(originalColor, brown, (float) pollution.get(PollutionType.SMOG) / PollutionType.SMOG.max);
+    };
     
     private static final int brown = 0x382515;
-    private static float smogProportion;
-
-    private static int withSmogTint(int color) {
-    // Refresh the Smog Level
-        if (!DestroyClientEvents.smogEnabled()) return color;
-        LevelPollution levelPollution = ClientLevelPollutionData.getLevelPollution();
-        smogProportion = levelPollution == null ? 0f : (float) levelPollution.get(PollutionType.SMOG) / PollutionType.SMOG.max;
-        return Color.mixColors(color, brown, smogProportion);
-    };
     
 };
 

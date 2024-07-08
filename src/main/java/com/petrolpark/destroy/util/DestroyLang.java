@@ -184,7 +184,7 @@ public class DestroyLang {
         List<Component> tooltip = new ArrayList<>();
         tooltip.add(stack.getHoverName());
 
-        if (!(stack.getItem() instanceof BlockItem blockItem) || !VatMaterial.isValid(blockItem.getBlock())) return tooltip;
+        if (!(stack.getItem() instanceof BlockItem blockItem) || !VatMaterial.isValid(blockItem.getBlock().defaultBlockState())) return tooltip;
         tooltip.add(Component.literal(""));
 
         if (DestroyBlocks.VAT_CONTROLLER.isIn(stack)) {
@@ -193,7 +193,7 @@ public class DestroyLang {
         };
 
         boolean nerdMode = DestroyAllConfigs.CLIENT.chemistry.nerdMode.get();
-        VatMaterial material = VatMaterial.BLOCK_MATERIALS.get(blockItem.getBlock());
+        VatMaterial material = VatMaterial.getMaterial(blockItem.getBlock().defaultBlockState()).get();
 
         tooltip.add(vatMaterialMaxPressure(material, palette));
         if (nerdMode) tooltip.add(DestroyLang.translate("tooltip.vat_material.pressure.nerd_mode", material.maxPressure() / 1000f).component().withStyle(palette.primary()));

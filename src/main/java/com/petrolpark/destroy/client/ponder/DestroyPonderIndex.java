@@ -94,7 +94,8 @@ public class DestroyPonderIndex {
 
         // Hyperaccumulating Fertilizer
         HELPER.forComponents(DestroyItems.HYPERACCUMULATING_FERTILIZER)
-            .addStoryBoard("phytomining", DestroyScenes::phytomining);
+            .addStoryBoard("phytomining", DestroyScenes::phytomining)
+            .addStoryBoard("pollution/crop_growth_failure", PollutionScenes::cropGrowthFailure);
 
         // Circuit Mask and Keypunch
         HELPER.forComponents(DestroyItems.CIRCUIT_MASK, DestroyBlocks.KEYPUNCH)
@@ -114,8 +115,8 @@ public class DestroyPonderIndex {
             .addStoryBoard("pollution/smog", PollutionScenes::smog)
             .addStoryBoard("pollution/crop_growth_failure", PollutionScenes::cropGrowthFailure)
             .addStoryBoard("pollution/fishing_failure", PollutionScenes::fishingFailure)
-            .addStoryBoard("pollution/breeding_failure", PollutionScenes::breedingFailure)
-            .addStoryBoard("pollution/villager_price_increase", PollutionScenes::villagerPriceIncrease)
+            .addStoryBoard("blank_3x3", PollutionScenes::breedingFailure)
+            .addStoryBoard("blank_3x3", PollutionScenes::villagerPriceIncrease)
             .addStoryBoard("pollution/cancer", PollutionScenes::cancer)
             .addStoryBoard("pollution/acid_rain", PollutionScenes::acidRain)
             .addStoryBoard("pollution/room_temperature", ChemistryScenes::roomTemperature)

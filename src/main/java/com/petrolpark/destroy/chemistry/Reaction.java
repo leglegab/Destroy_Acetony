@@ -749,8 +749,17 @@ public class Reaction {
             if ( // Check thermodynamics are correct
                 reaction.activationEnergy - reaction.enthalpyChange != reverseBuilder.reaction.activationEnergy
                 || reaction.enthalpyChange != -reverseBuilder.reaction.enthalpyChange
-            ) { 
-                throw e("Activation energies and enthalpy changes for reversible Reactions must obey Hess' Law");
+            ) { // Try to correct them if not
+                if (!reverseBuilder.hasForcedActivationEnergy) {
+                    reverseBuilder.activationEnergy(reaction.activationEnergy - reaction.enthalpyChange);
+                } else if (!hasForcedEnthalpyChange) {
+                    enthalpyChange(reaction.activationEnergy - reverseBuilder.reaction.activationEnergy);
+                    reverseBuilder.enthalpyChange(-reaction.enthalpyChange);
+                } else if (!hasForcedActivationEnergy) {
+                    activationEnergy(reverseBuilder.reaction.activationEnergy + reaction.enthalpyChange);
+                } else {
+                    throw e("Activation energies and enthalpy changes for reversible Reactions must obey Hess' Law");
+                };
             };
 
             reverseBuilder.build();

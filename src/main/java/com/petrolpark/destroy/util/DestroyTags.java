@@ -35,6 +35,7 @@ public class DestroyTags {
         HEFTY_BEETROOTS,
         LIABLE_TO_CHANGE,
         PAPER_PULPABLE,
+        BONEMEAL_BYPASSES_POLLUTION,
 
         PLASTICS,
         RIGID_PLASTICS("plastics/rigid"),

@@ -10,6 +10,9 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonSyntaxException;
 import com.petrolpark.destroy.network.DestroyMessages;
 import com.petrolpark.destroy.network.packet.SyncVatMaterialsS2CPacket;
+import com.petrolpark.destroy.recipe.ingredient.BlockIngredient;
+import com.petrolpark.destroy.recipe.ingredient.BlockIngredient.BlockTagIngredient;
+import com.petrolpark.destroy.recipe.ingredient.BlockIngredient.SingleBlockIngredient;
 
 import net.minecraft.core.Holder;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -23,7 +26,6 @@ import net.minecraft.util.profiling.ProfilerFiller;
 import net.minecraft.world.level.block.Block;
 import net.minecraftforge.common.crafting.CraftingHelper;
 import net.minecraftforge.common.crafting.conditions.ICondition.IContext;
-import net.minecraftforge.registries.ForgeRegistries;
 
 public class VatMaterialResourceListener extends SimpleJsonResourceReloadListener {
 
@@ -41,7 +43,7 @@ public class VatMaterialResourceListener extends SimpleJsonResourceReloadListene
         // Remove any previously added Vat Materials
         VatMaterial.clearDatapackMaterials();
 
-        final Map<Block, VatMaterial> datapackMaterials = new HashMap<>(object.size());
+        final Map<BlockIngredient<?>, VatMaterial> datapackMaterials = new HashMap<>(object.size());
 
         // Add new ones
         for (Entry<ResourceLocation, JsonElement> entry : object.entrySet()) {
@@ -96,11 +98,11 @@ public class VatMaterialResourceListener extends SimpleJsonResourceReloadListene
                     String id = e.getAsString();
                     if (id.startsWith("#")) { // Tags
                         id = id.substring(1);
-                        ForgeRegistries.BLOCKS.tags().getTag(TagKey.create(Registries.BLOCK, new ResourceLocation(id))).forEach(block -> datapackMaterials.put(block, material));
+                        datapackMaterials.put(new BlockTagIngredient(TagKey.create(Registries.BLOCK, new ResourceLocation(id))), material);
                     } else { // Individual blocks
                         Optional<? extends Holder<Block>> blockOptional = BuiltInRegistries.BLOCK.asLookup().get(ResourceKey.create(Registries.BLOCK, new ResourceLocation(id)));
                         if (blockOptional.isEmpty()) throw new IllegalArgumentException();
-                        datapackMaterials.put(blockOptional.get().value(), material);
+                        datapackMaterials.put(new SingleBlockIngredient(blockOptional.get().value()), material);
                     };
                 } catch (Throwable error) {
                     throw new JsonSyntaxException("Vat material "+rl+" specifies an invalid block or block tag: "+e.toString());
@@ -114,7 +116,7 @@ public class VatMaterialResourceListener extends SimpleJsonResourceReloadListene
         VatMaterial.BLOCK_MATERIALS.putAll(datapackMaterials);
 
         // Send to clients, if possible
-        try {DestroyMessages.sendToAllClients(new  SyncVatMaterialsS2CPacket(datapackMaterials));} catch (NullPointerException e) {};
+        try {DestroyMessages.sendToAllClients(new SyncVatMaterialsS2CPacket(datapackMaterials));} catch (NullPointerException e) {};
     };
     
 };

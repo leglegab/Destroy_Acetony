@@ -159,9 +159,11 @@ public class DestroyReactions {
         .addReactant(DestroyMolecules.WATER)
         .addProduct(DestroyMolecules.HYDROCHLORIC_ACID)
         .addProduct(DestroyMolecules.HYPOCHLOROUS_ACID)
+        .preexponentialFactor(2f)
         .requireUV()
-        .reverseReaction(reaction -> {})
-        .build(),
+        .reverseReaction(reaction -> reaction
+            .activationEnergy(5f)
+        ).build(),
 
     //TODO add fluorine/chlorine substitution
     //TODO add UV chlorination with Chlorine gas

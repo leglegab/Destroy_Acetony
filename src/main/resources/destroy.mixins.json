@@ -61,6 +61,7 @@
         "PipeConnectionMixin",
         "PonderTagScreenMixin",
         "PonderUIMixin",
+        "PonderWorldMixin",
         "RotationPropagatorMixin",
         "SchematicannonInventoryMixin",
         "SequencedAssemblyRecipeMixin",
@@ -77,6 +78,7 @@
     ],
     "client": [
         "compat.jei.ProcessingRecipeMixin",
+        "BiomeColorsMixin",
         "CreativeModeInventoryScreenMixin",
         "EffectRenderingInventoryScreenMixin",
         "GuiMixin",

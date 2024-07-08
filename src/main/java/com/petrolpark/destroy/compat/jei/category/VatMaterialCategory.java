@@ -3,9 +3,11 @@ package com.petrolpark.destroy.compat.jei.category;
 import java.util.List;
 import java.util.Collections;
 
-import com.petrolpark.destroy.block.VatControllerBlock;
+import com.petrolpark.destroy.Destroy;
+import com.petrolpark.destroy.block.DestroyBlocks;
 import com.petrolpark.destroy.client.gui.DestroyGuiTextures;
 import com.petrolpark.destroy.config.DestroyAllConfigs;
+import com.petrolpark.destroy.recipe.ingredient.BlockIngredient;
 import com.petrolpark.destroy.util.DestroyLang;
 import com.petrolpark.destroy.util.vat.VatMaterial;
 import com.simibubi.create.foundation.item.TooltipHelper;
@@ -24,10 +26,10 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.CraftingBookCategory;
 import net.minecraft.world.item.crafting.ShapelessRecipe;
-import net.minecraft.world.level.block.Block;
-import net.minecraftforge.registries.ForgeRegistries;
 
 public class VatMaterialCategory extends DestroyRecipeCategory<VatMaterialCategory.VatMaterialRecipe> {
+
+    public static final Palette DARK_GRAY = Palette.ofColors(ChatFormatting.DARK_GRAY, ChatFormatting.DARK_GRAY);
 
     private final Minecraft mc;
 
@@ -40,7 +42,7 @@ public class VatMaterialCategory extends DestroyRecipeCategory<VatMaterialCatego
     public void setRecipe(IRecipeLayoutBuilder builder, VatMaterialRecipe recipe, IFocusGroup focuses) {
         builder.addSlot(RecipeIngredientRole.INPUT, 2, 2)
             .setBackground(getRenderedSlot(), -1, -1)
-            .addItemStack(new ItemStack(recipe.block));
+            .addItemStacks(recipe.blockIngredient.getDisplayedItemStacks());
     };
 
     @Override
@@ -63,7 +65,7 @@ public class VatMaterialCategory extends DestroyRecipeCategory<VatMaterialCatego
 
     @Override
     public void draw(VatMaterialRecipe recipe, IRecipeSlotsView recipeSlotsView, GuiGraphics guiGraphics, double mouseX, double mouseY) {
-        guiGraphics.drawString(mc.font, recipe.block.getName(), 24, 7, 0xFFFFFF);
+        guiGraphics.drawString(mc.font,recipeSlotsView.getSlotViews(RecipeIngredientRole.INPUT).get(0).getDisplayedItemStack().get().getHoverName(), 24, 7, 0xFFFFFF);
         DestroyGuiTextures.JEI_LINE.render(guiGraphics, 2, 22);
         VatMaterial material = recipe.material;
         guiGraphics.drawString(mc.font, DestroyLang.vatMaterialMaxPressure(material, Palette.GRAY_AND_WHITE), textX, textY, 0xFFFFFF);
@@ -76,17 +78,19 @@ public class VatMaterialCategory extends DestroyRecipeCategory<VatMaterialCatego
     };
 
     public static List<VatMaterialRecipe> getAllRecipes()  {
-        return VatMaterial.BLOCK_MATERIALS.entrySet().stream().filter(entry -> !(entry.getKey() instanceof VatControllerBlock)).map(entry -> new VatMaterialRecipe(entry.getValue(), entry.getKey())).toList();
+        return VatMaterial.BLOCK_MATERIALS.entrySet().stream().filter(entry -> entry.getKey().getDisplayedItemStacks().size() != 0 && !entry.getKey().getDisplayedItemStacks().stream().anyMatch(DestroyBlocks.VAT_CONTROLLER::isIn)).map(entry -> new VatMaterialRecipe(entry.getValue(), entry.getKey())).toList();
     };
 
     public static class VatMaterialRecipe extends ShapelessRecipe {
 
-        public final Block block;
+        private static int id = 0;
+
+        public final BlockIngredient<?> blockIngredient;
         public final VatMaterial material;
 
-        public VatMaterialRecipe(VatMaterial material, Block block) {
-            super(ForgeRegistries.BLOCKS.getKey(block), "", CraftingBookCategory.MISC, ItemStack.EMPTY, NonNullList.create());
-            this.block = block;
+        public VatMaterialRecipe(VatMaterial material, BlockIngredient<?> blockIngredient) {
+            super(Destroy.asResource("vat_material_"+id++), "", CraftingBookCategory.MISC, ItemStack.EMPTY, NonNullList.create());
+            this.blockIngredient = blockIngredient;
             this.material = material;
         };
 

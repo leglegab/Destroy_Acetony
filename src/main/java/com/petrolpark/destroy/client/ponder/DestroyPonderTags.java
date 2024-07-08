@@ -52,6 +52,7 @@ public class DestroyPonderTags {
             .add(DestroyItems.HYPERACCUMULATING_FERTILIZER)
             .add(DestroyBlocks.KEYPUNCH)
             .add(DestroyBlocks.PLANETARY_GEARSET)
+            .add(DestroyItems.POLLUTION_SYMBOL)
             .add(DestroyBlocks.PUMPJACK)
             .add(DestroyBlocks.REDSTONE_PROGRAMMER)
             .add(DestroyItems.SEISMOMETER)
@@ -61,7 +62,7 @@ public class DestroyPonderTags {
         ;
 
         TagBuilder vatSideBlockBuilder = PonderRegistry.TAGS.forTag(DestroyPonderTags.VAT_SIDE_BLOCKS);
-        VatMaterial.BLOCK_MATERIALS.forEach((block, material) -> vatSideBlockBuilder.add(block));
+        VatMaterial.BLOCK_MATERIALS.forEach((blockIngredient, material) -> blockIngredient.getDisplayedItemStacks().forEach(stack -> vatSideBlockBuilder.add(stack.getItem())));
 
         PonderRegistry.TAGS.forTag(AllPonderTags.FLUIDS)
             .add(DestroyBlocks.BUBBLE_CAP)
@@ -106,7 +107,7 @@ public class DestroyPonderTags {
     };
 
     public static final void refreshVatMaterialsTag() {
-        VatMaterial.BLOCK_MATERIALS.keySet().forEach(PonderRegistry.TAGS.forTag(VAT_SIDE_BLOCKS)::add);
+        VatMaterial.BLOCK_MATERIALS.keySet().forEach(blockIngredient -> blockIngredient.getDisplayedItemStacks().forEach(stack -> PonderRegistry.TAGS.forTag(VAT_SIDE_BLOCKS).add(stack.getItem())));
     };
     
 };

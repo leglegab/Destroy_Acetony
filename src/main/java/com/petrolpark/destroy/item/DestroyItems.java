@@ -644,7 +644,7 @@ public class DestroyItems {
         .register();
 
     public static final ItemEntry<HyperaccumulatingFertilizerItem> HYPERACCUMULATING_FERTILIZER = REGISTRATE.item("hyperaccumulating_fertilizer", HyperaccumulatingFertilizerItem::new)
-        .tag(Tags.Items.DUSTS)
+        .tag(Tags.Items.DUSTS, DestroyItemTags.BONEMEAL_BYPASSES_POLLUTION.tag)
         .register();
 
 

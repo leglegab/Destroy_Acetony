@@ -61,6 +61,7 @@ import com.petrolpark.destroy.recipe.DestroyRecipeTypes;
 import com.petrolpark.destroy.recipe.DiscStampingRecipe;
 import com.petrolpark.destroy.recipe.ManualOnlyShapedRecipe;
 import com.petrolpark.destroy.recipe.condition.ConfigBooleanCondition;
+import com.petrolpark.destroy.recipe.ingredient.BlockIngredient;
 import com.petrolpark.destroy.recipe.ingredient.CircuitPatternIngredient;
 import com.petrolpark.destroy.sound.DestroySoundEvents;
 import com.petrolpark.destroy.util.ChemistryDamageHelper;
@@ -103,6 +104,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Registry;
 import net.minecraft.core.SectionPos;
+import net.minecraft.core.Direction.Axis;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
@@ -135,7 +137,6 @@ import net.minecraft.world.item.MapItem;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
@@ -162,6 +163,7 @@ import net.minecraftforge.event.entity.EntityTravelToDimensionEvent;
 import net.minecraftforge.event.entity.living.BabyEntitySpawnEvent;
 import net.minecraftforge.event.entity.living.LivingAttackEvent;
 import net.minecraftforge.event.entity.living.LivingEquipmentChangeEvent;
+import net.minecraftforge.event.entity.player.BonemealEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.event.level.BlockEvent.CropGrowEvent;
@@ -265,10 +267,10 @@ public class DestroyCommonEvents {
         DestroyMessages.sendToClient(new CircuitPatternsS2CPacket(Destroy.CIRCUIT_PATTERN_HANDLER.getAllPatterns()), serverPlayer);
 
         // Update the known Vat Materials
-        Map<Block, VatMaterial> datapackMaterials = new HashMap<>(VatMaterial.BLOCK_MATERIALS.size());
+        Map<BlockIngredient<?>, VatMaterial> datapackMaterials = new HashMap<>(VatMaterial.BLOCK_MATERIALS.size());
         VatMaterial.BLOCK_MATERIALS.entrySet().stream()
-        .filter(entry -> !entry.getValue().builtIn())
-        .forEach(entry -> datapackMaterials.put(entry.getKey(), entry.getValue()));
+            .filter(entry -> !entry.getValue().builtIn())
+            .forEach(entry -> datapackMaterials.put(entry.getKey(), entry.getValue()));
         DestroyMessages.sendToClient(new SyncVatMaterialsS2CPacket(datapackMaterials), serverPlayer);
     };
 
@@ -791,8 +793,31 @@ public class DestroyCommonEvents {
     public static void onPlantGrows(CropGrowEvent.Pre event) {
         if (!PollutionHelper.pollutionEnabled() || !DestroyAllConfigs.SERVER.pollution.growingAffected.get()) return;
         if (!(event.getLevel() instanceof Level level)) return;
+        BlockPos pos = event.getPos();
         for (PollutionType pollutionType : new PollutionType[]{PollutionType.SMOG, PollutionType.GREENHOUSE, PollutionType.ACID_RAIN}) {
             if (level.random.nextInt(pollutionType.max) <= PollutionHelper.getPollution(level, pollutionType)) {
+                if (level instanceof ServerLevel serverLevel) {
+                    serverLevel.sendParticles(PollutionHelper.cropGrowthFailureParticles(), pos.getX() + 0.5d, pos.getY() + level.random.nextDouble() * event.getState().getShape(level, pos).max(Axis.Y), pos.getZ() + 0.5d, 10, 0.25d, 0.25d, 0.25d, 0.02d);
+                };
+                event.setResult(Result.DENY);
+                return;
+            };
+        };
+    };
+
+    /**
+     * Add a chance for crop bonemealing failures depending on the level of smog, greenhouse gas and acid rain.
+     */
+    @SubscribeEvent
+    public static void onCropBonemealed(BonemealEvent event) {
+        if (!PollutionHelper.pollutionEnabled() || !DestroyAllConfigs.SERVER.pollution.growingAffected.get() || !DestroyAllConfigs.SERVER.pollution.bonemealingAffected.get() || event.getStack().is(DestroyItemTags.BONEMEAL_BYPASSES_POLLUTION.tag)) return;
+        Level level = event.getLevel();
+        BlockPos pos = event.getPos();
+        for (PollutionType pollutionType : new PollutionType[]{PollutionType.SMOG, PollutionType.GREENHOUSE, PollutionType.ACID_RAIN}) {
+            if (level.random.nextInt(pollutionType.max) <= PollutionHelper.getPollution(level, pollutionType)) {
+                if (level instanceof ServerLevel serverLevel) {
+                    serverLevel.sendParticles(PollutionHelper.cropGrowthFailureParticles(), pos.getX() + 0.5d, pos.getY() + level.random.nextDouble() * event.getBlock().getShape(level, pos).max(Axis.Y), pos.getZ() + 0.5d, 10, 0.25d, 0.25d, 0.25d, 0.02d);
+                };
                 event.setResult(Result.DENY);
                 return;
             };

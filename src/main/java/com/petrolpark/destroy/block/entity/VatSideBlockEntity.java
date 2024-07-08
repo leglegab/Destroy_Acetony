@@ -318,10 +318,10 @@ public class VatSideBlockEntity extends CopycatBlockEntity implements IHaveGoggl
         };
 
         float newUVPower = 0f;
-        if (VatMaterial.getMaterial(getMaterial().getBlock()).map(VatMaterial::transparent).orElse(false)) {
+        if (VatMaterial.getMaterial(getMaterial()).map(VatMaterial::transparent).orElse(false)) {
             newUVPower = IUVLampBlock.getUVPower(getLevel(), heaterOrLampPos, direction.getOpposite());
             if (newUVPower == 0f) {
-                if (direction == Direction.UP && getLevel().canSeeSky(getBlockPos())) newUVPower = 10f; // It thinks getLevel() might be null
+                if (direction == Direction.UP && getLevel().canSeeSky(getBlockPos())) newUVPower = 10f; // It thinks getLevel() might be null //TODO effect of ozone
             };
         };
         if (newUVPower != oldUV) {

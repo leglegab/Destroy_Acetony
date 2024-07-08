@@ -39,7 +39,7 @@ public class ColorimeterBlockEntity extends SmartBlockEntity {
         BlockPos vatPos = getBlockPos().relative(getBlockState().getValue(ColorimeterBlock.FACING));
         BlockEntity be = getLevel().getBlockEntity(vatPos);
         if (molecule != null && be instanceof VatSideBlockEntity vbe) {
-            if (vbe.getController() != null && VatMaterial.getMaterial(vbe.getMaterial().getBlock()).map(VatMaterial::transparent).orElse(false)) {
+            if (vbe.getController() != null && VatMaterial.getMaterial(vbe.getMaterial()).map(VatMaterial::transparent).orElse(false)) {
                 redstoneMonitor.quantityObserved = Optional.of(() -> 
                     vbe.getController().cachedMixture.getConcentrationOf(molecule)
                 );

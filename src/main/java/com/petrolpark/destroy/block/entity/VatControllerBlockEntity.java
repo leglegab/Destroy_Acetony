@@ -247,7 +247,7 @@ public class VatControllerBlockEntity extends SmartBlockEntity implements IHaveG
             // Releasing gas if there is an open vent
             VatSideBlockEntity openVent = getOpenVent();
             if (openVent != null && !getGasTank().isEmptyOrFullOfAir()) {
-                PollutionHelper.pollute(getLevel(), openVent.getBlockPos().relative(openVent.direction), 10, tankBehaviour.flush(cachedMixture.getTemperature()));
+                PollutionHelper.pollute(getLevel(), openVent.getBlockPos().relative(openVent.direction), 10, flush());
                 updateCachedMixture();
             };
 
@@ -441,7 +441,7 @@ public class VatControllerBlockEntity extends SmartBlockEntity implements IHaveG
         vat = Optional.of(newVat.get());
         finalizeVatConstruction();
         updateCachedMixture();
-        tankBehaviour.flush(cachedMixture.getTemperature());
+        flush();
         updateCachedMixture();
 
         return true;
@@ -544,6 +544,11 @@ public class VatControllerBlockEntity extends SmartBlockEntity implements IHaveG
         });
     };
 
+    public FluidStack flush() {
+        if (cachedMixture == null) return FluidStack.EMPTY;
+        return tankBehaviour.flush(cachedMixture.getTemperature());
+    };
+
     @Override
     public void invalidateCaps() {
         super.invalidateCaps();
@@ -584,6 +589,7 @@ public class VatControllerBlockEntity extends SmartBlockEntity implements IHaveG
 
     public void changeUVPower(float UVChange) {
         UVPower += UVChange;
+        if (cachedMixture != null) cachedMixture.disturbEquilibrium();
         sendData();
     };
 

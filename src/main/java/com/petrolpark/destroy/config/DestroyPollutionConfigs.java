@@ -20,6 +20,7 @@ public class DestroyPollutionConfigs extends DestroyConfigBase {
     public final ConfigBool fishingAffected = b(true, "fishingAffected", Comments.fishingAffected);
     public final ConfigBool breedingAffected = b(true, "breedingAffected", Comments.breedingAffected);
     public final ConfigBool growingAffected = b(true, "growingAffected", Comments.growingAffected);
+    public final ConfigBool bonemealingAffected = b(true, "bonemealingAffected", Comments.bonemealingAffected, Comments.bonemealingAffectedNote);
     public final ConfigBool rainBreaksBlocks = b(true, "rainBreaksBlocks", Comments.rainBreaksBlocks);
     public final ConfigBool temperatureAffected = b(true, "temperatureAffected", Comments.temperatureAffected);
     public final ConfigBool ozoneDepletionGivesCancer = b(true, "ozoneDepletionGivesCancer", Comments.ozoneDepletionGivesCancer);
@@ -43,6 +44,8 @@ public class DestroyPollutionConfigs extends DestroyConfigBase {
         fishingAffected = "Fishing yields fewer fish and more junk the higher the Smog level",
         breedingAffected = "Mobs will be more likely to fail to breed the higher the Smog level",
         growingAffected = "Crops are less likely to grow the higher the Smog, Greenhouse Gas and Acid Rain levels",
+        bonemealingAffected = "Bonemeal is more likely to fail the higher the Smog, Greenhouse Gas and Acid Rain levels",
+        bonemealingAffectedNote = "growingAffected must also be true",
         rainBreaksBlocks = "Rain is more likely to kill plants and grass the higher the Acid Rain level",
         temperatureAffected = "Outdoor temperature (which affects Distillation Towers and Vats) increases with Greenhouse Gas and Ozone Depletion levels",
         ozoneDepletionGivesCancer = "The likelihood of getting the cancer awareness pop-up from the sun increases with the Ozone Depletion level";

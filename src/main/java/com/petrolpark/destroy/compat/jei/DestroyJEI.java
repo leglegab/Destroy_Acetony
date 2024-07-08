@@ -243,7 +243,7 @@ public class DestroyJEI implements IModPlugin {
         mixture_conversion = builder(MixtureConversionRecipe.class)
             .addTypedRecipes(DestroyRecipeTypes.MIXTURE_CONVERSION)
             .reactionCatalysts()
-            .itemIcon(DestroyBlocks.VAT_CONTROLLER.get())
+            .doubleItemIcon(DestroyItems.TEST_TUBE.get(), Items.WATER_BUCKET)
             .emptyBackground(125, 20)
             .build("mixture_conversion", MixtureConversionCategory::new),
 

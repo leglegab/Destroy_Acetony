@@ -25,6 +25,7 @@ import com.petrolpark.destroy.network.packet.SyncVatMaterialsS2CPacket;
 import com.petrolpark.destroy.network.packet.VatSideQuantityThresholdChangeC2SPacket;
 
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
 import net.minecraftforge.network.NetworkDirection;
@@ -94,6 +95,10 @@ public class DestroyMessages {
 
     public static void sendToClient(S2CPacket message, ServerPlayer player) {
         INSTANCE.send(PacketDistributor.PLAYER.with(() -> player), message);
+    };
+
+    public static void sendToAllClientsInDimension(S2CPacket message, ServerLevel level) {
+        INSTANCE.send(PacketDistributor.DIMENSION.with(level::dimension), message);
     };
 
     public static void sendToAllClients(S2CPacket message) {

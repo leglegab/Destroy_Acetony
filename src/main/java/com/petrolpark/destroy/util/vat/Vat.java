@@ -72,7 +72,7 @@ public class Vat {
         Vat vat = new Vat(NbtUtils.readBlockPos(tag.getCompound("LowerCorner")), NbtUtils.readBlockPos(tag.getCompound("UpperCorner")));
         vat.conductance = tag.getFloat("Conductance");
         vat.weakestBlockState = NbtUtils.readBlockState(BuiltInRegistries.BLOCK.asLookup(), tag.getCompound("WeakestBlock"));
-        vat.maximumPressure = VatMaterial.getMaterial(vat.weakestBlockState.getBlock()).map(VatMaterial::maxPressure).orElseGet(() -> 0f);
+        vat.maximumPressure = VatMaterial.getMaterial(vat.weakestBlockState).map(VatMaterial::maxPressure).orElseGet(() -> 0f);
         return Optional.of(vat);
     };
 
@@ -142,7 +142,7 @@ public class Vat {
                     } else {
                         allAir = false;
                         Block block = state.getBlock();
-                        if (!VatMaterial.isValid(block) || (block instanceof VatControllerBlock && !blockPos.equals(controllerPos))) allWalls = false;
+                        if (!VatMaterial.isValid(state) || (block instanceof VatControllerBlock && !blockPos.equals(controllerPos))) allWalls = false;
                     }
                 };
 
@@ -200,11 +200,11 @@ public class Vat {
              */
             if (((onXSide ^ onYSide) ^ onZSide) && !(onXSide && onYSide)) {
                 BlockState state = level.getBlockState(blockPos);
-                if (!VatMaterial.isValid(state.getBlock())) {
+                if (!VatMaterial.isValid(state)) {
                     successful = false;
                     break;
                 };
-                VatMaterial material = VatMaterial.BLOCK_MATERIALS.get(state.getBlock());
+                VatMaterial material = VatMaterial.getMaterial(state).get();
                 if (material.maxPressure() < maximumPressure) {
                     maximumPressure = material.maxPressure();
                     weakestBlockState = state;
