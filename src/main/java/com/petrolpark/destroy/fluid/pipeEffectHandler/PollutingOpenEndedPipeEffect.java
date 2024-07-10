@@ -2,7 +2,7 @@ package com.petrolpark.destroy.fluid.pipeEffectHandler;
 
 import java.util.Random;
 
-import com.petrolpark.destroy.capability.level.pollution.LevelPollution.PollutionType;
+import com.petrolpark.destroy.capability.Pollution.PollutionType;
 import com.petrolpark.destroy.fluid.DestroyFluids;
 import com.petrolpark.destroy.network.DestroyMessages;
 import com.petrolpark.destroy.network.packet.EvaporatingFluidS2CPacket;

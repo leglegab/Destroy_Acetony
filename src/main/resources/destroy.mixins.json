@@ -78,7 +78,7 @@
     ],
     "client": [
         "compat.jei.ProcessingRecipeMixin",
-        "BiomeColorsMixin",
+        "ClientLevelMixin",
         "CreativeModeInventoryScreenMixin",
         "EffectRenderingInventoryScreenMixin",
         "GuiMixin",

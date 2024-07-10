@@ -20,11 +20,10 @@ import com.petrolpark.destroy.block.entity.behaviour.AbstractRememberPlacerBehav
 import com.petrolpark.destroy.block.entity.behaviour.ExtendedBasinBehaviour;
 
 import com.petrolpark.destroy.block.entity.behaviour.PollutingBehaviour;
+import com.petrolpark.destroy.capability.Pollution;
+import com.petrolpark.destroy.capability.Pollution.PollutionType;
 import com.petrolpark.destroy.capability.chunk.ChunkCrudeOil;
 import com.petrolpark.destroy.capability.entity.EntityChemicalPoison;
-import com.petrolpark.destroy.capability.level.pollution.LevelPollution;
-import com.petrolpark.destroy.capability.level.pollution.LevelPollution.PollutionType;
-import com.petrolpark.destroy.capability.level.pollution.LevelPollutionProvider;
 import com.petrolpark.destroy.capability.player.PlayerBadges;
 import com.petrolpark.destroy.capability.player.PlayerCrouching;
 import com.petrolpark.destroy.capability.player.PlayerLuckyFirstRecipes;
@@ -91,6 +90,7 @@ import com.simibubi.create.content.redstone.link.LinkBehaviour;
 import com.simibubi.create.content.redstone.link.RedstoneLinkNetworkHandler.Frequency;
 import com.simibubi.create.foundation.ModFilePackResources;
 import com.simibubi.create.foundation.blockEntity.behaviour.BlockEntityBehaviour;
+import com.simibubi.create.foundation.ponder.PonderWorld;
 import com.simibubi.create.foundation.utility.Components;
 import com.simibubi.create.foundation.utility.Couple;
 import com.simibubi.create.foundation.utility.Iterate;
@@ -193,8 +193,8 @@ public class DestroyCommonEvents {
     @SubscribeEvent
     public static void onAttachCapabilitiesLevel(AttachCapabilitiesEvent<Level> event) {
         Level level = event.getObject();
-        if (!level.getCapability(LevelPollutionProvider.LEVEL_POLLUTION).isPresent()) {
-            event.addCapability(Destroy.asResource("pollution"), new LevelPollutionProvider());
+        if (!level.getCapability(Pollution.CAPABILITY).isPresent()) {
+            event.addCapability(Destroy.asResource("pollution"), level instanceof PonderWorld ? new Pollution.PonderProvider() : new Pollution.LevelProvider());
         };
     };
 
@@ -241,6 +241,9 @@ public class DestroyCommonEvents {
         if (!chunk.getCapability(ChunkCrudeOil.Provider.CHUNK_CRUDE_OIL).isPresent()) {
             event.addCapability(Destroy.asResource("crude_oil"), new ChunkCrudeOil.Provider());
         };
+        if (!chunk.getCapability(Pollution.CAPABILITY).isPresent()) {
+            event.addCapability(Destroy.asResource("pollution"), new Pollution.Chunk.Provider());
+        };
     };
 
     /**
@@ -253,7 +256,7 @@ public class DestroyCommonEvents {
         Level level = player.level();
 
         // Update render info
-        level.getCapability(LevelPollutionProvider.LEVEL_POLLUTION).ifPresent(levelPollution -> {
+        level.getCapability(Pollution.CAPABILITY).ifPresent(levelPollution -> {
             DestroyMessages.sendToClient(new LevelPollutionS2CPacket(levelPollution), serverPlayer);
         });
 
@@ -287,7 +290,7 @@ public class DestroyCommonEvents {
         if (level == null) return;
 
         // Update render info
-        level.getCapability(LevelPollutionProvider.LEVEL_POLLUTION).ifPresent(levelPollution -> {
+        level.getCapability(Pollution.CAPABILITY).ifPresent(levelPollution -> {
             DestroyMessages.sendToClient(new LevelPollutionS2CPacket(levelPollution), player);
         });
 
@@ -342,7 +345,7 @@ public class DestroyCommonEvents {
     @SubscribeEvent
     public static void onRegisterCapabilities(RegisterCapabilitiesEvent event) {
         event.register(ChunkCrudeOil.class);
-        event.register(LevelPollution.class);
+        event.register(Pollution.class);
         event.register(PlayerBabyBlueAddiction.class);
         event.register(PlayerPreviousPositions.class);
         event.register(PlayerCrouching.class);
@@ -444,7 +447,7 @@ public class DestroyCommonEvents {
 
         // Give the Player cancer if in direct sunlight
         if (level.canSeeSky(posOn.above()) && !player.hasEffect(DestroyMobEffects.SUN_PROTECTION.get())) {
-            if (player.getRandom().nextInt(PollutionType.OZONE_DEPLETION.max * 600) < PollutionHelper.getPollution(level, PollutionType.OZONE_DEPLETION)) player.addEffect(DestroyMobEffects.cancerInstance());
+            if (player.getRandom().nextInt(PollutionType.OZONE_DEPLETION.max * 600) < PollutionHelper.getPollution(level, posOn, PollutionType.OZONE_DEPLETION)) player.addEffect(DestroyMobEffects.cancerInstance());
         };
     };
 
@@ -774,7 +777,7 @@ public class DestroyCommonEvents {
         if (!PollutionHelper.pollutionEnabled() || !DestroyAllConfigs.SERVER.pollution.breedingAffected.get()) return;
         Level level = event.getParentA().level();
         RandomSource random = event.getParentA().getRandom();
-        if (event.getParentA().getRandom().nextInt(PollutionType.SMOG.max) <= PollutionHelper.getPollution(level, PollutionType.SMOG)) { // 0% chance of failure for 0 smog, 100% chance for full smog
+        if (event.getParentA().getRandom().nextInt(PollutionType.SMOG.max) <= PollutionHelper.getPollution(level, event.getParentA().getOnPos(), PollutionType.SMOG)) { // 0% chance of failure for 0 smog, 100% chance for full smog
             if (level instanceof ServerLevel serverLevel) {
                 for (Mob parent : List.of(event.getParentA(), event.getParentB())) {
                     for(int i = 0; i < 7; ++i) {
@@ -795,7 +798,7 @@ public class DestroyCommonEvents {
         if (!(event.getLevel() instanceof Level level)) return;
         BlockPos pos = event.getPos();
         for (PollutionType pollutionType : new PollutionType[]{PollutionType.SMOG, PollutionType.GREENHOUSE, PollutionType.ACID_RAIN}) {
-            if (level.random.nextInt(pollutionType.max) <= PollutionHelper.getPollution(level, pollutionType)) {
+            if (level.random.nextInt(pollutionType.max) <= PollutionHelper.getPollution(level, pos, pollutionType)) {
                 if (level instanceof ServerLevel serverLevel) {
                     serverLevel.sendParticles(PollutionHelper.cropGrowthFailureParticles(), pos.getX() + 0.5d, pos.getY() + level.random.nextDouble() * event.getState().getShape(level, pos).max(Axis.Y), pos.getZ() + 0.5d, 10, 0.25d, 0.25d, 0.25d, 0.02d);
                 };
@@ -814,7 +817,7 @@ public class DestroyCommonEvents {
         Level level = event.getLevel();
         BlockPos pos = event.getPos();
         for (PollutionType pollutionType : new PollutionType[]{PollutionType.SMOG, PollutionType.GREENHOUSE, PollutionType.ACID_RAIN}) {
-            if (level.random.nextInt(pollutionType.max) <= PollutionHelper.getPollution(level, pollutionType)) {
+            if (level.random.nextInt(pollutionType.max) <= PollutionHelper.getPollution(level, pos, pollutionType)) {
                 if (level instanceof ServerLevel serverLevel) {
                     serverLevel.sendParticles(PollutionHelper.cropGrowthFailureParticles(), pos.getX() + 0.5d, pos.getY() + level.random.nextDouble() * event.getBlock().getShape(level, pos).max(Axis.Y), pos.getZ() + 0.5d, 10, 0.25d, 0.25d, 0.25d, 0.02d);
                 };
@@ -844,9 +847,10 @@ public class DestroyCommonEvents {
     @SubscribeEvent
     public static void onTreeGrown(SaplingGrowTreeEvent event) {
         if (!(event.getLevel() instanceof Level level) || !PollutionHelper.pollutionEnabled() || !DestroyAllConfigs.SERVER.pollution.growingTreesDecreasesPollution.get()) return;
-        if (level.random.nextInt(3) == 0) PollutionHelper.changePollution(level, PollutionType.GREENHOUSE, -1);
-        if (level.random.nextInt(3) == 0) PollutionHelper.changePollution(level, PollutionType.SMOG, -1);
-        if (level.random.nextInt(3) == 0) PollutionHelper.changePollution(level, PollutionType.ACID_RAIN, -1);
+        BlockPos pos = event.getPos();
+        if (level.random.nextInt(3) == 0) PollutionHelper.changePollution(level, pos, PollutionType.GREENHOUSE, -1);
+        if (level.random.nextInt(3) == 0) PollutionHelper.changePollution(level, pos, PollutionType.SMOG, -1);
+        if (level.random.nextInt(3) == 0) PollutionHelper.changePollution(level, pos, PollutionType.ACID_RAIN, -1);
     };
 
     /**
@@ -862,7 +866,7 @@ public class DestroyCommonEvents {
 
         // Pollution
         for (PollutionType pollutionType : PollutionType.values()) {
-            if (level.random.nextInt(500) <= DestroyAllConfigs.SERVER.pollution.pollutionDecreaseRates.get(pollutionType).getF()) PollutionHelper.changePollution(event.level, pollutionType, -1);
+            if (!pollutionType.local && level.random.nextInt(500) <= DestroyAllConfigs.SERVER.pollution.pollutionDecreaseRates.get(pollutionType).getF()) PollutionHelper.changePollutionGlobal(event.level, pollutionType, -1);
         };
     };
 

@@ -6,7 +6,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-import com.petrolpark.destroy.capability.level.pollution.LevelPollution.PollutionType;
+import com.petrolpark.destroy.capability.Pollution.PollutionType;
 import com.petrolpark.destroy.config.DestroyAllConfigs;
 import com.petrolpark.destroy.item.DestroyItems;
 import com.petrolpark.destroy.mixin.accessor.AbstractVillagerAccessor;
@@ -45,7 +45,7 @@ public class VillagerMixin {
         if (!PollutionHelper.pollutionEnabled() || !DestroyAllConfigs.SERVER.pollution.villagersIncreasePrices.get()) return;
         Villager thisVillager = (Villager)(Object)this;
         for (MerchantOffer trade : thisVillager.getOffers()) {
-            int change = (int)(50d * (double)PollutionHelper.getPollution(thisVillager.level(), PollutionType.SMOG) / (double)PollutionType.SMOG.max);
+            int change = (int)(50d * (double)PollutionHelper.getPollution(thisVillager.level(), thisVillager.getOnPos(), PollutionType.SMOG) / (double)PollutionType.SMOG.max);
             trade.addToSpecialPriceDiff(change);
         };
     };

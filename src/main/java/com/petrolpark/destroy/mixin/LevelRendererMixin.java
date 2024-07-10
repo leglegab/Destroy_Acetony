@@ -9,9 +9,9 @@ import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 
 import com.jozufozu.flywheel.util.Color;
 import com.mojang.blaze3d.systems.RenderSystem;
+import com.petrolpark.destroy.capability.Pollution;
+import com.petrolpark.destroy.capability.Pollution.PollutionType;
 import com.petrolpark.destroy.capability.level.pollution.ClientLevelPollutionData;
-import com.petrolpark.destroy.capability.level.pollution.LevelPollution;
-import com.petrolpark.destroy.capability.level.pollution.LevelPollution.PollutionType;
 import com.petrolpark.destroy.client.particle.TintedSplashParticle;
 import com.petrolpark.destroy.config.DestroyAllConfigs;
 import com.petrolpark.destroy.util.PollutionHelper;
@@ -31,7 +31,7 @@ import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.phys.shapes.VoxelShape;
 
 /**
- * Mixin to Level Renderer to change the color of rain depending on the {@link com.petrolpark.destroy.capability.level.pollution.LevelPollution.PollutionType#ACID_RAIN acid rain} level.
+ * Mixin to Level Renderer to change the color of rain depending on the {@link com.petrolpark.destroy.capability.Pollution.PollutionType#ACID_RAIN acid rain} level.
  */
 @Mixin(LevelRenderer.class)
 public class LevelRendererMixin {
@@ -104,7 +104,7 @@ public class LevelRendererMixin {
     };
 
     private Color getRainColor() {
-        LevelPollution levelPollution = ClientLevelPollutionData.getLevelPollution();
+        Pollution levelPollution = ClientLevelPollutionData.getLevelPollution();
         if (levelPollution == null) return new Color(0xFF3E5EB8);
         return new Color(Color.mixColors(0xFF3E5EB8, 0xFF00FF00, (float)levelPollution.get(PollutionType.ACID_RAIN) / (float)PollutionType.ACID_RAIN.max));
     };

@@ -47,7 +47,7 @@ public class DestroyClientModEvents {
     };
 
     /**
-     * Override all the color generators to account for the {@link com.petrolpark.destroy.capability.level.pollution.LevelPollution.PollutionType smog level}.
+     * Override all the color generators to account for the {@link com.petrolpark.destroy.capability.Pollution.PollutionType smog level}.
      * @param event
      */
     @SubscribeEvent
@@ -62,6 +62,15 @@ public class DestroyClientModEvents {
         event.register(SmogAffectedBlockColor.SPRUCE, Blocks.SPRUCE_LEAVES);
         event.register(SmogAffectedBlockColor.WATER, Blocks.WATER, Blocks.BUBBLE_COLUMN, Blocks.WATER_CAULDRON);
         event.register(SmogAffectedBlockColor.SUGAR_CANE, Blocks.SUGAR_CANE);
+    };
+
+    /**
+     * Register the dummy color Resolvers needed for Smog. These Resolvers don't actually calculate the color and just act as a key.
+     * Their functions are actually defined {@link com.petrolpark.destroy.mixin.ClientLevelMixin here}.
+     */
+    @SubscribeEvent
+    public static void registerColorResolvers(RegisterColorHandlersEvent.ColorResolvers event) {
+        event.register(SmogAffectedBlockColor.GRASS_COLOR_RESOLVER);
     };
 
     @SubscribeEvent

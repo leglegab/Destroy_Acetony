@@ -1,6 +1,7 @@
 package com.petrolpark.destroy.capability.level.pollution;
 
-import com.petrolpark.destroy.capability.level.pollution.LevelPollution.PollutionType;
+import com.petrolpark.destroy.capability.Pollution;
+import com.petrolpark.destroy.capability.Pollution.PollutionType;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.chunk.ChunkRenderDispatcher.RenderChunk;
@@ -9,11 +10,12 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
 public class ClientLevelPollutionData {
-    private static LevelPollution levelPollution;
+    
+    private static Pollution levelPollution;
 
     private static Integer lastRenderedSmogLevel = null;
 
-    public static void setLevelPollution(LevelPollution levelPollution) {
+    public static void setLevelPollution(Pollution levelPollution) {
         ClientLevelPollutionData.levelPollution = levelPollution;
         if (lastRenderedSmogLevel == null || Math.abs(lastRenderedSmogLevel - levelPollution.get(PollutionType.SMOG)) >= 1000) {
             Minecraft mc = Minecraft.getInstance();
@@ -22,7 +24,7 @@ public class ClientLevelPollutionData {
         };
     };
 
-    public static LevelPollution getLevelPollution() {
+    public static Pollution getLevelPollution() {
         return levelPollution;
     };
 }

@@ -18,7 +18,7 @@ import com.petrolpark.destroy.block.entity.VatSideBlockEntity.DisplayType;
 import com.petrolpark.destroy.block.entity.behaviour.DestroyAdvancementBehaviour;
 import com.petrolpark.destroy.block.entity.behaviour.fluidTankBehaviour.VatFluidTankBehaviour;
 import com.petrolpark.destroy.block.entity.behaviour.fluidTankBehaviour.VatFluidTankBehaviour.VatTankSegment.VatFluidTank;
-import com.petrolpark.destroy.capability.level.pollution.LevelPollution;
+import com.petrolpark.destroy.capability.Pollution;
 import com.petrolpark.destroy.chemistry.Mixture;
 import com.petrolpark.destroy.chemistry.Reaction;
 import com.petrolpark.destroy.chemistry.ReadOnlyMixture;
@@ -195,7 +195,7 @@ public class VatControllerBlockEntity extends SmartBlockEntity implements IHaveG
             // Heating
             for (int cycle = 0; cycle < cyclesPerTick; cycle++) {
                 float energyChange = heatingPower;
-                energyChange += (LevelPollution.getLocalTemperature(getLevel(), getBlockPos()) - cachedMixture.getTemperature()) * vat.getConductance(); // Fourier's Law (sort of), the divide by 20 is for 20 ticks per second
+                energyChange += (Pollution.getLocalTemperature(getLevel(), getBlockPos()) - cachedMixture.getTemperature()) * vat.getConductance(); // Fourier's Law (sort of), the divide by 20 is for 20 ticks per second
                 energyChange /= 20 * cyclesPerTick;
                 if (Math.abs(energyChange / (fluidAmount * cachedMixture.getVolumetricHeatCapacity())) > 0.001f && fluidAmount != 0d) { // Only bother heating if the temperature change will be somewhat significant
                     cachedMixture.heat(energyChange / (float)fluidAmount);
@@ -608,7 +608,7 @@ public class VatControllerBlockEntity extends SmartBlockEntity implements IHaveG
     @SuppressWarnings("null")
     public float getTemperature() { 
         if (getLevel().isClientSide()) return temperature.getChaseTarget(); // It thinks getLevel() might be null (it's not)
-        if (getVatOptional().isEmpty() || cachedMixture == null) return LevelPollution.getLocalTemperature(getLevel(), getBlockPos());
+        if (getVatOptional().isEmpty() || cachedMixture == null) return Pollution.getLocalTemperature(getLevel(), getBlockPos());
         return cachedMixture.getTemperature();
     };
 

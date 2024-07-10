@@ -116,9 +116,9 @@ public class DestroyPonderIndex {
             .addStoryBoard("pollution/crop_growth_failure", PollutionScenes::cropGrowthFailure)
             .addStoryBoard("pollution/fishing_failure", PollutionScenes::fishingFailure)
             .addStoryBoard("blank_3x3", PollutionScenes::breedingFailure)
-            .addStoryBoard("blank_3x3", PollutionScenes::villagerPriceIncrease)
+            .addStoryBoard("pollution/smog", PollutionScenes::villagerPriceIncrease)
             .addStoryBoard("pollution/cancer", PollutionScenes::cancer)
-            .addStoryBoard("pollution/acid_rain", PollutionScenes::acidRain)
+            .addStoryBoard("pollution/smog", PollutionScenes::acidRain)
             .addStoryBoard("pollution/room_temperature", ChemistryScenes::roomTemperature)
             .addStoryBoard("pollution/reduction", PollutionScenes::reduction)
             .addStoryBoard("pollution/catalytic_converter", PollutionScenes::catalyticConverter);

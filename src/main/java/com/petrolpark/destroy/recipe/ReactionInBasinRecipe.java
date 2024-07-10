@@ -9,7 +9,7 @@ import javax.annotation.Nullable;
 
 import com.petrolpark.destroy.Destroy;
 import com.petrolpark.destroy.block.entity.behaviour.ExtendedBasinBehaviour;
-import com.petrolpark.destroy.capability.level.pollution.LevelPollution;
+import com.petrolpark.destroy.capability.Pollution;
 import com.petrolpark.destroy.chemistry.Mixture;
 import com.petrolpark.destroy.chemistry.ReactionResult;
 import com.petrolpark.destroy.chemistry.Mixture.Phases;
@@ -56,7 +56,7 @@ public class ReactionInBasinRecipe extends BasinRecipe {
         Level level = basin.getLevel();
         BlockPos pos = basin.getBlockPos();
         float heatingPower = IVatHeaterBlock.getHeatingPower(level, pos.below(), Direction.UP);
-        float outsideTemperature = LevelPollution.getLocalTemperature(level, pos);
+        float outsideTemperature = Pollution.getLocalTemperature(level, pos);
 
         Map<Mixture, Double> mixtures = new HashMap<>(availableFluids.size()); // A Map of all available Mixtures to the volume of them available (in Buckets)
         int totalAmount = 0; // How much Mixture there is

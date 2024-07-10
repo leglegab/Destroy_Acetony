@@ -12,6 +12,7 @@ import com.petrolpark.destroy.chemistry.index.DestroyGroupFinder;
 import com.petrolpark.destroy.chemistry.index.DestroyMolecules;
 import com.petrolpark.destroy.chemistry.index.DestroyReactions;
 import com.petrolpark.destroy.chemistry.index.DestroyTopologies;
+import com.petrolpark.destroy.client.fog.FogHandler;
 import com.petrolpark.destroy.client.gui.menu.DestroyMenuTypes;
 import com.petrolpark.destroy.client.particle.DestroyParticleTypes;
 import com.petrolpark.destroy.client.ponder.DestroyPonderIndex;
@@ -90,6 +91,9 @@ public class Destroy {
     // Level-attached managers
     public static final CircuitPuncherHandler CIRCUIT_PUNCHER_HANDLER = new CircuitPuncherHandler();
     public static final CircuitPatternHandler CIRCUIT_PATTERN_HANDLER = new CircuitPatternHandler();
+
+    // Client things
+    public static final FogHandler FOG_HANDLER = new FogHandler();
 
     public static ResourceLocation asResource(String path) {
         return new ResourceLocation(MOD_ID, path);

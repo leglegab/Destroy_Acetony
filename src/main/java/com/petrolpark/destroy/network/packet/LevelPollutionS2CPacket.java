@@ -2,8 +2,8 @@ package com.petrolpark.destroy.network.packet;
 
 import java.util.function.Supplier;
 
+import com.petrolpark.destroy.capability.Pollution;
 import com.petrolpark.destroy.capability.level.pollution.ClientLevelPollutionData;
-import com.petrolpark.destroy.capability.level.pollution.LevelPollution;
 
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
@@ -11,14 +11,14 @@ import net.minecraftforge.network.NetworkEvent;
 
 public class LevelPollutionS2CPacket extends S2CPacket {
     
-    private final LevelPollution levelPollution;
+    private final Pollution levelPollution;
 
-    public LevelPollutionS2CPacket(LevelPollution levelPollution) {
+    public LevelPollutionS2CPacket(Pollution levelPollution) {
         this.levelPollution = levelPollution;
     };
 
     public LevelPollutionS2CPacket(FriendlyByteBuf buffer) {
-        this.levelPollution = new LevelPollution();
+        this.levelPollution = Pollution.level();
         levelPollution.loadNBTData(buffer.readNbt());
     };
 

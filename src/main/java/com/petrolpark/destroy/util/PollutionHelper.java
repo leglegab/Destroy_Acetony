@@ -1,12 +1,13 @@
 package com.petrolpark.destroy.util;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.joml.Vector3f;
 
-import com.petrolpark.destroy.advancement.DestroyAdvancementTrigger;
-import com.petrolpark.destroy.capability.level.pollution.LevelPollutionProvider;
-import com.petrolpark.destroy.capability.level.pollution.LevelPollution.PollutionType;
+import com.petrolpark.destroy.Destroy;
+import com.petrolpark.destroy.capability.Pollution;
+import com.petrolpark.destroy.capability.Pollution.PollutionType;
 import com.petrolpark.destroy.chemistry.Molecule;
 import com.petrolpark.destroy.chemistry.ReadOnlyMixture;
 import com.petrolpark.destroy.config.DestroyAllConfigs;
@@ -14,6 +15,7 @@ import com.petrolpark.destroy.fluid.DestroyFluids;
 import com.petrolpark.destroy.network.DestroyMessages;
 import com.petrolpark.destroy.network.packet.EvaporatingFluidS2CPacket;
 import com.petrolpark.destroy.network.packet.LevelPollutionS2CPacket;
+import com.petrolpark.destroy.network.packet.SyncChunkPollutionS2CPacket;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.DustParticleOptions;
@@ -22,7 +24,10 @@ import net.minecraft.nbt.Tag;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.chunk.ChunkStatus;
+import net.minecraft.world.level.chunk.LevelChunk;
 import net.minecraft.world.phys.AABB;
 import net.minecraftforge.fluids.FluidStack;
 
@@ -35,42 +40,40 @@ public class PollutionHelper {
         return DestroyAllConfigs.SERVER.pollution.enablePollution.get();
     };
 
+    private static Optional<? extends Pollution> getCapOp(Level level, BlockPos pos, PollutionType pollutionType) {
+        return pollutionType.local ? level.getChunkAt(pos).getCapability(Pollution.CAPABILITY).resolve() : level.getCapability(Pollution.CAPABILITY).resolve();
+    };
+
     /**
      * Gets the level of pollution of the given Type in the given Level.
      * @param level
      * @param pollutionType
      * @return 0 if the Level does not have the Level Pollution capability
      */
-    public static int getPollution(Level level, PollutionType pollutionType) {
-        return level.getCapability(LevelPollutionProvider.LEVEL_POLLUTION).map(levelPollution -> levelPollution.get(pollutionType)).orElse(0);
+    public static int getPollution(Level level, BlockPos pos, PollutionType pollutionType) {
+        return getCapOp(level, pos, pollutionType).map(p -> p.get(pollutionType)).orElse(0);
     };
 
     /**
      * Sets the level of pollution of the given Type in the given Level.
-     * The change is broadcast to all clients (Avoid this by using the {@link com.petrolpark.destroy.capability.level.pollution.LevelPollution#set set()} method instead).
+     * The change is broadcast to all clients (Avoid this by using the {@link com.petrolpark.destroy.capability.Pollution#set set()} method instead).
      * @param level
      * @param pollutionType
-     * @param value Will be set within the {@link com.petrolpark.destroy.capability.level.pollution.LevelPollution.PollutionType bounds}.
+     * @param value Will be set within the {@link com.petrolpark.destroy.capability.Pollution.PollutionType bounds}.
      * @return The actual value to which the level of pollution was set (0 if there was no Capability)
      */
-    public static int setPollution(Level level, PollutionType pollutionType, int value) {
-        return level.getCapability(LevelPollutionProvider.LEVEL_POLLUTION).map(levelPollution -> {
-            int oldValue = levelPollution.get(pollutionType);
-            int newValue = levelPollution.set(pollutionType, value); // Actually set the Pollution level
+    public static int setPollution(Level level, BlockPos pos, PollutionType pollutionType, int value) {
+        return getCapOp(level, pos, pollutionType).map(pollution -> {
+            int oldValue = pollution.get(pollutionType);
+            int newValue = pollution.set(pollutionType, value); // Actually set the Pollution level
 
-            // This has been disabled as updating the SMOG level only updates the colours of unloaded chunks, which creates weird-looking boundaries if the change is large
-            // For now this only happens when reloading the world
-            if (level instanceof ServerLevel serverLevel) {
-                if (oldValue != newValue) { // If there has been a change (which needs to be broadcast to clients)
-                    DestroyMessages.sendToAllClientsInDimension(new LevelPollutionS2CPacket(levelPollution), serverLevel);
-                };
-    
-                // Award Advancements for fully polluting/repairing the world
-                if (levelPollution.hasPollutionEverBeenMaxed()) {
-                    serverLevel.players().forEach(player -> DestroyAdvancementTrigger.FULLY_POLLUTE.award(serverLevel, player));
-                    if (levelPollution.hasPollutionEverBeenFullyReduced()) {
-                        serverLevel.players().forEach(player -> DestroyAdvancementTrigger.UNPOLLUTE.award(serverLevel, player));
-                    };
+            if (oldValue != newValue && level instanceof ServerLevel serverLevel) {
+                if (pollutionType.local) {
+                    ChunkPos chunkPos = new ChunkPos(pos);
+                    LevelChunk chunk = (LevelChunk)serverLevel.getChunk(chunkPos.x, chunkPos.z, ChunkStatus.FULL, false);
+                    if (chunk != null) DestroyMessages.sendToClientsTrackingChunk(new SyncChunkPollutionS2CPacket(chunkPos, pollution), chunk);
+                } else {
+                    DestroyMessages.sendToAllClientsInDimension(new LevelPollutionS2CPacket(pollution), serverLevel);
                 };
             };
 
@@ -80,14 +83,22 @@ public class PollutionHelper {
 
     /**
      * Changes the level of pollution of the given Type in the given Level by the given amount.
-     * The change is broadcast to all clients (Avoid this by using the {@link com.petrolpark.destroy.capability.level.pollution.LevelPollution#change change()} method instead).
+     * The change is broadcast to all clients (Avoid this by using the {@link com.petrolpark.destroy.capability.Pollution#change change()} method instead).
      * @param level
      * @param pollutionType
-     * @param change Can be positive or negative; will be set within the {@link com.petrolpark.destroy.capability.level.pollution.LevelPollution.PollutionType bounds}.
+     * @param change Can be positive or negative; will be set within the {@link com.petrolpark.destroy.capability.Pollution.PollutionType bounds}.
      * @return The actual value to which the level of pollution was set (0 if there was no Capability)
      */
-    public static int changePollution(Level level, PollutionType pollutionType, int change) {
-        return setPollution(level, pollutionType, Mth.clamp(getPollution(level, pollutionType) + change, 0, pollutionType.max));
+    public static int changePollution(Level level, BlockPos pos, PollutionType pollutionType, int change) {
+        return getCapOp(level, pos, pollutionType).map(pollution -> pollution.set(pollutionType, Mth.clamp(pollution.get(pollutionType) + change, 0, pollutionType.max))).orElse(0);
+    };
+
+    public static int changePollutionGlobal(Level level, PollutionType pollutionType, int change) {
+        if (pollutionType.local) {
+            Destroy.LOGGER.warn("Tried to change global Pollution level of a Pollution Type which is not global.");
+            return 0;
+        };
+        return changePollution(level, BlockPos.ZERO, pollutionType, change);
     };
 
     /**
@@ -97,33 +108,33 @@ public class PollutionHelper {
      * @see PollutionHelper#pollute(Level, BlockPos, int, FluidStack...) Harming Entities and showing evaporation particles too
      */
     @SuppressWarnings("deprecation")
-    public static void pollute(Level level, FluidStack fluidStack) {
+    public static void pollute(Level level, BlockPos pos, FluidStack fluidStack) {
         if (DestroyFluids.isMixture(fluidStack) && fluidStack.getOrCreateTag().contains("Mixture", Tag.TAG_COMPOUND)) {
-            polluteMixture(level, fluidStack.getAmount(), fluidStack.getOrCreateTag());
+            polluteMixture(level, pos, fluidStack.getAmount(), fluidStack.getOrCreateTag());
         } else {
             for (PollutionType pollutionType : PollutionType.values()) {
                 if (fluidStack.getFluid().is(pollutionType.fluidTag)) {
                     float pollutionAmount = (float)fluidStack.getAmount() / 250f;
                     if (pollutionAmount < 1f) {
-                        if (level.random.nextFloat() <= pollutionAmount) changePollution(level, pollutionType, 1);
+                        if (level.random.nextFloat() <= pollutionAmount) changePollution(level, pos, pollutionType, 1);
                     } else {
-                        changePollution(level, pollutionType, (int)pollutionAmount);
+                        changePollution(level, pos, pollutionType, (int)pollutionAmount);
                     };
                 };
             };
         };
     };
 
-    public static void polluteMixture(Level level, int amount, CompoundTag fluidTag) {
+    public static void polluteMixture(Level level, BlockPos pos, int amount, CompoundTag fluidTag) {
         ReadOnlyMixture mixture = ReadOnlyMixture.readNBT(ReadOnlyMixture::new, fluidTag.getCompound("Mixture"));
         for (Molecule molecule : mixture.getContents(true)) {
             float pollutionAmount = mixture.getConcentrationOf(molecule) * amount / 1000; // One mole of polluting Molecule = one point of Pollution
             for (PollutionType pollutionType : PollutionType.values()) {
                 if (molecule.hasTag(pollutionType.moleculeTag)) {
                     if (pollutionAmount < 1) {
-                        if (level.random.nextFloat() <= pollutionAmount) changePollution(level, pollutionType, 1);
+                        if (level.random.nextFloat() <= pollutionAmount) changePollution(level, pos, pollutionType, 1);
                     } else {
-                        changePollution(level, pollutionType, (int)pollutionAmount);
+                        changePollution(level, pos, pollutionType, (int)pollutionAmount);
                     };
                 };
             };
@@ -141,7 +152,7 @@ public class PollutionHelper {
         if (level.isClientSide()) return;
         List<LivingEntity> nearbyEntities = level.getEntities(null, new AABB(blockPos).inflate(2)).stream().filter(e -> e instanceof LivingEntity).map(e -> (LivingEntity)e).toList();
         for (FluidStack fluidStack : List.of(fluidStacks)) {
-            pollute(level, fluidStack);
+            pollute(level, blockPos, fluidStack);
             if (particleWeight == 1 || level.getRandom().nextInt(particleWeight) == 0); DestroyMessages.sendToAllClients(new EvaporatingFluidS2CPacket(blockPos, fluidStack));
             for (LivingEntity entity : nearbyEntities) {
                 ChemistryDamageHelper.damage(level, entity, fluidStack, true);

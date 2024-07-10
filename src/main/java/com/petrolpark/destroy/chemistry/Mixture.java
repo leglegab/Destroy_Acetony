@@ -711,7 +711,7 @@ public class Mixture extends ReadOnlyMixture {
      * @param volume (in mB) of this Reaction
      * @param availableStacks Item Stacks available for reacting. This List and its contents will be modified.
      * @param heatingPower The power being supplied to this Basin by the {@link com.petrolpark.destroy.util.vat.IVatHeaterBlock heater} below it.
-     * @param outsideTemperature The {@link com.petrolpark.destroy.capability.level.pollution.LevelPollution#getLocalTemperature temperature} outside the Basin.
+     * @param outsideTemperature The {@link com.petrolpark.destroy.capability.Pollution#getLocalTemperature temperature} outside the Basin.
      */
     public ReactionInBasinResult reactInBasin(int volume, List<ItemStack> availableStacks, float heatingPower, float outsideTemperature) {
         float volumeInBuckets = (float)volume / 1000f;

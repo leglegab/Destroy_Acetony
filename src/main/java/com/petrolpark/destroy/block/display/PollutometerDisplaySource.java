@@ -3,7 +3,7 @@ package com.petrolpark.destroy.block.display;
 import javax.annotation.Nullable;
 
 import com.petrolpark.destroy.block.entity.PollutometerBlockEntity;
-import com.petrolpark.destroy.capability.level.pollution.LevelPollution.PollutionType;
+import com.petrolpark.destroy.capability.Pollution.PollutionType;
 import com.petrolpark.destroy.util.DestroyLang;
 import com.petrolpark.destroy.util.PollutionHelper;
 import com.simibubi.create.content.redstone.displayLink.DisplayLinkContext;
@@ -18,7 +18,7 @@ public class PollutometerDisplaySource extends PercentOrProgressBarDisplaySource
     protected Float getProgress(DisplayLinkContext context) {
         if (!(context.getSourceBlockEntity() instanceof PollutometerBlockEntity pollutometer)) return null;
         PollutionType pollutionType = pollutometer.getPollutionType();
-        return (float)PollutionHelper.getPollution(context.level(), pollutionType) / pollutionType.max;
+        return (float)PollutionHelper.getPollution(context.level(), context.getSourcePos(), pollutionType) / pollutionType.max;
     };
 
     @Override

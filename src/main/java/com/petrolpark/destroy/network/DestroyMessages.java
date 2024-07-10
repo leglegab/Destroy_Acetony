@@ -21,6 +21,7 @@ import com.petrolpark.destroy.network.packet.RequestKeypunchNamePacket;
 import com.petrolpark.destroy.network.packet.S2CPacket;
 import com.petrolpark.destroy.network.packet.SeismometerSpikeS2CPacket;
 import com.petrolpark.destroy.network.packet.SwissArmyKnifeToolC2SPacket;
+import com.petrolpark.destroy.network.packet.SyncChunkPollutionS2CPacket;
 import com.petrolpark.destroy.network.packet.SyncVatMaterialsS2CPacket;
 import com.petrolpark.destroy.network.packet.VatSideQuantityThresholdChangeC2SPacket;
 
@@ -28,6 +29,7 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.level.chunk.LevelChunk;
 import net.minecraftforge.network.NetworkDirection;
 import net.minecraftforge.network.NetworkRegistry;
 import net.minecraftforge.network.PacketDistributor;
@@ -63,6 +65,7 @@ public class DestroyMessages {
         addS2CPacket(net, RedstoneProgramSyncReplyS2CPacket.class, RedstoneProgramSyncReplyS2CPacket::new);
         addS2CPacket(net, SyncVatMaterialsS2CPacket.class, SyncVatMaterialsS2CPacket::new);
         addS2CPacket(net, RedstoneProgrammerPowerChangedS2CPacket.class, RedstoneProgrammerPowerChangedS2CPacket::new);
+        addS2CPacket(net, SyncChunkPollutionS2CPacket.class, SyncChunkPollutionS2CPacket::new);
 
         addC2SPacket(net, SwissArmyKnifeToolC2SPacket.class, SwissArmyKnifeToolC2SPacket::new);
         addC2SPacket(net, ChainCogwheelsC2SPacket.class, ChainCogwheelsC2SPacket::new);
@@ -107,5 +110,9 @@ public class DestroyMessages {
 
     public static void sendToClientsTrackingEntity(S2CPacket message, Entity trackedEntity) {
         INSTANCE.send(PacketDistributor.TRACKING_ENTITY.with(() -> trackedEntity), message);
+    };
+
+    public static void sendToClientsTrackingChunk(S2CPacket message, LevelChunk chunk) {
+        INSTANCE.send(PacketDistributor.TRACKING_CHUNK.with(() -> chunk), message);
     };
 }

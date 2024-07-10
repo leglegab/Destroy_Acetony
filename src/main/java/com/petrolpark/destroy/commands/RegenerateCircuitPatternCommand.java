@@ -28,6 +28,7 @@ public class RegenerateCircuitPatternCommand {
   
     public RegenerateCircuitPatternCommand(CommandDispatcher<CommandSourceStack> dispatcher) {
         dispatcher.register(Commands.literal("regeneratecircuitpattern")
+            .requires(cs -> cs.hasPermission(2))
             .then(Commands.argument("pattern", CircuitPatternIdArgument.create())
                 .executes(context -> regenerateCircuitPattern(context.getSource(), context.getArgument("pattern", ResourceLocation.class)))
             )

@@ -21,6 +21,7 @@ public enum DestroyParticleTypes {
 
     DISTILLATION(GasParticleData::new),
     EVAPORATION(GasParticleData::new),
+    RAIN(RainParticle.Data::new),
     TEAR(TearParticle.Data::new),
     TINTED_SPLASH(TintedSplashParticle.Data::new);
 

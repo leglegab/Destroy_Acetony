@@ -3,7 +3,7 @@ package com.petrolpark.destroy.client.ponder.scene;
 import com.petrolpark.destroy.block.entity.VatControllerBlockEntity;
 import com.petrolpark.destroy.block.entity.VatSideBlockEntity;
 import com.petrolpark.destroy.block.entity.VatSideBlockEntity.DisplayType;
-import com.petrolpark.destroy.capability.level.pollution.LevelPollution.PollutionType;
+import com.petrolpark.destroy.capability.Pollution.PollutionType;
 import com.petrolpark.destroy.chemistry.Mixture;
 import com.petrolpark.destroy.chemistry.index.DestroyMolecules;
 import com.petrolpark.destroy.client.particle.DestroyParticleTypes;
@@ -12,6 +12,7 @@ import com.petrolpark.destroy.client.ponder.PonderPlayer;
 import com.petrolpark.destroy.client.ponder.instruction.AdvanceTimeOfDayInstruction;
 import com.petrolpark.destroy.client.ponder.instruction.CreateFishingHookInstruction;
 import com.petrolpark.destroy.client.ponder.instruction.SmogInstruction;
+import com.petrolpark.destroy.client.ponder.particle.DestroyEmitters;
 import com.petrolpark.destroy.fluid.MixtureFluid;
 import com.petrolpark.destroy.item.DestroyItems;
 import com.petrolpark.destroy.util.PollutionHelper;
@@ -23,6 +24,7 @@ import com.simibubi.create.foundation.ponder.SceneBuildingUtil;
 import com.simibubi.create.foundation.ponder.element.EntityElement;
 import com.simibubi.create.foundation.ponder.element.InputWindowElement;
 import com.simibubi.create.foundation.ponder.instruction.EmitParticlesInstruction.Emitter;
+import com.simibubi.create.foundation.utility.Color;
 import com.simibubi.create.foundation.utility.Pointing;
 
 import net.minecraft.client.Minecraft;
@@ -34,12 +36,14 @@ import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.animal.Sheep;
+import net.minecraft.world.entity.npc.Villager;
 import net.minecraft.world.entity.projectile.FishingHook;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.CropBlock;
 import net.minecraft.world.level.levelgen.XoroshiroRandomSource;
+import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 
 public class PollutionScenes {
@@ -256,7 +260,7 @@ public class PollutionScenes {
     public static final void fishingFailure(SceneBuilder scene, SceneBuildingUtil util) {
         scene.title("pollution.fishing_failure", "This text is defined in a language file.");
         scene.configureBasePlate(0, 0, 5);
-        scene.addInstruction(new SmogInstruction(PollutionType.SMOG.max / 2));
+        scene.addInstruction(new SmogInstruction(3 * PollutionType.SMOG.max / 4));
         scene.world.showSection(util.select.everywhere(), Direction.UP);
 
         BlockPos playerPos = util.grid.at(4, 2, 2);
@@ -374,15 +378,121 @@ public class PollutionScenes {
 
     public static final void villagerPriceIncrease(SceneBuilder scene, SceneBuildingUtil util) {
         scene.title("pollution.villager_price_increase", "This text is defined in a language file.");
-        
+        scene.configureBasePlate(0, 0, 5);
+        scene.world.showSection(util.select.everywhere(), Direction.UP);
+
+        scene.idle(10);
+        scene.world.createEntity(w -> {
+            Villager villager = EntityType.VILLAGER.create(w);
+            villager.assignProfessionWhenSpawned();
+            Vec3 v = util.vector.of(2.5d, 2d, 3.5d);
+            villager.setPos(v.x, v.y, v.z);
+            villager.xo = v.x;
+            villager.yo = v.y;
+            villager.zo = v.z;
+            villager.yBodyRot = villager.yBodyRotO = villager.yHeadRot = villager.yHeadRotO = villager.yRotO = 180;
+            villager.setYRot(180);
+            return villager;
+        });
+
+        scene.idle(10);
+        scene.overlay.showText(100)
+            .text("This text is defined in a language file.")
+            .independent();
+        for (int i = 0; i < 100; i++) {
+            scene.idle(1);
+            scene.addInstruction(new SmogInstruction(i * PollutionType.SMOG.max / 100));
+            if (i == 50) scene.effects.emitParticles(util.vector.of(2.5d, 3.8d, 3.5d), Emitter.withinBlockSpace(ParticleTypes.ANGRY_VILLAGER, Vec3.ZERO), 10f, 1);
+        };
+        scene.idle(20);
+        scene.markAsFinished();
     };
 
     public static final void cancer(SceneBuilder scene, SceneBuildingUtil util) {
         scene.title("pollution.cancer", "This text is defined in a language file.");
+        scene.configureBasePlate(0, 0, 5);
+        scene.world.showSection(util.select.everywhere(), Direction.UP);
+
+        scene.idle(10);
+        scene.world.createEntity(w -> {
+            Minecraft minecraft = Minecraft.getInstance();
+            LocalPlayer localPlayer = minecraft.player;
+            if (localPlayer == null) return null;
+            PonderPlayer player = new PonderPlayer(w, localPlayer.getScoreboardName());
+            Vec3 v = util.vector.topOf(2, 0, 2);
+            player.setPos(v.x, v.y, v.z);
+            player.xo = v.x;
+            player.yo = v.y;
+            player.zo = v.z;
+            player.yBodyRot = player.yBodyRotO = player.yHeadRot = player.yHeadRotO = player.yRotO = 180;
+            player.setYRot(180);
+            return player;
+        });
+
+        scene.overlay.showText(80)
+            .text("This text is defined in a language file.")
+            .independent();
+        scene.idle(100);
+        scene.overlay.showText(80)
+            .text("This text is defined in a language file.")
+            .independent();
+        scene.idle(100);
+        scene.overlay.showText(100)
+            .text("This text is defined in a language file.")
+            .independent();
+        scene.idle(50);
+        scene.overlay.showControls(
+            new InputWindowElement(util.vector.topOf(2, 2, 2), Pointing.DOWN)
+            .withItem(DestroyItems.SUNSCREEN_BOTTLE.asStack()),
+            50
+        );
+        scene.idle(70);
+        scene.markAsFinished();
     };
 
     public static final void acidRain(SceneBuilder scene, SceneBuildingUtil util) {
         scene.title("pollution.acid_rain", "This text is defined in a language file.");
+        scene.configureBasePlate(0, 0, 5);
+        scene.scaleSceneView(0.75f);
+        scene.world.showSection(util.select.everywhere(), Direction.UP);
+
+        scene.overlay.showText(200)
+            .text("This text is defined in a language file.")
+            .independent();
+        for (int i = 0; i < 10; i++) {
+            Color color = new Color(Color.mixColors(0xFF3E5EB8, 0xFF00FF00, (float)i / 10f));
+            scene.effects.emitParticles(Vec3.ZERO, DestroyEmitters.rain(new AABB(0d, 11d, 0d, 5d, 12d, 5d), color.getRedAsFloat(), color.getGreenAsFloat(), color.getBlueAsFloat()), 100f, 20);
+            scene.idle(20);
+        };
+        scene.effects.emitParticles(Vec3.ZERO, DestroyEmitters.rain(new AABB(0d, 11d, 0d, 5d, 12d, 5d), 0d, 1d, 0d), 100f, 240);
+        scene.idle(20);
+        scene.overlay.showText(200)
+            .text("This text is defined in a language file.")
+            .attachKeyFrame()
+            .independent();
+
+        scene.idle(20);
+        scene.world.destroyBlock(util.grid.at(0, 2, 1));
+        scene.world.destroyBlock(util.grid.at(0, 3, 1));
+        scene.idle(20);
+        scene.world.destroyBlock(util.grid.at(1, 7, 2));
+        scene.idle(20);
+        scene.world.setBlock(util.grid.at(1, 1, 0), Blocks.DIRT.defaultBlockState(), true);
+        scene.idle(20);
+        scene.world.setBlock(util.grid.at(0, 1, 4), Blocks.DIRT.defaultBlockState(), true);
+        scene.idle(20);
+        scene.world.destroyBlock(util.grid.at(2, 2, 0));
+        scene.idle(20);
+        scene.world.destroyBlock(util.grid.at(3, 7, 2));
+        scene.idle(20);
+        scene.world.setBlock(util.grid.at(0, 1, 1), Blocks.DIRT.defaultBlockState(), true);
+        scene.idle(20);
+        scene.world.destroyBlock(util.grid.at(1, 7, 3));
+        scene.idle(20);
+        scene.world.destroyBlock(util.grid.at(0, 2, 0));
+        scene.idle(40);
+
+        scene.markAsFinished();
     };
 
     public static final void reduction(SceneBuilder scene, SceneBuildingUtil util) {

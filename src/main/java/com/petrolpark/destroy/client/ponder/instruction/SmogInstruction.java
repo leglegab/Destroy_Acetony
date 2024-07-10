@@ -1,7 +1,7 @@
 package com.petrolpark.destroy.client.ponder.instruction;
 
-import com.petrolpark.destroy.capability.level.pollution.LevelPollution.PollutionType;
-import com.petrolpark.destroy.util.PollutionHelper;
+import com.petrolpark.destroy.capability.Pollution;
+import com.petrolpark.destroy.capability.Pollution.PollutionType;
 import com.simibubi.create.foundation.ponder.PonderScene;
 import com.simibubi.create.foundation.ponder.element.WorldSectionElement;
 import com.simibubi.create.foundation.ponder.instruction.PonderInstruction;
@@ -23,7 +23,7 @@ public class SmogInstruction extends PonderInstruction {
 
     @Override
     public void tick(PonderScene scene) {
-        PollutionHelper.setPollution(scene.getWorld(), PollutionType.SMOG, value);
+        scene.getWorld().getCapability(Pollution.CAPABILITY).ifPresent(pollution -> pollution.set(PollutionType.SMOG, value));
         scene.forEach(WorldSectionElement.class, e -> {
             e.queueRedraw();
         });

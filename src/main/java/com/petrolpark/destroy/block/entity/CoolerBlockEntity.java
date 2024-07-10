@@ -118,7 +118,7 @@ public class CoolerBlockEntity extends SmartBlockEntity implements IHaveGoggleIn
 
         // Discard the Fluid
         tank.getPrimaryHandler().drain(TANK_CAPACITY, FluidAction.EXECUTE);
-        PollutionHelper.pollute(getLevel(), fluidStack);
+        PollutionHelper.pollute(getLevel(), getBlockPos(), fluidStack);
 
         notifyUpdate();
     };

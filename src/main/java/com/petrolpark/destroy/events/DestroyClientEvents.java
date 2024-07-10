@@ -6,10 +6,9 @@ import org.apache.commons.lang3.mutable.MutableObject;
 
 import com.jozufozu.flywheel.util.Color;
 import com.mojang.datafixers.util.Either;
+import com.petrolpark.destroy.Destroy;
 import com.petrolpark.destroy.block.renderer.BlockEntityBehaviourRenderer;
-import com.petrolpark.destroy.capability.level.pollution.ClientLevelPollutionData;
-import com.petrolpark.destroy.capability.level.pollution.LevelPollution;
-import com.petrolpark.destroy.capability.level.pollution.LevelPollution.PollutionType;
+import com.petrolpark.destroy.capability.Pollution.PollutionType;
 import com.petrolpark.destroy.client.gui.button.OpenDestroyMenuButton;
 import com.petrolpark.destroy.client.gui.screen.CustomExplosiveScreen;
 import com.petrolpark.destroy.config.DestroyAllConfigs;
@@ -60,6 +59,7 @@ public class DestroyClientEvents {
             CogwheelChainingHandler.tick();
             SeismometerItemRenderer.tick();
             SwissArmyKnifeItem.clientPlayerTick();
+            Destroy.FOG_HANDLER.tick();
         } else {
             BlockEntityBehaviourRenderer.tick();
         };
@@ -72,10 +72,10 @@ public class DestroyClientEvents {
     public static void renderFog(RenderFog event) {
         if (!DestroyClientEvents.smogEnabled()) return;
         if (event.getType() == FogType.NONE) {
-            LevelPollution levelPollution = ClientLevelPollutionData.getLevelPollution();
-            if (levelPollution == null) return;
-            event.scaleNearPlaneDistance(1f - (0.8f * (float)levelPollution.get(PollutionType.SMOG) / (float)PollutionType.SMOG.max));
-            event.scaleFarPlaneDistance(1f - (0.5f * (float)levelPollution.get(PollutionType.SMOG) / (float)PollutionType.SMOG.max));
+            Minecraft mc = Minecraft.getInstance();
+            float smog = (float)PollutionHelper.getPollution(mc.level, mc.player.blockPosition(), PollutionType.SMOG);
+            event.scaleNearPlaneDistance(1f - (0.8f * smog / (float)PollutionType.SMOG.max));
+            event.scaleFarPlaneDistance(1f - (0.5f * smog / (float)PollutionType.SMOG.max));
             event.setCanceled(true);
         };
     };
@@ -87,10 +87,10 @@ public class DestroyClientEvents {
     public static void colorFog(ComputeFogColor event) {
         if (!DestroyClientEvents.smogEnabled()) return;
         if (event.getCamera().getFluidInCamera() == FogType.NONE) {
-            LevelPollution levelPollution = ClientLevelPollutionData.getLevelPollution();
-            if (levelPollution == null) return;
+            Minecraft mc = Minecraft.getInstance();
+            float smog = (float)PollutionHelper.getPollution(mc.level, mc.player.blockPosition(), PollutionType.SMOG);
             Color existing = new Color(event.getRed(), event.getGreen(), event.getBlue(), 1f);
-            Color color = Color.mixColors(existing, BROWN, 0.8f * (float)levelPollution.get(PollutionType.SMOG) / (float)PollutionType.SMOG.max);
+            Color color = Color.mixColors(existing, BROWN, 0.8f * smog / (float)PollutionType.SMOG.max);
             event.setRed(color.getRedAsFloat());
             event.setGreen(color.getGreenAsFloat());
             event.setBlue(color.getBlueAsFloat());

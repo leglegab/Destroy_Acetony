@@ -6,7 +6,7 @@ import java.util.stream.Collectors;
 
 import com.petrolpark.destroy.Destroy;
 import com.petrolpark.destroy.block.entity.BubbleCapBlockEntity;
-import com.petrolpark.destroy.capability.level.pollution.LevelPollution;
+import com.petrolpark.destroy.capability.Pollution;
 import com.petrolpark.destroy.chemistry.Mixture;
 import com.petrolpark.destroy.chemistry.Molecule;
 import com.petrolpark.destroy.chemistry.ReadOnlyMixture;
@@ -237,7 +237,7 @@ public class DistillationTower {
     private List<FluidStack> getFractionsOfMixture(ReadOnlyMixture mixture, int mixtureAmount, int numberOfFractions) {
         List<FluidStack> fractions = new ArrayList<>(numberOfFractions);
 
-        float roomTemperature = LevelPollution.getLocalTemperature(getControllerBubbleCap().getLevel(), getControllerPos());
+        float roomTemperature = Pollution.getLocalTemperature(getControllerBubbleCap().getLevel(), getControllerPos());
         float maxTemperature = Math.max(getTemperatureForDistillationTower(getControllerBubbleCap().getLevel(), getControllerPos()), mixture.getTemperature());
 
         if (numberOfFractions == 0) return fractions;
@@ -312,7 +312,7 @@ public class DistillationTower {
      * Get the temperature (in kelvins) to which this Heat Level will heat the Distillation Tower.
      */
     public static float getTemperatureForDistillationTower(Level level, BlockPos pos) {
-        float roomTemperature = LevelPollution.getLocalTemperature(level, pos);
+        float roomTemperature = Pollution.getLocalTemperature(level, pos);
         float temperature = roomTemperature;
         HeatLevel heatLevel = BasinBlockEntity.getHeatLevelOf(level.getBlockState(pos.below()));
         if (heatLevel.name() == "FROSTING") temperature = 273f;

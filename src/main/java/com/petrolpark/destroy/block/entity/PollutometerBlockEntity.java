@@ -3,7 +3,7 @@ package com.petrolpark.destroy.block.entity;
 import java.util.List;
 
 import com.petrolpark.destroy.block.PollutometerBlock;
-import com.petrolpark.destroy.capability.level.pollution.LevelPollution.PollutionType;
+import com.petrolpark.destroy.capability.Pollution.PollutionType;
 import com.petrolpark.destroy.util.DestroyLang;
 import com.simibubi.create.foundation.blockEntity.SmartBlockEntity;
 import com.simibubi.create.foundation.blockEntity.behaviour.BlockEntityBehaviour;
