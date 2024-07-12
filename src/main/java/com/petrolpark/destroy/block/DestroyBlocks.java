@@ -9,7 +9,9 @@ import com.petrolpark.destroy.block.entity.BubbleCapBlockEntity;
 import com.petrolpark.destroy.block.entity.CentrifugeBlockEntity;
 import com.petrolpark.destroy.block.entity.VatControllerBlockEntity;
 import com.petrolpark.destroy.block.model.CopycatBlockModel;
+import com.petrolpark.destroy.block.shape.DestroyShapes;
 import com.petrolpark.destroy.block.spriteshifts.DestroySpriteShifts;
+import com.petrolpark.destroy.config.DestroyAllConfigs;
 import com.petrolpark.destroy.entity.PrimedBomb;
 import com.petrolpark.destroy.item.CoaxialGearBlockItem;
 import com.petrolpark.destroy.item.ColossalCogwheelBlockItem;
@@ -18,6 +20,7 @@ import com.petrolpark.destroy.item.DestroyItems;
 import com.petrolpark.destroy.item.PeriodicTableBlockItem;
 import com.petrolpark.destroy.item.PumpjackBlockItem;
 import com.petrolpark.destroy.item.RedstoneProgrammerBlockItem;
+import com.petrolpark.destroy.item.SimplePlaceableMixtureTankBlockItem;
 import com.petrolpark.destroy.item.TankPeriodicTableBlockItem;
 import com.petrolpark.destroy.sound.DestroySoundTypes;
 import com.petrolpark.destroy.util.DestroyTags.DestroyBlockTags;
@@ -91,13 +94,21 @@ public class DestroyBlocks {
         .transform(customItemModel())
         .register();
 
-    public static final BlockEntry<CoaxialGearBlock> COAXIAL_GEAR = REGISTRATE.block("coaxial_gear", CoaxialGearBlock::new)
+    public static final BlockEntry<CoaxialGearBlock> COAXIAL_GEAR = REGISTRATE.block("coaxial_gear", CoaxialGearBlock::small)
         .initialProperties(AllBlocks.COGWHEEL)
         .properties(p -> p
             .sound(SoundType.WOOD)
 		    .mapColor(MapColor.DIRT)
             .noOcclusion()
         ).onRegister(CreateRegistrate.blockModel(() -> BracketedKineticBlockModel::new))
+        .transform(TagGen.axeOrPickaxe())
+        .item(CoaxialGearBlockItem::new)
+        .build()
+        .register();
+
+    public static final BlockEntry<CoaxialGearBlock> LARGE_COAXIAL_GEAR = REGISTRATE.block("large_coaxial_gear", CoaxialGearBlock::large)
+        .initialProperties(COAXIAL_GEAR)
+        .onRegister(CreateRegistrate.blockModel(() -> BracketedKineticBlockModel::new))
         .transform(TagGen.axeOrPickaxe())
         .item(CoaxialGearBlockItem::new)
         .build()
@@ -221,7 +232,9 @@ public class DestroyBlocks {
 
     public static final BlockEntry<MeasuringCylinderBlock> MEASURING_CYLINDER = REGISTRATE.block("measuring_cylinder", MeasuringCylinderBlock::new)
         .item()
-        .build()
+        .properties(p -> p
+            .stacksTo(1)
+        ).build()
         .register();
 
     public static final BlockEntry<PlanetaryGearsetBlock> PLANETARY_GEARSET = REGISTRATE.block("planetary_gearset", PlanetaryGearsetBlock::new)
@@ -346,6 +359,20 @@ public class DestroyBlocks {
             .sound(SoundType.GLASS)
             .forceSolidOn()
         ).item()
+        .build()
+        .register();
+
+    public static final BlockEntry<SimplePlaceableMixtureTankBlock>
+    
+    BEAKER = REGISTRATE.block("beaker", SimplePlaceableMixtureTankBlock.of(() -> DestroyAllConfigs.SERVER.blocks.beakerCapacity.get(), 5.5f, 0.5f, 5.5f, 10.5f, 7f, 10.5f, DestroyShapes.BEAKER))
+        .initialProperties(MEASURING_CYLINDER)
+        .item(SimplePlaceableMixtureTankBlockItem::new)
+        .build()
+        .register(),
+
+    ROUND_BOTTOMED_FLASK = REGISTRATE.block("round_bottomed_flask", SimplePlaceableMixtureTankBlock.of(() -> DestroyAllConfigs.SERVER.blocks.roundBottomedFlaskCapacity.get(), 5.5f, 0.5f, 5.5f, 10.5f, 4.5f, 10.5f, DestroyShapes.ROUND_BOTTOMED_FLASK))
+        .initialProperties(BEAKER)
+        .item(SimplePlaceableMixtureTankBlockItem::new)
         .build()
         .register();
 

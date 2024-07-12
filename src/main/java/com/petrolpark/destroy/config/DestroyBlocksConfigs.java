@@ -37,7 +37,10 @@ public class DestroyBlocksConfigs extends DestroyConfigBase {
     public final ConfigBool vatExplodesAtHighPressure = b(true, "vatExplodesAtHighPressure", "Whether Vats explode if the pressure exceeds the maximum of the weakest block.");
     public final ConfigInt simulationLevel = i(10, "simulationLevel", "How many times per tick reactions and thermodynamics are simulated.", "Increasing this may cause lag. Decreasing it can cause flickering in Vats.");
     
-    
+    public final ConfigInt beakerCapacity = i(500, "beakerCapacity", "The capacity (in mB) of Beakers");
+    public final ConfigInt roundBottomedFlaskCapacity = i(500, "roundBottomedFlaskCapacity", "The capacity (in mB) of Round-Bottomed Flasks");
+    public final ConfigInt measuringCylinderCapacity = i(300, "measuringCylinderCapacity", "The capacity (in mB) of Beakers");
+
     @Override
     public String getName() {
         return "blocks";

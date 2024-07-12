@@ -45,9 +45,17 @@ public class CoaxialGearBlock extends CogWheelBlock {
         return block instanceof CoaxialGearBlock;
     };
 
-    public CoaxialGearBlock(Properties properties) {
-        super(false, properties);
+    public CoaxialGearBlock(Properties properties, boolean large) {
+        super(large, properties);
         registerDefaultState(defaultBlockState().setValue(HAS_SHAFT, false));
+    };
+
+    public static CoaxialGearBlock large(Properties properties) {
+        return new CoaxialGearBlock(properties, true);
+    };
+
+    public static CoaxialGearBlock small(Properties properties) {
+        return new CoaxialGearBlock(properties, false);
     };
 
     @Override
@@ -112,7 +120,7 @@ public class CoaxialGearBlock extends CogWheelBlock {
 		super.onRemove(state, world, pos, newState, isMoving);
 	};
 
-    public static boolean tryMakeLongShaft(BlockState state, Level level, BlockPos pos, Direction preferredDirection) {
+    public static boolean tryMakeLongShaft(BlockState state, Block coaxialGearBlock, Level level, BlockPos pos, Direction preferredDirection) {
         Axis axis = state.getValue(AXIS);
         if (preferredDirection.getAxis() != axis) return false;
         for (Direction direction : new Direction[]{preferredDirection, preferredDirection.getOpposite()}) {
@@ -123,7 +131,7 @@ public class CoaxialGearBlock extends CogWheelBlock {
             // Creation was successful
             if (!level.isClientSide()) {
                 level.setBlockAndUpdate(shaftPos, DestroyBlocks.LONG_SHAFT.getDefaultState().setValue(AXIS, axis).setValue(DirectionalRotatedPillarKineticBlock.POSITIVE_AXIS_DIRECTION, direction.getAxisDirection() != AxisDirection.POSITIVE));
-                level.setBlockAndUpdate(pos, DestroyBlocks.COAXIAL_GEAR.getDefaultState().setValue(AXIS, axis).setValue(HAS_SHAFT, true));
+                level.setBlockAndUpdate(pos, coaxialGearBlock.defaultBlockState().setValue(AXIS, axis).setValue(HAS_SHAFT, true));
             };
             return true;
         };
@@ -156,7 +164,7 @@ public class CoaxialGearBlock extends CogWheelBlock {
 		if (player.isShiftKeyDown() || !player.mayBuild()) return InteractionResult.PASS;
         ItemStack stack = player.getItemInHand(hand);
         if (AllBlocks.SHAFT.isIn(stack) && (!state.getValue(HAS_SHAFT))) {
-            if (tryMakeLongShaft(state, world, pos, Direction.getFacingAxis(player, state.getValue(AXIS)))) {
+            if (tryMakeLongShaft(state, state.getBlock(), world, pos, Direction.getFacingAxis(player, state.getValue(AXIS)))) {
                 if (!player.isCreative() && !world.isClientSide()) stack.shrink(1);
                 return InteractionResult.sidedSuccess(world.isClientSide());
             } else {

@@ -3,7 +3,6 @@ package com.petrolpark.destroy.network.packet;
 import java.util.function.Supplier;
 
 import com.petrolpark.destroy.capability.Pollution;
-import com.petrolpark.destroy.capability.Pollution.PollutionType;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.chunk.ChunkRenderDispatcher.RenderChunk;
@@ -41,9 +40,8 @@ public class SyncChunkPollutionS2CPacket extends S2CPacket {
             Minecraft mc = Minecraft.getInstance();
             LevelChunk chunk = mc.level.getChunkSource().getChunk(pos.x, pos.z, false);
             if (chunk != null) chunk.getCapability(Pollution.CAPABILITY).ifPresent(pollution -> {
-                int oldSmog = pollution.get(PollutionType.SMOG);
                 pollution.loadNBTData(chunkPollutionTag);
-                if (Math.abs(oldSmog - pollution.get(PollutionType.SMOG)) >= 1000) {
+                if (((Pollution.Chunk)pollution).checkRerender()) {
                     for (RenderChunk renderChunk : mc.levelRenderer.viewArea.chunks) renderChunk.setDirty(true);
                     mc.level.clearTintCaches();
                 };

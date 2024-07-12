@@ -61,7 +61,7 @@ public class ItemMixtureTank extends GeniusFluidTank implements ICapabilityProvi
 
     @Override
     public <T> @NotNull LazyOptional<T> getCapability(@NotNull Capability<T> cap, @Nullable Direction side) {
-        if (cap != ForgeCapabilities.FLUID_HANDLER_ITEM) return null;
+        if (cap != ForgeCapabilities.FLUID_HANDLER_ITEM) return LazyOptional.empty();
         return LazyOptional.of(() -> this).cast();
     };
     

@@ -215,10 +215,10 @@ public class VatSideBlock extends CopycatBlock implements ISpecialBlockItemRequi
     }
 
     @Override
-    public IFluidHandler getTankForMixtureStorageItems(IMixtureStorageItem item, UseOnContext context, boolean rightClick) {
-        if (getBlockEntity(context.getLevel(), context.getClickedPos()) instanceof VatSideBlockEntity vatSide) {
+    public IFluidHandler getTankForMixtureStorageItems(IMixtureStorageItem item, Level level, BlockPos pos, BlockState state, Direction face, Player player, InteractionHand hand, ItemStack stack, boolean rightClick) {
+        if (getBlockEntity(level, pos) instanceof VatSideBlockEntity vatSide) {
             VatControllerBlockEntity vatController = vatSide.getController();
-            if (vatController != null) return item.selectVatTank(context, vatController, rightClick);
+            if (vatController != null) return item.selectVatTank(level, pos, state, face, player, hand, stack, rightClick, vatController);
         };
         return null;
     };

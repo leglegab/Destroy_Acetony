@@ -1,22 +1,32 @@
 package com.petrolpark.destroy.item;
 
+import java.text.DecimalFormat;
+import java.util.List;
 import java.util.Optional;
 
 import javax.annotation.Nullable;
 
 import com.petrolpark.destroy.block.ISpecialMixtureContainerBlock;
-import com.petrolpark.destroy.block.VatControllerBlock;
-import com.petrolpark.destroy.block.VatSideBlock;
-import com.petrolpark.destroy.block.entity.DestroyBlockEntityTypes;
 import com.petrolpark.destroy.block.entity.VatControllerBlockEntity;
-import com.petrolpark.destroy.block.entity.VatSideBlockEntity;
 import com.petrolpark.destroy.block.entity.VatControllerBlockEntity.VatTankWrapper;
 import com.petrolpark.destroy.block.entity.behaviour.fluidTankBehaviour.GeniusFluidTankBehaviour.GeniusFluidTank;
+import com.petrolpark.destroy.chemistry.ClientMixture;
+import com.petrolpark.destroy.chemistry.ReadOnlyMixture;
+import com.petrolpark.destroy.config.DestroyAllConfigs;
 import com.petrolpark.destroy.fluid.MixtureFluid;
 import com.simibubi.create.foundation.utility.Iterate;
+import com.simibubi.create.foundation.utility.Lang;
 
+import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.Component;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
@@ -81,24 +91,13 @@ public interface IMixtureStorageItem {
      * @param rightClick {@code true} for a right-click and {@code false} for a left-click
      */
     @Nullable
-    public default IFluidHandler getTank(UseOnContext context, boolean rightClick) {
-        Level level = context.getLevel();
-        BlockPos pos = context.getClickedPos();
-        BlockState state = level.getBlockState(pos);
-
+    public default IFluidHandler getTank(Level level, BlockPos pos, BlockState state, @Nullable Direction face, Player player, InteractionHand hand, ItemStack stack, boolean rightClick) {
         IFluidHandler fluidHandler;
-        if (state.getBlock() instanceof ISpecialMixtureContainerBlock specialBlock) fluidHandler = specialBlock.getTankForMixtureStorageItems(this, context, rightClick);
-        VatControllerBlockEntity vatController = null;
-        if (state.getBlock() instanceof VatControllerBlock) {
-            vatController = level.getBlockEntity(pos, DestroyBlockEntityTypes.VAT_CONTROLLER.get()).orElse(null);
-        } else if (state.getBlock() instanceof VatSideBlock) {
-            vatController = level.getBlockEntity(pos, DestroyBlockEntityTypes.VAT_SIDE.get()).map(VatSideBlockEntity::getController).orElse(null);
-        };
-        if (vatController != null && vatController.getVatOptional().isPresent()) fluidHandler = selectVatTank(context, vatController, rightClick);
+        if (state.getBlock() instanceof ISpecialMixtureContainerBlock specialBlock) fluidHandler = specialBlock.getTankForMixtureStorageItems(this, level, pos, state, face, player, hand, stack, rightClick);
         else {
             BlockEntity be = level.getBlockEntity(pos);
             if (be == null) return null;
-            LazyOptional<IFluidHandler> fluidCap = be.getCapability(ForgeCapabilities.FLUID_HANDLER, context.getClickedFace());
+            LazyOptional<IFluidHandler> fluidCap = be.getCapability(ForgeCapabilities.FLUID_HANDLER, face);
             if (!fluidCap.isPresent()) return null;
             fluidHandler = fluidCap.resolve().get(); 
         };
@@ -109,7 +108,7 @@ public interface IMixtureStorageItem {
      * Sub-method of {@link IMixtureStorageItem#getTank(UseOnContext, boolean)} for selecting how to insert/extract Fluids from the Vat, if we've found one.
      */
     @Nullable
-    public default VatTankWrapper selectVatTank(UseOnContext context, VatControllerBlockEntity vatController, boolean rightClick) {
+    public default VatTankWrapper selectVatTank(Level level, BlockPos pos, BlockState state, Direction face, Player player, InteractionHand hand, ItemStack stack, boolean rightClick, VatControllerBlockEntity vatController) {
         return new SinglePhaseVatExtraction(vatController, false);
     };
 
@@ -118,14 +117,18 @@ public interface IMixtureStorageItem {
      * @param context
      */
     public static InteractionResult defaultUseOn(IMixtureStorageItem item, UseOnContext context) {
-        return item.tryEmpty(context.getItemInHand(), (ItemMixtureTank)context.getItemInHand().getCapability(ForgeCapabilities.FLUID_HANDLER_ITEM).resolve().get(), item.getTank(context, true), context.getPlayer().isCreative());
+        InteractionResult result = item.tryEmpty(context.getItemInHand(), (ItemMixtureTank)context.getItemInHand().getCapability(ForgeCapabilities.FLUID_HANDLER_ITEM).resolve().get(), item.getTank(context.getLevel(), context.getClickedPos(), context.getLevel().getBlockState(context.getClickedPos()), context.getClickedFace(), context.getPlayer(), context.getHand(), context.getItemInHand(), true), context.getPlayer().isCreative());
+        if (result == InteractionResult.SUCCESS) context.getLevel().playSound(null, context.getClickedPos(), SoundEvents.BOTTLE_FILL, SoundSource.PLAYERS);
+        return result;
     };
 
     /**
      * The typical behaviour for left-clicking with a Mixture container on a Block (filling the Item from the Block).
      */
-    public static InteractionResult defaultAttack(IMixtureStorageItem item, UseOnContext context) {
-        return item.tryFill(context.getItemInHand(), (ItemMixtureTank)context.getItemInHand().getCapability(ForgeCapabilities.FLUID_HANDLER).resolve().get(), item.getTank(context, false));
+    public static InteractionResult defaultAttack(IMixtureStorageItem item, Level level, BlockPos pos, BlockState state, Direction face, Player player, InteractionHand hand, ItemStack stack) {
+        InteractionResult result = item.tryFill(stack, (ItemMixtureTank)stack.getCapability(ForgeCapabilities.FLUID_HANDLER_ITEM).resolve().get(), item.getTank(level, pos, state, face, player, hand, stack, false));
+        if (result == InteractionResult.SUCCESS) level.playSound(null, pos, SoundEvents.BOTTLE_FILL, SoundSource.PLAYERS);
+        return result;
     };
 
     public default boolean isEmpty(ItemStack stack)  {
@@ -144,7 +147,44 @@ public interface IMixtureStorageItem {
         itemStack.getCapability(ForgeCapabilities.FLUID_HANDLER_ITEM).ifPresent(tanks -> tanks.fill(fluidStack, FluidAction.EXECUTE));
     };
 
-    public static class SinglePhaseVatExtraction extends com.petrolpark.destroy.block.entity.VatControllerBlockEntity.VatTankWrapper {
+    public default Component getNameWithFluid(ItemStack stack) {
+        FluidStack contents = getContents(stack).orElse(FluidStack.EMPTY);
+        if (contents.isEmpty()) return Component.translatable(stack.getDescriptionId());
+        return Component.translatable(stack.getDescriptionId() + ".filled", contents.getDisplayName());
+    };
+
+    static final DecimalFormat df = new DecimalFormat();
+
+    static class DF {
+        static {
+            df.setMinimumFractionDigits(1);
+            df.setMaximumFractionDigits(1);
+        };
+    };
+
+    public default void addContentsDescription(ItemStack stack, List<Component> tooltip) {
+        getContents(stack).ifPresent(fluidStack -> {
+
+            if (fluidStack.isEmpty()) return;
+
+            float temperature = 289f;
+
+            tooltip.add(Component.literal(""));
+        
+            CompoundTag mixtureTag = fluidStack.getOrCreateTag().getCompound("Mixture");
+            if (!mixtureTag.isEmpty()) { // If this is a Mixture
+                ReadOnlyMixture mixture = ReadOnlyMixture.readNBT(ClientMixture::new, mixtureTag);
+
+                boolean iupac = DestroyAllConfigs.CLIENT.chemistry.iupacNames.get();
+                temperature = mixture.getTemperature();
+                tooltip.addAll(mixture.getContentsTooltip(iupac, false, false, fluidStack.getAmount(), df).stream().map(c -> c.copy()).toList());
+            };
+
+            tooltip.add(2, Component.literal(" "+fluidStack.getAmount()).withStyle(ChatFormatting.GRAY).append(Lang.translateDirect("generic.unit.millibuckets")).append(" "+DestroyAllConfigs.CLIENT.chemistry.temperatureUnit.get().of(temperature, df)));
+        });
+    };
+
+    public static class SinglePhaseVatExtraction extends VatTankWrapper {
 
         public final boolean gas;
 

@@ -119,10 +119,12 @@ public class Pollution {
 
     public static class Chunk extends Pollution {
 
+        private int smogLevelSinceLastRerender;
         private float outdoorTemperature; // In kelvins
 
         public Chunk() {
             super(true);
+            smogLevelSinceLastRerender = levels.get(PollutionType.SMOG);
             outdoorTemperature = 289f;
         };
 
@@ -153,6 +155,15 @@ public class Pollution {
 
         public float getOutdoorTemperature() {
             return outdoorTemperature;
+        };
+
+        public boolean checkRerender() {
+            int smog = levels.get(PollutionType.SMOG);
+            if (Math.abs(smog - smogLevelSinceLastRerender) >= PollutionType.SMOG.max / 64) {
+                smogLevelSinceLastRerender = smog;
+                return true;
+            };
+            return false;
         };
 
         public static class Provider extends Pollution.Provider<Pollution.Chunk> {

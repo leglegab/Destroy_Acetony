@@ -44,6 +44,7 @@ import com.petrolpark.destroy.fluid.DestroyFluids;
 import com.petrolpark.destroy.item.CircuitPatternItem;
 import com.petrolpark.destroy.item.DestroyItems;
 import com.petrolpark.destroy.item.DiscStamperItem;
+import com.petrolpark.destroy.item.IMixtureStorageItem;
 import com.petrolpark.destroy.item.RedstoneProgrammerBlockItem;
 import com.petrolpark.destroy.item.SeismographItem;
 import com.petrolpark.destroy.item.SyringeItem;
@@ -54,6 +55,7 @@ import com.petrolpark.destroy.network.packet.CircuitPatternsS2CPacket;
 import com.petrolpark.destroy.network.packet.LevelPollutionS2CPacket;
 import com.petrolpark.destroy.network.packet.RefreshPeriodicTablePonderSceneS2CPacket;
 import com.petrolpark.destroy.network.packet.SeismometerSpikeS2CPacket;
+import com.petrolpark.destroy.network.packet.SyncChunkPollutionS2CPacket;
 import com.petrolpark.destroy.network.packet.SyncVatMaterialsS2CPacket;
 import com.petrolpark.destroy.recipe.CircuitDeployerApplicationRecipe;
 import com.petrolpark.destroy.recipe.DestroyRecipeTypes;
@@ -123,6 +125,7 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.ExperienceOrb;
 import net.minecraft.world.entity.LivingEntity;
@@ -131,6 +134,7 @@ import net.minecraft.world.entity.monster.Stray;
 import net.minecraft.world.entity.npc.Villager;
 import net.minecraft.world.entity.npc.VillagerTrades;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.MapItem;
@@ -168,6 +172,7 @@ import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.event.level.BlockEvent.CropGrowEvent;
 import net.minecraftforge.event.level.BlockEvent.EntityPlaceEvent;
+import net.minecraftforge.event.level.ChunkWatchEvent;
 import net.minecraftforge.event.level.ExplosionEvent;
 import net.minecraftforge.event.level.LevelEvent;
 import net.minecraftforge.event.level.SaplingGrowTreeEvent;
@@ -275,6 +280,13 @@ public class DestroyCommonEvents {
             .filter(entry -> !entry.getValue().builtIn())
             .forEach(entry -> datapackMaterials.put(entry.getKey(), entry.getValue()));
         DestroyMessages.sendToClient(new SyncVatMaterialsS2CPacket(datapackMaterials), serverPlayer);
+    };
+
+    @SubscribeEvent
+    public static void onPlayerLoadsChunk(ChunkWatchEvent.Watch event) {
+        event.getChunk().getCapability(Pollution.CAPABILITY).ifPresent(pollution -> {
+            DestroyMessages.sendToClient(new SyncChunkPollutionS2CPacket(event.getPos(), pollution), event.getPlayer());
+        });
     };
 
     /**
@@ -552,7 +564,8 @@ public class DestroyCommonEvents {
     };
 
     /**
-     * Award an Advancement for shooting Hefty Beetroots and allow Baby Villagers to build sandcastles.
+     * Award an Advancement for shooting Hefty Beetroots, allow Baby Villagers to build sandcastles,
+     * and let lightning regenerate ozone
      */
     @SubscribeEvent
     public static void onJoinEntity(EntityJoinLevelEvent event) {
@@ -566,7 +579,11 @@ public class DestroyCommonEvents {
         if (event.getEntity() instanceof Villager villager && villager.isBaby()) {
             villager.goalSelector.addGoal(0, new BuildSandCastleGoal(villager, true)); // It would be cleaner to use a Behavior rather than a Goal here but what you have failed to consider with that option is that I am lazy
         };
-    
+
+        // Regenerate ozone
+        if (event.getEntity().getType() == EntityType.LIGHTNING_BOLT && PollutionHelper.pollutionEnabled() && DestroyAllConfigs.SERVER.pollution.lightningRegeneratesOzone.get()) {
+            PollutionHelper.changePollution(event.getLevel(), event.getEntity().getOnPos(), PollutionType.OZONE_DEPLETION, -50);
+        };
     };
 
     /**
@@ -624,7 +641,7 @@ public class DestroyCommonEvents {
     };
 
     /**
-     * Instantly destroy and recieve the Item when right-clicking a Redstone Programmer or Measuring Cylinder, even if in Creative
+     * Transfer from {@link IMixtureStorageItem Mixture storage Items} and instantly pick up {@link IPickUpPutDown} Blocks.
      */
     @SubscribeEvent
 	public static void onLeftClickBlock(PlayerInteractEvent.LeftClickBlock event) {
@@ -632,6 +649,18 @@ public class DestroyCommonEvents {
         Level world = event.getLevel();
         BlockPos pos = event.getPos();
         BlockState state = world.getBlockState(pos);
+        ItemStack stack = event.getItemStack();
+        
+        // Emptying glassware
+        if (stack.getItem() instanceof IMixtureStorageItem mixtureItem) {
+            InteractionResult result = IMixtureStorageItem.defaultAttack(mixtureItem, world, pos, state, event.getFace(), player, event.getHand(), stack);
+            if (result != InteractionResult.PASS) {
+                event.setCancellationResult(result);
+                return;
+            };
+        };
+
+        // Instantly picking up blocks
         if (state.getBlock() instanceof IPickUpPutDownBlock) {
             if (player instanceof FakePlayer) return;
             if (world.isClientSide()) return;
@@ -646,7 +675,7 @@ public class DestroyCommonEvents {
 
     /**
      * Allow Redstone Link Frequencies to be added to Redstone Programmers without setting the Programmer itself as a Frequency,
-     * and allow the Redstone Programmer Item to be consumed even if in Creative
+     * and allow IPickUpPutDownBlock's Items to be consumed even if in Creative
      * and allow empty Test Tubes to be filled from Fluid Tanks
      */
     @SubscribeEvent
@@ -659,8 +688,7 @@ public class DestroyCommonEvents {
         // Redstone Programmers
         if (event.getItemStack().getItem() instanceof RedstoneProgrammerBlockItem) {
             LinkBehaviour link = BlockEntityBehaviour.get(level, pos, LinkBehaviour.TYPE);
-            if (link != null) {
-                if (player.isShiftKeyDown()) return;
+            if (link != null && !player.isShiftKeyDown()) {
                 RedstoneProgrammerBlockItem.getProgram(stack, level, player).ifPresent((program) -> {
                     Couple<Frequency> key = link.getNetworkKey();
                     if (program.getChannels().stream().anyMatch(channel -> channel.getNetworkKey().equals(key))) {
@@ -676,12 +704,16 @@ public class DestroyCommonEvents {
                         if (level.isClientSide()) player.displayClientMessage(DestroyLang.translate("tooltip.redstone_programmer.add_frequency.success", key.getFirst().getStack().getHoverName(), key.getSecond().getStack().getHoverName()).component(), true); 
                     };
                 });
-            } else { // If we're not clicking on a link
-                InteractionResult result = stack.useOn(new UseOnContext(player, event.getHand(), event.getHitVec()));
-                if (result.consumesAction() && player instanceof ServerPlayer serverPlayer) CriteriaTriggers.ITEM_USED_ON_BLOCK.trigger(serverPlayer, pos, stack);
-                event.setCancellationResult(result);
+                event.setCanceled(true);
+                return;
             };
-            event.setCanceled(true);
+        };
+
+        // Consuming certain Items, even if in Creative
+        if (event.getItemStack().getItem() instanceof BlockItem blockItem && blockItem.getBlock() instanceof IPickUpPutDownBlock) {
+            InteractionResult result = stack.useOn(new UseOnContext(player, event.getHand(), event.getHitVec()));
+            if (result.consumesAction() && player instanceof ServerPlayer serverPlayer) CriteriaTriggers.ITEM_USED_ON_BLOCK.trigger(serverPlayer, pos, stack);
+            event.setCancellationResult(result);
         };
 
         // Fill Test Tubes from any Fluid-containing block
@@ -864,9 +896,9 @@ public class DestroyCommonEvents {
         // Redstone Programmers
         RedstoneProgrammerItemHandler.tick(level);
 
-        // Pollution
+        // Global Pollution
         for (PollutionType pollutionType : PollutionType.values()) {
-            if (!pollutionType.local && level.random.nextInt(500) <= DestroyAllConfigs.SERVER.pollution.pollutionDecreaseRates.get(pollutionType).getF()) PollutionHelper.changePollutionGlobal(event.level, pollutionType, -1);
+            if (PollutionHelper.pollutionEnabled() && !pollutionType.local && level.random.nextFloat() <= DestroyAllConfigs.SERVER.pollution.pollutionDecreaseRates.get(pollutionType).getF()) PollutionHelper.changePollutionGlobal(event.level, pollutionType, -1);
         };
     };
 

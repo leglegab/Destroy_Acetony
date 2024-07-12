@@ -1,6 +1,7 @@
 package com.petrolpark.destroy.config;
 
 import java.util.EnumMap;
+import java.util.stream.Stream;
 
 import com.petrolpark.destroy.capability.Pollution.PollutionType;
 import com.petrolpark.destroy.util.DestroyLang;
@@ -10,7 +11,9 @@ public class DestroyPollutionConfigs extends DestroyConfigBase {
     public final ConfigBool enablePollution = b(true, "enablePollution", Comments.enablePollution);
 
     public final EnumMap<PollutionType, ConfigFloat> pollutionDecreaseRates = enumFloatMap(PollutionType.class, PollutionType.values(), v -> "pollution" + DestroyLang.pascal(v.name()) + "Decrease", v -> new String[]{"The chance per tick that the "+DestroyLang.pascal(v.name()) + " level of the world will decrease"}, 0f, 1f, 0.002f);
-
+    public final EnumMap<PollutionType, ConfigFloat> pollutionSpreadingRates = enumFloatMap(PollutionType.class, Stream.of(PollutionType.values()).filter(p -> p.local).toArray(i -> new PollutionType[i]), v -> "pollution" + DestroyLang.pascal(v.name()) + "SpreadingRate", v -> new String[]{"The chance per tick that the "+DestroyLang.pascal(v.name()) + " level of two adjacent chunks will transfer"}, 0f, 1f, 0.002f);
+    public final EnumMap<PollutionType, ConfigFloat> pollutionSpreadingAmounts = enumFloatMap(PollutionType.class, Stream.of(PollutionType.values()).filter(p -> p.local).toArray(i -> new PollutionType[i]), v -> "pollution" + DestroyLang.pascal(v.name()) + "SpreadingAmount", v -> new String[]{"The "+DestroyLang.pascal(v.name()) + " level transferred between two adjacent chunks", "[If set to 1.0, the two chunks will immediately equalize]"}, 0f, 1f, 0.005f);
+    
     public final ConfigGroup configGroup = group(0, Comments.visualChanges);
     public final ConfigBool smog = b(true, "smog", Comments.smog);
     public final ConfigBool rainColorChanges = b(true, "rainColorChanges", Comments.rainColorChanges);
@@ -25,6 +28,7 @@ public class DestroyPollutionConfigs extends DestroyConfigBase {
     public final ConfigBool temperatureAffected = b(true, "temperatureAffected", Comments.temperatureAffected);
     public final ConfigBool ozoneDepletionGivesCancer = b(true, "ozoneDepletionGivesCancer", Comments.ozoneDepletionGivesCancer);
     public final ConfigBool growingTreesDecreasesPollution = b(true, "growingTreesDecreasesPollution", "Whether growing trees decreases Smog, Greenhouse Gas and Acid Rain levels");
+    public final ConfigBool lightningRegeneratesOzone = b(true, "lightningRegeneratesOzone", "Whether lightning strikes generate ozone, decreasing the Ozone Depletion level");
     
     @Override
 	public String getName() {

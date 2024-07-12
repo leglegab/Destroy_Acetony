@@ -1,5 +1,7 @@
 package com.petrolpark.destroy;
 
+import org.slf4j.Logger;
+
 import com.mojang.logging.LogUtils;
 import com.petrolpark.destroy.advancement.DestroyAdvancementTrigger;
 import com.petrolpark.destroy.badge.Badge;
@@ -27,6 +29,8 @@ import com.petrolpark.destroy.effect.potion.DestroyPotions;
 import com.petrolpark.destroy.entity.DestroyEntityTypes;
 import com.petrolpark.destroy.fluid.DestroyFluids;
 import com.petrolpark.destroy.fluid.pipeEffectHandler.DestroyOpenEndedPipeEffects;
+import com.petrolpark.destroy.item.CoaxialGearBlockItem.GearOnShaftPlacementHelper;
+import com.petrolpark.destroy.item.CoaxialGearBlockItem.ShaftOnGearPlacementHelper;
 import com.petrolpark.destroy.item.DestroyItemProperties;
 import com.petrolpark.destroy.item.DestroyItems;
 import com.petrolpark.destroy.item.attributes.DestroyItemAttributes;
@@ -53,8 +57,9 @@ import com.petrolpark.destroy.world.village.DestroyVillagers;
 import com.simibubi.create.content.equipment.goggles.GogglesItem;
 import com.simibubi.create.foundation.item.ItemDescription;
 import com.simibubi.create.foundation.item.KineticStats;
-import com.simibubi.create.foundation.item.TooltipModifier;
 import com.simibubi.create.foundation.item.TooltipHelper.Palette;
+import com.simibubi.create.foundation.item.TooltipModifier;
+import com.simibubi.create.foundation.placement.PlacementHelpers;
 
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceKey;
@@ -72,8 +77,6 @@ import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.fml.loading.FMLLoader;
 import net.minecraftforge.registries.RegistryBuilder;
-
-import org.slf4j.Logger;
 
 @Mod(Destroy.MOD_ID)
 public class Destroy {
@@ -99,8 +102,9 @@ public class Destroy {
         return new ResourceLocation(MOD_ID, path);
     };
 
-    // Tooltips
+    // Really early stuff
     static {
+        // Tooltips
 		REGISTRATE.setTooltipModifierFactory(item -> {
 			return new ItemDescription.Modifier(item, Palette.STANDARD_CREATE)
 				.andThen(TooltipModifier.mapNull(KineticStats.create(item)))
@@ -108,6 +112,9 @@ public class Destroy {
                 .andThen(new TempramentalItemDescription())
                 .andThen(new ContaminatedItemDescription());
 		});
+        // Placement Helpers which need to come before Create's
+        PlacementHelpers.register(new GearOnShaftPlacementHelper());
+        PlacementHelpers.register(new ShaftOnGearPlacementHelper());
 	};
 
     // Registries

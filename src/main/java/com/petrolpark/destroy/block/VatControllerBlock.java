@@ -22,7 +22,6 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.BlockPlaceContext;
-import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.HorizontalDirectionalBlock;
@@ -107,8 +106,8 @@ public class VatControllerBlock extends HorizontalDirectionalBlock implements IB
     }
 
     @Override
-    public IFluidHandler getTankForMixtureStorageItems(IMixtureStorageItem item, UseOnContext context, boolean rightClick) {
-        return item.selectVatTank(context, getBlockEntity(context.getLevel(), context.getClickedPos()), rightClick);
+    public IFluidHandler getTankForMixtureStorageItems(IMixtureStorageItem item, Level level, BlockPos pos, BlockState state, Direction face, Player player, InteractionHand hand, ItemStack stack, boolean rightClick) {
+        return item.selectVatTank(level, pos, state, face, player, hand, stack, rightClick, getBlockEntity(level, pos));
     };
     
 };

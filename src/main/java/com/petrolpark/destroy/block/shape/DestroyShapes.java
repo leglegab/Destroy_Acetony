@@ -64,6 +64,12 @@ public class DestroyShapes {
         .build(),
 
     MEASURING_CYLINDER = shape(5, 0, 5, 11, 14, 11)
+        .build(),
+
+    BEAKER = shape(4, 0, 4, 12, 8, 12)
+        .build(),
+
+    ROUND_BOTTOMED_FLASK = shape(5, 0, 5, 11, 11, 11)
         .build();
 
     public static final VoxelShaper COAXIAL_GEAR = shape(2, 6, 2, 14, 10, 14)

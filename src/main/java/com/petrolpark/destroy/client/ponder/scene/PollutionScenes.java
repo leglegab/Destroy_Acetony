@@ -23,6 +23,7 @@ import com.simibubi.create.foundation.ponder.SceneBuilder;
 import com.simibubi.create.foundation.ponder.SceneBuildingUtil;
 import com.simibubi.create.foundation.ponder.element.EntityElement;
 import com.simibubi.create.foundation.ponder.element.InputWindowElement;
+import com.simibubi.create.foundation.ponder.element.WorldSectionElement;
 import com.simibubi.create.foundation.ponder.instruction.EmitParticlesInstruction.Emitter;
 import com.simibubi.create.foundation.utility.Color;
 import com.simibubi.create.foundation.utility.Pointing;
@@ -48,7 +49,7 @@ import net.minecraft.world.phys.Vec3;
 
 public class PollutionScenes {
 
-    private static Emitter emitter = Emitter.simple(new GasParticleData(DestroyParticleTypes.EVAPORATION.get(), MixtureFluid.of(100, Mixture.pure(DestroyMolecules.NITROGEN_DIOXIDE))), new Vec3(0d, 0.05d, 0d));
+    private static final Emitter emitter = Emitter.simple(new GasParticleData(DestroyParticleTypes.EVAPORATION.get(), MixtureFluid.of(100, Mixture.pure(DestroyMolecules.NITROGEN_DIOXIDE))), new Vec3(0d, 0.05d, 0d));
     
     public static final void pipesAndTanks(SceneBuilder scene, SceneBuildingUtil util) {
         scene.title("pollution.tanks", "This text is defined in a language file.");
@@ -497,6 +498,51 @@ public class PollutionScenes {
 
     public static final void reduction(SceneBuilder scene, SceneBuildingUtil util) {
         scene.title("pollution.reduction", "This text is defined in a language file.");
+        scene.configureBasePlate(0, 0, 5);
+        scene.addInstruction(new SmogInstruction(PollutionType.SMOG.max));
+        scene.world.showSection(util.select.fromTo(0, 0, 0, 4, 2, 4), Direction.UP);
+
+        BlockPos sapling = util.grid.at(2, 2, 2);
+
+        scene.overlay.showText(100)
+            .text("This text is defined in a language file.")
+            .independent();
+        for (int i = 200; i >= 100; i--) {
+            scene.addInstruction(new SmogInstruction(i * PollutionType.SMOG.max / 200));
+            Color color = new Color(Color.mixColors(0xFF3E5EB8,0xFF00FF00,  (float)i / 200f));
+            scene.effects.emitParticles(Vec3.ZERO, DestroyEmitters.rain(new AABB(0d, 11d, 0d, 5d, 12d, 5d), color.getRedAsFloat(), color.getGreenAsFloat(), color.getBlueAsFloat()), 100f, 1);
+            scene.idle(1);
+        };
+        scene.effects.emitParticles(Vec3.ZERO, DestroyEmitters.rain(new AABB(0d, 11d, 0d, 5d, 12d, 5d), 31 / 256f, 174 / 256f, 92 / 256f), 100f, 50);
+        scene.idle(20);
+        scene.overlay.showText(140)
+            .text("This text is defined in a language file.")
+            .independent()
+            .attachKeyFrame();
+        scene.idle(20);
+        scene.overlay.showControls(
+            new InputWindowElement(util.vector.blockSurface(sapling, Direction.WEST), Pointing.LEFT)
+            .rightClick()
+            .withItem(new ItemStack(Items.BONE_MEAL)),
+        40
+        );
+        scene.idle(10);
+        ElementLink<WorldSectionElement> tree = scene.world.showIndependentSection(util.select.fromTo(0, 3, 0, 4, 10, 4), Direction.DOWN, 0);
+        scene.world.moveSection(tree, util.vector.of(0d, -1d, 0d), 0);
+        growthSuccessParticles(scene, util, sapling);
+
+        for (int i = 100; i >= 0; i--) {
+            scene.addInstruction(new SmogInstruction(i * PollutionType.SMOG.max / 200));
+            Color color = new Color(Color.mixColors(0xFF3E5EB8,0xFF00FF00,  (float)i / 200f));
+            scene.effects.emitParticles(Vec3.ZERO, DestroyEmitters.rain(new AABB(0d, 11d, 0d, 5d, 12d, 5d), color.getRedAsFloat(), color.getGreenAsFloat(), color.getBlueAsFloat()), 100f, 1);
+            scene.idle(1);
+        };
+        scene.markAsFinished();
+    };
+
+    public static final void lightning(SceneBuilder scene, SceneBuildingUtil uitl) {
+        scene.title("pollution.lightning", "This text is defined in a language file.");
+
     };
 
     public static final void catalyticConverter(SceneBuilder scene, SceneBuildingUtil util) {

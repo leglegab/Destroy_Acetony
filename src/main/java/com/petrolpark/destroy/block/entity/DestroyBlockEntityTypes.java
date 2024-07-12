@@ -3,6 +3,7 @@ package com.petrolpark.destroy.block.entity;
 import static com.petrolpark.destroy.Destroy.REGISTRATE;
 
 import com.petrolpark.destroy.block.DestroyBlocks;
+import com.petrolpark.destroy.block.entity.SimpleMixtureTankBlockEntity.SimplePlaceableMixtureTankBlockEntity;
 import com.petrolpark.destroy.block.instance.CentrifugeCogInstance;
 import com.petrolpark.destroy.block.instance.DoubleCardanShaftInstance;
 import com.petrolpark.destroy.block.instance.DynamoCogInstance;
@@ -18,6 +19,7 @@ import com.petrolpark.destroy.block.renderer.DifferentialRenderer;
 import com.petrolpark.destroy.block.renderer.DoubleCardanShaftRenderer;
 import com.petrolpark.destroy.block.renderer.DynamoRenderer;
 import com.petrolpark.destroy.block.renderer.KeypunchRenderer;
+import com.petrolpark.destroy.block.renderer.SimpleMixtureTankRenderer;
 import com.petrolpark.destroy.block.renderer.PlanetaryGearsetRenderer;
 import com.petrolpark.destroy.block.renderer.PollutometerRenderer;
 import com.petrolpark.destroy.block.renderer.PumpjackRenderer;
@@ -36,6 +38,12 @@ public class DestroyBlockEntityTypes {
         .blockEntity("aging_barrel", AgingBarrelBlockEntity::new)
         .validBlocks(DestroyBlocks.AGING_BARREL)
         .renderer(() -> AgingBarrelRenderer::new)
+        .register();
+
+    public static final BlockEntityEntry<SimplePlaceableMixtureTankBlockEntity> SIMPLE_MIXTURE_TANK = REGISTRATE
+        .blockEntity("simple_mixture_tank", SimplePlaceableMixtureTankBlockEntity::new)
+        .validBlocks(DestroyBlocks.BEAKER, DestroyBlocks.ROUND_BOTTOMED_FLASK)
+        .renderer(() -> SimpleMixtureTankRenderer::new)
         .register();
 
     public static final BlockEntityEntry<BubbleCapBlockEntity> BUBBLE_CAP = REGISTRATE
@@ -60,7 +68,7 @@ public class DestroyBlockEntityTypes {
     public static final BlockEntityEntry<CoaxialGearBlockEntity> COAXIAL_GEAR = REGISTRATE
 		.blockEntity("coaxial_gear", CoaxialGearBlockEntity::new)
 		.instance(() -> BracketedKineticBlockEntityInstance::new, false)
-		.validBlocks(DestroyBlocks.COAXIAL_GEAR)
+		.validBlocks(DestroyBlocks.COAXIAL_GEAR, DestroyBlocks.LARGE_COAXIAL_GEAR)
 		.renderer(() -> BracketedKineticBlockEntityRenderer::new)
 		.register();
 

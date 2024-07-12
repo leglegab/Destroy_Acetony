@@ -5,12 +5,14 @@ import java.util.List;
 import com.petrolpark.destroy.block.entity.DestroyBlockEntityTypes;
 import com.petrolpark.destroy.block.entity.TestTubeRackBlockEntity;
 import com.petrolpark.destroy.block.shape.DestroyShapes;
+import com.petrolpark.destroy.item.IMixtureStorageItem;
 import com.petrolpark.destroy.util.MathsHelper;
 import com.simibubi.create.content.equipment.wrench.IWrenchable;
 import com.simibubi.create.foundation.block.IBE;
 import com.simibubi.create.foundation.item.ItemHelper;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.core.Direction.Axis;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -30,8 +32,10 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
+import net.minecraftforge.common.capabilities.ForgeCapabilities;
+import net.minecraftforge.fluids.capability.IFluidHandler;
 
-public class TestTubeRackBlock extends Block implements IBE<TestTubeRackBlockEntity>, IWrenchable {
+public class TestTubeRackBlock extends Block implements IBE<TestTubeRackBlockEntity>, IWrenchable, ISpecialMixtureContainerBlock {
 
     public static final BooleanProperty X = BooleanProperty.create("x");
 
@@ -112,6 +116,16 @@ public class TestTubeRackBlock extends Block implements IBE<TestTubeRackBlockEnt
     @Override
     public BlockEntityType<? extends TestTubeRackBlockEntity> getBlockEntityType() {
         return DestroyBlockEntityTypes.TEST_TUBE_RACK.get();
+    }
+
+    @Override
+    public IFluidHandler getTankForMixtureStorageItems(IMixtureStorageItem item, Level level, BlockPos pos, BlockState state, Direction face, Player player, InteractionHand hand, ItemStack stack, boolean rightClick) {
+        TestTubeRackBlockEntity be = getBlockEntity(level, pos);
+        if (be == null) return null;
+        int tube = getTargetedTube(state, pos, player);
+        if (tube == -1) return null;
+        ItemStack tubeStack = be.inv.getStackInSlot(tube);
+        return tubeStack.getCapability(ForgeCapabilities.FLUID_HANDLER_ITEM).orElse(null);
     };
     
 };

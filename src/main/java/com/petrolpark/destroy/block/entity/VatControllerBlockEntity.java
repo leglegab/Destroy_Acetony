@@ -449,7 +449,7 @@ public class VatControllerBlockEntity extends SmartBlockEntity implements IHaveG
 
     private void finalizeVatConstruction() {
         tankBehaviour.allowExtraction(); // Enable extraction from the Vat now it actually exists
-        tankBehaviour.setVatCapacity(vat.get().getCapacity());
+        tankBehaviour.setCapacity(vat.get().getCapacity());
         updateFluidCapability();
         invalidateRenderBoundingBox(); // Update the render box to be larger
         notifyUpdate();

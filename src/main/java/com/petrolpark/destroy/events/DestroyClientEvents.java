@@ -4,7 +4,6 @@ import javax.annotation.Nonnull;
 
 import org.apache.commons.lang3.mutable.MutableObject;
 
-import com.jozufozu.flywheel.util.Color;
 import com.mojang.datafixers.util.Either;
 import com.petrolpark.destroy.Destroy;
 import com.petrolpark.destroy.block.renderer.BlockEntityBehaviourRenderer;
@@ -21,6 +20,8 @@ import com.petrolpark.destroy.util.CogwheelChainingHandler;
 import com.petrolpark.destroy.util.DestroyLang;
 import com.petrolpark.destroy.util.PollutionHelper;
 import com.petrolpark.destroy.world.explosion.ExplosiveProperties;
+import com.simibubi.create.foundation.utility.AnimationTickHolder;
+import com.simibubi.create.foundation.utility.Color;
 import com.simibubi.create.infrastructure.gui.OpenCreateMenuButton.MenuRows;
 
 import net.minecraft.ChatFormatting;
@@ -90,7 +91,8 @@ public class DestroyClientEvents {
             Minecraft mc = Minecraft.getInstance();
             float smog = (float)PollutionHelper.getPollution(mc.level, mc.player.blockPosition(), PollutionType.SMOG);
             Color existing = new Color(event.getRed(), event.getGreen(), event.getBlue(), 1f);
-            Color color = Color.mixColors(existing, BROWN, 0.8f * smog / (float)PollutionType.SMOG.max);
+            Destroy.FOG_HANDLER.setTargetColor(Color.mixColors(existing, BROWN, 0.8f * smog / (float)PollutionType.SMOG.max));
+            Color color = Destroy.FOG_HANDLER.getColor(AnimationTickHolder.getPartialTicks());
             event.setRed(color.getRedAsFloat());
             event.setGreen(color.getGreenAsFloat());
             event.setBlue(color.getBlueAsFloat());

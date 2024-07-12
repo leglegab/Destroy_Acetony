@@ -59,7 +59,8 @@ public class VatFluidTankBehaviour extends GeniusFluidTankBehaviour {
         return (VatTankSegment)tanks[1];
     };
 
-    public void setVatCapacity(int capacity) {
+    @Override
+    public void setCapacity(int capacity) {
         vatCapacity = capacity;
         for (TankSegment tankSegment : tanks) {
             ((VatTankSegment)tankSegment).getTank().setCapacity(capacity);

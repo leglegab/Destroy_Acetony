@@ -1,40 +1,29 @@
 package com.petrolpark.destroy.client.fog;
 
 import com.simibubi.create.foundation.utility.Color;
+import com.simibubi.create.foundation.utility.animation.LerpedFloat;
+import com.simibubi.create.foundation.utility.animation.LerpedFloat.Chaser;
 
 public class FogHandler {
 
-    protected static final int FADE_DURATION = 20;
-
-    protected int fade;
-    protected Color lastColor;
-    protected Color currentColor;
-    protected Color nextTickColor;
-    protected Color targetColor;
+    protected Color targetColor = new Color(0x00FFFFFF);
+    protected Color lastColor = new Color(0x00FFFFFF);
+    protected LerpedFloat colorMix = LerpedFloat.linear();
 
     public void tick() {
-        if (fade > 0) {
-            fade--;
-            currentColor = Color.mixColors(targetColor, lastColor, (float)fade / FADE_DURATION);
-            calculateNextTickColor();
-        } else {
-            lastColor = currentColor = nextTickColor = targetColor;
-        };
+        colorMix.tickChaser();
+        if (colorMix.getValue() >= 1d) lastColor = targetColor;
     };
 
-    public void setColor(Color color) {
+    public void setTargetColor(Color color) {
         if (color.equals(targetColor)) return;
-        fade = FADE_DURATION;
+        lastColor = Color.mixColors(lastColor, targetColor, colorMix.getValue());
         targetColor = color;
-        lastColor = currentColor;
-        calculateNextTickColor();
+        colorMix.setValue(0d);
+        colorMix.chase(1d, 0.2d, Chaser.EXP);
     };
 
-    protected void calculateNextTickColor() {
-        nextTickColor = Color.mixColors(targetColor, lastColor, fade == 0 ? 0f : (float)(fade - 1) / FADE_DURATION);
-    };
-
-    public int getColor(float partialTicks) {
-        return Color.mixColors(currentColor, nextTickColor, partialTicks).getRGB();
+    public Color getColor(float partialTicks) {
+        return Color.mixColors(lastColor, targetColor, colorMix.getValue(partialTicks));
     };
 };

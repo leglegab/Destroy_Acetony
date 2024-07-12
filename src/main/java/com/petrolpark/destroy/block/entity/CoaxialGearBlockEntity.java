@@ -50,7 +50,7 @@ public class CoaxialGearBlockEntity extends BracketedKineticBlockEntity {
             };
             if (!longShaftExists) {
                 getLevel().setBlockAndUpdate(getBlockPos(), AllBlocks.SHAFT.getDefaultState().setValue(RotatedPillarKineticBlock.AXIS, axis));
-                Block.popResource(getLevel(), getBlockPos(), DestroyBlocks.COAXIAL_GEAR.asStack());
+                Block.dropResources(getBlockState(), level, getBlockPos());
             };
         };
     };

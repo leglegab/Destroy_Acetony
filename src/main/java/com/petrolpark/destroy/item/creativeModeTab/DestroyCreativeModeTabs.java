@@ -50,7 +50,7 @@ public class DestroyCreativeModeTabs {
 			.add(
 
 				s("chemistry_equipment"),
-				i(DestroyBlocks.VAT_CONTROLLER), i(DestroyBlocks.STAINLESS_STEEL_BLOCK), i(DestroyBlocks.BOROSILICATE_GLASS), d(AllBlocks.FLUID_PIPE), d(AllBlocks.MECHANICAL_PUMP), i(DestroyItems.TEST_TUBE), d(AllBlocks.CREATIVE_FLUID_TANK), d(AllBlocks.BLAZE_BURNER), i(DestroyBlocks.COOLER), i(DestroyBlocks.BUBBLE_CAP), i(DestroyBlocks.CENTRIFUGE), i(DestroyBlocks.DYNAMO), i(DestroyBlocks.BLACKLIGHT), i(DestroyBlocks.COLORIMETER), i(DestroyBlocks.TEST_TUBE_RACK), i(DestroyBlocks.MEASURING_CYLINDER), i(DestroyItems.GAS_MASK), i(DestroyItems.HAZMAT_SUIT), i(DestroyItems.HAZMAT_LEGGINGS), i(DestroyItems.WELLINGTON_BOOTS),
+				i(DestroyBlocks.VAT_CONTROLLER), i(DestroyBlocks.STAINLESS_STEEL_BLOCK), i(DestroyBlocks.BOROSILICATE_GLASS), d(AllBlocks.FLUID_PIPE), d(AllBlocks.MECHANICAL_PUMP), d(AllBlocks.CREATIVE_FLUID_TANK), d(AllBlocks.BLAZE_BURNER), i(DestroyBlocks.COOLER), i(DestroyBlocks.BUBBLE_CAP), i(DestroyBlocks.CENTRIFUGE), i(DestroyBlocks.DYNAMO), i(DestroyBlocks.BLACKLIGHT), i(DestroyBlocks.COLORIMETER),  i(DestroyBlocks.BEAKER), i(DestroyItems.TEST_TUBE), i(DestroyBlocks.TEST_TUBE_RACK), i(DestroyBlocks.MEASURING_CYLINDER), i(DestroyBlocks.ROUND_BOTTOMED_FLASK), i(DestroyItems.GAS_MASK), i(DestroyItems.HAZMAT_SUIT), i(DestroyItems.HAZMAT_LEGGINGS), i(DestroyItems.WELLINGTON_BOOTS),
 
 				s("common_chemicals"),
 
@@ -58,7 +58,7 @@ public class DestroyCreativeModeTabs {
 				i(DestroyBlocks.AGING_BARREL), i(DestroyBlocks.EXTRUSION_DIE), i(DestroyBlocks.KEYPUNCH), i(DestroyBlocks.PUMPJACK), i(DestroyBlocks.TREE_TAP), i(DestroyItems.SEISMOMETER), i(DestroyBlocks.REDSTONE_PROGRAMMER), i(DestroyBlocks.POLLUTOMETER),
 
 				s("kinetics"),
-				i(DestroyBlocks.COAXIAL_GEAR), i(DestroyBlocks.COLOSSAL_COGWHEEL), i(DestroyBlocks.DIFFERENTIAL), i(DestroyBlocks.DOUBLE_CARDAN_SHAFT), i(DestroyBlocks.PLANETARY_GEARSET),
+				i(DestroyBlocks.COAXIAL_GEAR), i(DestroyBlocks.LARGE_COAXIAL_GEAR), i(DestroyBlocks.COLOSSAL_COGWHEEL), i(DestroyBlocks.DIFFERENTIAL), i(DestroyBlocks.DOUBLE_CARDAN_SHAFT), i(DestroyBlocks.PLANETARY_GEARSET),
 
 				s("metals"),
 				n(), i(DestroyItems.CHROMIUM_INGOT), i(DestroyBlocks.CHROMIUM_BLOCK), i(DestroyItems.CHROMIUM_POWDER), i(DestroyItems.CRUSHED_RAW_CHROMIUM), d(DestroyItems.CHROMIUM_NUGGET),
