@@ -45,10 +45,6 @@ public class Pollution {
         });
     };
 
-    public static Pollution level() {
-        return new Pollution(false);
-    };
-
     /**
      * Get the value of the given type of Pollution in this Level.
      */
@@ -102,14 +98,6 @@ public class Pollution {
         if (type.local != local) throw new IllegalArgumentException("Pollution Type "+type.name()+" has the wrong locality.");
     };
 
-    public static class LevelProvider extends Provider<Pollution> {
-
-        public LevelProvider() {
-            super(Pollution::level);
-        };
-
-    };
-
     public static class PonderProvider extends Provider<Pollution> {
         
         public PonderProvider() {
@@ -117,15 +105,28 @@ public class Pollution {
         };
     };
 
-    public static class Chunk extends Pollution {
+    public static class Level extends Pollution {
 
-        private int smogLevelSinceLastRerender;
         private float outdoorTemperature; // In kelvins
 
-        public Chunk() {
-            super(true);
-            smogLevelSinceLastRerender = levels.get(PollutionType.SMOG);
+        public Level() {
+            super(false);
             outdoorTemperature = 289f;
+        };
+
+        @Override
+        public int set(PollutionType pollutionType, int value) {
+            int result = super.set(pollutionType, value);
+            updateTemperature();
+            return result;
+        };
+
+        public void updateTemperature() {
+            outdoorTemperature = 289f;
+            if (!PollutionHelper.pollutionEnabled() || !DestroyAllConfigs.SERVER.pollution.temperatureAffected.get()) return;
+            outdoorTemperature +=
+                (get(PollutionType.GREENHOUSE) / PollutionType.GREENHOUSE.max) * 20f
+              + (get(PollutionType.OZONE_DEPLETION) / PollutionType.OZONE_DEPLETION.max) * 4f;
         };
 
         @Override
@@ -137,24 +138,31 @@ public class Pollution {
         @Override
         public void loadNBTData(CompoundTag tag) {
             super.loadNBTData(tag);
-            outdoorTemperature = tag.getFloat("OutdoorTemperature");
-        };
-
-        //TODO reimplement elsewhere
-        public void updateTemperature() {
-            outdoorTemperature = 289f;
-            if (!PollutionHelper.pollutionEnabled() || !DestroyAllConfigs.SERVER.pollution.temperatureAffected.get()) return;
-            outdoorTemperature +=
-                (get(PollutionType.GREENHOUSE) / PollutionType.GREENHOUSE.max) * 20f
-              + (get(PollutionType.OZONE_DEPLETION) / PollutionType.OZONE_DEPLETION.max) * 4f;
-        };
-
-        public void setTemperature(float temperature) {
-            outdoorTemperature = temperature;
+            outdoorTemperature = tag.getFloat("Temperature");
         };
 
         public float getOutdoorTemperature() {
             return outdoorTemperature;
+        };
+
+        public static class Provider extends Pollution.Provider<Pollution.Level> {
+
+            public Provider() {
+                super(Pollution.Level::new);
+            };
+    
+        };
+    
+    };
+
+    public static class Chunk extends Pollution {
+
+        private int smogLevelSinceLastRerender;
+
+
+        public Chunk() {
+            super(true);
+            smogLevelSinceLastRerender = levels.get(PollutionType.SMOG);
         };
 
         public boolean checkRerender() {
@@ -219,8 +227,8 @@ public class Pollution {
      * @see Pollution#getGlobalTemperature Get the temperature not accounting for the Biome
      */
     public static float getLocalTemperature(net.minecraft.world.level.Level level, BlockPos pos) {
-        return level.getChunkAt(pos).getCapability(CAPABILITY).map(pollution -> {
-            return ((Pollution.Chunk)pollution).outdoorTemperature + (10f * level.getBiome(pos).get().getBaseTemperature());
+        return level.getCapability(CAPABILITY).map(pollution -> {
+            return ((Pollution.Level)pollution).getOutdoorTemperature() + (10f * level.getBiome(pos).get().getBaseTemperature());
         }).orElse(289f);
     };
 

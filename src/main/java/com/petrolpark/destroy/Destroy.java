@@ -64,6 +64,7 @@ import com.simibubi.create.foundation.placement.PlacementHelpers;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.data.event.GatherDataEvent;
@@ -97,6 +98,7 @@ public class Destroy {
 
     // Client things
     public static final FogHandler FOG_HANDLER = new FogHandler();
+    public static final ItemDisplayContext BELT_DISPLAY_CONTEXT = ItemDisplayContext.create("belt", Destroy.asResource("belt"), ItemDisplayContext.FIXED);
 
     public static ResourceLocation asResource(String path) {
         return new ResourceLocation(MOD_ID, path);

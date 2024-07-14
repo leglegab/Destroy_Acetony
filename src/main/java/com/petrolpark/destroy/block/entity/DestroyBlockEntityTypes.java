@@ -137,6 +137,7 @@ public class DestroyBlockEntityTypes {
     public static final BlockEntityEntry<MeasuringCylinderBlockEntity> MEASURING_CYLINDER = REGISTRATE
         .blockEntity("measuring_cylinder", MeasuringCylinderBlockEntity::new)
         .validBlock(DestroyBlocks.MEASURING_CYLINDER)
+        .renderer(() -> SimpleMixtureTankRenderer::new)
         .register();
 
     public static final BlockEntityEntry<PlanetaryGearsetBlockEntity> PLANETARY_GEARSET = REGISTRATE

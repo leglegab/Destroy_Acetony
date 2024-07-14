@@ -4,7 +4,7 @@ import com.petrolpark.destroy.chemistry.api.util.Namespace;
 
 /**
  * An object which has an associated {@link Namespace}.
- * @since 1.0
+ * @since Destroy 1.0
  * @author petrolpark
  */
 public interface INamespace {

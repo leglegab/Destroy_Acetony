@@ -7,7 +7,7 @@ import net.minecraftforge.common.MinecraftForge;
 
 /**
  * The Minecraft Forge implementation of {@link IChemistryEventFirer}.
- * @since 1.0
+ * @since Destroy 1.0
  * @author petrolpark
  */
 public class ForgeChemistryEventFirer implements IChemistryEventFirer {

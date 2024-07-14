@@ -3,7 +3,7 @@ package com.petrolpark.destroy.chemistry.api.registry;
 /**
  * An object whose intended use is to collect {@link IRegisteredChemistryObject} to store in a {@link IChemistryRegistry}.
  * It allows multiple {@link com.petrolpark.destroy.chemistry.api.event.IChemistryEvent IChemistryEvent} subscribers to attempt to register objects with the same {@code ID}, by picking the one registered with the highest priority.
- * @since 1.0
+ * @since Destroy 1.0
  * @author petrolpark
  * @see PriorityRegistration Default implementation
  */

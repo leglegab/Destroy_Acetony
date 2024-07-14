@@ -6,7 +6,7 @@ import java.util.HashMap;
 /**
  * An implementation of {@link IChemistryRegistry} which simply uses a {@link HashMap} to store its {@link IRegisteredChemistryObject}s.
  * Once {@link HashMapRegistry#finalizeRegistration() finalized}, if any {@link IRegisteredChemistryObject} is attempted to be {@link IChemistryRegistry#register(IRegisteredChemistryObject) registered}, an error is thrown.
- * @since 1.0
+ * @since Destroy 1.0
  * @author petrolpark
  */
 public class HashMapRegistry<ID, T extends IRegisteredChemistryObject<T, ID>> implements IChemistryRegistry<T, ID> {
@@ -21,7 +21,7 @@ public class HashMapRegistry<ID, T extends IRegisteredChemistryObject<T, ID>> im
      * @param object An object to store, which should be accessible at any point during runtime
      * @throws IllegalArgumentException If the {@link IRegisteredChemistryObject} has no {@link IRegisteredChemistryObject#getId() id}
      * @throws IllegalStateException If this registry can no longer register new {@link IRegisteredChemistryObject}s
-     * @since 1.0
+     * @since Destroy 1.0
      * @author petrolpark
      */
     @Override

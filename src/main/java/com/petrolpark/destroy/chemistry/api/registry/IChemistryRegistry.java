@@ -4,7 +4,7 @@ import javax.annotation.Nullable;
 
 /**
  * An object which indexes chemistry-related objects.
- * @since 1.0
+ * @since Destroy 1.0
  * @author petrolpark
  * @see HashMapRegistry Default implementation
  */
@@ -16,7 +16,7 @@ public interface IChemistryRegistry<T extends IRegisteredChemistryObject<T, ID>,
      * @param <T> The type of the object
      * @param object An object to store, which should be accessible at any point during runtime
      * @throws IllegalArgumentException If the {@link IRegisteredChemistryObject} has no {@link IRegisteredChemistryObject#getId() id}
-     * @since 1.0
+     * @since Destroy 1.0
      * @author petrolpark
      */
     public void register(T object) throws IllegalArgumentException;

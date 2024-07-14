@@ -115,6 +115,11 @@
 		"fixed": {
 			"rotation": [0, 180, 0],
 			"scale": [0.75, 0.75, 0.75]
+		},
+		"destroy:belt": {
+			"rotation": [0, 180, 0],
+			"translation": [0, 5, 0],
+			"scale": [1.5, 1.5, 1.5]
 		}
 	}
 }

@@ -57,6 +57,12 @@ public class TestTubeRackBlockEntity extends SmartBlockEntity implements ISpecia
     };
 
     @Override
+    public void tick() {
+        super.tick();
+        sendData();
+    };
+
+    @Override
     protected void read(CompoundTag tag, boolean clientPacket) {
         super.read(tag, clientPacket);
         inv = new TestTubeRackInventory();

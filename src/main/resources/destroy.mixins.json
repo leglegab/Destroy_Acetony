@@ -79,8 +79,10 @@
     ],
     "client": [
         "compat.jei.ProcessingRecipeMixin",
+        "BeltRendererMixin",
         "ClientLevelMixin",
         "CreativeModeInventoryScreenMixin",
+        "DepotRendererMixin",
         "EffectRenderingInventoryScreenMixin",
         "ForgeMod$2$1Mixin",
         "GuiMixin",

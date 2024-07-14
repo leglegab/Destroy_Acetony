@@ -66,6 +66,18 @@
       },
       {
         "type": "single",
+        "resource": "destroy:entity/armor/paper_mask"
+      },
+      {
+        "type": "single",
+        "resource": "destroy:entity/armor/laboratory_goggles"
+      },
+      {
+        "type": "single",
+        "resource": "destroy:entity/armor/gold_laboratory_goggles"
+      },
+      {
+        "type": "single",
         "resource": "destroy:item/test_tube_overlay"
       },
       {

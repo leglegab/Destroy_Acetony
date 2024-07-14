@@ -29,7 +29,7 @@ public class CircuitBoardItem extends CircuitPatternItem {
     @Override
     @OnlyIn(Dist.CLIENT)
     public void initializeClient(Consumer<IClientItemExtensions> consumer) {
-        consumer.accept(SimpleCustomRenderer.create(this, new CircuitPatternItemRenderer(false, Destroy.asResource("item/circuit_pattern/circuit_board"))));
+        consumer.accept(SimpleCustomRenderer.create(this, new CircuitPatternItemRenderer(Destroy.asResource("item/circuit_pattern/circuit_board"))));
     };
     
 };

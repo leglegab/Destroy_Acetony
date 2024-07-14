@@ -9,7 +9,7 @@ import com.petrolpark.destroy.chemistry.api.util.AttachedInteger;
 /**
  * Default implementation of {@link IPriorityRegistration}.
  * This stores all {@code id}s, {@link IRegisteredChemistryObject}s and {@code priority}s in a weakly-referenced {@link Map}, which are then all loaded into the {@link IChemistryRegistry}.
- * @since 1.0
+ * @since Destroy 1.0
  * @author petrolpark
  */
 public class PriorityRegistration<T extends IRegisteredChemistryObject<T, ID>, ID, R extends IChemistryRegistry<T, ID>> implements IPriorityRegistration<T, ID, R> {

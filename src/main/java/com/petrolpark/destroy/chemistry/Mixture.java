@@ -134,7 +134,9 @@ public class Mixture extends ReadOnlyMixture {
             Molecule molecule = Molecule.getMolecule(moleculeTag.getString("Molecule"));
             mixture.internalAddMolecule(molecule, moleculeTag.getFloat("Concentration"), false);
             if (moleculeTag.contains("Gaseous",Tag.TAG_FLOAT)) {
-                mixture.states.put(molecule, moleculeTag.getFloat("Gaseous"));
+                float state = moleculeTag.getFloat("Gaseous");
+                mixture.states.put(molecule, state);
+                if (state != 0f && state != 1f) mixture.boiling = true;
             } else { // If we're not told the state, guess it
                 mixture.states.put(molecule, molecule.getBoilingPoint() < mixture.temperature ? 1f : 0f);
             };
@@ -412,7 +414,7 @@ public class Mixture extends ReadOnlyMixture {
             return;
         } else if (temperatureChange > 0f) { // If the temperature would be increasing
             if (nextHigherBoilingPoint.getSecond() != null && temperature + temperatureChange >= nextHigherBoilingPoint.getFirst()) { // If a Molecule needs to boil before the temperature can change
-
+                
                 temperatureChange = nextHigherBoilingPoint.getFirst() - temperature; // Only increase the temperature by enough to get to the next BP
                 temperature += temperatureChange; // Raise the Mixture to the boiling point
                 energyDensity -= temperatureChange * getVolumetricHeatCapacity(); // Energy leftover once the Mixture has been raised to the boiling point
@@ -425,13 +427,16 @@ public class Mixture extends ReadOnlyMixture {
                     states.put(molecule, 1f); // Convert the Molecule fully to gas
                     temperature += 0.01f; // Increase the temperature slightly so the new next higher Molecule isn't the one we just finished boiling
                     updateNextBoilingPoints();
+                    boiling = false; // If we're just increasing the temperature, then all Molecule are either fully gaseous or liquid
                     heat(energyDensity - energyRequiredToFullyBoil); // Continue heating
                 } else { // If there is no leftover energy and the Molecule is still boiling
                     float boiled = energyDensity / (molecule.getLatentHeat() * getConcentrationOf(molecule)); // The proportion of all of the Molecule which is additionally boiled
                     states.merge(molecule, boiled, (f1, f2) -> f1 + f2);
+                    boiling = true; // Set the fact that there is a Molecule which will be not fully gaseous or liquid
                 };
 
-                equilibrium = false; // Equilibrium is broken when a Molecule evaporates
+                equilibrium = false; // Equilibrium is broken when a Molecule boils
+
             } else {
                 temperature += temperatureChange;
             };
@@ -450,10 +455,12 @@ public class Mixture extends ReadOnlyMixture {
                     states.put(molecule, 0f); // Convert the Molecule fully to liquid
                     temperature -= 0.01f; // Decrease the temperature slightly so the new next lower Molecule isn't the one we just finished condensing
                     updateNextBoilingPoints();
+                    boiling = false; // If we're just increasing the temperature, then all Molecule are either fully gaseous or liquid
                     heat(energyDensity + energyReleasedWhenFullyCondensed); // Continue cooling
                 } else {
                     float condensed = -energyDensity / (molecule.getLatentHeat() * getConcentrationOf(molecule));
                     states.merge(molecule, 1f - condensed, (f1, f2) -> f1 + f2 - 1f);
+                    boiling = true; // Set the fact that a Molecule is currently not fully gaseous or liquid
                 };
 
                 equilibrium = false; // Equilibrium is broken when a Molecule condenses

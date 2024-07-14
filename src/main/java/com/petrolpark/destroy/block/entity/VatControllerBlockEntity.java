@@ -23,6 +23,7 @@ import com.petrolpark.destroy.chemistry.Mixture;
 import com.petrolpark.destroy.chemistry.Reaction;
 import com.petrolpark.destroy.chemistry.ReadOnlyMixture;
 import com.petrolpark.destroy.chemistry.Mixture.ReactionContext;
+import com.petrolpark.destroy.client.particle.BoilingFluidBubbleParticle;
 import com.petrolpark.destroy.config.DestroyAllConfigs;
 import com.petrolpark.destroy.fluid.DestroyFluids;
 import com.petrolpark.destroy.fluid.MixtureFluid;
@@ -94,11 +95,13 @@ public class VatControllerBlockEntity extends SmartBlockEntity implements IHaveG
      */
     protected float UVPower;
 
-    /**
-     * As the client side doesn't have access to the cached Mixture, store the pressure and temperature.
+    /*
+     * As the client side doesn't have access to the cached Mixture, store the pressure, temperature, and whether it is boiling or at equilibrium
      */
     protected LerpedFloat pressure = LerpedFloat.linear();
     protected LerpedFloat temperature = LerpedFloat.linear();
+    protected boolean cachedMixtureBoiling = false;
+    protected boolean cachedMixtureReacting = false;
 
     protected VatFluidTankBehaviour tankBehaviour;
     protected LazyOptional<IFluidHandler> fluidCapability;
@@ -183,6 +186,7 @@ public class VatControllerBlockEntity extends SmartBlockEntity implements IHaveG
         if (getLevel().isClientSide()) { // It thinks getLevel() might be null (it's not)
             pressure.tickChaser();
             temperature.tickChaser();
+            addParticles();
         } else {
             if (getVatOptional().isEmpty()) return;
             boolean shouldUpdateFluidMixture = false;
@@ -199,6 +203,7 @@ public class VatControllerBlockEntity extends SmartBlockEntity implements IHaveG
                 energyChange /= 20 * cyclesPerTick;
                 if (Math.abs(energyChange / (fluidAmount * cachedMixture.getVolumetricHeatCapacity())) > 0.001f && fluidAmount != 0d) { // Only bother heating if the temperature change will be somewhat significant
                     cachedMixture.heat(energyChange / (float)fluidAmount);
+                    cachedMixture.disturbEquilibrium();
                 } else {
                     break;
                 };
@@ -299,6 +304,8 @@ public class VatControllerBlockEntity extends SmartBlockEntity implements IHaveG
         if (clientPacket) {
             pressure.chase(tag.getFloat("Pressure"), 0.125f, Chaser.EXP);
             temperature.chase(tag.getFloat("Temperature"), 0.125f, Chaser.EXP);
+            cachedMixtureBoiling = tag.getBoolean("AnythingBoiling");
+            cachedMixtureReacting = tag.getBoolean("AnythingReacting");
         } else {
             if (tag.contains("VentPos", Tag.TAG_COMPOUND)) openVentPos = NbtUtils.readBlockPos(tag.getCompound("VentPos"));
             updateCachedMixture();
@@ -329,6 +336,8 @@ public class VatControllerBlockEntity extends SmartBlockEntity implements IHaveG
         if (!getLevel().isClientSide()) { // It thinks getLevel() might be null (it's not)
             tag.putFloat("Pressure", getPressure());
             tag.putFloat("Temperature", getTemperature());  
+            tag.putBoolean("AnythingBoiling", cachedMixture.isBoiling());
+            tag.putBoolean("AnythingReacting", !cachedMixture.isAtEquilibrium());
         };
 
         if (openVentPos != null) tag.put("VentPos", NbtUtils.writeBlockPos(openVentPos));
@@ -434,6 +443,7 @@ public class VatControllerBlockEntity extends SmartBlockEntity implements IHaveG
                 vatSide.updateDisplayType(adjacentPos);
                 vatSide.setPowerFromAdjacentBlock(adjacentPos);
                 vatSide.refreshItemCapability();
+                vatSide.invalidateRenderBoundingBox();
                 vatSide.notifyUpdate();
             });
         });
@@ -637,6 +647,25 @@ public class VatControllerBlockEntity extends SmartBlockEntity implements IHaveG
 
     public AABB wholeVatAABB() {
         return new AABB(vat.get().getInternalLowerCorner(), vat.get().getUpperCorner()).inflate(1);
+    };
+
+    public void addParticles() {
+        FluidStack liquid = getLiquidTankContents();
+        if (liquid.isEmpty()) return;
+        Optional<Vat> vatOptional = getVatOptional();
+        if (vatOptional.isEmpty()) return;
+        Vat vat = vatOptional.get();
+        if (cachedMixtureBoiling) { // Bubble particles
+            Vec3 position = getRandomParticlePosition(vat);
+            getLevel().addAlwaysVisibleParticle(new BoilingFluidBubbleParticle.Data(liquid), position.x, position.y, position.z, 0d, 0d, 0d);
+        };
+        if (cachedMixtureReacting) { // Splash particles
+            
+        };
+    };
+
+    protected Vec3 getRandomParticlePosition(Vat vat) {
+        return Vec3.atLowerCornerOf(vat.getInternalLowerCorner()).add(getLevel().getRandom().nextFloat() * vat.getInternalWidth(), getFluidLevel(), getLevel().getRandom().nextFloat() * vat.getInternalLength());
     };
 
     @OnlyIn(Dist.CLIENT)

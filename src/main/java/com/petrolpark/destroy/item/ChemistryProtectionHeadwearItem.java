@@ -16,13 +16,13 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.DispenserBlock;
 
-public class GasMaskItem extends Item implements Equipable {
+public class ChemistryProtectionHeadwearItem extends Item implements Equipable {
 
     static {
         GogglesItem.addIsWearingPredicate(player -> DestroyItems.GAS_MASK.isIn(player.getItemBySlot(EquipmentSlot.HEAD)));
     };
-
-    public GasMaskItem(Properties properties) {
+    
+    public ChemistryProtectionHeadwearItem(Properties properties) {
         super(properties);
         DispenserBlock.registerBehavior(this, ArmorItem.DISPENSE_ITEM_BEHAVIOR);
     };
@@ -50,5 +50,4 @@ public class GasMaskItem extends Item implements Equipable {
     public EquipmentSlot getEquipmentSlot() {
         return EquipmentSlot.HEAD;
     };
-
 };

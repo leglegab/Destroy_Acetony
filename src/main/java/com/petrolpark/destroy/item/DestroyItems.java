@@ -7,6 +7,9 @@ import com.petrolpark.destroy.block.DestroyBlocks;
 import com.petrolpark.destroy.effect.DestroyMobEffects;
 import com.petrolpark.destroy.item.food.DestroyFoods;
 import com.petrolpark.destroy.item.renderer.GasMaskModel;
+import com.petrolpark.destroy.item.renderer.GoldLaboratoryGogglesModel;
+import com.petrolpark.destroy.item.renderer.LaboratoryGogglesModel;
+import com.petrolpark.destroy.item.renderer.PaperMaskModel;
 import com.petrolpark.destroy.sound.DestroySoundEvents;
 import com.petrolpark.destroy.util.DestroyTags.DestroyItemTags;
 import com.simibubi.create.AllItems;
@@ -279,9 +282,30 @@ public class DestroyItems {
     GAS_FILTER = REGISTRATE.item("gas_filter", Item::new)
         .register();
 
-    public static final ItemEntry<GasMaskItem>
+    public static final ItemEntry<ChemistryProtectionHeadwearItem>
 
-    GAS_MASK = REGISTRATE.item("gas_mask", GasMaskItem::new)
+    LABORATORY_GOGGLES = REGISTRATE.item("laboratory_goggles", ChemistryProtectionHeadwearItem::new)
+        .properties(p -> p
+            .stacksTo(1)
+        ).onRegister(CreateRegistrate.itemModel(() -> LaboratoryGogglesModel::new))
+        .tag(DestroyItemTags.CHEMICAL_PROTECTION_EYES.tag)
+        .register(),
+
+    GOLD_LABORATORY_GOGGLES = REGISTRATE.item("gold_laboratory_goggles", ChemistryProtectionHeadwearItem::new)
+        .properties(p -> p
+            .stacksTo(1)
+        ).onRegister(CreateRegistrate.itemModel(() -> GoldLaboratoryGogglesModel::new))
+        .tag(DestroyItemTags.CHEMICAL_PROTECTION_EYES.tag)
+        .register(),
+
+    PAPER_MASK = REGISTRATE.item("paper_mask", ChemistryProtectionHeadwearItem::new)
+        .properties(p -> p
+            .stacksTo(1)
+        ).onRegister(CreateRegistrate.itemModel(() -> PaperMaskModel::new))
+        .tag(DestroyItemTags.CHEMICAL_PROTECTION_NOSE.tag, DestroyItemTags.CHEMICAL_PROTECTION_MOUTH.tag)
+        .register(),
+
+    GAS_MASK = REGISTRATE.item("gas_mask", ChemistryProtectionHeadwearItem::new)
         .properties(p -> p
             .stacksTo(1)
         ).onRegister(CreateRegistrate.itemModel(() -> GasMaskModel::new))

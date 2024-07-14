@@ -4,7 +4,7 @@ import com.petrolpark.destroy.chemistry.api.nuclide.INuclide;
 
 /**
  * Not a real {@link IAtom}, but rather exists as a stand-in for other atoms or groups of atoms.
- * @since 1.0
+ * @since Destroy 1.0
  * @author petrolpark
  */
 public class RGroup implements IAtom<RGroup.Nuclike> {
@@ -35,7 +35,7 @@ public class RGroup implements IAtom<RGroup.Nuclike> {
 
     /**
      * Pronounced "noock-like". Obviously R groups do not have an actual associated {@link INuclide nuclide}.
-     * @since 1.0
+     * @since Destroy 1.0
      * @author petrolpark
      */
     static class Nuclike implements INuclide {

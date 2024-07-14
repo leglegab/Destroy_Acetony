@@ -55,6 +55,11 @@ public abstract class PlaceableMixtureTankItem<T extends PlaceableMixtureTankBlo
     };
 
     @Override
+    public Component getNameRegardlessOfFluid(ItemStack stack) {
+        return super.getName(stack);
+    };
+
+    @Override
     public Component getName(ItemStack pStack) {
         return getNameWithFluid(pStack);
     };

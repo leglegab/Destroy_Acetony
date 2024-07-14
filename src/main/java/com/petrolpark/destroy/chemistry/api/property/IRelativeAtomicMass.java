@@ -2,7 +2,7 @@ package com.petrolpark.destroy.chemistry.api.property;
 
 /**
  * An object of which instances have an associated relative atomic mass (which can be 0).
- * @since 1.0
+ * @since Destroy 1.0
  * @author petrolpark
  */
 public interface IRelativeAtomicMass {

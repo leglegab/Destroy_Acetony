@@ -18,7 +18,7 @@ public class LevelPollutionS2CPacket extends S2CPacket {
     };
 
     public LevelPollutionS2CPacket(FriendlyByteBuf buffer) {
-        this.levelPollution = Pollution.level();
+        this.levelPollution = new Pollution.Level();
         levelPollution.loadNBTData(buffer.readNbt());
     };
 

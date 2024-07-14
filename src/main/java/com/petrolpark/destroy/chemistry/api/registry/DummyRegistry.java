@@ -2,7 +2,7 @@ package com.petrolpark.destroy.chemistry.api.registry;
 
 /**
  * An implementation of {@link IChemistryRegistry} which exists just so references to registries do not have to point to {@code null}.
- * @since 1.0
+ * @since Destroy 1.0
  * @author petrolpark
  */
 public final class DummyRegistry<T extends IRegisteredChemistryObject<T, ID>, ID> implements IChemistryRegistry<T, ID> {

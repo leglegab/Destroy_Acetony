@@ -70,7 +70,10 @@ public class DestroyPartials {
     // Miscellaneous
     TREE_TAP_ARM = block("tree_tap/arm"),
     KEYPUNCH_PISTON = block("keypunch/piston"),
+    LABORATORY_GOGGLES = block("laboratory_goggles"),
+    GOLD_LABORATORY_GOGGLES = block("gold_laboratory_goggles"),
     GAS_MASK = block("gas_mask"),
+    PAPER_MASK = block("paper_mask"),
     STRAY_SKULL = block("cooler/skull"),
     CUSTOM_EXPLOSIVE_MIX_SHELL = block("block/custom_explosive_mix_shell");
 

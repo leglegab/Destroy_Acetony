@@ -38,6 +38,9 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
+import net.minecraft.world.phys.shapes.CollisionContext;
+import net.minecraft.world.phys.shapes.Shapes;
+import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.fluids.capability.IFluidHandler;
@@ -205,6 +208,11 @@ public class VatSideBlock extends CopycatBlock implements ISpecialBlockItemRequi
     };
 
     @Override
+    public VoxelShape getVisualShape(BlockState pState, BlockGetter pLevel, BlockPos pPos, CollisionContext pContext) {
+        return Shapes.empty();
+    };
+
+    @Override
     public BlockEntityType<? extends CopycatBlockEntity> getBlockEntityType() {
         return DestroyBlockEntityTypes.VAT_SIDE.get();
     };
@@ -215,10 +223,10 @@ public class VatSideBlock extends CopycatBlock implements ISpecialBlockItemRequi
     }
 
     @Override
-    public IFluidHandler getTankForMixtureStorageItems(IMixtureStorageItem item, Level level, BlockPos pos, BlockState state, Direction face, Player player, InteractionHand hand, ItemStack stack, boolean rightClick) {
+    public IFluidHandler getTankForMixtureStorageItems(IMixtureStorageItem item, Level level, BlockPos pos, BlockState state, Direction face, Player player, InteractionHand hand, ItemStack stack, boolean filling) {
         if (getBlockEntity(level, pos) instanceof VatSideBlockEntity vatSide) {
             VatControllerBlockEntity vatController = vatSide.getController();
-            if (vatController != null) return item.selectVatTank(level, pos, state, face, player, hand, stack, rightClick, vatController);
+            if (vatController != null) return item.selectVatTank(level, pos, state, face, player, hand, stack, filling, vatController);
         };
         return null;
     };

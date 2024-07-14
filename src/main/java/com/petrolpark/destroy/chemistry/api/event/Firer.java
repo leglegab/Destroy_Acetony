@@ -4,7 +4,7 @@ package com.petrolpark.destroy.chemistry.api.event;
  * The master class for firing {@link IChemistryEvent}s.
  * Chemistry Events can be fired on any platform simply by invoking {@link Firer#fire(IChemistryEvent)}.
  * On a platform, {@link Firer#register(IChemistryEventFirer)} must be called exactly once, before any Events are fired.
- * @since 1.0
+ * @since Destroy 1.0
  * @author petrolpark
  */
 public final class Firer {

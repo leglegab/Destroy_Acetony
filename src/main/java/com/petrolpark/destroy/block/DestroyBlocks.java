@@ -17,6 +17,7 @@ import com.petrolpark.destroy.item.CoaxialGearBlockItem;
 import com.petrolpark.destroy.item.ColossalCogwheelBlockItem;
 import com.petrolpark.destroy.item.CombustibleBlockItem;
 import com.petrolpark.destroy.item.DestroyItems;
+import com.petrolpark.destroy.item.MeasuringCylinderBlockItem;
 import com.petrolpark.destroy.item.PeriodicTableBlockItem;
 import com.petrolpark.destroy.item.PumpjackBlockItem;
 import com.petrolpark.destroy.item.RedstoneProgrammerBlockItem;
@@ -231,7 +232,7 @@ public class DestroyBlocks {
         .register();
 
     public static final BlockEntry<MeasuringCylinderBlock> MEASURING_CYLINDER = REGISTRATE.block("measuring_cylinder", MeasuringCylinderBlock::new)
-        .item()
+        .item(MeasuringCylinderBlockItem::new)
         .properties(p -> p
             .stacksTo(1)
         ).build()
@@ -341,7 +342,9 @@ public class DestroyBlocks {
 
     public static final BlockEntry<VatSideBlock> VAT_SIDE = REGISTRATE.block("vat_side", VatSideBlock::new)
         .transform(BuilderTransformers.copycat())
-        .onRegister(CreateRegistrate.blockModel(() -> CopycatBlockModel::new))
+        .properties(p -> p
+            .isViewBlocking(DestroyBlocks::never)
+        ).onRegister(CreateRegistrate.blockModel(() -> CopycatBlockModel::new))
         .onRegister(AllDisplayBehaviours.assignDataBehaviour(VatControllerBlockEntity.ALL_DISPLAY_SOURCE, "vat_side_all_contents"))
         .onRegister(AllDisplayBehaviours.assignDataBehaviour(VatControllerBlockEntity.SOLUTION_DISPLAY_SOURCE, "vat_side_solution_contents"))
         .onRegister(AllDisplayBehaviours.assignDataBehaviour(VatControllerBlockEntity.GAS_DISPLAY_SOURCE, "vat_side_gas_contents"))

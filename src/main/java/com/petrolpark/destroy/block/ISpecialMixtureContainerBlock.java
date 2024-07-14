@@ -22,9 +22,9 @@ public interface ISpecialMixtureContainerBlock {
      * Get a Fluid Handler between the Item and which Mixtures can be transferred.
      * @param item
      * @param context
-     * @param rightClick {@code true} for a right-click (usually to empty the Item into the Block), {@code false} for left-click (usually to fill the Item from the Block)
+     * @param filling {@code true} for emptying the Item to fill this Block, {@code false} for filling the Item by emptying the Block
      * @return An {@link IFluidHandler}, or {@code null}
      */
     @Nullable
-    public IFluidHandler getTankForMixtureStorageItems(IMixtureStorageItem item, Level level, BlockPos pos, BlockState state, Direction face, Player player, InteractionHand hand, ItemStack stack, boolean rightClick);
+    public IFluidHandler getTankForMixtureStorageItems(IMixtureStorageItem item, Level level, BlockPos pos, BlockState state, Direction face, Player player, InteractionHand hand, ItemStack stack, boolean filling);
 };

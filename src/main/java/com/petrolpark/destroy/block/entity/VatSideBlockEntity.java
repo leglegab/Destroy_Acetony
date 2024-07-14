@@ -107,6 +107,7 @@ public class VatSideBlockEntity extends CopycatBlockEntity implements IHaveGoggl
 
     @Override
     protected AABB createRenderBoundingBox() {
+        if (getController() != null) return getController().createRenderBoundingBox();
         return super.createRenderBoundingBox();
 	};
 
@@ -499,5 +500,10 @@ public class VatSideBlockEntity extends CopycatBlockEntity implements IHaveGoggl
             };
         };
         return false;
+    };
+
+    @Override
+    public void invalidateRenderBoundingBox() {
+        super.invalidateRenderBoundingBox();
     };
 };

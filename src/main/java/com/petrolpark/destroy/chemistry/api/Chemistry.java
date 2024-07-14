@@ -12,10 +12,13 @@ import com.petrolpark.destroy.chemistry.api.registry.PriorityRegistration;
 import com.petrolpark.destroy.chemistry.api.registry.event.AfterRegistrationEvent;
 import com.petrolpark.destroy.chemistry.api.registry.event.CreateRegistryEvent;
 import com.petrolpark.destroy.chemistry.api.registry.event.PriorityRegistrationEvent;
+import com.petrolpark.destroy.chemistry.api.species.ISpecies;
+import com.petrolpark.destroy.chemistry.api.species.IRegisteredSpecies;
+import com.petrolpark.destroy.chemistry.api.species.ISpeciesComparator;
 
 /**
  * The main class for Destroy's chemistry system.
- * @since 1.0
+ * @since Destroy 1.0
  * @author petrolpark
  */
 public class Chemistry {
@@ -24,6 +27,11 @@ public class Chemistry {
      * The registry of {@link ElementAveragedNuclide "elements"} known to Destroy. It is possible that add-ons replace or ignore this.
      */
     public static IChemistryRegistry<ElementAveragedNuclide, String> ELEMENTS = new DummyRegistry<>();
+
+    /**
+     * The default {@link ISpeciesComparator} primarily used to check novel {@link ISpecies} against {@link IRegisteredSpecies known Species}.
+     */
+    public static ISpeciesComparator SPECIES_COMPARATOR;
     
     /**
      * Go through the default initiation for Destroy's chemistry system.

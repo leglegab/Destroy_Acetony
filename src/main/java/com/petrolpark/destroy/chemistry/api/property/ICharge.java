@@ -2,7 +2,7 @@ package com.petrolpark.destroy.chemistry.api.property;
 
 /**
  * An object of which instances can have charge.
- * @since 1.0
+ * @since Destroy 1.0
  * @author petrolpark
  */
 public interface ICharge {

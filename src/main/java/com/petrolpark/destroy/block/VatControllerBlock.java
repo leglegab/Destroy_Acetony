@@ -106,8 +106,8 @@ public class VatControllerBlock extends HorizontalDirectionalBlock implements IB
     }
 
     @Override
-    public IFluidHandler getTankForMixtureStorageItems(IMixtureStorageItem item, Level level, BlockPos pos, BlockState state, Direction face, Player player, InteractionHand hand, ItemStack stack, boolean rightClick) {
-        return item.selectVatTank(level, pos, state, face, player, hand, stack, rightClick, getBlockEntity(level, pos));
+    public IFluidHandler getTankForMixtureStorageItems(IMixtureStorageItem item, Level level, BlockPos pos, BlockState state, Direction face, Player player, InteractionHand hand, ItemStack stack, boolean filling) {
+        return item.selectVatTank(level, pos, state, face, player, hand, stack, filling, getBlockEntity(level, pos));
     };
     
 };

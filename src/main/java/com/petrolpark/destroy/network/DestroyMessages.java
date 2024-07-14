@@ -23,6 +23,7 @@ import com.petrolpark.destroy.network.packet.SeismometerSpikeS2CPacket;
 import com.petrolpark.destroy.network.packet.SwissArmyKnifeToolC2SPacket;
 import com.petrolpark.destroy.network.packet.SyncChunkPollutionS2CPacket;
 import com.petrolpark.destroy.network.packet.SyncVatMaterialsS2CPacket;
+import com.petrolpark.destroy.network.packet.TransferFluidC2SPacket;
 import com.petrolpark.destroy.network.packet.VatSideQuantityThresholdChangeC2SPacket;
 
 import net.minecraft.network.FriendlyByteBuf;
@@ -74,6 +75,7 @@ public class DestroyMessages {
         addC2SPacket(net, ChangeKeypunchPositionC2SPacket.class, ChangeKeypunchPositionC2SPacket::new);
         addC2SPacket(net, VatSideQuantityThresholdChangeC2SPacket.class, VatSideQuantityThresholdChangeC2SPacket::new);
         addC2SPacket(net, MarkSeismographC2SPacket.class, MarkSeismographC2SPacket::new);
+        addC2SPacket(net, TransferFluidC2SPacket.class, TransferFluidC2SPacket::new);
     };
 
     public static <T extends S2CPacket> void addS2CPacket(SimpleChannel net, Class<T> clazz, Function<FriendlyByteBuf, T> decoder) {

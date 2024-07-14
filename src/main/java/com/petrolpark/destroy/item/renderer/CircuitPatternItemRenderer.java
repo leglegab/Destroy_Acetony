@@ -17,8 +17,7 @@ import com.simibubi.create.foundation.item.render.PartialItemModelRenderer;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.block.model.BlockModel;
-import net.minecraft.client.renderer.block.model.ItemModelGenerator;
-import net.minecraft.client.renderer.block.model.ItemTransforms;
+import net.minecraft.client.renderer.block.model.ItemModelGenerator; 
 import net.minecraft.client.renderer.entity.ItemRenderer;
 import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.resources.model.BakedModel;
@@ -36,11 +35,9 @@ import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
 @EventBusSubscriber(modid = Destroy.MOD_ID, value = Dist.CLIENT, bus = Mod.EventBusSubscriber.Bus.MOD)
 public class CircuitPatternItemRenderer extends CustomRenderedItemModelRenderer {
 
-    public final boolean bigOnBelt;
     protected final ResourceLocation fragmentTextureResourceLocation;
 
-    public CircuitPatternItemRenderer(boolean bigOnBelt, ResourceLocation fragmentTextureResourceLocation) {
-        this.bigOnBelt = bigOnBelt;
+    public CircuitPatternItemRenderer(ResourceLocation fragmentTextureResourceLocation) {
         this.fragmentTextureResourceLocation = fragmentTextureResourceLocation;
     };
 
@@ -49,13 +46,12 @@ public class CircuitPatternItemRenderer extends CustomRenderedItemModelRenderer 
 
     @Override
     protected void render(ItemStack stack, CustomRenderedItemModel model, PartialItemModelRenderer renderer, ItemDisplayContext transformType, PoseStack ms, MultiBufferSource buffer, int light, int overlay) {
-        if (models == null) generateModels();
+        if (models == null) generateModels(model.getOriginalModel());
         ms.pushPose();
         Minecraft mc = Minecraft.getInstance();
 
-        if (transformType == ItemDisplayContext.FIXED) {
+        if (transformType == Destroy.BELT_DISPLAY_CONTEXT) {
             if (stack.getOrCreateTag().contains("Flipped")) TransformStack.cast(ms).rotateY(180);
-            if (bigOnBelt) ms.scale(1.98f, 1.98f, 1.98f);
         };
 
         ItemRenderer itemRenderer = mc.getItemRenderer();
@@ -73,7 +69,7 @@ public class CircuitPatternItemRenderer extends CustomRenderedItemModelRenderer 
 
     @OnlyIn(Dist.CLIENT)
     @SuppressWarnings("deprecation")
-    public void generateModels() {
+    public void generateModels(BakedModel originalModel) {
         models = new BakedModel[16];
         for (int i = 0; i < 16; i++) {
             final String number = String.valueOf(i);
@@ -87,7 +83,7 @@ public class CircuitPatternItemRenderer extends CustomRenderedItemModelRenderer 
                         Map.of("layer0", Either.left(new Material(TextureAtlas.LOCATION_BLOCKS, rl))),
                         null,
                         null,
-                        ItemTransforms.NO_TRANSFORMS, // The Item Model Generator sets these
+                        originalModel.getTransforms(), // The Item Model Generator sets these
                         new ArrayList<>()
                     )
                 ),

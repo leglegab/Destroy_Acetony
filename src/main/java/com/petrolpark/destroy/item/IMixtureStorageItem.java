@@ -52,18 +52,32 @@ public interface IMixtureStorageItem {
 
     /**
      * Fill a stack of this Item from an external source. This is usually triggered by right-clicking with the Item on a Block.
-     * @param itemStack The {@link IMixtureStorageItem} Stack we are trying to fill
+     * @param stack The {@link IMixtureStorageItem} Stack we are trying to fill
      * @param itemTank The {@link ItemMixtureTank} owned by that ItemStack, already getted for convenience' sake
      * @param otherTank The tank we are trying to fill from, usually something capable of handling mixtures like a {@link GeniusFluidTank}
+     * @param maxTransfer The maximum amount (in mB) of Mixture which should be transferred from the other tank to the {@link ItemMixtureTank}
+     * @see IMixtureStorageItem#tryFill(ItemStack, ItemMixtureTank, IFluidHandler) Aiming to fill the Item completely
      */
-    public default InteractionResult tryFill(ItemStack stack, ItemMixtureTank itemTank, IFluidHandler otherTank) {
+    public default InteractionResult tryFill(ItemStack stack, ItemMixtureTank itemTank, IFluidHandler otherTank, int maxTransfer) {
         if (otherTank == null) return InteractionResult.PASS;
         for (boolean simulate : Iterate.trueAndFalse) {
-            FluidStack drained = otherTank.drain(itemTank.getRemainingSpace(), simulate ? FluidAction.SIMULATE : FluidAction.EXECUTE);
+            FluidStack drained = otherTank.drain(maxTransfer, simulate ? FluidAction.SIMULATE : FluidAction.EXECUTE);
             if (drained.isEmpty()) return InteractionResult.FAIL;
-            if (!simulate) itemTank.fill(drained, FluidAction.EXECUTE);
+            maxTransfer = itemTank.fill(drained, simulate ? FluidAction.SIMULATE : FluidAction.EXECUTE);
+            if (maxTransfer == 0) return InteractionResult.FAIL;
         };
         return InteractionResult.SUCCESS;
+    };
+
+    /**
+     * Try to completely fill a stack of this Item from an external source. This is usually triggered by right-clicking with the Item on a Block.
+     * @param stack The {@link IMixtureStorageItem} Stack we are trying to fill
+     * @param itemTank The {@link ItemMixtureTank} owned by that ItemStack, already getted for convenience' sake
+     * @param otherTank The tank we are trying to fill from, usually something capable of handling mixtures like a {@link GeniusFluidTank}
+     * @see IMixtureStorageItem#tryFill(ItemStack, ItemMixtureTank, IFluidHandler, int) Filling a specific amount
+     */
+    public default InteractionResult tryFill(ItemStack stack, ItemMixtureTank itemTank, IFluidHandler otherTank) {
+        return tryFill(stack, itemTank, otherTank, itemTank.getRemainingSpace());
     };
 
     /**
@@ -72,28 +86,47 @@ public interface IMixtureStorageItem {
      * @param itemTank The {@link ItemMixtureTank} owned by that ItemStack, already getted for convenience' sake
      * @param otherTank The tank into which we are trying to empty, usually something capable of handling mixtures like a {@link GeniusFluidTank}
      * @param infiniteFluid Whether to actually empty this Item, or to keep it (typically because we are in Creative)
+     * @param maxTransfer The maximum amount (in mB) of Mixture which should be transferred from the {@link ItemMixtureTank} to the other tank
+     * @see IMixtureStorageItem#tryEmpty(ItemStack, ItemMixtureTank, IFluidHandler, boolean) Trying to fully empty the Item
      */
-    public default InteractionResult tryEmpty(ItemStack stack, ItemMixtureTank itemTank, IFluidHandler otherTank, boolean infiniteFluid) {
+    public default InteractionResult tryEmpty(ItemStack stack, ItemMixtureTank itemTank, IFluidHandler otherTank, boolean infiniteFluid, int maxTransfer) {
         if (otherTank == null) return InteractionResult.PASS;
-        FluidStack fs = getContents(stack).orElse(FluidStack.EMPTY).copy();
-        if (fs.isEmpty()) return InteractionResult.FAIL;
         for (boolean simulate : Iterate.trueAndFalse) {
-            int filled = otherTank.fill(fs, simulate ? FluidAction.SIMULATE : FluidAction.EXECUTE);
-            if (filled == 0) return InteractionResult.FAIL;
-            if (!simulate && !infiniteFluid) itemTank.drain(filled, FluidAction.EXECUTE);
+            FluidStack drained = itemTank.drain(maxTransfer, simulate || infiniteFluid ? FluidAction.SIMULATE : FluidAction.EXECUTE);
+            if (drained.isEmpty()) return InteractionResult.FAIL;
+            maxTransfer = otherTank.fill(drained, simulate ? FluidAction.SIMULATE : FluidAction.EXECUTE);
+            if (maxTransfer == 0) return InteractionResult.FAIL;
         };
         return InteractionResult.SUCCESS;
     };
 
     /**
+     * Try to completely empty this Item into an external source. This is usually triggered by left-clicking with the Item on a Block.
+     * @param itemStack The {@link IMixtureStorageItem} Stack we are trying to empty
+     * @param itemTank The {@link ItemMixtureTank} owned by that ItemStack, already getted for convenience' sake
+     * @param otherTank The tank into which we are trying to empty, usually something capable of handling mixtures like a {@link GeniusFluidTank}
+     * @param infiniteFluid Whether to actually empty this Item, or to keep it (typically because we are in Creative)
+     * @see IMixtureStorageItem#tryEmpty(ItemStack, ItemMixtureTank, IFluidHandler, boolean, int) Emptying a specific amount
+     */
+    public default InteractionResult tryEmpty(ItemStack stack, ItemMixtureTank itemTank, IFluidHandler otherTank, boolean infiniteFluid) {
+        return tryEmpty(stack, itemTank, otherTank, infiniteFluid, itemTank.getFluidAmount());
+    };
+
+    /**
      * Find and select an {@link IFluidHandler} when clicking on a Block. We can then use this tank to empty or fill.
-     * @param context
-     * @param rightClick {@code true} for a right-click and {@code false} for a left-click
+     * @param level
+     * @param pos
+     * @param state
+     * @param face The face of the Block which was clicked
+     * @param player
+     * @param hand
+     * @param stack
+     * @param filling {@code true} for a filling the other tank, emptying the Item and {@code false} for a emptying the Item, filling the other tank
      */
     @Nullable
-    public default IFluidHandler getTank(Level level, BlockPos pos, BlockState state, @Nullable Direction face, Player player, InteractionHand hand, ItemStack stack, boolean rightClick) {
+    public default IFluidHandler getTank(Level level, BlockPos pos, BlockState state, @Nullable Direction face, Player player, InteractionHand hand, ItemStack stack, boolean filling) {
         IFluidHandler fluidHandler;
-        if (state.getBlock() instanceof ISpecialMixtureContainerBlock specialBlock) fluidHandler = specialBlock.getTankForMixtureStorageItems(this, level, pos, state, face, player, hand, stack, rightClick);
+        if (state.getBlock() instanceof ISpecialMixtureContainerBlock specialBlock) fluidHandler = specialBlock.getTankForMixtureStorageItems(this, level, pos, state, face, player, hand, stack, filling);
         else {
             BlockEntity be = level.getBlockEntity(pos);
             if (be == null) return null;
@@ -108,7 +141,7 @@ public interface IMixtureStorageItem {
      * Sub-method of {@link IMixtureStorageItem#getTank(UseOnContext, boolean)} for selecting how to insert/extract Fluids from the Vat, if we've found one.
      */
     @Nullable
-    public default VatTankWrapper selectVatTank(Level level, BlockPos pos, BlockState state, Direction face, Player player, InteractionHand hand, ItemStack stack, boolean rightClick, VatControllerBlockEntity vatController) {
+    public default VatTankWrapper selectVatTank(Level level, BlockPos pos, BlockState state, Direction face, Player player, InteractionHand hand, ItemStack stack, boolean fillingVat, VatControllerBlockEntity vatController) {
         return new SinglePhaseVatExtraction(vatController, false);
     };
 
@@ -117,9 +150,18 @@ public interface IMixtureStorageItem {
      * @param context
      */
     public static InteractionResult defaultUseOn(IMixtureStorageItem item, UseOnContext context) {
-        InteractionResult result = item.tryEmpty(context.getItemInHand(), (ItemMixtureTank)context.getItemInHand().getCapability(ForgeCapabilities.FLUID_HANDLER_ITEM).resolve().get(), item.getTank(context.getLevel(), context.getClickedPos(), context.getLevel().getBlockState(context.getClickedPos()), context.getClickedFace(), context.getPlayer(), context.getHand(), context.getItemInHand(), true), context.getPlayer().isCreative());
-        if (result == InteractionResult.SUCCESS) context.getLevel().playSound(null, context.getClickedPos(), SoundEvents.BOTTLE_FILL, SoundSource.PLAYERS);
+        BlockState state = context.getLevel().getBlockState(context.getClickedPos());
+        InteractionResult result = item.tryEmpty(context.getItemInHand(), (ItemMixtureTank)context.getItemInHand().getCapability(ForgeCapabilities.FLUID_HANDLER_ITEM).resolve().get(), item.getTank(context.getLevel(), context.getClickedPos(), state, context.getClickedFace(), context.getPlayer(), context.getHand(), context.getItemInHand(), true), context.getPlayer().isCreative());
+        item.afterEmpty(context.getLevel(), context.getClickedPos(), state, context.getClickedFace(), context.getPlayer(), context.getHand(), context.getItemInHand(), result);
         return result;
+    };
+
+    public default void afterEmpty(Level level, BlockPos pos, BlockState state, Direction face, Player player, InteractionHand hand, ItemStack stack, InteractionResult result) {
+        if (result == InteractionResult.SUCCESS) level.playSound(null, pos, SoundEvents.BOTTLE_FILL, SoundSource.PLAYERS);
+    };
+
+    public default InteractionResult attack(Level level, BlockPos pos, BlockState state, Direction face, Player player, InteractionHand hand, ItemStack stack) {
+        return defaultAttack(this, level, pos, state, face, player, hand, stack);
     };
 
     /**
@@ -127,8 +169,12 @@ public interface IMixtureStorageItem {
      */
     public static InteractionResult defaultAttack(IMixtureStorageItem item, Level level, BlockPos pos, BlockState state, Direction face, Player player, InteractionHand hand, ItemStack stack) {
         InteractionResult result = item.tryFill(stack, (ItemMixtureTank)stack.getCapability(ForgeCapabilities.FLUID_HANDLER_ITEM).resolve().get(), item.getTank(level, pos, state, face, player, hand, stack, false));
-        if (result == InteractionResult.SUCCESS) level.playSound(null, pos, SoundEvents.BOTTLE_FILL, SoundSource.PLAYERS);
+        item.afterFill(level, pos, state, face, player, hand, stack, result);
         return result;
+    };
+
+    public default void afterFill(Level level, BlockPos pos, BlockState state, Direction face, Player player, InteractionHand hand, ItemStack stack, InteractionResult result) {
+        if (result == InteractionResult.SUCCESS) level.playSound(null, pos, SoundEvents.BOTTLE_FILL, SoundSource.PLAYERS);
     };
 
     public default boolean isEmpty(ItemStack stack)  {
@@ -146,6 +192,8 @@ public interface IMixtureStorageItem {
     public default void setContents(ItemStack itemStack, FluidStack fluidStack) {
         itemStack.getCapability(ForgeCapabilities.FLUID_HANDLER_ITEM).ifPresent(tanks -> tanks.fill(fluidStack, FluidAction.EXECUTE));
     };
+
+    public Component getNameRegardlessOfFluid(ItemStack stack);
 
     public default Component getNameWithFluid(ItemStack stack) {
         FluidStack contents = getContents(stack).orElse(FluidStack.EMPTY);

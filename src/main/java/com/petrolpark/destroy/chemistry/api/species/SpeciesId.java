@@ -5,7 +5,7 @@ import com.petrolpark.destroy.chemistry.api.util.Namespace;
 
 /**
  * An ID which uniquely identifies a {@link IRegisteredSpecies}.
- * @since 1.0
+ * @since Destroy 1.0
  * @author petrolpark
  */
 public class SpeciesId implements INamespace {

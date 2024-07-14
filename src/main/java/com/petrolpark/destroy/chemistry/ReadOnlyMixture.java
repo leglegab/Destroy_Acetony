@@ -77,6 +77,11 @@ public class ReadOnlyMixture {
      */
     protected Map<Molecule, Float> states;
 
+    /**
+     * Whether any {@link Molecule Molecules} are currently boiling or condensing (their {@link ReadOnlyMixture#states state} is not a whole number)
+     */
+    protected boolean boiling;
+
     public ReadOnlyMixture() {
         this(298f);
     };
@@ -86,7 +91,8 @@ public class ReadOnlyMixture {
         contents = new HashMap<>();
         if (temperature < 0f) throw new IllegalStateException("Mixtures cannot be below 0K");
         this.temperature = temperature;
-        states = new HashMap<>();  
+        states = new HashMap<>();
+        boiling = false;
     };
 
     /**
@@ -127,7 +133,9 @@ public class ReadOnlyMixture {
             CompoundTag moleculeTag = (CompoundTag) tag;
             Molecule molecule = Molecule.getMolecule(moleculeTag.getString("Molecule"));
             mixture.addMolecule(molecule, moleculeTag.getFloat("Concentration"));
-            mixture.states.put(molecule, moleculeTag.getFloat("Gaseous"));
+            float state = moleculeTag.getFloat("Gaseous");
+            if (state != 0f && state != 1f) mixture.boiling = true;
+            mixture.states.put(molecule, state);
         });
         mixture.updateName();
         mixture.updateColor();
@@ -165,6 +173,13 @@ public class ReadOnlyMixture {
      */
     public float getTemperature() {
         return temperature;
+    };
+
+    /**
+     * Whether any {@link Molecule Molecules} are currently boiling or condensing (their {@link ReadOnlyMixture#states state} is not a whole number)
+     */
+    public boolean isBoiling() {
+        return boiling;
     };
 
     /**

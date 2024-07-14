@@ -1,0 +1,10 @@
+{
+  "textures": [
+    "destroy:bubble",
+    "destroy:bubble_pop_0",
+    "destroy:bubble_pop_1",
+    "destroy:bubble_pop_2",
+    "destroy:bubble_pop_3",
+    "destroy:bubble_pop_4"
+  ]
+}

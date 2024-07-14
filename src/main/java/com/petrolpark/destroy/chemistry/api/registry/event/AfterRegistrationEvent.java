@@ -9,7 +9,7 @@ import com.petrolpark.destroy.chemistry.api.registry.IRegisteredChemistryObject;
  * This allows final additions and removals from a {@link IChemistryRegistry} before entering runtime, after which the registry cannot be modified.
  * <p><b>Usually fired: </b>Once per registry, during startup</p>
  * <p><b>Not cancellable</b></p>
- * @since 1.0
+ * @since Destroy 1.0
  * @author petrolpark
  * @see PriorityRegistrationEvent
  */

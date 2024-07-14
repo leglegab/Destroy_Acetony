@@ -8,17 +8,15 @@ import java.util.stream.Stream;
 
 import com.petrolpark.destroy.Destroy;
 import com.petrolpark.destroy.MoveToPetrolparkLibrary;
-import com.petrolpark.destroy.advancement.DestroyAdvancementTrigger; 
+import com.petrolpark.destroy.advancement.DestroyAdvancementTrigger;
 import com.petrolpark.destroy.badge.BadgeHandler;
 import com.petrolpark.destroy.block.DestroyBlocks;
-import com.petrolpark.destroy.block.PeriodicTableBlock;
 import com.petrolpark.destroy.block.IPickUpPutDownBlock;
+import com.petrolpark.destroy.block.MeasuringCylinderBlock;
+import com.petrolpark.destroy.block.PeriodicTableBlock;
 import com.petrolpark.destroy.block.PeriodicTableBlock.PeriodicTableEntry;
-import com.petrolpark.destroy.block.entity.VatControllerBlockEntity;
-import com.petrolpark.destroy.block.entity.VatSideBlockEntity;
 import com.petrolpark.destroy.block.entity.behaviour.AbstractRememberPlacerBehaviour;
 import com.petrolpark.destroy.block.entity.behaviour.ExtendedBasinBehaviour;
-
 import com.petrolpark.destroy.block.entity.behaviour.PollutingBehaviour;
 import com.petrolpark.destroy.capability.Pollution;
 import com.petrolpark.destroy.capability.Pollution.PollutionType;
@@ -45,11 +43,11 @@ import com.petrolpark.destroy.item.CircuitPatternItem;
 import com.petrolpark.destroy.item.DestroyItems;
 import com.petrolpark.destroy.item.DiscStamperItem;
 import com.petrolpark.destroy.item.IMixtureStorageItem;
+import com.petrolpark.destroy.item.MeasuringCylinderBlockItem;
 import com.petrolpark.destroy.item.RedstoneProgrammerBlockItem;
 import com.petrolpark.destroy.item.SeismographItem;
-import com.petrolpark.destroy.item.SyringeItem;
-import com.petrolpark.destroy.item.TestTubeItem;
 import com.petrolpark.destroy.item.SeismographItem.Seismograph;
+import com.petrolpark.destroy.item.SyringeItem;
 import com.petrolpark.destroy.network.DestroyMessages;
 import com.petrolpark.destroy.network.packet.CircuitPatternsS2CPacket;
 import com.petrolpark.destroy.network.packet.LevelPollutionS2CPacket;
@@ -68,10 +66,10 @@ import com.petrolpark.destroy.sound.DestroySoundEvents;
 import com.petrolpark.destroy.util.ChemistryDamageHelper;
 import com.petrolpark.destroy.util.DestroyLang;
 import com.petrolpark.destroy.util.DestroyTags.DestroyItemTags;
-import com.petrolpark.destroy.util.vat.VatMaterial;
-import com.petrolpark.destroy.util.vat.VatMaterialResourceListener;
 import com.petrolpark.destroy.util.PollutionHelper;
 import com.petrolpark.destroy.util.RedstoneProgrammerItemHandler;
+import com.petrolpark.destroy.util.vat.VatMaterial;
+import com.petrolpark.destroy.util.vat.VatMaterialResourceListener;
 import com.petrolpark.destroy.world.damage.DestroyDamageSources;
 import com.petrolpark.destroy.world.entity.goal.BuildSandCastleGoal;
 import com.petrolpark.destroy.world.explosion.ExplosiveProperties;
@@ -104,9 +102,9 @@ import net.minecraft.commands.synchronization.ArgumentTypeInfos;
 import net.minecraft.commands.synchronization.SingletonArgumentInfo;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.Direction.Axis;
 import net.minecraft.core.Registry;
 import net.minecraft.core.SectionPos;
-import net.minecraft.core.Direction.Axis;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
@@ -142,7 +140,6 @@ import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
-import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.chunk.LevelChunk;
 import net.minecraft.world.level.levelgen.structure.pools.StructureTemplatePool;
@@ -151,7 +148,6 @@ import net.minecraft.world.level.saveddata.maps.MapItemSavedData;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.capabilities.RegisterCapabilitiesEvent;
 import net.minecraftforge.common.crafting.CraftingHelper;
 import net.minecraftforge.common.util.FakePlayer;
@@ -182,7 +178,6 @@ import net.minecraftforge.event.village.VillagerTradesEvent;
 import net.minecraftforge.eventbus.api.Event.Result;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.capability.IFluidHandler.FluidAction;
 import net.minecraftforge.fml.ModList;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
@@ -199,7 +194,7 @@ public class DestroyCommonEvents {
     public static void onAttachCapabilitiesLevel(AttachCapabilitiesEvent<Level> event) {
         Level level = event.getObject();
         if (!level.getCapability(Pollution.CAPABILITY).isPresent()) {
-            event.addCapability(Destroy.asResource("pollution"), level instanceof PonderWorld ? new Pollution.PonderProvider() : new Pollution.LevelProvider());
+            event.addCapability(Destroy.asResource("pollution"), level instanceof PonderWorld ? new Pollution.PonderProvider() : new Pollution.Level.Provider());
         };
     };
 
@@ -650,12 +645,23 @@ public class DestroyCommonEvents {
         BlockPos pos = event.getPos();
         BlockState state = world.getBlockState(pos);
         ItemStack stack = event.getItemStack();
-        
-        // Emptying glassware
-        if (stack.getItem() instanceof IMixtureStorageItem mixtureItem) {
-            InteractionResult result = IMixtureStorageItem.defaultAttack(mixtureItem, world, pos, state, event.getFace(), player, event.getHand(), stack);
+
+        // Filling placed Measuring Cylinders
+        if (state.getBlock() instanceof MeasuringCylinderBlock cylinderBlock) {
+            InteractionResult result = MeasuringCylinderBlockItem.tryOpenTransferScreen(world, pos, state, event.getFace(), player, event.getHand(), stack, true);
             if (result != InteractionResult.PASS) {
                 event.setCancellationResult(result);
+                event.setCanceled(true);
+                return;
+            };
+        };
+        
+        // Emptying other glassware
+        if (stack.getItem() instanceof IMixtureStorageItem mixtureItem) {
+            InteractionResult result = mixtureItem.attack(world, pos, state, event.getFace(), player, event.getHand(), stack);
+            if (result != InteractionResult.PASS) {
+                event.setCancellationResult(result);
+                event.setCanceled(true);
                 return;
             };
         };
@@ -669,6 +675,7 @@ public class DestroyCommonEvents {
                 world.destroyBlock(pos, false);
                 if (world.getBlockState(pos) != state) player.getInventory().placeItemBackInInventory(cloneItemStack);
                 event.setCancellationResult(InteractionResult.SUCCESS);
+                event.setCanceled(true);
             };
         };
 	};
@@ -714,23 +721,8 @@ public class DestroyCommonEvents {
             InteractionResult result = stack.useOn(new UseOnContext(player, event.getHand(), event.getHitVec()));
             if (result.consumesAction() && player instanceof ServerPlayer serverPlayer) CriteriaTriggers.ITEM_USED_ON_BLOCK.trigger(serverPlayer, pos, stack);
             event.setCancellationResult(result);
-        };
-
-        // Fill Test Tubes from any Fluid-containing block
-        if (stack.getItem() instanceof TestTubeItem && DestroyItems.TEST_TUBE.get().isEmpty(stack) && player.isCreative()) {
-            BlockEntity be = level.getBlockEntity(pos);
-            if (be == null) return;
-            if (!(be instanceof VatSideBlockEntity) && !(be instanceof VatControllerBlockEntity) && be.getCapability(ForgeCapabilities.FLUID_HANDLER, event.getFace()).map(handler -> {
-                FluidStack drained = handler.drain(200, FluidAction.SIMULATE);
-                if (DestroyFluids.isMixture(drained)) {
-                    player.setItemInHand(event.getHand(), DestroyItems.TEST_TUBE.get().of(drained));
-                    return true;
-                };
-                return false;
-            }).orElse(false)) {
-                event.setCancellationResult(InteractionResult.sidedSuccess(level.isClientSide()));
-                event.setCanceled(true);  
-            };
+            if (result != InteractionResult.PASS) event.setCanceled(true);
+            return;
         };
     };
 

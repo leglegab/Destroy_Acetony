@@ -117,7 +117,7 @@ public class CircuitMaskItem extends CircuitPatternItem {
     @Override
     @OnlyIn(Dist.CLIENT)
     public void initializeClient(Consumer<IClientItemExtensions> consumer) {
-        consumer.accept(SimpleCustomRenderer.create(this, new CircuitPatternItemRenderer(true, Destroy.asResource("item/circuit_pattern/circuit_mask"))));
+        consumer.accept(SimpleCustomRenderer.create(this, new CircuitPatternItemRenderer(Destroy.asResource("item/circuit_pattern/circuit_mask"))));
     };
     
 };

@@ -18,15 +18,15 @@ import net.minecraft.world.InteractionHand;
  */
 public class BetterValueSettingsScreen extends ValueSettingsScreen {
 
-    private Direction sideAccessed;
-    private InteractionHand interactionHand;
-    private BlockPos pos; // Double reference because it's private
+    protected final Direction sideAccessed;
+    protected final InteractionHand hand;
+    protected final BlockPos pos; // Double reference because it's private
 
-    public BetterValueSettingsScreen(BlockPos pos, Direction sideAccessed, InteractionHand interactionHand, ValueSettingsBoard board, ValueSettings valueSettings, Consumer<ValueSettings> onHover) {
+    public BetterValueSettingsScreen(BlockPos pos, Direction sideAccessed, InteractionHand hand, ValueSettingsBoard board, ValueSettings valueSettings, Consumer<ValueSettings> onHover) {
         super(pos, board, valueSettings, onHover);
         this.pos = pos;
         this.sideAccessed = sideAccessed;
-        this.interactionHand = interactionHand;
+        this.hand = hand;
     };
 
     /**
@@ -38,7 +38,7 @@ public class BetterValueSettingsScreen extends ValueSettingsScreen {
     protected void saveAndClose(double mouseX, double mouseY) {
 		ValueSettings closest = getClosestCoordinate((int) mouseX, (int) mouseY);
 		AllPackets.getChannel()
-			.sendToServer(new ValueSettingsPacket(pos, closest.row(), closest.value(), interactionHand, sideAccessed,
+			.sendToServer(new ValueSettingsPacket(pos, closest.row(), closest.value(), hand, sideAccessed,
 				AllKeys.ctrlDown()));
 		onClose();
 	};
