@@ -16,6 +16,7 @@ import com.petrolpark.destroy.entity.PrimedBomb;
 import com.petrolpark.destroy.item.CoaxialGearBlockItem;
 import com.petrolpark.destroy.item.ColossalCogwheelBlockItem;
 import com.petrolpark.destroy.item.CombustibleBlockItem;
+import com.petrolpark.destroy.item.CustomExplosiveMixBlockItem;
 import com.petrolpark.destroy.item.DestroyItems;
 import com.petrolpark.destroy.item.MeasuringCylinderBlockItem;
 import com.petrolpark.destroy.item.PeriodicTableBlockItem;
@@ -167,9 +168,9 @@ public class DestroyBlocks {
         .transform(customItemModel())
         .register();
 
-    public static final BlockEntry<CustomMixExplosiveBlock> CUSTOM_MIX_EXPLOSIVE = REGISTRATE.block("custom_mix_explosive", CustomMixExplosiveBlock::new)
+    public static final BlockEntry<CustomExplosiveMixBlock> CUSTOM_EXPLOSIVE_MIX = REGISTRATE.block("custom_explosive_mix", CustomExplosiveMixBlock::new)
         .initialProperties(() -> Blocks.TNT)
-        .item()
+        .item(CustomExplosiveMixBlockItem::new)
         .build()
         .register();
 

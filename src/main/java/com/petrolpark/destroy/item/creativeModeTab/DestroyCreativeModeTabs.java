@@ -50,7 +50,7 @@ public class DestroyCreativeModeTabs {
 			.add(
 
 				s("chemistry_equipment"),
-				i(DestroyBlocks.VAT_CONTROLLER), i(DestroyBlocks.STAINLESS_STEEL_BLOCK), i(DestroyBlocks.BOROSILICATE_GLASS), d(AllBlocks.FLUID_PIPE), d(AllBlocks.MECHANICAL_PUMP), d(AllBlocks.CREATIVE_FLUID_TANK), d(AllBlocks.BLAZE_BURNER), i(DestroyBlocks.COOLER), i(DestroyBlocks.BUBBLE_CAP), i(DestroyBlocks.CENTRIFUGE), i(DestroyBlocks.DYNAMO), i(DestroyBlocks.BLACKLIGHT), i(DestroyBlocks.COLORIMETER),  i(DestroyBlocks.BEAKER), i(DestroyItems.TEST_TUBE), i(DestroyBlocks.TEST_TUBE_RACK), i(DestroyBlocks.MEASURING_CYLINDER), i(DestroyBlocks.ROUND_BOTTOMED_FLASK), i(DestroyItems.GAS_MASK), i(DestroyItems.HAZMAT_SUIT), i(DestroyItems.HAZMAT_LEGGINGS), i(DestroyItems.WELLINGTON_BOOTS),
+				i(DestroyBlocks.VAT_CONTROLLER), i(DestroyBlocks.STAINLESS_STEEL_BLOCK), i(DestroyBlocks.BOROSILICATE_GLASS), d(AllBlocks.FLUID_PIPE), d(AllBlocks.MECHANICAL_PUMP), d(AllBlocks.CREATIVE_FLUID_TANK), d(AllBlocks.BLAZE_BURNER), i(DestroyBlocks.COOLER), i(DestroyBlocks.BUBBLE_CAP), i(DestroyBlocks.CENTRIFUGE), i(DestroyBlocks.DYNAMO), i(DestroyBlocks.BLACKLIGHT), i(DestroyBlocks.COLORIMETER),  i(DestroyBlocks.BEAKER), i(DestroyItems.TEST_TUBE), i(DestroyBlocks.TEST_TUBE_RACK), i(DestroyBlocks.MEASURING_CYLINDER), i(DestroyBlocks.ROUND_BOTTOMED_FLASK), i(DestroyItems.PAPER_MASK), i(DestroyItems.LABORATORY_GOGGLES), i(DestroyItems.GAS_MASK), i(DestroyItems.HAZMAT_SUIT), i(DestroyItems.HAZMAT_LEGGINGS), i(DestroyItems.WELLINGTON_BOOTS),
 
 				s("common_chemicals"),
 
@@ -83,7 +83,7 @@ public class DestroyCreativeModeTabs {
 				s("explosives"),
 				n(), i(DestroyItems.ACETONE_PEROXIDE), i(DestroyItems.FULMINATED_MERCURY), i(DestroyItems.NICKEL_HYDRAZINE_NITRATE), i(DestroyItems.TOUCH_POWDER),
 				n(), i(DestroyItems.ANFO), i(DestroyItems.CORDITE), i(DestroyItems.DYNAMITE), i(DestroyItems.NITROCELLULOSE), i(DestroyItems.PICRIC_ACID_TABLET), i(DestroyItems.TNT_TABLET), 
-				n(), i(DestroyBlocks.DYNAMITE_BLOCK), i(DestroyBlocks.CUSTOM_MIX_EXPLOSIVE), i(DestroyBlocks.CORDITE_BLOCK), i(DestroyBlocks.EXTRUDED_CORDITE_BLOCK),
+				n(), i(DestroyBlocks.DYNAMITE_BLOCK), i(DestroyBlocks.CUSTOM_EXPLOSIVE_MIX), i(DestroyBlocks.CORDITE_BLOCK), i(DestroyBlocks.EXTRUDED_CORDITE_BLOCK),
 				
 				s("pharmaceuticals"),
 				i(DestroyItems.SYRINGE), i(DestroyItems.ASPIRIN_SYRINGE), i(DestroyItems.CISPLATIN_SYRINGE), c(DestroyItems.BABY_BLUE_SYRINGE, DestroySubstancesConfigs::babyBlueEnabled), c(DestroyItems.BABY_BLUE_CRYSTAL, DestroySubstancesConfigs::babyBlueEnabled), c(DestroyItems.BABY_BLUE_POWDER, DestroySubstancesConfigs::babyBlueEnabled), i(DestroyItems.SPRAY_BOTTLE), i(DestroyItems.PERFUME_BOTTLE), i(DestroyItems.SUNSCREEN_BOTTLE),

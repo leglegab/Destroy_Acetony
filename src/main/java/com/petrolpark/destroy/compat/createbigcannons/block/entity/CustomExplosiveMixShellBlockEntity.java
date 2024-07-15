@@ -55,6 +55,12 @@ public class CustomExplosiveMixShellBlockEntity extends FuzedBlockEntity impleme
     };
 
     @Override
+    public void onPlace(ItemStack blockItemStack) {
+        IDyeableCustomExplosiveMixBlockEntity.super.onPlace(blockItemStack);
+        if (blockItemStack.hasCustomHoverName()) name = blockItemStack.getHoverName();
+    };
+
+    @Override
     public void load(CompoundTag tag) {
         super.load(tag);
         color = tag.getInt("Color");
@@ -91,18 +97,25 @@ public class CustomExplosiveMixShellBlockEntity extends FuzedBlockEntity impleme
     };
 
     @Override
+    public ItemStack getFilledItemStack(ItemStack emptyItemStack) {
+        ItemStack stack = IDyeableCustomExplosiveMixBlockEntity.super.getFilledItemStack(emptyItemStack);
+        if (name != null) stack.setHoverName(name);
+        return stack;
+    };
+
+    @Override
     public int getColor() {
         return color;
     };
 
     public ItemStack getFuze() {
         return getItem(0);
-    }
+    };
 
     @Override
     public Component getDisplayName() {
         return name != null ? name : getLevel().getBlockState(getBlockPos()).getBlock().getName();
-    }
+    };
 
     @Override
     public ExplosivePropertyCondition[] getApplicableExplosionConditions() {

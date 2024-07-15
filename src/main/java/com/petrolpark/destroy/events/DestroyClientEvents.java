@@ -11,6 +11,7 @@ import com.petrolpark.destroy.capability.Pollution.PollutionType;
 import com.petrolpark.destroy.client.gui.button.OpenDestroyMenuButton;
 import com.petrolpark.destroy.client.gui.screen.CustomExplosiveScreen;
 import com.petrolpark.destroy.config.DestroyAllConfigs;
+import com.petrolpark.destroy.item.DyeableCustomExplosiveMixBlockItem;
 import com.petrolpark.destroy.item.ICustomExplosiveMixItem;
 import com.petrolpark.destroy.item.SwissArmyKnifeItem;
 import com.petrolpark.destroy.item.renderer.SeismometerItemRenderer;
@@ -31,7 +32,9 @@ import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.screens.PauseScreen;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.TitleScreen;
+import net.minecraft.nbt.Tag;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.material.FogType;
 import net.minecraftforge.api.distmarker.Dist;
@@ -149,8 +152,20 @@ public class DestroyClientEvents {
 
     @SubscribeEvent
     public static void onItemTooltip(ItemTooltipEvent event) {
-        Item item = event.getItemStack().getItem();
+        ItemStack stack = event.getItemStack();
+        Item item = stack.getItem();
+
+        // Add a bit of pedantry to TNT
         if (item.equals(Items.TNT)) event.getToolTip().add(DestroyLang.translate("tooltip.tnt").style(ChatFormatting.GRAY).component());
+        
+        // Remove the "Dyed" annotation if needed
+        if (
+            item instanceof DyeableCustomExplosiveMixBlockItem dyedExplosiveItem
+            && stack.hasTag()
+            && stack.getTag().contains("display", Tag.TAG_COMPOUND)
+            && stack.getOrCreateTagElement("display").contains("color", Tag.TAG_ANY_NUMERIC)
+        )
+            event.getToolTip().remove(1);
     };
 
     @SubscribeEvent

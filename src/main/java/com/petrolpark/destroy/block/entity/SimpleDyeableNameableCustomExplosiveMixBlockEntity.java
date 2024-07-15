@@ -14,6 +14,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.api.distmarker.Dist;
@@ -54,6 +55,12 @@ public abstract class SimpleDyeableNameableCustomExplosiveMixBlockEntity extends
     };
 
     @Override
+    public void onPlace(ItemStack blockItemStack) {
+        IDyeableCustomExplosiveMixBlockEntity.super.onPlace(blockItemStack);
+        if (blockItemStack.hasCustomHoverName()) name = blockItemStack.getHoverName();
+    };
+
+    @Override
     protected void read(CompoundTag tag, boolean clientPacket) {
         super.read(tag, clientPacket);
         color = tag.getInt("Color");
@@ -87,6 +94,13 @@ public abstract class SimpleDyeableNameableCustomExplosiveMixBlockEntity extends
         this.color = color;
         DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> IDyeableCustomExplosiveMixBlockEntity.reRender(getLevel(), getBlockPos()));
         notifyUpdate();
+    };
+
+    @Override
+    public ItemStack getFilledItemStack(ItemStack emptyItemStack) {
+        ItemStack stack = IDyeableCustomExplosiveMixBlockEntity.super.getFilledItemStack(emptyItemStack);
+        if (name != null) stack.setHoverName(name);
+        return stack;
     };
 
     @Override

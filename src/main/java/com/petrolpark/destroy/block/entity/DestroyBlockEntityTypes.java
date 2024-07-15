@@ -15,6 +15,7 @@ import com.petrolpark.destroy.block.renderer.CentrifugeRenderer;
 import com.petrolpark.destroy.block.renderer.ChainedCogwheelRenderer;
 import com.petrolpark.destroy.block.renderer.ColossalCogwheelRenderer;
 import com.petrolpark.destroy.block.renderer.CoolerRenderer;
+import com.petrolpark.destroy.block.renderer.CustomExplosiveMixRenderer;
 import com.petrolpark.destroy.block.renderer.DifferentialRenderer;
 import com.petrolpark.destroy.block.renderer.DoubleCardanShaftRenderer;
 import com.petrolpark.destroy.block.renderer.DynamoRenderer;
@@ -87,6 +88,12 @@ public class DestroyBlockEntityTypes {
         .blockEntity("cooler", CoolerBlockEntity::new)
         .validBlocks(DestroyBlocks.COOLER)
         .renderer(() -> CoolerRenderer::new)
+        .register();
+
+    public static final BlockEntityEntry<CustomExplosiveMixBlockEntity> CUSTOM_EXPLOSIVE_MIX = REGISTRATE
+        .blockEntity("custom_explosive_mix", CustomExplosiveMixBlockEntity::new)
+        .validBlocks(DestroyBlocks.CUSTOM_EXPLOSIVE_MIX)
+        .renderer(() -> CustomExplosiveMixRenderer::new)
         .register();
 
     public static final BlockEntityEntry<DoubleCardanShaftBlockEntity> DOUBLE_CARDAN_SHAFT = REGISTRATE

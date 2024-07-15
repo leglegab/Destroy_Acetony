@@ -1,4 +1,4 @@
-package com.petrolpark.destroy.client.gui;
+package com.petrolpark.destroy.client.gui.screen;
 
 import java.util.function.Consumer;
 

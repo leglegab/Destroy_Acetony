@@ -33,7 +33,7 @@ public class CustomExplosiveMixChargeBlockItem extends DyeableCustomExplosiveMix
     @Override
     public int getExplosiveInventorySize() {
         return DestroyAllConfigs.SERVER.compat.customExplosiveMixChargeSize.get();
-    }
+    };
 
     @Override
     public ExplosivePropertyCondition[] getApplicableExplosionConditions() {

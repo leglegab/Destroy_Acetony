@@ -5,15 +5,19 @@ import com.petrolpark.destroy.item.inventory.CustomExplosiveMixInventory;
 import com.petrolpark.destroy.world.explosion.ExplosiveProperties;
 import com.petrolpark.destroy.world.explosion.ExplosiveProperties.ExplosivePropertyCondition;
 import com.simibubi.create.foundation.gui.menu.MenuBase;
-
+ 
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.MenuType;
+import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
+import net.minecraftforge.items.SlotItemHandler;
 
 public class CustomExplosiveMenu extends MenuBase<ICustomExplosiveMixBlockEntity> {
+
+    private int explosiveSlots = 0;
 
     protected CustomExplosiveMenu(MenuType<?> type, int id, Inventory playerInv, FriendlyByteBuf extraData) {
         super(type, id, playerInv, extraData);
@@ -34,23 +38,34 @@ public class CustomExplosiveMenu extends MenuBase<ICustomExplosiveMixBlockEntity
 
     @Override
     protected void initAndReadInventory(ICustomExplosiveMixBlockEntity contentHolder) {
-
+        
     };
 
     @Override
     protected void addSlots() {
+        explosiveSlots = 0;
+        CustomExplosiveMixInventory inv = contentHolder.getExplosiveInventory();
+        for (int slot = 0; slot < inv.getSlots(); slot++) {
+            addSlot(new SlotItemHandler(inv, slot, 94 + 18 * (slot % 4), 25 + 18 * (slot/ 4)));
+            explosiveSlots++;
+        };
         addPlayerSlots(8, 157);
     };
 
     @Override
-    protected void saveData(ICustomExplosiveMixBlockEntity contentHolder) {
-
-    };
+    protected void saveData(ICustomExplosiveMixBlockEntity contentHolder) {};
 
     @Override
     public ItemStack quickMoveStack(Player player, int index) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'quickMoveStack'");
+        Slot clickedSlot = getSlot(index);
+		if (!clickedSlot.hasItem()) return ItemStack.EMPTY;
+        ItemStack stack = clickedSlot.getItem();
+        if (index < explosiveSlots) {
+            moveItemStackTo(stack, explosiveSlots, slots.size(), false);
+        } else {
+            moveItemStackTo(stack, 0, explosiveSlots, false);
+        };
+        return ItemStack.EMPTY;
     };
 
     protected static class DummyCustomExplosiveMixBlockEntity implements ICustomExplosiveMixBlockEntity {

@@ -1,7 +1,6 @@
 package com.petrolpark.destroy.client.gui.screen;
 
 import com.mojang.blaze3d.platform.Window;
-import com.petrolpark.destroy.client.gui.BetterValueSettingsScreen;
 import com.petrolpark.destroy.network.DestroyMessages;
 import com.petrolpark.destroy.network.packet.TransferFluidC2SPacket;
 import com.simibubi.create.foundation.blockEntity.behaviour.ValueSettingsBehaviour.ValueSettings;

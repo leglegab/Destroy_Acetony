@@ -43,7 +43,7 @@ public class DestroyClientModEvents {
     @SubscribeEvent
     public static void changeItemColors(RegisterColorHandlersEvent.Item event) {
         event.register(TankPeriodicTableBlockItemColor.INSTANCE, DestroyBlocks.HYDROGEN_PERIODIC_TABLE_BLOCK.asItem(), DestroyBlocks.NITROGEN_PERIODIC_TABLE_BLOCK.asItem(), DestroyBlocks.OXYGEN_PERIODIC_TABLE_BLOCK.asItem(), DestroyBlocks.FLUORINE_PERIODIC_TABLE_BLOCK.asItem(), DestroyBlocks.CHLORINE_PERIODIC_TABLE_BLOCK.asItem(), DestroyBlocks.MERCURY_PERIODIC_TABLE_BLOCK.asItem());
-        event.register(DyeableCustomExplosiveMixItemColor.INSTANCE, DestroyBlocks.CUSTOM_MIX_EXPLOSIVE);
+        event.register(DyeableCustomExplosiveMixItemColor.INSTANCE, DestroyBlocks.CUSTOM_EXPLOSIVE_MIX);
     };
 
     /**
@@ -53,7 +53,7 @@ public class DestroyClientModEvents {
     @SubscribeEvent
     public static void changeBlockColors(RegisterColorHandlersEvent.Block event) {
         event.register(TankPeriodicTableBlockColor.INSTANCE, DestroyBlocks.HYDROGEN_PERIODIC_TABLE_BLOCK.get(), DestroyBlocks.NITROGEN_PERIODIC_TABLE_BLOCK.get(), DestroyBlocks.OXYGEN_PERIODIC_TABLE_BLOCK.get(), DestroyBlocks.FLUORINE_PERIODIC_TABLE_BLOCK.get(), DestroyBlocks.CHLORINE_PERIODIC_TABLE_BLOCK.get(), DestroyBlocks.MERCURY_PERIODIC_TABLE_BLOCK.get());
-        event.register(DyeableCustomExplosiveMixBlockColor.INSTANCE, DestroyBlocks.CUSTOM_MIX_EXPLOSIVE.get());
+        event.register(DyeableCustomExplosiveMixBlockColor.INSTANCE, DestroyBlocks.CUSTOM_EXPLOSIVE_MIX.get());
         event.register(SmogAffectedBlockColor.GRASS, Blocks.GRASS, Blocks.GRASS_BLOCK, Blocks.FERN, Blocks.TALL_GRASS);
         event.register(SmogAffectedBlockColor.DOUBLE_TALL_GRASS, Blocks.TALL_GRASS, Blocks.LARGE_FERN);
         event.register(SmogAffectedBlockColor.PINK_PETALS, Blocks.PINK_PETALS);

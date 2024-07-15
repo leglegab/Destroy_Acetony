@@ -16,7 +16,12 @@
       "title": {
         "translate": "advancement.destroy.periodic_table"
       },
-      "frame": "challenge"
+      "frame": "challenge",
+      "rewards": {
+        "loot": [
+          "destroy:gold_laboratory_goggles"
+        ]
+      }
     },
     "requirements": [
       [

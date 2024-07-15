@@ -41,12 +41,15 @@ public class FillCustomExplosiveMixItemRecipe extends CustomRecipe {
                 if (stack.getItem() instanceof ICustomExplosiveMixItem customMixItem) { 
                     if (findMixItem) { // If we're looking for a mix container and we've found one
                         if (inv != null) return ItemStack.EMPTY; // Only one mix container allowed
-                        else inv = customMixItem.getExplosiveInventory(stack);
+                        else {
+                            mixItem = stack;
+                            inv = customMixItem.getExplosiveInventory(stack);
+                        };
                     };
                 } else if (CustomExplosiveMixInventory.canBeAdded(stack)) {
                     anyExplosiveFound = true;
                     if (!findMixItem && inv != null && ItemHandlerHelper.insertItem(inv, stack, false) != ItemStack.EMPTY) return ItemStack.EMPTY; 
-                } else {
+                } else if (!stack.isEmpty()) {
                     return ItemStack.EMPTY;
                 };
             };
