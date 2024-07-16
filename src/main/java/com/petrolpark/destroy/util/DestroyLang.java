@@ -231,9 +231,13 @@ public class DestroyLang {
     public static Component vatMaterialTransparent(VatMaterial material, Palette palette) {
         return DestroyLang.translate("tooltip.vat_material.transparent")
             .space()
-            .add(material.transparent() ? tick() : cross())
+            .add(tickOrCross(material.transparent()))
             .component()
             .withStyle(palette.highlight());
+    };
+
+    public static MutableComponent tickOrCross(boolean tick) {
+        return tick ? tick() : cross();
     };
 
     public static MutableComponent tick() {

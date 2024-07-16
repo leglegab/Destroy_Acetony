@@ -8,7 +8,6 @@ import com.mojang.math.Axis;
 import com.petrolpark.destroy.block.model.DestroyPartials;
 import com.petrolpark.destroy.compat.createbigcannons.entity.CustomExplosiveMixShellProjectile;
 import com.simibubi.create.foundation.render.CachedBufferer;
-import com.simibubi.create.foundation.render.SuperByteBuffer;
 
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
@@ -26,9 +25,6 @@ public class CustomExplosiveMixShellProjectileRenderer extends BigCannonProjecti
     public void render(CustomExplosiveMixShellProjectile entity, float entityYaw, float partialTicks, PoseStack poseStack, MultiBufferSource buffers, int packedLight) {
         BlockState blockState = entity.getRenderedBlockState();
         VertexConsumer vc = buffers.getBuffer(RenderType.cutout());
-		SuperByteBuffer shell = CachedBufferer.partialFacing(DestroyPartials.CUSTOM_EXPLOSIVE_MIX_SHELL, blockState)
-			.light(packedLight)
-            .color(entity.color);
 
         poseStack.pushPose();
 
@@ -39,7 +35,13 @@ public class CustomExplosiveMixShellProjectileRenderer extends BigCannonProjecti
         poseStack.translate(0.0d, 0.4d, 0.0d);
         poseStack.mulPose(q);
 
-        shell.renderInto(poseStack, vc);
+        CachedBufferer.partialFacing(DestroyPartials.CUSTOM_EXPLOSIVE_MIX_SHELL_BASE, blockState)
+			.light(packedLight)
+            .color(entity.color)
+            .renderInto(poseStack, vc);
+        CachedBufferer.partialFacing(DestroyPartials.CUSTOM_EXPLOSIVE_MIX_SHELL_OVERLAY, blockState)
+			.light(packedLight)
+            .renderInto(poseStack, vc);
 
         poseStack.popPose();
     };

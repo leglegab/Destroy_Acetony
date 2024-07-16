@@ -127,11 +127,16 @@ public class RedstoneProgrammerBehaviour extends BlockEntityBehaviour implements
 
     @Override
     public boolean writeToClipboard(CompoundTag tag, Direction side) {
-        return false;
+        tag.put("RedstoneProgram", program.write());
+        return true;
     };
 
     @Override
     public boolean readFromClipboard(CompoundTag tag, Player player, Direction side, boolean simulate) {
+        if (tag.contains("RedstoneProgram")) {
+            setProgram(tag.getCompound("RedstoneProgram"));
+            return true;
+        };
         if (!tag.contains("First") || !tag.contains("Last")) return false;
         Couple<Frequency> frequencies = Couple.create(Frequency.of(ItemStack.of(tag.getCompound("First"))), Frequency.of(ItemStack.of(tag.getCompound("Last"))));
         if (program.getChannels().stream().anyMatch(channel -> channel.networkKey.equals(frequencies))) return false;

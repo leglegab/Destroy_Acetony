@@ -7,6 +7,7 @@ import com.petrolpark.destroy.block.DestroyBlocks;
 import com.petrolpark.destroy.block.PeriodicTableBlock;
 import com.petrolpark.destroy.client.ponder.scene.ChemistryScenes;
 import com.petrolpark.destroy.client.ponder.scene.DestroyScenes;
+import com.petrolpark.destroy.client.ponder.scene.ExplosivesScenes;
 import com.petrolpark.destroy.client.ponder.scene.KineticsScenes;
 import com.petrolpark.destroy.client.ponder.scene.OilScenes;
 import com.petrolpark.destroy.client.ponder.scene.PollutionScenes;
@@ -73,6 +74,12 @@ public class DestroyPonderIndex {
         HELPER.forComponents(DestroyBlocks.COOLER)
             .addStoryBoard("cooler", DestroyScenes::cooler)
             .addStoryBoard("vat/interaction", DestroyScenes::vatInteraction);
+
+        // Custom Explosive Mix
+        HELPER.forComponents(DestroyBlocks.CUSTOM_EXPLOSIVE_MIX)
+        .addStoryBoard("explosives/custom_explosive_mix", (s, u) -> ExplosivesScenes.filling(s, u, DestroyBlocks.CUSTOM_EXPLOSIVE_MIX::asStack))
+            .addStoryBoard("explosives/custom_explosive_mix", (s, u) -> ExplosivesScenes.dyeing(s, u, DestroyBlocks.CUSTOM_EXPLOSIVE_MIX::asStack))
+            .addStoryBoard("explosives/custom_explosive_mix", ExplosivesScenes::naming);
 
         // Differential
         HELPER.forComponents(DestroyBlocks.DIFFERENTIAL)

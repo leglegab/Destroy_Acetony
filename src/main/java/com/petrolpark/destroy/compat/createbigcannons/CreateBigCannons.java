@@ -4,10 +4,12 @@ import com.petrolpark.destroy.compat.createbigcannons.block.CreateBigCannonsBloc
 import com.petrolpark.destroy.compat.createbigcannons.block.entity.CreateBigCannonBlockEntityTypes;
 import com.petrolpark.destroy.compat.createbigcannons.entity.CreateBigCannonsEntityTypes;
 import com.petrolpark.destroy.compat.createbigcannons.event.CreateBigCannonsClientModEvents;
+import com.petrolpark.destroy.compat.createbigcannons.ponder.CreateBigCannonsPonderIndex;
 
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.DistExecutor;
+import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 
 public class CreateBigCannons {
@@ -18,6 +20,7 @@ public class CreateBigCannons {
         CreateBigCannonsEntityTypes.register();
 
         // Initiation events
+        modEventBus.addListener(CreateBigCannons::onClientSetup);
         forgeEventBus.addListener(CreateBigCannons::onCommonSetup);
         
         // Client
@@ -26,5 +29,10 @@ public class CreateBigCannons {
 
     public static void onCommonSetup(FMLCommonSetupEvent event) {
         DestroyBlobEffects.registerBlobEffects();
+    };
+
+    public static void onClientSetup(FMLClientSetupEvent event) {
+        CreateBigCannonsPonderIndex.register();
+        CreateBigCannonsPonderIndex.registerTags();
     };
 };

@@ -75,7 +75,12 @@ public class DestroyPartials {
     GAS_MASK = block("gas_mask"),
     PAPER_MASK = block("paper_mask"),
     STRAY_SKULL = block("cooler/skull"),
-    CUSTOM_EXPLOSIVE_MIX_SHELL = block("block/custom_explosive_mix_shell");
+
+    // Explosive stuff
+    CUSTOM_EXPLOSIVE_MIX_BASE = block("block/custom_explosive_mix_no_overlay"),
+    CUSTOM_EXPLOSIVE_MIX_OVERLAY = block("block/custom_explosive_mix_overlay"),
+    CUSTOM_EXPLOSIVE_MIX_SHELL_BASE = block("block/custom_explosive_mix_shell_no_overlay"),
+    CUSTOM_EXPLOSIVE_MIX_SHELL_OVERLAY = block("block/custom_explosive_mix_shell_overlay");
 
     // Atoms
     static {

@@ -4,7 +4,10 @@ import java.util.List;
 
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.core.SectionPos;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.Tag;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.DyeItem;
@@ -53,6 +56,23 @@ public interface IDyeableCustomExplosiveMixBlockEntity extends ICustomExplosiveM
             return InteractionResult.sidedSuccess(level.isClientSide());
         };
         return InteractionResult.PASS;
+    };
+
+    @Override
+    default boolean readFromClipboard(CompoundTag tag, Player player, Direction side, boolean simulate) {
+        boolean invCopied = ICustomExplosiveMixBlockEntity.super.readFromClipboard(tag, player, side, simulate);
+        if (tag.contains("Color", Tag.TAG_INT)) {
+            if (!simulate) setColor(tag.getInt("Color"));
+            return true;
+        };
+        return invCopied;
+    };
+
+    @Override
+    default boolean writeToClipboard(CompoundTag tag, Direction side) {
+        ICustomExplosiveMixBlockEntity.super.writeToClipboard(tag, side);
+        tag.putInt("Color", getColor());
+        return true;
     };
     
 };

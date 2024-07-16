@@ -1,9 +1,11 @@
 package com.petrolpark.destroy.world.explosion;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
@@ -12,10 +14,12 @@ import java.util.stream.Collectors;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.petrolpark.destroy.Destroy;
+import com.petrolpark.destroy.item.tooltip.ExplosivePropertiesTooltip;
 import com.petrolpark.destroy.util.DestroyLang;
 import com.petrolpark.destroy.util.DestroyReloadListener;
 import com.simibubi.create.foundation.utility.Lang;
 
+import net.minecraft.ChatFormatting;
 import net.minecraft.core.Holder;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
@@ -27,7 +31,7 @@ import net.minecraft.world.item.Item;
 import net.minecraftforge.common.crafting.CraftingHelper;
 import net.minecraftforge.common.crafting.conditions.ICondition.IContext;
 
-public class ExplosiveProperties extends EnumMap<ExplosiveProperties.ExplosiveProperty, Float> {
+public class ExplosiveProperties extends EnumMap<ExplosiveProperties.ExplosiveProperty, ExplosiveProperties.ExplosivePropertiesEntry> {
 
     public static final Map<Item, ExplosiveProperties> ITEM_EXPLOSIVE_PROPERTIES = new HashMap<>();
     public static final Map<ResourceLocation, ExplosivePropertyCondition> EXPLOSIVE_PROPERTY_CONDITIONS = new HashMap<>();
@@ -39,38 +43,36 @@ public class ExplosiveProperties extends EnumMap<ExplosiveProperties.ExplosivePr
     EVAPORATES_FLUIDS = register(new ExplosivePropertyCondition(ExplosiveProperty.TEMPERATURE, 5f, Destroy.asResource("evaporates_fluids"))),
     OBLITERATES = register(new ExplosivePropertyCondition(ExplosiveProperty.BRISANCE, 5f, Destroy.asResource("obliterates"))),
     SILK_TOUCH = register(new ExplosivePropertyCondition(ExplosiveProperty.BRISANCE, -5f, Destroy.asResource("silk_touch")));
-
-    public Set<ExplosivePropertyCondition> conditions = new HashSet<>();
   
     public ExplosiveProperties() {
-        super(Arrays.stream(ExplosiveProperty.values()).collect(Collectors.toMap(p -> p, p -> 0f)));
+        super(Arrays.stream(ExplosiveProperty.values()).collect(Collectors.toMap(p -> p, p -> new ExplosivePropertiesEntry(0f, p.getDefaultDescription()))));
     };
 
     public ExplosiveProperties withConditions(ExplosivePropertyCondition ...conditions) {
-        this.conditions.clear();
-        for (ExplosivePropertyCondition condition : conditions) this.conditions.add(condition);
+        forEach((p, e) -> e.conditions.clear());
+        for (ExplosivePropertyCondition condition : conditions) {
+            get(condition.property).conditions.add(condition);
+        };
         return this;
     };
 
     public boolean fulfils(ExplosivePropertyCondition condition) {
-        if (!conditions.contains(condition)) return false;
-        float value = get(condition.property);
+        if (!get(condition.property).conditions.contains(condition)) return false;
+        float value = get(condition.property).value;
         return condition.negative() ? value <= condition.threshhold : value >= condition.threshhold;
     };
 
     public CompoundTag write() {
         CompoundTag tag = new CompoundTag();
-        forEach((p, f) -> {
-            if (f != 0f) tag.putFloat(p.name(), f);
+        forEach((p, e) -> {
+            if (e.value != 0f) tag.putFloat(p.name(), e.value);
         });
         return tag;
     };
 
     public static ExplosiveProperties read(CompoundTag tag) {
         ExplosiveProperties properties = new ExplosiveProperties();
-        for (ExplosiveProperty property : ExplosiveProperty.values()) {
-            properties.put(property, tag.getFloat(property.name()));
-        };
+        properties.forEach((p, e) -> e.value = tag.getFloat(p.name()));
         return properties;
     };
 
@@ -78,13 +80,27 @@ public class ExplosiveProperties extends EnumMap<ExplosiveProperties.ExplosivePr
         ExplosiveProperties properties = new ExplosiveProperties();
         for (ExplosiveProperty property : ExplosiveProperty.values()) {
             if (json.has(Lang.asId(property.name()))) {
-                try { properties.put(property, json.get(Lang.asId(property.name())).getAsFloat()); } catch (Throwable e) {};
+                try { properties.put(property, new ExplosivePropertiesEntry(json.get(Lang.asId(property.name())).getAsFloat(), property.getDefaultDescription())); } catch (Throwable e) {};
             };
         };
         return properties;
     };
 
-    public static class ExplosivePropertyCondition {
+    public static class ExplosivePropertiesEntry {
+
+        public float value;
+        public final Set<ExplosivePropertyCondition> conditions;
+        public Component description;
+
+        public ExplosivePropertiesEntry(float value, Component description) {
+            this.value = value;
+            this.conditions = new HashSet<>();
+            this.description = description;
+        };
+
+    };
+
+    public static class ExplosivePropertyCondition implements ExplosivePropertiesTooltip.Selectable {
 
         public final ExplosiveProperty property;
         public final float threshhold;
@@ -102,14 +118,24 @@ public class ExplosiveProperties extends EnumMap<ExplosiveProperties.ExplosivePr
 
         public Component getDescription() {
             return Component.translatable(rl.getNamespace()+".explosion_condition."+rl.getPath());
+        }
+
+        @Override
+        public List<Component> getTooltip(ExplosiveProperties properties) {
+            boolean active = properties.fulfils(this);
+            List<Component> tooltip = new ArrayList<>(2);
+            tooltip.add(getDescription().copy().withStyle(active ? ChatFormatting.WHITE : ChatFormatting.GRAY));
+            tooltip.add(DestroyLang.translate("tooltip.explosion_condition_active", DestroyLang.tickOrCross(active)).style(ChatFormatting.GRAY).component());
+            return tooltip;
         };
     };
 
     public static ExplosivePropertyCondition register(ExplosivePropertyCondition condition) {
-        return EXPLOSIVE_PROPERTY_CONDITIONS.put(condition.rl, condition);
+        EXPLOSIVE_PROPERTY_CONDITIONS.put(condition.rl, condition);
+        return condition;
     };
 
-    public static enum ExplosiveProperty {
+    public static enum ExplosiveProperty implements ExplosivePropertiesTooltip.Selectable {
 
         ENERGY,
         OXYGEN_BALANCE,
@@ -123,6 +149,18 @@ public class ExplosiveProperties extends EnumMap<ExplosiveProperties.ExplosivePr
 
         public Component getSymbol() {
             return DestroyLang.translate("explosive_property."+Lang.asId(name())+".symbol").component();
+        };
+
+        public Component getDefaultDescription() {
+            return DestroyLang.translate("explosive_property."+Lang.asId(name())+".description").component();
+        };
+
+        @Override
+        public List<Component> getTooltip(ExplosiveProperties properties) {
+            List<Component> tooltip = new ArrayList<>(2);
+            tooltip.add(getName());
+            tooltip.add(properties.get(this).description.copy().withStyle(ChatFormatting.GRAY));
+            return tooltip;
         };
     };
 

@@ -893,7 +893,7 @@ public final class DestroyMolecules {
 
     PICRIC_ACID = builder()
         .id("picric_acid")
-        .structure(Formula.deserialize("destroy:benzene:O,N~(~O)O,C,N~(~O)O,,N~(~O)O"))
+        .structure(Formula.deserialize("destroy:benzene:O,N~(~O)O,,N~(~O)O,,N~(~O)O"))
         .color(0xC0ED7417)
         .boilingPoint(300f) // Detonates before this
         .density(1763f)

@@ -14,6 +14,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
@@ -63,7 +64,7 @@ public abstract class SimpleDyeableNameableCustomExplosiveMixBlockEntity extends
     @Override
     protected void read(CompoundTag tag, boolean clientPacket) {
         super.read(tag, clientPacket);
-        color = tag.getInt("Color");
+        setColor(tag.getInt("Color"));
         if (tag.contains("CustomName", Tag.TAG_STRING)) name = Component.Serializer.fromJson(tag.getString("CustomName"));
         inv = createInv();
         inv.deserializeNBT(tag.getCompound("ExplosiveMix"));
@@ -91,8 +92,9 @@ public abstract class SimpleDyeableNameableCustomExplosiveMixBlockEntity extends
 
     @Override
     public void setColor(int color) {
+        boolean rerender = color != this.color;
         this.color = color;
-        DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> IDyeableCustomExplosiveMixBlockEntity.reRender(getLevel(), getBlockPos()));
+        if (rerender) DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> IDyeableCustomExplosiveMixBlockEntity.reRender(getLevel(), getBlockPos()));
         notifyUpdate();
     };
 
@@ -111,6 +113,26 @@ public abstract class SimpleDyeableNameableCustomExplosiveMixBlockEntity extends
     @Override
     public Component getDisplayName() {
         return name != null ? name : getLevel().getBlockState(getBlockPos()).getBlock().getName();
+    };
+
+    @Override
+    public boolean readFromClipboard(CompoundTag tag, Player player, Direction side, boolean simulate) {
+        boolean success = IDyeableCustomExplosiveMixBlockEntity.super.readFromClipboard(tag, player, side, simulate);
+        if (tag.contains("Name", Tag.TAG_STRING)) {
+            if (!simulate) name = Component.Serializer.fromJson(tag.getString("Name"));
+            return true;
+        };
+        return success;
+    };
+
+    @Override
+    public boolean writeToClipboard(CompoundTag tag, Direction side) {
+        boolean success = IDyeableCustomExplosiveMixBlockEntity.super.writeToClipboard(tag, side);
+        if (name != null) {
+            tag.putString("Name", Component.Serializer.toJson(name));
+            return true;
+        };
+        return success;
     };
     
 };

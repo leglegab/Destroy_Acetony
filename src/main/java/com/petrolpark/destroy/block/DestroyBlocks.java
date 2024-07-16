@@ -46,17 +46,20 @@ import com.simibubi.create.foundation.data.SharedProperties;
 import com.simibubi.create.foundation.data.TagGen;
 import com.tterrag.registrate.providers.loot.RegistrateBlockLootTables;
 import com.tterrag.registrate.util.entry.BlockEntry;
+import com.tterrag.registrate.util.nullness.NonNullConsumer;
 
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.core.BlockPos;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.DispenserBlock;
 import net.minecraft.world.level.block.GlassBlock;
 import net.minecraft.world.level.block.RotatedPillarBlock;
 import net.minecraft.world.level.block.SoundType;
@@ -170,7 +173,10 @@ public class DestroyBlocks {
 
     public static final BlockEntry<CustomExplosiveMixBlock> CUSTOM_EXPLOSIVE_MIX = REGISTRATE.block("custom_explosive_mix", CustomExplosiveMixBlock::new)
         .initialProperties(() -> Blocks.TNT)
-        .item(CustomExplosiveMixBlockItem::new)
+        .properties(p -> p
+            .mapColor(MapColor.SNOW)
+        ).item(CustomExplosiveMixBlockItem::new)
+        .onRegister(registerPrimeableBombDispenserBehaviour())
         .build()
         .register();
 
@@ -382,21 +388,23 @@ public class DestroyBlocks {
 
     // EXPLOSIVES
 
-    public static final BlockEntry<PrimeableBombBlock> ANFO_BLOCK = REGISTRATE.block("anfo_block", p -> new PrimeableBombBlock(p, PrimedBomb.Anfo::new))
+    public static final BlockEntry<PrimeableBombBlock<PrimedBomb>> ANFO_BLOCK = REGISTRATE.block("anfo_block", p -> new PrimeableBombBlock<>(p, PrimedBomb.Anfo::new))
         .initialProperties(() -> Blocks.TNT)
         .properties(p -> p
             .mapColor(MapColor.COLOR_PINK)
         ).item()
         .tag(DestroyItemTags.LIABLE_TO_CHANGE.tag)
+        .onRegister(registerPrimeableBombDispenserBehaviour())
         .build()
         .register();
 
-    public static final BlockEntry<PrimeableBombBlock> CORDITE = REGISTRATE.block("cordite", p -> new PrimeableBombBlock(p, PrimedBomb.Cordite::new))
+    public static final BlockEntry<PrimeableBombBlock<PrimedBomb>> CORDITE = REGISTRATE.block("cordite", p -> new PrimeableBombBlock<>(p, PrimedBomb.Cordite::new))
         .initialProperties(() -> Blocks.TNT)
         .properties(p -> p
             .mapColor(MapColor.COLOR_ORANGE)
         ).item()
         .tag(DestroyItemTags.LIABLE_TO_CHANGE.tag)
+        .onRegister(registerPrimeableBombDispenserBehaviour())
         .build()
         .register();
 
@@ -408,22 +416,24 @@ public class DestroyBlocks {
         .build()
         .register();
 
-    public static final BlockEntry<PrimeableBombBlock> NITROCELLULOSE_BLOCK = REGISTRATE.block("nitrocellulose_block", p -> new PrimeableBombBlock(p, PrimedBomb.Nitrocellulose::new))
+    public static final BlockEntry<PrimeableBombBlock<PrimedBomb>> NITROCELLULOSE_BLOCK = REGISTRATE.block("nitrocellulose_block", p -> new PrimeableBombBlock<>(p, PrimedBomb.Nitrocellulose::new))
         .initialProperties(() -> Blocks.TNT)
         .properties(p -> p
             .mapColor(MapColor.COLOR_LIGHT_GREEN)
         ).item()
         .tag(DestroyItemTags.LIABLE_TO_CHANGE.tag)
         .tag(DestroyItemTags.OBLITERATION_EXPLOSIVES.tag)
+        .onRegister(registerPrimeableBombDispenserBehaviour())
         .build()
         .register();
 
-    public static final BlockEntry<PrimeableBombBlock> PICRIC_ACID_BLOCK = REGISTRATE.block("picric_acid_block", (p) -> new PrimeableBombBlock(p, PrimedBomb.PicricAcid::new))
+    public static final BlockEntry<PrimeableBombBlock<PrimedBomb>> PICRIC_ACID_BLOCK = REGISTRATE.block("picric_acid_block", (p) -> new PrimeableBombBlock<>(p, PrimedBomb.PicricAcid::new))
         .initialProperties(() -> Blocks.TNT)
         .properties(p -> p
             .mapColor(MapColor.COLOR_YELLOW)
         ).item()
         .tag(DestroyItemTags.LIABLE_TO_CHANGE.tag)
+        .onRegister(registerPrimeableBombDispenserBehaviour())
         .build()
         .register();
 
@@ -1062,6 +1072,10 @@ public class DestroyBlocks {
         .item()
         .build()
         .register();
+
+    public static NonNullConsumer<? super BlockItem> registerPrimeableBombDispenserBehaviour() {
+        return item -> DispenserBlock.registerBehavior(item, ((PrimeableBombBlock<?>)item.getBlock()).new PrimeableBombDispenseBehaviour());
+    };
 
     public static boolean never(BlockState state, BlockGetter level, BlockPos pos) {
         return false;

@@ -8,7 +8,8 @@ import javax.annotation.Nullable;
 import com.petrolpark.destroy.block.entity.CustomExplosiveMixBlockEntity;
 import com.petrolpark.destroy.block.entity.DestroyBlockEntityTypes;
 import com.petrolpark.destroy.block.entity.SimpleDyeableNameableCustomExplosiveMixBlockEntity;
-import com.petrolpark.destroy.compat.createbigcannons.block.CreateBigCannonsBlocks;
+import com.petrolpark.destroy.entity.CustomExplosiveMixEntity;
+import com.petrolpark.destroy.entity.DestroyEntityTypes;
 import com.simibubi.create.foundation.block.IBE;
 
 import net.minecraft.core.BlockPos;
@@ -20,7 +21,6 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityTicker;
 import net.minecraft.world.level.block.entity.BlockEntityType;
@@ -31,10 +31,10 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraftforge.network.NetworkHooks;
 
-public class CustomExplosiveMixBlock extends Block implements IBE<CustomExplosiveMixBlockEntity> {
-
+public class CustomExplosiveMixBlock extends PrimeableBombBlock<CustomExplosiveMixEntity> implements IBE<CustomExplosiveMixBlockEntity> {
+    
     public CustomExplosiveMixBlock(Properties properties) {
-        super(properties);
+        super(properties, new CustomExplosiveMixEntityFactory());
     };
 
     @Nullable
@@ -64,7 +64,7 @@ public class CustomExplosiveMixBlock extends Block implements IBE<CustomExplosiv
     public List<ItemStack> getDrops(BlockState state, LootParams.Builder params) {
         BlockEntity be = params.getOptionalParameter(LootContextParams.BLOCK_ENTITY);
         if (!(be instanceof SimpleDyeableNameableCustomExplosiveMixBlockEntity ebe)) return Collections.emptyList();
-        return Collections.singletonList(ebe.getFilledItemStack(CreateBigCannonsBlocks.CUSTOM_EXPLOSIVE_MIX_CHARGE.asStack()));
+        return Collections.singletonList(ebe.getFilledItemStack(DestroyBlocks.CUSTOM_EXPLOSIVE_MIX.asStack()));
     };
 
     @Override
@@ -80,7 +80,7 @@ public class CustomExplosiveMixBlock extends Block implements IBE<CustomExplosiv
     public ItemStack getCloneItemStack(BlockGetter level, BlockPos pos) {
         SimpleDyeableNameableCustomExplosiveMixBlockEntity be = getBlockEntity(level, pos);
         if (be == null) return ItemStack.EMPTY;
-        return be.getFilledItemStack(CreateBigCannonsBlocks.CUSTOM_EXPLOSIVE_MIX_CHARGE.asStack());
+        return be.getFilledItemStack(DestroyBlocks.CUSTOM_EXPLOSIVE_MIX.asStack());
     };
 
     @Override
@@ -91,6 +91,19 @@ public class CustomExplosiveMixBlock extends Block implements IBE<CustomExplosiv
     @Override
     public BlockEntityType<? extends CustomExplosiveMixBlockEntity> getBlockEntityType() {
         return DestroyBlockEntityTypes.CUSTOM_EXPLOSIVE_MIX.get();
+    };
+
+    public static class CustomExplosiveMixEntityFactory implements PrimedBombEntityFactory<CustomExplosiveMixEntity> {
+
+        @Override
+        public CustomExplosiveMixEntity create(Level level, BlockPos pos, BlockState state, LivingEntity igniter) {
+            BlockEntity be = level.getBlockEntity(pos);
+            if (!(be instanceof CustomExplosiveMixBlockEntity ebe)) return DestroyEntityTypes.PRIMED_CUSTOM_EXPLOSIVE.create(level);
+            CustomExplosiveMixEntity entity = new CustomExplosiveMixEntity(level, pos, state, igniter, ebe.getColor(), ebe.getExplosiveInventory());
+            entity.setCustomName(ebe.getCustomName());
+            return entity;
+        };
+        
     };
     
 };

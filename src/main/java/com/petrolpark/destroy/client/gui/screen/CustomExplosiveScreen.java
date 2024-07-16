@@ -1,8 +1,13 @@
 package com.petrolpark.destroy.client.gui.screen;
 
+import java.util.List;
+
 import com.mojang.blaze3d.vertex.PoseStack;
+import com.petrolpark.destroy.block.entity.ICustomExplosiveMixBlockEntity;
 import com.petrolpark.destroy.client.gui.DestroyGuiTextures;
 import com.petrolpark.destroy.client.gui.menu.CustomExplosiveMenu;
+import com.petrolpark.destroy.item.tooltip.ExplosivePropertiesTooltip;
+import com.petrolpark.destroy.world.explosion.ExplosiveProperties;
 import com.simibubi.create.foundation.gui.AllIcons;
 import com.simibubi.create.foundation.gui.menu.AbstractSimiContainerScreen;
 import com.simibubi.create.foundation.gui.widget.IconButton;
@@ -15,10 +20,14 @@ public class CustomExplosiveScreen extends AbstractSimiContainerScreen<CustomExp
 
     private final DestroyGuiTextures background;
 
+    private final ICustomExplosiveMixBlockEntity be;
+    private ExplosiveProperties explosiveProperties = null;
+
     private IconButton confirmButton;
 
     public CustomExplosiveScreen(CustomExplosiveMenu container, Inventory inv, Component title) {
         super(container, inv, title);
+        be = container.contentHolder;
         background = DestroyGuiTextures.CUSTOM_EXPLOSIVE_BACKGROUND;
     };
 
@@ -34,6 +43,13 @@ public class CustomExplosiveScreen extends AbstractSimiContainerScreen<CustomExp
     };
 
     @Override
+    protected void containerTick() {
+        super.containerTick();
+        explosiveProperties = be.getExplosiveInventory().getExplosiveProperties() 
+            .withConditions(be.getApplicableExplosionConditions());
+    };
+
+    @Override
     protected void renderBg(GuiGraphics graphics, float partialTick, int mouseX, int mouseY) {
         PoseStack ms = graphics.pose();
         ms.pushPose();
@@ -41,10 +57,23 @@ public class CustomExplosiveScreen extends AbstractSimiContainerScreen<CustomExp
 
         background.render(graphics, 0, 0);
         renderPlayerInventory(graphics, 0, background.height + 4);
+        if (explosiveProperties != null) {
+            ms.pushPose();
+            ms.translate(10, 22, 0);
+            ExplosivePropertiesTooltip.renderProperties(explosiveProperties, font, graphics, mouseX - getGuiLeft() - 10, mouseY - getGuiTop() - 22);
+            ms.popPose();
+        };
 
         graphics.drawString(font, title, 7, 4, 0xA6142B, false);
 
         ms.popPose();
+    };
+
+    @Override
+    protected void renderForeground(GuiGraphics graphics, int mouseX, int mouseY, float partialTicks) {
+        super.renderForeground(graphics, mouseX, mouseY, partialTicks);
+        List<Component> tooltip = ExplosivePropertiesTooltip.getSelected(explosiveProperties, mouseX - getGuiLeft() - 10, mouseY - getGuiTop() - 22).getTooltip(explosiveProperties);
+        if (!tooltip.isEmpty()) graphics.renderComponentTooltip(font, tooltip, mouseX, mouseY);
     };
     
 };

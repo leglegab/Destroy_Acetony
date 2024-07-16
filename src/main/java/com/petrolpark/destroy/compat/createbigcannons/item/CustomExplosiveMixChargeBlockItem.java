@@ -27,7 +27,6 @@ public class CustomExplosiveMixChargeBlockItem extends DyeableCustomExplosiveMix
 		super.appendHoverText(stack, level, tooltipComponents, isAdvanced);
 		CBCTooltip.appendMuzzleVelocityText(stack, level, tooltipComponents, isAdvanced, CBCBlocks.POWDER_CHARGE.get());
 		CBCTooltip.appendPropellantStressText(stack, level, tooltipComponents, isAdvanced, CBCBlocks.POWDER_CHARGE.get());
-        //TODO list contents of charge
 	};
 
     @Override
@@ -37,7 +36,7 @@ public class CustomExplosiveMixChargeBlockItem extends DyeableCustomExplosiveMix
 
     @Override
     public ExplosivePropertyCondition[] getApplicableExplosionConditions() {
-        return new ExplosivePropertyCondition[]{};
+        return new ExplosivePropertyCondition[]{}; //TODO
     };
     
 };

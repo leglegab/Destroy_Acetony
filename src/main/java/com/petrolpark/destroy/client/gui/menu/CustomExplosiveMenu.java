@@ -25,6 +25,7 @@ public class CustomExplosiveMenu extends MenuBase<ICustomExplosiveMixBlockEntity
 
     protected CustomExplosiveMenu(MenuType<?> type, int id, Inventory playerInv, ICustomExplosiveMixBlockEntity contentHolder) {
 		super(type, id, playerInv, contentHolder);
+        explosiveSlots = contentHolder.getExplosiveInventory().getSlots();
 	};
 
     public static CustomExplosiveMenu create(int id, Inventory playerInv, ICustomExplosiveMixBlockEntity be) {
@@ -43,11 +44,9 @@ public class CustomExplosiveMenu extends MenuBase<ICustomExplosiveMixBlockEntity
 
     @Override
     protected void addSlots() {
-        explosiveSlots = 0;
         CustomExplosiveMixInventory inv = contentHolder.getExplosiveInventory();
         for (int slot = 0; slot < inv.getSlots(); slot++) {
             addSlot(new SlotItemHandler(inv, slot, 94 + 18 * (slot % 4), 25 + 18 * (slot/ 4)));
-            explosiveSlots++;
         };
         addPlayerSlots(8, 157);
     };
@@ -63,7 +62,9 @@ public class CustomExplosiveMenu extends MenuBase<ICustomExplosiveMixBlockEntity
         if (index < explosiveSlots) {
             moveItemStackTo(stack, explosiveSlots, slots.size(), false);
         } else {
-            moveItemStackTo(stack, 0, explosiveSlots, false);
+            while (!stack.isEmpty()) {
+                if (!moveItemStackTo(stack, 0, explosiveSlots, false)) break;
+            };
         };
         return ItemStack.EMPTY;
     };

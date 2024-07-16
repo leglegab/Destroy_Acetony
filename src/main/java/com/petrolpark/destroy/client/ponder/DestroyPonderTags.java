@@ -45,6 +45,7 @@ public class DestroyPonderTags {
             .add(DestroyBlocks.CENTRIFUGE)
             .add(DestroyBlocks.COAXIAL_GEAR)
             .add(DestroyBlocks.COOLER)
+            .add(DestroyBlocks.CUSTOM_EXPLOSIVE_MIX)
             .add(DestroyBlocks.DIFFERENTIAL)
             .add(DestroyBlocks.DOUBLE_CARDAN_SHAFT)
             .add(DestroyBlocks.DYNAMO)

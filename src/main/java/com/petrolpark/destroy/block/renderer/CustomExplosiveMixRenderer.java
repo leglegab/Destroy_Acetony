@@ -25,33 +25,21 @@ public class CustomExplosiveMixRenderer extends SafeBlockEntityRenderer<CustomEx
 
     @Override
     protected void renderSafe(CustomExplosiveMixBlockEntity be, float partialTicks, PoseStack ms, MultiBufferSource bufferSource, int light, int overlay) {
-        Minecraft mc = Minecraft.getInstance();
         Component nameComponent = be.getCustomName();
-        if (nameComponent != null) {
-            String name = nameComponent.getString();
-            for (Direction face : Iterate.horizontalDirections) {
-                ms.pushPose();
-                TransformStack.cast(ms)
-                    .centre()
-                    .scale(-1 / 16f)
-                    .rotateToFace(face);
-                ms.translate(-8d, -5d, 8.02d);
-                // TransformStack.cast(ms)
-                //     .rotateX(180d);
-                //NixieTubeRenderer.drawInWorldString(ms, bufferSource, name, overlay);
-                renderTruncated(mc.font, ms, bufferSource, light, name);
-                ms.popPose();
-            };
-        };
+        if (nameComponent == null) return;
+        renderTruncated(ms, bufferSource, light, nameComponent.getString());
     };
     
     public static final ResourceLocation FONT_LOCATION = Destroy.asResource("explosive");
     public static final Style FONT = Style.EMPTY.withFont(FONT_LOCATION);
     public static final String ALLOWED_CHARACTERS = " 1234567890QWERTYUIOPASDFGHJKLZXCVBNM";
 
-    public static void renderTruncated(Font font, PoseStack ms, MultiBufferSource buffer, int light, String string) {
+    public static void renderTruncated(PoseStack ms, MultiBufferSource buffer, int light, String string) {
         Minecraft mc = Minecraft.getInstance();
+        Font font = mc.font;
+
         string = string.toUpperCase(mc.getLocale());
+
         String result = "";
         int width = 0;
         for (int i = 0; i < string.length(); i++) {
@@ -62,7 +50,17 @@ public class CustomExplosiveMixRenderer extends SafeBlockEntityRenderer<CustomEx
             result += s;
             width += sWidth;
         };
-        font.drawInBatch(FormattedCharSequence.forward(result, Style.EMPTY.withFont(FONT_LOCATION)), (17 - width) / 2, 0, 0xFFFFFF, false, ms.last().pose(), buffer, Font.DisplayMode.NORMAL, 0, light);
+        
+        for (Direction face : Iterate.horizontalDirections) {
+            ms.pushPose();
+            TransformStack.cast(ms)
+                .centre()
+                .scale(- 1 / 16f)
+                .rotateToFace(face);
+            ms.translate(-8d, -5d, 8.02d);
+            font.drawInBatch(FormattedCharSequence.forward(result, Style.EMPTY.withFont(FONT_LOCATION)), (17 - width) / 2, 0, 0xFFFFFF, false, ms.last().pose(), buffer, Font.DisplayMode.NORMAL, 0, light);
+            ms.popPose();
+        };
         
         if (buffer instanceof BufferSource bufferSource) {
 			bufferSource.endBatch(font.getFontSet(FONT_LOCATION).whiteGlyph().renderType(Font.DisplayMode.NORMAL));

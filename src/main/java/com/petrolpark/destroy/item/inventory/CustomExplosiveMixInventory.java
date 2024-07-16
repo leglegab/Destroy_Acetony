@@ -24,9 +24,12 @@ public class CustomExplosiveMixInventory extends ItemStackHandler {
         for (int slot = 0; slot < getSlots(); slot++) {
             ItemStack stack = getStackInSlot(slot);
             ExplosiveProperties itemProperties = ExplosiveProperties.ITEM_EXPLOSIVE_PROPERTIES.getOrDefault(stack.getItem(), new ExplosiveProperties());
-            for (ExplosiveProperty property : ExplosiveProperty.values()) properties.merge(property, itemProperties.get(property), Float::sum);
+            for (ExplosiveProperty property : ExplosiveProperty.values()) properties.merge(property, itemProperties.get(property), (e1, e2) -> {
+                e1.value += e2.value;
+                return e1;
+            });
         };
-        properties.replaceAll((ep, v) -> Mth.clamp(v, -10f, 10f));
+        properties.forEach((ep, e) -> e.value = Mth.clamp(e.value, -10f, 10f));
         return properties;
     };
 
