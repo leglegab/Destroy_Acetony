@@ -13,6 +13,7 @@ import com.petrolpark.destroy.config.DestroyAllConfigs;
 import com.petrolpark.destroy.fluid.DestroyFluids;
 import com.petrolpark.destroy.util.DestroyLang;
 import com.petrolpark.destroy.util.PollutionHelper;
+import com.petrolpark.destroy.util.DestroyTags.DestroyFluidTags;
 import com.simibubi.create.AllBlocks;
 import com.simibubi.create.content.equipment.goggles.IHaveGoggleInformation;
 import com.simibubi.create.content.fluids.tank.FluidTankBlock;
@@ -80,8 +81,11 @@ public class CoolerBlockEntity extends SmartBlockEntity implements IHaveGoggleIn
     /**
      * Use up the Fluid in this Cooler, turning it into ticks of cooling.
      */
+    @SuppressWarnings("deprecation")
     private void consumeFluid() {
         if (!hasLevel()) return;
+
+        float coolingPower = 0f;
 
         FluidStack fluidStack = tank.getPrimaryHandler().getFluid();
         if (DestroyFluids.isMixture(fluidStack)) {
@@ -91,7 +95,6 @@ public class CoolerBlockEntity extends SmartBlockEntity implements IHaveGoggleIn
 
             float totalMolesPerBucket = 0f;
             float totalRefrigerantMolesPerBucket = 0f;
-            float coolingPower = 0f;
             for (Molecule molecule : mixture.getContents(true)) {
                 float concentration = mixture.getConcentrationOf(molecule);
                 totalMolesPerBucket += concentration;
@@ -103,16 +106,20 @@ public class CoolerBlockEntity extends SmartBlockEntity implements IHaveGoggleIn
 
             if (DestroyAllConfigs.SERVER.blocks.coolerEnhancedByPurity.get()) coolingPower *= totalRefrigerantMolesPerBucket / totalMolesPerBucket; // Scale the effectiveness of the refrigerant with its purity
 
-            if (coolingPower > 0f) {
+            
+        } else if (fluidStack.getFluid().is(DestroyFluidTags.COOLANT.tag)) {
+            coolingPower += fluidStack.getAmount(); // One bucket of coolant = 50 seconds of coling
+        }
 
-                // Begin cooling
-                setColdnessOfBlock(ColdnessLevel.FROSTING);
-                coolingTicks += coolingPower;
+        if (coolingPower > 0f) {
 
-                // Stop insertion if necessary
-                if (coolingTicks >= getMaxCoolingTicks()) {
-                    tank.forbidInsertion();
-                };
+            // Begin cooling
+            setColdnessOfBlock(ColdnessLevel.FROSTING);
+            coolingTicks += coolingPower;
+
+            // Stop insertion if necessary
+            if (coolingTicks >= getMaxCoolingTicks()) {
+                tank.forbidInsertion();
             };
         };
 

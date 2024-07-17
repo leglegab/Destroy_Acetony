@@ -77,10 +77,10 @@ public class DestroyPartials {
     STRAY_SKULL = block("cooler/skull"),
 
     // Explosive stuff
-    CUSTOM_EXPLOSIVE_MIX_BASE = block("block/custom_explosive_mix_no_overlay"),
-    CUSTOM_EXPLOSIVE_MIX_OVERLAY = block("block/custom_explosive_mix_overlay"),
-    CUSTOM_EXPLOSIVE_MIX_SHELL_BASE = block("block/custom_explosive_mix_shell_no_overlay"),
-    CUSTOM_EXPLOSIVE_MIX_SHELL_OVERLAY = block("block/custom_explosive_mix_shell_overlay");
+    CUSTOM_EXPLOSIVE_MIX_BASE = block("custom_explosive_mix_no_overlay"),
+    CUSTOM_EXPLOSIVE_MIX_OVERLAY = block("custom_explosive_mix_overlay"),
+    CUSTOM_EXPLOSIVE_MIX_SHELL_BASE = block("custom_explosive_mix_shell_no_overlay"),
+    CUSTOM_EXPLOSIVE_MIX_SHELL_OVERLAY = block("custom_explosive_mix_shell_overlay");
 
     // Atoms
     static {

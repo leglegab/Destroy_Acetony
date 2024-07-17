@@ -102,7 +102,8 @@ public class DestroyTags {
         ACIDIFIES_RAIN,
         DEPLETES_OZONE,
         GREENHOUSE_GAS,
-        RADIOACTIVE;
+        RADIOACTIVE,
+        COOLANT;
 
         public final TagKey<Fluid> tag;
 

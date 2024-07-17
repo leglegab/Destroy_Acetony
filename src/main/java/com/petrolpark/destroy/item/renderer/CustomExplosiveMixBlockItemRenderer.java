@@ -19,7 +19,7 @@ public class CustomExplosiveMixBlockItemRenderer extends CustomRenderedItemModel
         mc.getItemRenderer().render(stack, ItemDisplayContext.NONE, false, ms, buffer, light, overlay, model.getOriginalModel());
         if (!stack.hasCustomHoverName()) return;
         ms.popPose();
-        CustomExplosiveMixRenderer.renderTruncated(ms, buffer, light, stack.getHoverName().getString());
+        CustomExplosiveMixRenderer.renderTruncated(ms, buffer, d -> light, stack.getHoverName().getString());
         ms.pushPose();
     };
     

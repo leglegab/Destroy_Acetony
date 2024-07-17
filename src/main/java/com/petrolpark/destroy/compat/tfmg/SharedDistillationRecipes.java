@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.petrolpark.destroy.Destroy;
+import com.petrolpark.destroy.compat.CompatMods;
 import com.petrolpark.destroy.config.DestroyAllConfigs;
 import com.petrolpark.destroy.recipe.DestroyRecipeTypes;
 import com.petrolpark.destroy.recipe.DistillationRecipe;
@@ -30,12 +31,12 @@ public class SharedDistillationRecipes {
     private static final Map<Level, List<ProcessingRecipe<?>>> DESTROY_TO_TFMG_RECIPES = new HashMap<>();
 
     public static final List<DistillationRecipe> getTFMGToDestroyRecipes(Level level) {
-        if (!DestroyAllConfigs.SERVER.compat.TFMGDistillationInDestroy.get()) return Collections.emptyList();
+        if (!CompatMods.TFMG.isLoaded() || !DestroyAllConfigs.SERVER.compat.TFMGDistillationInDestroy.get()) return Collections.emptyList();
         return TFMG_TO_DESTROY_RECIPES.computeIfAbsent(level, SharedDistillationRecipes::convertTFMGToDestroyRecipes);
     };
 
     public static final List<ProcessingRecipe<?>> getDestroyToTFMGRecipes(Level level) {
-        if (!DestroyAllConfigs.SERVER.compat.destroyDistillationInTFMG.get()) return Collections.emptyList();
+        if (!CompatMods.TFMG.isLoaded() || !DestroyAllConfigs.SERVER.compat.destroyDistillationInTFMG.get()) return Collections.emptyList();
         return DESTROY_TO_TFMG_RECIPES.computeIfAbsent(level, SharedDistillationRecipes::convertDestroyToTFMGRecipes);
     };
     

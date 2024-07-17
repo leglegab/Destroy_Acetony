@@ -15,11 +15,14 @@ import com.simibubi.create.foundation.gui.widget.IconButton;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.inventory.Slot;
+import net.minecraft.world.item.ItemStack;
 
 public class CustomExplosiveScreen extends AbstractSimiContainerScreen<CustomExplosiveMenu> {
 
     private final DestroyGuiTextures background;
 
+    private final CustomExplosiveMenu menu;
     private final ICustomExplosiveMixBlockEntity be;
     private ExplosiveProperties explosiveProperties = null;
 
@@ -27,7 +30,8 @@ public class CustomExplosiveScreen extends AbstractSimiContainerScreen<CustomExp
 
     public CustomExplosiveScreen(CustomExplosiveMenu container, Inventory inv, Component title) {
         super(container, inv, title);
-        be = container.contentHolder;
+        menu = container;
+        be = menu.contentHolder;
         background = DestroyGuiTextures.CUSTOM_EXPLOSIVE_BACKGROUND;
     };
 
@@ -57,6 +61,9 @@ public class CustomExplosiveScreen extends AbstractSimiContainerScreen<CustomExp
 
         background.render(graphics, 0, 0);
         renderPlayerInventory(graphics, 0, background.height + 4);
+        for (int slot = 0; slot < be.getExplosiveInventory().getSlots(); slot++) {
+            DestroyGuiTextures.CUSTOM_EXPLOSIVE_SLOT.render(graphics, 93 + 18 * (slot % 4), 24 + 18 * (slot / 4));
+        };
         if (explosiveProperties != null) {
             ms.pushPose();
             ms.translate(10, 22, 0);
@@ -72,8 +79,20 @@ public class CustomExplosiveScreen extends AbstractSimiContainerScreen<CustomExp
     @Override
     protected void renderForeground(GuiGraphics graphics, int mouseX, int mouseY, float partialTicks) {
         super.renderForeground(graphics, mouseX, mouseY, partialTicks);
+
+        PoseStack ms = graphics.pose();
+        ms.pushPose();
+        ms.translate(getGuiLeft(), getGuiTop(), 300f);
+        for (Slot slot : menu.slots) {
+            ItemStack stack = slot.getItem();
+            if (!stack.isEmpty() && !be.getExplosiveInventory().isItemValid(0, stack))
+                graphics.fillGradient(slot.x, slot.y, slot.x + 16, slot.y + 16, 10, 0xA08B8B8B, 0xA08B8B8B);
+        };
+        ms.popPose();
+
         List<Component> tooltip = ExplosivePropertiesTooltip.getSelected(explosiveProperties, mouseX - getGuiLeft() - 10, mouseY - getGuiTop() - 22).getTooltip(explosiveProperties);
         if (!tooltip.isEmpty()) graphics.renderComponentTooltip(font, tooltip, mouseX, mouseY);
+
     };
     
 };

@@ -76,7 +76,6 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
-import net.minecraftforge.fml.loading.FMLLoader;
 import net.minecraftforge.registries.RegistryBuilder;
 
 @Mod(Destroy.MOD_ID)
@@ -169,7 +168,7 @@ public class Destroy {
         //Chemistry.initiate(new ForgeChemistryEventFirer(), LOGGER::info);
 
         // JEI compat
-        if (FMLLoader.getLoadingModList().getModFileById("jei") != null) {
+        if (CompatMods.JEI.isLoading()) {
             forgeEventBus.register(DestroyJEI.ClientEvents.class);
         };
 

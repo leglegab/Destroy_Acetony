@@ -1,26 +1,39 @@
 package com.petrolpark.destroy.chemistry.api.reaction;
 
-import com.petrolpark.destroy.chemistry.api.reaction.context.IReactionContextProvider;
 import com.petrolpark.destroy.chemistry.api.reactor.IReactor;
-import com.petrolpark.destroy.chemistry.api.mixture.IMixtureComponent;
 import com.petrolpark.destroy.chemistry.api.mixture.IMixture;
 
 /**
- * Something in which {@link IReaction}s occur, typically a {@link IMixture}.
- * In contrast to an {@link IReactor}, which represents the thing in which the chemical change is occuring, {@link IReacting}s represent the substance undergoing change, like a {@link IMixture}.
+ * Something in which {@link IReaction}s or other {@link ITransformation}s occur, typically a {@link IMixture}.
+ * In contrast to an {@link IReactor}, which represents the thing in which the chemical change is occuring, {@link IReacting}s represent the substance undergoing change.
  * @since Destroy 1.0
  * @author petrolpark
  */
-public interface IReacting extends IReactionContextProvider {
+public interface IReacting <
+    R extends IReacting<? super R, ? super T>,
+    T extends ITransformation<? super T, ? extends R>
+> {
     
     /**
-     * Simulate the {@link IReaction} of {@link IMixtureComponent species} for a short while.
+     * Whether a particular {@link ITransformation} is possible in this {@link IReacting}.
+     * <strong>This is the be-all-and-end-all as to whether an {@link IReaction} is possible - calling {@link IReaction#isPossible(IReacting)} is not sufficient.</strong>
+     * @since Destroy 1.0
+     * @author petrolpark
+     */
+    public boolean isPossible(T transformation);
+
+    /**
+     * Simulate the {@link ITransformation}s applicable to this {@link IReacting} for a short while.
+     * @since Destroy 1.0
+     * @author petrolpark
      */
     public void react();
 
     /**
-     * Whether any {@link IReaction}s are currently occuring
+     * Whether any {@link ITransformation}s are currently occuring
      * - equivalently, whether calling {@link IReacting#react()} will result in a change in state.
+     * @since Destroy 1.0
+     * @author petrolpark
      */
     public boolean isAtEquilibrium();
 };

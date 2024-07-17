@@ -9,6 +9,7 @@ import com.simibubi.create.foundation.utility.Iterate;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
+import net.minecraft.client.renderer.LevelRenderer;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.MultiBufferSource.BufferSource;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
@@ -27,14 +28,14 @@ public class CustomExplosiveMixRenderer extends SafeBlockEntityRenderer<CustomEx
     protected void renderSafe(CustomExplosiveMixBlockEntity be, float partialTicks, PoseStack ms, MultiBufferSource bufferSource, int light, int overlay) {
         Component nameComponent = be.getCustomName();
         if (nameComponent == null) return;
-        renderTruncated(ms, bufferSource, light, nameComponent.getString());
+        renderTruncated(ms, bufferSource, d -> LevelRenderer.getLightColor(be.getLevel(), be.getBlockPos().offset(d.getNormal())), nameComponent.getString());
     };
     
     public static final ResourceLocation FONT_LOCATION = Destroy.asResource("explosive");
     public static final Style FONT = Style.EMPTY.withFont(FONT_LOCATION);
     public static final String ALLOWED_CHARACTERS = " 1234567890QWERTYUIOPASDFGHJKLZXCVBNM";
 
-    public static void renderTruncated(PoseStack ms, MultiBufferSource buffer, int light, String string) {
+    public static void renderTruncated(PoseStack ms, MultiBufferSource buffer, LightGetter lightGetter, String string) {
         Minecraft mc = Minecraft.getInstance();
         Font font = mc.font;
 
@@ -58,12 +59,17 @@ public class CustomExplosiveMixRenderer extends SafeBlockEntityRenderer<CustomEx
                 .scale(- 1 / 16f)
                 .rotateToFace(face);
             ms.translate(-8d, -5d, 8.02d);
-            font.drawInBatch(FormattedCharSequence.forward(result, Style.EMPTY.withFont(FONT_LOCATION)), (17 - width) / 2, 0, 0xFFFFFF, false, ms.last().pose(), buffer, Font.DisplayMode.NORMAL, 0, light);
+            font.drawInBatch(FormattedCharSequence.forward(result, Style.EMPTY.withFont(FONT_LOCATION)), (17 - width) / 2, 0, 0xFFFFFF, false, ms.last().pose(), buffer, Font.DisplayMode.NORMAL, 0xFFFFFF, lightGetter.get(face));
             ms.popPose();
         };
         
         if (buffer instanceof BufferSource bufferSource) {
 			bufferSource.endBatch(font.getFontSet(FONT_LOCATION).whiteGlyph().renderType(Font.DisplayMode.NORMAL));
 		};
+    };
+
+    @FunctionalInterface
+    public static interface LightGetter {
+        public int get(Direction face);
     };
 };

@@ -8,6 +8,9 @@ import com.petrolpark.destroy.world.explosion.SmartExplosion;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.protocol.Packet;
+import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
@@ -15,8 +18,10 @@ import net.minecraft.world.entity.item.PrimedTnt;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
+import net.minecraftforge.entity.IEntityAdditionalSpawnData;
+import net.minecraftforge.network.NetworkHooks;
 
-public class CustomExplosiveMixEntity extends PrimedBomb {
+public class CustomExplosiveMixEntity extends PrimedBomb implements IEntityAdditionalSpawnData {
 
     public int color;
     public CustomExplosiveMixInventory inv;
@@ -31,6 +36,7 @@ public class CustomExplosiveMixEntity extends PrimedBomb {
         super(DestroyEntityTypes.PRIMED_CUSTOM_EXPLOSIVE.get(), level, blockPos, state, owner);
         this.color = color;
         inv = inventory;
+        setFuse(1000);
     };
 
     @Override
@@ -57,5 +63,22 @@ public class CustomExplosiveMixEntity extends PrimedBomb {
         inv = new CustomExplosiveMixInventory(DestroyAllConfigs.SERVER.blocks.customExplosiveMixSize.get());
         inv.deserializeNBT(compound.getCompound("Inventory"));
     };
+
+    @Override
+	public Packet<ClientGamePacketListener> getAddEntityPacket() {
+		return NetworkHooks.getEntitySpawningPacket(this);
+	};
+
+    @Override
+	public void writeSpawnData(FriendlyByteBuf buffer) {
+		CompoundTag compound = new CompoundTag();
+		addAdditionalSaveData(compound);
+		buffer.writeNbt(compound);
+	};
+
+	@Override
+	public void readSpawnData(FriendlyByteBuf additionalData) {
+		readAdditionalSaveData(additionalData.readNbt());
+	};
     
 };

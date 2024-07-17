@@ -5,9 +5,13 @@ import java.util.function.Supplier;
 import com.simibubi.create.foundation.utility.Lang;
 
 import net.minecraftforge.fml.ModList;
+import net.minecraftforge.fml.loading.FMLLoader;
 
 public enum CompatMods {
-    BIG_CANNONS("createbigcannons");
+
+    BIG_CANNONS("createbigcannons"),
+    JEI,
+    TFMG("createindustry");
 
     private final String id;
 
@@ -17,6 +21,10 @@ public enum CompatMods {
 
     private CompatMods(String id) {
         this.id = id;
+    };
+
+    public boolean isLoading() {
+        return FMLLoader.getLoadingModList().getModFileById(id) != null;
     };
 
     public boolean isLoaded() {

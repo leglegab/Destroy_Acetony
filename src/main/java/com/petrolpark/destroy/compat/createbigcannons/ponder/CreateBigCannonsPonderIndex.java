@@ -25,7 +25,8 @@ public class CreateBigCannonsPonderIndex {
 			.addStoryBoard("munitions/cannon_loads", CannonLoadingScenes::cannonLoads, CBCPonderTags.MUNITIONS);
 
         HELPER.forComponents(CreateBigCannonsBlocks.CUSTOM_EXPLOSIVE_MIX_SHELL)
-        .addStoryBoard("explosives/custom_explosive_mix_shell", (u, s) -> ExplosivesScenes.filling(u, s, CreateBigCannonsBlocks.CUSTOM_EXPLOSIVE_MIX_SHELL::asStack))
+            .addStoryBoard("explosives/custom_explosive_mix_shell", (u, s) -> ExplosivesScenes.filling(u, s, CreateBigCannonsBlocks.CUSTOM_EXPLOSIVE_MIX_SHELL::asStack))
+            .addStoryBoard("explosives/custom_explosive_mix_shell_explosion", ExplosivesScenes::exploding)
             .addStoryBoard("explosives/custom_explosive_mix_shell", (u, s) -> ExplosivesScenes.dyeing(u, s, CreateBigCannonsBlocks.CUSTOM_EXPLOSIVE_MIX_SHELL::asStack));
         CBC_HELPER.forComponents(CreateBigCannonsBlocks.CUSTOM_EXPLOSIVE_MIX_SHELL)
             .addStoryBoard("munitions/fuzing_munitions", CannonLoadingScenes::fuzingMunitions, CBCPonderTags.MUNITIONS);

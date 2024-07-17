@@ -27,6 +27,7 @@ import com.petrolpark.destroy.compat.jei.category.ExtrusionCategory;
 import com.petrolpark.destroy.compat.jei.category.GenericReactionCategory;
 import com.petrolpark.destroy.compat.jei.category.ITickableCategory;
 import com.petrolpark.destroy.compat.jei.category.ManualOnlyCategory;
+import com.petrolpark.destroy.compat.jei.category.MixableExplosiveCategory;
 import com.petrolpark.destroy.compat.jei.category.MixtureConversionCategory;
 import com.petrolpark.destroy.compat.jei.category.MutationCategory;
 import com.petrolpark.destroy.compat.jei.category.ObliterationCategory;
@@ -35,9 +36,11 @@ import com.petrolpark.destroy.compat.jei.category.TappingCategory;
 import com.petrolpark.destroy.compat.jei.category.VatMaterialCategory;
 import com.petrolpark.destroy.compat.jei.category.VatMaterialCategory.VatMaterialRecipe;
 import com.petrolpark.destroy.compat.jei.category.CartographyTableCategory.CartographyTableRecipe;
+import com.petrolpark.destroy.compat.jei.category.MixableExplosiveCategory.MixableExplosiveRecipe;
 import com.petrolpark.destroy.compat.tfmg.SharedDistillationRecipes;
 import com.petrolpark.destroy.effect.potion.PotionSeparationRecipes;
 import com.petrolpark.destroy.fluid.DestroyFluids;
+import com.petrolpark.destroy.item.CustomExplosiveMixBlockItem;
 import com.petrolpark.destroy.item.DestroyItems;
 import com.petrolpark.destroy.recipe.AgingRecipe;
 import com.petrolpark.destroy.recipe.CentrifugationRecipe;
@@ -114,7 +117,7 @@ public class DestroyJEI implements IModPlugin {
      */
     public static final Map<Molecule, List<Recipe<?>>> MOLECULES_INPUT = new HashMap<>();
     /**
-     * A map of Molecules to the Recipes in which they are outputs.
+     * A map of Molecules to the Recipes in which they are outputs.u
      * This does not include {@link com.petrolpark.destroy.chemistry.Reaction Reactions}.
      */
     public static final Map<Molecule, List<Recipe<?>>> MOLECULES_OUTPUT = new HashMap<>();
@@ -188,7 +191,7 @@ public class DestroyJEI implements IModPlugin {
 
         obliteration = builder(ObliterationRecipe.class)
             .addTypedRecipes(DestroyRecipeTypes.OBLITERATION)
-            .itemIcon(DestroyBlocks.NITROCELLULOSE_BLOCK.get())
+            .itemIcon(CustomExplosiveMixBlockItem::getExampleItemStack)
             .emptyBackground(177, 70)
             .build("obliteration", ObliterationCategory::new),
 
@@ -259,7 +262,15 @@ public class DestroyJEI implements IModPlugin {
             .catalyst(DestroyBlocks.VAT_CONTROLLER::get)
             .itemIcon(DestroyBlocks.VAT_CONTROLLER.get())
             .emptyBackground(180, 83)
-            .build("vat_material", VatMaterialCategory::new);
+            .build("vat_material", VatMaterialCategory::new),
+
+        mixable_explosive = builder(MixableExplosiveRecipe.class)
+            .addRecipes(MixableExplosiveCategory::getAllRecipes)
+            .catalysts(DestroyJEISetup.CUSTOM_MIX_EXPLOSIVES)
+            .doubleItemIcon(CustomExplosiveMixBlockItem::getExampleItemStack, () -> new ItemStack(Items.GUNPOWDER))
+            .emptyBackground(180, 121)
+            .build("mixable_explosive", MixableExplosiveCategory::new);
+            
 
         DestroyJEI.MOLECULE_RECIPES_NEED_PROCESSING = false;
     };
@@ -382,6 +393,16 @@ public class DestroyJEI implements IModPlugin {
 		};
 
         /**
+         * Adds a given collection of Item Stacks as catalysts for all Recipes of this Category.
+         * @param itemSupplier A collection of suppliers of catalyst Item Stacks
+         * @return This Category Builder
+         */
+        public CategoryBuilder<T> catalysts(Collection<Supplier<ItemStack>> catalystStackSuppliers) {
+            catalysts.addAll(catalystStackSuppliers);
+            return this;
+        };
+
+        /**
          * Adds a given Item as a Catalyst for all Recipes of this Category.
          * Useful for adding the required machines for a Category of Recipe.
          * @param itemSupplier A Supplier of the catalyst Item
@@ -410,9 +431,18 @@ public class DestroyJEI implements IModPlugin {
          * @return This Category Builder
          */
         public CategoryBuilder<T> itemIcon(ItemLike item) {
-			this.icon = new ItemIcon(() -> new ItemStack(item));
-			return this;
+			return itemIcon(() -> new ItemStack(item));
 		};
+
+        /**
+         * Sets the given Item as the icon for this Category.
+         * @param item Typically this will be the machine required for this Type of Recipe
+         * @return This Category Builder
+         */
+        public CategoryBuilder<T> itemIcon(Supplier<ItemStack> item) {
+            this.icon = new ItemIcon(item);
+            return this;  
+        };
 
         /**
          * Sets the given pair of Items as the icon for this Category.

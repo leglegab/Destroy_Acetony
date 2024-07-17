@@ -15,6 +15,7 @@
         "accessor.MenuRowsAccessor",
         "accessor.PipeConnectionAccessor",
         "accessor.PonderTagScreenAccessor",
+        "accessor.PonderWorldAccessor",
         "accessor.ProcessingRecipeAccessor",
         "accessor.ProcessingRecipeParamsAccessor",
         "accessor.RotationPropagatorAccessor",

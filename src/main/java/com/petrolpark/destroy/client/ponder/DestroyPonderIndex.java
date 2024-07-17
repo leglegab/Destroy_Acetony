@@ -77,7 +77,8 @@ public class DestroyPonderIndex {
 
         // Custom Explosive Mix
         HELPER.forComponents(DestroyBlocks.CUSTOM_EXPLOSIVE_MIX)
-        .addStoryBoard("explosives/custom_explosive_mix", (s, u) -> ExplosivesScenes.filling(s, u, DestroyBlocks.CUSTOM_EXPLOSIVE_MIX::asStack))
+            .addStoryBoard("explosives/custom_explosive_mix", (s, u) -> ExplosivesScenes.filling(s, u, DestroyBlocks.CUSTOM_EXPLOSIVE_MIX::asStack))
+            .addStoryBoard("explosives/custom_explosive_mix_explosion", ExplosivesScenes::exploding)
             .addStoryBoard("explosives/custom_explosive_mix", (s, u) -> ExplosivesScenes.dyeing(s, u, DestroyBlocks.CUSTOM_EXPLOSIVE_MIX::asStack))
             .addStoryBoard("explosives/custom_explosive_mix", ExplosivesScenes::naming);
 
@@ -128,6 +129,7 @@ public class DestroyPonderIndex {
             .addStoryBoard("pollution/smog", PollutionScenes::acidRain)
             .addStoryBoard("pollution/room_temperature", ChemistryScenes::roomTemperature)
             .addStoryBoard("pollution/reduction", PollutionScenes::reduction)
+            .addStoryBoard("blank_3x3", PollutionScenes::lightning)
             .addStoryBoard("pollution/catalytic_converter", PollutionScenes::catalyticConverter);
 
         // Planetary Gearset

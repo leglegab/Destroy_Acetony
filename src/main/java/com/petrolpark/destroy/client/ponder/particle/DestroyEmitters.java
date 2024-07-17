@@ -37,14 +37,14 @@ public class DestroyEmitters {
 
     public static final Emitter fireworkBall(double speed, int size, int[] colors, int[] fadeColors, boolean trail, boolean twinkle) {
         return (w, x, y, z) -> {
-            for(int i = -size; i <= size; ++i) {
-                for(int j = -size; j <= size; ++j) {
-                    for(int k = -size; k <= size; ++k) {
+            for (int i = -size; i <= size; ++i) {
+                for (int j = -size; j <= size; ++j) {
+                    for (int k = -size; k <= size; ++k) {
                         double vx = (double)j + (RANDOM.nextDouble() - RANDOM.nextDouble()) * 0.5d;
                         double vy = (double)i + (RANDOM.nextDouble() - RANDOM.nextDouble()) * 0.5d;
                         double vz = (double)k + (RANDOM.nextDouble() - RANDOM.nextDouble()) * 0.5d;
                         double v = Math.sqrt(vx * vx + vy * vy + vz * vz) / speed + RANDOM.nextGaussian() * 0.05d;
-                        createFireworkSpark(w, x, y, z, vx / v, vy / v, vx / v, colors, fadeColors, trail, twinkle);
+                        createFireworkSpark(w, x, y, z, vx / v, vy / v, vz / v, colors, fadeColors, trail, twinkle);
                         if (i != -size && i != size && j != -size && j != size) {
                             k += size * 2 - 1;
                         };
@@ -55,7 +55,7 @@ public class DestroyEmitters {
     };
 
     public static void createFireworkSpark(PonderWorld world, double x, double y, double z, double vx, double vy, double vz, int[] colors, int[] fadeColors, boolean trail, boolean twinkle) {
-        FireworkParticles.SparkParticle particle = (FireworkParticles.SparkParticle)((PonderWorldAccessor)world).invokeMakeParticle(ParticleTypes.FIREWORK, vx, vy, vz, x, y, z);
+        FireworkParticles.SparkParticle particle = (FireworkParticles.SparkParticle)((PonderWorldAccessor)world).invokeMakeParticle(ParticleTypes.FIREWORK, x, y, z, vx, vy, vz);
         particle.setTrail(trail);
         particle.setFlicker(twinkle);
         particle.setColor(colors[RANDOM.nextInt(colors.length)]);

@@ -36,9 +36,11 @@ import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.LightningBolt;
 import net.minecraft.world.entity.animal.Sheep;
 import net.minecraft.world.entity.npc.Villager;
 import net.minecraft.world.entity.projectile.FishingHook;
+import net.minecraft.world.entity.projectile.ThrownTrident;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Blocks;
@@ -540,13 +542,45 @@ public class PollutionScenes {
         scene.markAsFinished();
     };
 
-    public static final void lightning(SceneBuilder scene, SceneBuildingUtil uitl) {
+    public static final void lightning(SceneBuilder scene, SceneBuildingUtil util) {
         scene.title("pollution.lightning", "This text is defined in a language file.");
+        scene.configureBasePlate(0, 0, 3);
+        scene.showBasePlate();
+
+        scene.effects.emitParticles(Vec3.ZERO, DestroyEmitters.rain(new AABB(0d, 10d, 0d, 3d, 11d, 3d), 0f, 0f, 1f), 20, 120);
+
+        scene.idle(20);
+        scene.overlay.showText(100)
+            .text("This text is defined in a language file.")
+            .independent();
+        scene.idle(40);
+
+        scene.world.createEntity(w -> {
+            ThrownTrident trident = EntityType.TRIDENT.create(w);
+            Vec3 p = new Vec3(10.5d, 2.5d, 1.5d);
+            trident.setPos(p);
+            trident.xo = p.x;
+            trident.yo = p.y;
+            trident.zo = p.z;
+            trident.setDeltaMovement(-1.1d, 0d, 0d);
+            return trident;
+        });
+
+        scene.idle(10);
+
+        scene.world.createEntity(w -> {
+            LightningBolt bolt = EntityType.LIGHTNING_BOLT.create(w);
+            bolt.setPos(new Vec3(1.5d, 1d, 1.5d));
+            return bolt;
+        });
+
+        scene.idle(70);
 
     };
 
     public static final void catalyticConverter(SceneBuilder scene, SceneBuildingUtil util) {
         scene.title("pollution.catalytic_converter", "This text is defined in a language file.");
+
     };
 
 

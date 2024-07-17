@@ -5,6 +5,7 @@ import java.util.function.Supplier;
 import com.petrolpark.destroy.block.DestroyBlocks;
 import com.petrolpark.destroy.block.entity.CustomExplosiveMixBlockEntity;
 import com.petrolpark.destroy.block.entity.IDyeableCustomExplosiveMixBlockEntity;
+import com.petrolpark.destroy.client.ponder.particle.DestroyEmitters;
 import com.petrolpark.destroy.compat.CompatMods;
 import com.petrolpark.destroy.item.DestroyItems;
 import com.simibubi.create.AllBlocks;
@@ -19,10 +20,13 @@ import com.simibubi.create.foundation.utility.Pointing;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.phys.Vec3;
 
@@ -91,7 +95,70 @@ public class ExplosivesScenes {
         
         scene.markAsFinished();
     };
+    
+    private static ItemStack fireworkStar = ItemStack.EMPTY;
+    private static ItemStack getFireworkStar() {
+        if (fireworkStar.isEmpty()) {
+            fireworkStar = new ItemStack(Items.FIREWORK_STAR);
+            CompoundTag explosionTag = new CompoundTag();
+            explosionTag.putIntArray("Colors", new int[]{4312372});
+            fireworkStar.addTagElement("Explosion", explosionTag);
+        };
+        return fireworkStar;
+    };
+    
+    public static void exploding(SceneBuilder scene, SceneBuildingUtil util) {
+        scene.title("explosives.exploding", "This text is defined in a language file.");
+        scene.configureBasePlate(0, 0, 5);
+        scene.showBasePlate();
 
+        scene.idle(10);
+        ElementLink<WorldSectionElement> bomb = scene.world.showIndependentSection(util.select.position(second), Direction.DOWN);
+        scene.idle(20);
+        scene.overlay.showText(100)
+            .text("This text is defined in a language file.")
+            .pointAt(util.vector.blockSurface(second, Direction.WEST));
+        scene.idle(40);
+        scene.overlay.showControls(new InputWindowElement(util.vector.topOf(second), Pointing.DOWN).withItem(getFireworkStar()), 40);
+        scene.idle(80);
+
+        scene.world.showSection(util.select.fromTo(0, 1, 1, 2, 1, 3), Direction.DOWN);
+        scene.idle(20);
+        scene.overlay.showText(100)
+            .text("This text is defined in a language file.")
+            .independent();
+        scene.idle(60);
+        scene.effects.emitParticles(util.vector.centerOf(second), DestroyEmitters.fireworkBall(0.25f, 4, new int[]{0xFF41CD34}, new int[0], false, false), 1f, 1);
+        scene.world.hideIndependentSectionImmediately(bomb);
+        scene.idle(5);
+        scene.world.destroyBlock(util.grid.at(2, 1, 2));
+        scene.world.destroyBlock(first);
+        scene.world.createItemEntity(util.vector.centerOf(util.grid.at(2, 1, 2)), util.vector.of(0d, 0.3d, -0.1d), new ItemStack(Blocks.GLASS));
+        scene.idle(55);
+
+        scene.world.hideSection(util.select.position(1, 1, 1).add(util.select.position(0, 1, 2)).add(util.select.position(1, 1, 3)), Direction.UP);
+        scene.idle(20);
+        ElementLink<WorldSectionElement> coal = scene.world.showIndependentSection(util.select.position(first.above()), Direction.DOWN);
+        scene.world.moveSection(coal, util.vector.of(0d, -1d, 0d), 0);
+        bomb = scene.world.showIndependentSection(util.select.position(second), Direction.DOWN);
+        scene.idle(20);
+
+        scene.overlay.showText(100)
+            .text("This text is defined in a language file.")
+            .attachKeyFrame()
+            .pointAt(util.vector.blockSurface(first, Direction.WEST));
+        scene.idle(40);
+        scene.effects.emitParticles(util.vector.centerOf(second), DestroyEmitters.fireworkBall(0.25f, 4, new int[]{0xFF41CD34}, new int[0], false, false), 1f, 1);
+        scene.world.hideIndependentSectionImmediately(bomb);
+        scene.idle(5);
+        scene.world.modifyEntities(ItemEntity.class, Entity::kill);
+        scene.world.hideIndependentSectionImmediately(coal);
+        scene.world.createItemEntity(util.vector.centerOf(first), util.vector.of(0.05d, 0.3d, 0.1d), DestroyItems.NANODIAMONDS.asStack());
+        scene.idle(75);
+
+        scene.markAsFinished();
+    };
+    
     private static final int red = 14128786;
     private static final int purple = 10912960;
 

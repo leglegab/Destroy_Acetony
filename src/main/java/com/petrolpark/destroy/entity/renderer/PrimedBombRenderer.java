@@ -40,7 +40,7 @@ public class PrimedBombRenderer<T extends PrimedBomb> extends EntityRenderer<T> 
         ms.mulPose(Axis.YP.rotationDegrees(-90f));
         ms.translate(-0.5f, -0.5f, 0.5f);
         ms.mulPose(Axis.YP.rotationDegrees(90f));
-        
+        renderBlock(entity, ms, buffer, packedLight, i);
         ms.popPose();
     };
 

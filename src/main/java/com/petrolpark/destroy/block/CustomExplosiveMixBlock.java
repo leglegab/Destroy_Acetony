@@ -83,6 +83,10 @@ public class CustomExplosiveMixBlock extends PrimeableBombBlock<CustomExplosiveM
         return be.getFilledItemStack(DestroyBlocks.CUSTOM_EXPLOSIVE_MIX.asStack());
     };
 
+    public boolean propagatesSkylightDown(BlockState pState, BlockGetter pReader, BlockPos pPos) {
+        return true; // So the text on the side renders correctly
+    };
+
     @Override
     public Class<CustomExplosiveMixBlockEntity> getBlockEntityClass() {
         return CustomExplosiveMixBlockEntity.class;

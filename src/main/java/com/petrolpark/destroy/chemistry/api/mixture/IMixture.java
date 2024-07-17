@@ -10,7 +10,7 @@ import com.petrolpark.destroy.chemistry.api.species.ISpecies;
  * @since Destroy 1.0
  * @author petrolpark
  */
-public interface IMixture {
+public interface IMixture<C extends IMixtureComponent> {
     
     /**
      * Get the concentration (in moles per litre) of the given {@link IMixtureComponent} (or any component joined by {@link Object#equals(Object) equivalence}) in this {@link IMixture}.
@@ -18,5 +18,5 @@ public interface IMixture {
      * @param component
      * @return A value greater than or equal to {@code 0d}, in moles per liter.
      */
-    public double getConcentration(IMixtureComponent component);
+    public double getConcentration(C component);
 };
