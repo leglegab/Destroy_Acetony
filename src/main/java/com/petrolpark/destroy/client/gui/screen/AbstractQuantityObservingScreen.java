@@ -30,6 +30,10 @@ public abstract class AbstractQuantityObservingScreen extends AbstractSimiScreen
 
     protected abstract int getEditBoxY();
 
+    protected int getTitleX() {
+        return 16;
+    };
+
     protected abstract float getLowerThreshold();
 
     protected abstract float getUpperThreshold();
@@ -43,7 +47,10 @@ public abstract class AbstractQuantityObservingScreen extends AbstractSimiScreen
 		clearWidgets();
 
         confirmButton = new IconButton(guiLeft + background.width - 25, guiTop + background.height - 24, AllIcons.I_CONFIRM);
-		confirmButton.withCallback(() -> {if (minecraft != null && minecraft.player != null) minecraft.player.closeContainer();}); // It thinks minecraft and player might be null
+		confirmButton.withCallback(() -> {
+            onClose();
+            if (minecraft != null && minecraft.player != null) minecraft.player.closeContainer();
+        }); // It thinks minecraft and player might be null
 		addRenderableWidget(confirmButton);
 
         lowerBound = new EditBox(minecraft.font, guiLeft + 15, guiTop + getEditBoxY(), 70, 10, Component.literal(""+getUpperThreshold()));
@@ -100,7 +107,7 @@ public abstract class AbstractQuantityObservingScreen extends AbstractSimiScreen
     @Override
 	public boolean mouseClicked(double mouseX, double mouseY, int button) {
         for (EditBox box : List.of(lowerBound, upperBound)) {
-            if (mouseY > guiTop + 27 && mouseY < guiTop + 41 && mouseX > box.getX() - 4 && mouseX < box.getX() + box.getWidth() + 8 && !box.isFocused()) {
+            if (mouseY > guiTop + getEditBoxY() - 8 && mouseY < guiTop + getEditBoxY() + 6 && mouseX > box.getX() - 4 && mouseX < box.getX() + box.getWidth() + 8 && !box.isFocused()) {
                 box.setFocused(true);
                 box.setHighlightPos(0);
                 setFocused(box);
@@ -115,6 +122,6 @@ public abstract class AbstractQuantityObservingScreen extends AbstractSimiScreen
     @Override
     protected void renderWindow(GuiGraphics graphics, int mouseX, int mouseY, float partialTicks) {
         background.render(graphics, guiLeft, guiTop);
-        graphics.drawString(font, title, guiLeft + 16, guiTop + 4, 0x828c97, false);
+        graphics.drawString(font, title, guiLeft + getTitleX(), guiTop + 4, 0x828c97, false);
     };
 };

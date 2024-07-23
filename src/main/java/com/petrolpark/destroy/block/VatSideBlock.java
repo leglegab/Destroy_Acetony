@@ -7,7 +7,6 @@ import com.petrolpark.destroy.block.entity.VatControllerBlockEntity;
 import com.petrolpark.destroy.block.entity.VatSideBlockEntity;
 import com.petrolpark.destroy.block.entity.VatSideBlockEntity.DisplayType;
 import com.petrolpark.destroy.client.gui.screen.RedstoneMonitorVatSideScreen;
-import com.petrolpark.destroy.item.DestroyItems;
 import com.petrolpark.destroy.item.IMixtureStorageItem;
 import com.simibubi.create.AllItems;
 import com.simibubi.create.content.decoration.copycat.CopycatBlock;
@@ -60,7 +59,7 @@ public class VatSideBlock extends CopycatBlock implements ISpecialBlockItemRequi
 
     @Override
     public InteractionResult use(BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
-        if (AllItems.WRENCH.isIn(player.getItemInHand(hand)) || DestroyItems.TEST_TUBE.isIn(player.getItemInHand(hand))) return InteractionResult.PASS;
+        if (AllItems.WRENCH.isIn(player.getItemInHand(hand)) || IMixtureStorageItem.isHolding(player, hand)) return InteractionResult.PASS;
         return onBlockEntityUse(level, pos, be -> {
             if (!(be instanceof VatSideBlockEntity vbe)) return InteractionResult.PASS;
             if (vbe.getDisplayType().quantityObserved.isPresent()) {

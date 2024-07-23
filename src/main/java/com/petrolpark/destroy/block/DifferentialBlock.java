@@ -3,9 +3,11 @@ package com.petrolpark.destroy.block;
 import com.petrolpark.destroy.block.entity.DestroyBlockEntityTypes;
 import com.petrolpark.destroy.block.entity.DifferentialBlockEntity;
 import com.petrolpark.destroy.block.entity.behaviour.AbstractRememberPlacerBehaviour;
+import com.petrolpark.destroy.block.entity.behaviour.DestroyAdvancementBehaviour;
 import com.petrolpark.destroy.util.KineticsHelper;
 import com.simibubi.create.content.kinetics.base.KineticBlockEntity;
 import com.simibubi.create.content.kinetics.simpleRelays.CogWheelBlock;
+import com.simibubi.create.foundation.blockEntity.behaviour.BlockEntityBehaviour;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -87,6 +89,8 @@ public class DifferentialBlock extends CogWheelBlock {
     @Override
     public void tick(BlockState state, ServerLevel level, BlockPos pos, RandomSource random) {
         level.setBlockAndUpdate(pos, DestroyBlocks.DUMMY_DIFFERENTIAL.getDefaultState().setValue(AXIS, state.getValue(AXIS)).setValue(DirectionalRotatedPillarKineticBlock.POSITIVE_AXIS_DIRECTION, state.getValue(DirectionalRotatedPillarKineticBlock.POSITIVE_AXIS_DIRECTION))); // It thinks getLevel() might be null
+        DestroyAdvancementBehaviour behaviour = BlockEntityBehaviour.get(level, pos, DestroyAdvancementBehaviour.TYPE);
+        AbstractRememberPlacerBehaviour.setPlacedBy(level, pos, behaviour.getPlayer());
     };
 
     @Override

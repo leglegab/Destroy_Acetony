@@ -54,6 +54,7 @@ public class DestroyPonderTags {
             .add(DestroyBlocks.EXTRUSION_DIE)
             .add(DestroyItems.HYPERACCUMULATING_FERTILIZER)
             .add(DestroyBlocks.KEYPUNCH)
+            .add(DestroyBlocks.LARGE_COAXIAL_GEAR)
             .add(DestroyBlocks.PLANETARY_GEARSET)
             .add(DestroyItems.POLLUTION_SYMBOL)
             .add(DestroyBlocks.PUMPJACK)
@@ -104,6 +105,7 @@ public class DestroyPonderTags {
         PonderRegistry.TAGS.forTag(AllPonderTags.DISPLAY_SOURCES)
             .add(DestroyBlocks.BUBBLE_CAP)
             .add(DestroyBlocks.CENTRIFUGE)
+            .add(DestroyBlocks.COLORIMETER)
             .add(DestroyBlocks.POLLUTOMETER)
             .add(DestroyBlocks.VAT_CONTROLLER)
         ;

@@ -60,6 +60,66 @@
             }
           ]
         }
+      },
+      "tnt": {
+        "trigger": "minecraft:inventory_changed",
+        "conditions": {
+          "items": [
+            {
+              "items": [
+                "destroy:tnt_tablet"
+              ]
+            }
+          ]
+        }
+      },
+      "tatp": {
+        "trigger": "minecraft:inventory_changed",
+        "conditions": {
+          "items": [
+            {
+              "items": [
+                "destroy:acetone_peroxide"
+              ]
+            }
+          ]
+        }
+      },
+      "hg": {
+        "trigger": "minecraft:inventory_changed",
+        "conditions": {
+          "items": [
+            {
+              "items": [
+                "destroy:fulminated_mercury"
+              ]
+            }
+          ]
+        }
+      },
+      "nhn": {
+        "trigger": "minecraft:inventory_changed",
+        "conditions": {
+          "items": [
+            {
+              "items": [
+                "destroy:nickel_hydrazine_nitrate"
+              ]
+            }
+          ]
+        }
+      },
+      "tp": {
+        "trigger": "minecraft:inventory_changed",
+        "conditions": {
+          "items": [
+            {
+              "items": [
+                "destroy:touch_powder"
+              ]
+            }
+          ]
+        }
       }
     },
     "display": {
@@ -90,6 +150,21 @@
       ],
       [
         "tnp"
+      ],
+      [
+        "tnt"
+      ],
+      [
+        "tatp"
+      ],
+      [
+        "hg"
+      ],
+      [
+        "nhn"
+      ],
+      [
+        "tp"
       ]
     ]
   }

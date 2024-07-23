@@ -37,6 +37,7 @@ import com.petrolpark.destroy.world.explosion.SmartExplosion;
 import com.simibubi.create.CreateClient;
 import com.simibubi.create.content.equipment.goggles.IHaveGoggleInformation;
 import com.simibubi.create.content.redstone.displayLink.DisplayLinkContext;
+import com.simibubi.create.content.redstone.thresholdSwitch.ThresholdSwitchObservable;
 import com.simibubi.create.foundation.blockEntity.SmartBlockEntity;
 import com.simibubi.create.foundation.blockEntity.behaviour.BlockEntityBehaviour;
 import com.simibubi.create.foundation.fluid.CombinedTankWrapper;
@@ -74,7 +75,7 @@ import net.minecraftforge.fluids.capability.IFluidHandler.FluidAction;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemHandlerHelper;
 
-public class VatControllerBlockEntity extends SmartBlockEntity implements IHaveGoggleInformation, ISpecialWhenHovered {
+public class VatControllerBlockEntity extends SmartBlockEntity implements IHaveGoggleInformation, ISpecialWhenHovered, ThresholdSwitchObservable {
 
     public static final float AIR_PRESSURE = 101000;
 
@@ -335,9 +336,9 @@ public class VatControllerBlockEntity extends SmartBlockEntity implements IHaveG
         // Mixture
         if (!getLevel().isClientSide()) { // It thinks getLevel() might be null (it's not)
             tag.putFloat("Pressure", getPressure());
-            tag.putFloat("Temperature", getTemperature());  
-            tag.putBoolean("AnythingBoiling", cachedMixture.isBoiling());
-            tag.putBoolean("AnythingReacting", !cachedMixture.isAtEquilibrium());
+            tag.putFloat("Temperature", getTemperature());
+            tag.putBoolean("AnythingBoiling", cachedMixture != null && cachedMixture.isBoiling());
+            tag.putBoolean("AnythingReacting", cachedMixture != null && !cachedMixture.isAtEquilibrium());
         };
 
         if (openVentPos != null) tag.put("VentPos", NbtUtils.writeBlockPos(openVentPos));
@@ -613,6 +614,15 @@ public class VatControllerBlockEntity extends SmartBlockEntity implements IHaveG
 
     public float getClientPressure(float partialTicks) {
         return pressure.getValue(partialTicks);
+    };
+
+    /**
+     * Inherited from {@link ThresholdSwitchObservable}
+     */
+    @Override
+    public float getPercent() {
+        if (getVatOptional().isEmpty()) return 0f;
+        return 100f * (float)getLiquidTankContents().getAmount() / getCapacity();
     };
 
     @SuppressWarnings("null")

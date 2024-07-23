@@ -1,5 +1,6 @@
 package com.petrolpark.destroy.block.entity.behaviour;
 
+import java.util.function.IntConsumer;
 import java.util.function.Supplier;
 import java.util.Optional;
 
@@ -23,9 +24,16 @@ public class RedstoneQuantityMonitorBehaviour extends BlockEntityBehaviour {
     public float upperThreshold;
     protected int oldStrength;
 
+    protected IntConsumer strengthChangeCallback = i -> {};
+
     public RedstoneQuantityMonitorBehaviour(SmartBlockEntity be) {
         super(be);
         quantityObserved = Optional.empty();
+    };
+
+    public RedstoneQuantityMonitorBehaviour onStrengthChanged(IntConsumer callback) {
+        strengthChangeCallback = callback;
+        return this;
     };
 
     public int getStrength() {
@@ -45,6 +53,7 @@ public class RedstoneQuantityMonitorBehaviour extends BlockEntityBehaviour {
         if (strength != oldStrength) {
             oldStrength = strength;
             update();
+            strengthChangeCallback.accept(strength);
         };
     };
 

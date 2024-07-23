@@ -41,12 +41,12 @@ public class DummyDifferentialBlock extends DirectionalRotatedPillarKineticBlock
     @Override
     public Axis getRotationAxis(BlockState state) {
         return state.getValue(AXIS);
-    }
+    };
 
     @Override
     public Class<DummyDifferentialBlockEntity> getBlockEntityClass() {
         return DummyDifferentialBlockEntity.class;
-    }
+    };
 
     @Override
     public BlockEntityType<? extends DummyDifferentialBlockEntity> getBlockEntityType() {

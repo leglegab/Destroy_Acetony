@@ -53,6 +53,7 @@ public class DestroyTags {
         SYRINGES,
         TEST_TUBE_RACK_STORABLE,
         YEAST,
+        EYES,
         ;
 
         public final TagKey<Item> tag;

@@ -26,6 +26,7 @@ import com.simibubi.create.content.equipment.goggles.IHaveHoveringInformation;
 import com.simibubi.create.content.fluids.FluidFX;
 import com.simibubi.create.content.fluids.FluidTransportBehaviour;
 import com.simibubi.create.content.fluids.FluidTransportBehaviour.AttachmentTypes;
+import com.simibubi.create.content.redstone.thresholdSwitch.ThresholdSwitchObservable;
 import com.simibubi.create.foundation.blockEntity.behaviour.BlockEntityBehaviour;
 import com.simibubi.create.foundation.blockEntity.behaviour.fluid.SmartFluidTankBehaviour;
 import com.simibubi.create.foundation.item.TooltipHelper;
@@ -54,7 +55,7 @@ import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler.FluidAction;
 import net.minecraftforge.items.IItemHandler;
 
-public class VatSideBlockEntity extends CopycatBlockEntity implements IHaveGoggleInformation, IHaveHoveringInformation {
+public class VatSideBlockEntity extends CopycatBlockEntity implements IHaveGoggleInformation, IHaveHoveringInformation, ThresholdSwitchObservable {
 
     private static final int BUFFER_TANK_CAPACITY = 1000;
 
@@ -267,6 +268,15 @@ public class VatSideBlockEntity extends CopycatBlockEntity implements IHaveGoggl
             return itemCapability.cast();
         };
         return super.getCapability(cap, side);
+    };
+
+    /**
+     * Inhertited from {@link ThresholdSwitchObservable}
+     */
+    @Override
+    public float getPercent() {
+        if (getController() == null) return 0f;
+        return getController().getPercent();
     };
 
     /**

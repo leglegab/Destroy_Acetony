@@ -92,7 +92,7 @@ public abstract class MixtureContentsDisplaySource extends DisplaySource {
         }, "TemperatureUnit");
     };
 
-    private void addMoleculeNameTypeSelection(ModularGuiLineBuilder builder) {
+    public static void addMoleculeNameTypeSelection(ModularGuiLineBuilder builder) {
         builder.addSelectionScrollInput(0, 137, (si, l) -> {
             si.forOptions(List.of(DestroyLang.translate("display_source.mixture.molecule_name_type.iupac").component(), DestroyLang.translate("display_source.mixture.molecule_name_type.common").component()))
             .titled(DestroyLang.translate("display_source.mixture.molecule_name_type").component());

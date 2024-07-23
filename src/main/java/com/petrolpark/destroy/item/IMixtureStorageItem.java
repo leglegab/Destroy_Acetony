@@ -173,6 +173,10 @@ public interface IMixtureStorageItem {
         return result;
     };
 
+    public static boolean isHolding(Player player, InteractionHand hand) {
+        return player.getItemInHand(hand).getItem() instanceof IMixtureStorageItem;
+    };
+
     public default void afterFill(Level level, BlockPos pos, BlockState state, Direction face, Player player, InteractionHand hand, ItemStack stack, InteractionResult result) {
         if (result == InteractionResult.SUCCESS) level.playSound(null, pos, SoundEvents.BOTTLE_FILL, SoundSource.PLAYERS);
     };

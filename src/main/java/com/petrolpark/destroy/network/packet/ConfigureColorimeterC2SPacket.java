@@ -12,15 +12,21 @@ import net.minecraftforge.network.NetworkEvent.Context;
 public class ConfigureColorimeterC2SPacket extends C2SPacket {
 
     protected final boolean observingGas;
-    protected final Molecule molecule;
+    protected final Molecule species;
     protected final BlockPos pos;
+
+    public ConfigureColorimeterC2SPacket(boolean observingGas, Molecule species, BlockPos pos) {
+        this.observingGas = observingGas;
+        this.species = species;
+        this.pos = pos;
+    };
 
     public ConfigureColorimeterC2SPacket(FriendlyByteBuf buffer) {
         observingGas = buffer.readBoolean();
         if (buffer.readBoolean()) {
-            molecule = Molecule.getMolecule(buffer.readUtf());
+            species = Molecule.getMolecule(buffer.readUtf());
         } else {
-            molecule = null;
+            species = null;
         }
         pos = buffer.readBlockPos();
     };
@@ -28,8 +34,8 @@ public class ConfigureColorimeterC2SPacket extends C2SPacket {
     @Override
     public void toBytes(FriendlyByteBuf buffer) {
         buffer.writeBoolean(observingGas);
-        buffer.writeBoolean(molecule != null);
-        if (molecule != null) buffer.writeUtf(molecule.getFullID());
+        buffer.writeBoolean(species != null);
+        if (species != null) buffer.writeUtf(species.getFullID());
         buffer.writeBlockPos(pos);
     };
 
@@ -38,7 +44,7 @@ public class ConfigureColorimeterC2SPacket extends C2SPacket {
         Context context = supplier.get();
         context.enqueueWork(() -> {
             context.getSender().level().getBlockEntity(pos, DestroyBlockEntityTypes.COLORIMETER.get()).ifPresent(be -> {
-                be.configure(molecule, observingGas);
+                be.configure(species, observingGas);
             });
         });
         return true;

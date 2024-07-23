@@ -7,6 +7,7 @@ import static com.simibubi.create.foundation.data.ModelGen.customItemModel;
 import com.petrolpark.destroy.block.display.PollutometerDisplaySource;
 import com.petrolpark.destroy.block.entity.BubbleCapBlockEntity;
 import com.petrolpark.destroy.block.entity.CentrifugeBlockEntity;
+import com.petrolpark.destroy.block.entity.ColorimeterBlockEntity;
 import com.petrolpark.destroy.block.entity.VatControllerBlockEntity;
 import com.petrolpark.destroy.block.model.CopycatBlockModel;
 import com.petrolpark.destroy.block.shape.DestroyShapes;
@@ -155,6 +156,7 @@ public class DestroyBlocks {
 
     public static final BlockEntry<ColorimeterBlock> COLORIMETER = REGISTRATE.block("colorimeter", ColorimeterBlock::new)
         .initialProperties(() -> Blocks.OBSERVER)
+        .onRegister(AllDisplayBehaviours.assignDataBehaviour(new ColorimeterBlockEntity.ColorimeterDisplaySource()))
         .item()
         .build()
         .register();

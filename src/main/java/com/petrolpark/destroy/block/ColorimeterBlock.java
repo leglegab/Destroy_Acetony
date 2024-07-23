@@ -1,14 +1,30 @@
 package com.petrolpark.destroy.block;
 
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
 import com.petrolpark.destroy.block.entity.ColorimeterBlockEntity;
 import com.petrolpark.destroy.block.entity.DestroyBlockEntityTypes;
+import com.petrolpark.destroy.chemistry.Molecule;
+import com.petrolpark.destroy.chemistry.ReadOnlyMixture;
+import com.petrolpark.destroy.client.gui.screen.ColorimeterScreen;
+import com.petrolpark.destroy.fluid.DestroyFluids;
+import com.petrolpark.destroy.item.IMixtureStorageItem;
 import com.simibubi.create.AllBlocks;
+import com.simibubi.create.AllItems;
 import com.simibubi.create.content.equipment.wrench.IWrenchable;
 import com.simibubi.create.foundation.block.IBE;
+import com.simibubi.create.foundation.gui.ScreenOpener;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.context.BlockPlaceContext;
+import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.block.Block;
@@ -17,6 +33,11 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition.Builder;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
+import net.minecraft.world.phys.BlockHitResult;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fml.DistExecutor;
 
 public class ColorimeterBlock extends HorizontalDirectionalBlock implements IBE<ColorimeterBlockEntity>, IWrenchable {
 
@@ -38,6 +59,48 @@ public class ColorimeterBlock extends HorizontalDirectionalBlock implements IBE<
         super.createBlockStateDefinition(builder);
         builder.add(FACING).add(BLUSHING).add(POWERED);
     };
+
+    @Override
+    public InteractionResult use(BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
+        if (AllItems.WRENCH.isIn(player.getItemInHand(hand))) return InteractionResult.PASS;
+        return onBlockEntityUse(level, pos, be -> {
+            List<FluidStack> fluids = new ArrayList<>();
+            Set<Molecule> species = new HashSet<>();
+            species.add(null);
+
+            be.getVatOptional().ifPresent(vat -> {
+                fluids.add(vat.getLiquidTankContents());
+                fluids.add(vat.getGasTankContents());
+            });
+
+            player.getInventory().items.forEach(stack -> {
+                if (stack.getItem() instanceof IMixtureStorageItem mixtureItem) fluids.add(mixtureItem.getContents(stack).orElse(FluidStack.EMPTY));
+            });
+
+            for (FluidStack fluid : fluids) {
+                if (DestroyFluids.isMixture(fluid)) species.addAll(ReadOnlyMixture.readNBT(ReadOnlyMixture::new, fluid.getOrCreateChildTag("Mixture")).getContents(false));
+            };
+
+            DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> openScreen(be, species));
+            return InteractionResult.SUCCESS;
+        });
+    };
+
+    @OnlyIn(Dist.CLIENT)
+    public void openScreen(ColorimeterBlockEntity be, Set<Molecule> species) {
+        ScreenOpener.open(new ColorimeterScreen(be, new ArrayList<>(species)));
+    };
+
+    @Override
+    public int getDirectSignal(BlockState state, BlockGetter level, BlockPos pos, Direction direction) {
+        if (direction != state.getValue(FACING).getOpposite()) return 0;
+        return getBlockEntityOptional(level, pos).map(c -> c.redstoneMonitor.getStrength()).orElse(0);
+    };
+
+    @Override
+	public int getSignal(BlockState state, BlockGetter level, BlockPos pos, Direction side) {
+		return getBlockEntityOptional(level, pos).map(c -> c.redstoneMonitor.getStrength()).orElse(0);
+	};
 
     @Override
     public void neighborChanged(BlockState state, Level level, BlockPos pos, Block block, BlockPos fromPos, boolean isMoving) {
