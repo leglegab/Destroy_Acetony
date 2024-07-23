@@ -1,6 +1,7 @@
 package com.petrolpark.destroy.chemistry.api.registry.event;
 
 import com.petrolpark.destroy.chemistry.api.event.IChemistryEvent;
+import com.petrolpark.destroy.chemistry.api.registry.DummyRegistry;
 import com.petrolpark.destroy.chemistry.api.registry.HashMapRegistry;
 import com.petrolpark.destroy.chemistry.api.registry.IChemistryRegistry;
 import com.petrolpark.destroy.chemistry.api.registry.IRegisteredChemistryObject;
@@ -17,7 +18,7 @@ import com.petrolpark.destroy.chemistry.api.registry.IRegisteredChemistryObject;
  */
 public class CreateRegistryEvent<T extends IRegisteredChemistryObject<T, ID>, ID> implements IChemistryEvent {
 
-    protected IChemistryRegistry<T, ID> registry;
+    protected IChemistryRegistry<T, ID> registry = new DummyRegistry<>();
 
     /**
      * The current {@link IChemistryRegistry} for this {@link IRegisteredChemistryObject}.

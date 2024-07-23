@@ -12,19 +12,9 @@ public interface IRegisteredChemistryObject<T extends IRegisteredChemistryObject
      * A unique identifier for this object.
      * This should be totally unique for any two objects which are not {@link Object#equals(Object) equal}. 
      * @return A unique indentifying object, often a {@link String}
+     * @since Destroy 1.0
+     * @author petrolpark
      */
     public ID getId();
-
-    /**
-     * Get the {@link IChemistryRegistry} to which this object would usually be registered.
-     * It is not always guaranteed that it is - it is possible to check with {@link IRegisteredChemistryObject#isRegistered()}.
-     * @return The {@link IChemistryRegistry} to which this object <em>would</em> be registered
-     */
-    public IChemistryRegistry<T, ID> getRegistry();
-
-    @SuppressWarnings("unchecked")
-    public default boolean isRegistered() {
-        return getRegistry().isRegistered((T)this);
-    };
 
 };

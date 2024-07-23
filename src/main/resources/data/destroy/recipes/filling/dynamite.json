@@ -2,7 +2,7 @@
     "type": "create:filling",
     "ingredients": [
       {
-        "item": "minecraft:clay"
+        "item": "destroy:clay_monolith"
       },
       {
         "mixtureFluidWithMolecule": "destroy:mixture",

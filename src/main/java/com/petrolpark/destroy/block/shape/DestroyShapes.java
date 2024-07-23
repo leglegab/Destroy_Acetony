@@ -101,6 +101,12 @@ public class DestroyShapes {
     public static final VoxelShaper BLACKLIGHT_FLIPPED = shape(5, 0, 0, 11, 4, 16)
         .forDirectional(Direction.DOWN);
 
+    public static final VoxelShaper CATALYTIC_CONVERER = shape(3, 0, 3, 13, 2, 13)
+        .add(2, 2, 2, 14, 10, 14)
+        .add(3, 10, 3, 13, 12, 13)
+        .add(5, 12, 5, 11, 16, 11)
+        .forDirectional(Direction.UP);
+        
     public static final VoxelShaper getPumpJackShaper(IPumpjackStructuralBlock.Component component) {
         switch (component) {
             case FRONT:

@@ -7,6 +7,6 @@ import com.petrolpark.destroy.chemistry.api.species.ISpecies;
  * @since 1.0
  * @author petrolpark
  */
-public interface IChemicalReaction extends IReaction<IChemicalReaction, IChemicalReacting, ISpecies> {
+public interface IChemicalReaction extends IReaction<IChemicalReacting, ISpecies> {
     
 };

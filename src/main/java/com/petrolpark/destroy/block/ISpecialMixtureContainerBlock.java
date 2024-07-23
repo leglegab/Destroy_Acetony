@@ -27,4 +27,5 @@ public interface ISpecialMixtureContainerBlock {
      */
     @Nullable
     public IFluidHandler getTankForMixtureStorageItems(IMixtureStorageItem item, Level level, BlockPos pos, BlockState state, Direction face, Player player, InteractionHand hand, ItemStack stack, boolean filling);
+
 };

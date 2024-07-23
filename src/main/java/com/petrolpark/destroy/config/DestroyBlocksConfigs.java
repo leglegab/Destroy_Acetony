@@ -6,6 +6,9 @@ public class DestroyBlocksConfigs extends DestroyConfigBase {
     public final ConfigInt bubbleCapCapacity = i(1000, 1, "bubbleCapCapacity", "[in mB]", "Fluid capacity of Bubble Caps", "[setting this too low may make some recpies impossible]");
     public final ConfigInt bubbleCapRecipeFrequency = i(100, 1, "bubbleCapRecipeFrequency", "[in ticks]", "How often distillation towers try and distill");
 
+    public final ConfigGroup catalyticConverter = group(0, "catalyticConverter", "Catalytic Converter");
+    public final ConfigFloat catalyticConverterReduction = f(0.25f, 0f, Float.MAX_VALUE, "catalyticConverterReduction", "The proportion by which Fluids polluted through a Catalytic Converter have their potential pollution multiplied.");
+    
     public final ConfigGroup centrifuge = group(0, "centrifuge", "Centrifuge");
     public final ConfigInt centrifugeCapacity = i(1000, 1, "centrifugeCapacity", "[in mB]", "Fluid capacity of each of the Centrifuge's three tanks", "[setting this too low may make some recipes impossible]");
 

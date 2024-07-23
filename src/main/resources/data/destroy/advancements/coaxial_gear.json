@@ -1,0 +1,25 @@
+{
+    "parent": "destroy:root",
+    "criteria": {
+      "use": {
+        "trigger": "destroy:coaxial_gear"
+      }
+    },
+    "display": {
+      "description": {
+        "color": "#DBA213",
+        "translate": "advancement.destroy.coaxial_gear.description"
+      },
+      "icon": {
+        "item": "destroy:coaxial_gear"
+      },
+      "title": {
+        "translate": "advancement.destroy.coaxial_gear"
+      }
+    },
+    "requirements": [
+      [
+        "use"
+      ]
+    ]
+  }

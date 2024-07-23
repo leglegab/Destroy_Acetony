@@ -39,6 +39,7 @@ public class SimpleAtom<N extends INuclide & IElectronegativity> implements IAto
         return nuclide;
     };
 
+    @Override
     public float getElectronegativity() {
         return nuclide.getElectronegativity();
     };

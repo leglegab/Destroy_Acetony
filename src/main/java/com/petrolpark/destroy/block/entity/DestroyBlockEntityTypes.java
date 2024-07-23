@@ -53,6 +53,11 @@ public class DestroyBlockEntityTypes {
         .renderer(() -> BubbleCapRenderer::new)
         .register();
 
+    public static final BlockEntityEntry<CatalyticConverterBlockEntity> CATALYTIC_CONVERTER = REGISTRATE
+        .blockEntity("catalytic_converter", CatalyticConverterBlockEntity::new)
+        .validBlocks(DestroyBlocks.CATALYTIC_CONVERTER)
+        .register();
+
     public static final BlockEntityEntry<CentrifugeBlockEntity> CENTRIFUGE = REGISTRATE
         .blockEntity("centrifuge", CentrifugeBlockEntity::new)
         .instance(() -> CentrifugeCogInstance::new)
@@ -108,6 +113,11 @@ public class DestroyBlockEntityTypes {
         //TODO instance
         .validBlock(DestroyBlocks.DIFFERENTIAL)
         .renderer(() -> DifferentialRenderer::new)
+        .register();
+
+    public static final BlockEntityEntry<DummyDifferentialBlockEntity> DUMMY_DIFFERENTIAL = REGISTRATE
+        .blockEntity("dummy_differential", DummyDifferentialBlockEntity::new)
+        .validBlock(DestroyBlocks.DUMMY_DIFFERENTIAL)
         .register();
 
     public static final BlockEntityEntry<DynamiteBlockEntity> DYNAMITE = REGISTRATE

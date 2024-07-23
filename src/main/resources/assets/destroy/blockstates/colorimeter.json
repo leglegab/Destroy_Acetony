@@ -1,33 +1,63 @@
 {
     "variants": {
-        "facing=north,blushing=false": {
+        "facing=north,blushing=false,powered=false": {
             "model": "destroy:block/colorimeter"
         },
-        "facing=east,blushing=false": {
+        "facing=east,blushing=false,powered=false": {
             "model": "destroy:block/colorimeter",
             "y": 90
         },
-        "facing=south,blushing=false": {
+        "facing=south,blushing=false,powered=false": {
             "model": "destroy:block/colorimeter",
             "y": 180
         },
-        "facing=west,blushing=false": {
+        "facing=west,blushing=false,powered=false": {
             "model": "destroy:block/colorimeter",
             "y": 270
         },
-        "facing=north,blushing=true": {
+        "facing=north,blushing=true,powered=false": {
             "model": "destroy:block/colorimeter_blushing"
         },
-        "facing=east,blushing=true": {
+        "facing=east,blushing=true,powered=false": {
             "model": "destroy:block/colorimeter_blushing",
             "y": 90
         },
-        "facing=south,blushing=true": {
+        "facing=south,blushing=true,powered=false": {
             "model": "destroy:block/colorimeter_blushing",
             "y": 180
         },
-        "facing=west,blushing=true": {
+        "facing=west,blushing=true,powered=false": {
             "model": "destroy:block/colorimeter_blushing",
+            "y": 270
+        },
+        "facing=north,blushing=false,powered=true": {
+            "model": "destroy:block/colorimeter_powered"
+        },
+        "facing=east,blushing=false,powered=true": {
+            "model": "destroy:block/colorimeter_powered",
+            "y": 90
+        },
+        "facing=south,blushing=false,powered=true": {
+            "model": "destroy:block/colorimeter_powered",
+            "y": 180
+        },
+        "facing=west,blushing=false,powered=true": {
+            "model": "destroy:block/colorimeter_powered",
+            "y": 270
+        },
+        "facing=north,blushing=true,powered=true": {
+            "model": "destroy:block/colorimeter_blushing_powered"
+        },
+        "facing=east,blushing=true,powered=true": {
+            "model": "destroy:block/colorimeter_blushing_powered",
+            "y": 90
+        },
+        "facing=south,blushing=true,powered=true": {
+            "model": "destroy:block/colorimeter_blushing_powered",
+            "y": 180
+        },
+        "facing=west,blushing=true,powered=true": {
+            "model": "destroy:block/colorimeter_blushing_powered",
             "y": 270
         }
     }

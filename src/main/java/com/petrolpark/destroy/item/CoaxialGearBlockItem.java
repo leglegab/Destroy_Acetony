@@ -42,7 +42,7 @@ public class CoaxialGearBlockItem extends CogwheelBlockItem {
         Player player = context.getPlayer();
         if (player == null) return InteractionResult.PASS;
         if (ShaftBlock.isShaft(state)) {
-            if (CoaxialGearBlock.tryMakeLongShaft(state, getBlock(), level, pos, Direction.getFacingAxis(player, state.getValue(RotatedPillarKineticBlock.AXIS)))) {
+            if (CoaxialGearBlock.tryMakeLongShaft(state, getBlock(), level, pos, context.getPlayer(), Direction.getFacingAxis(player, state.getValue(RotatedPillarKineticBlock.AXIS)))) {
                 SoundType soundType = getBlock().defaultBlockState().getSoundType(level, pos, player);
 		        level.playSound(null, pos, soundType.getPlaceSound(), SoundSource.BLOCKS, (soundType.getVolume() + 1.0F) / 2.0F, soundType.getPitch() * 0.8F);
                 if (!level.isClientSide() && !player.isCreative()) {

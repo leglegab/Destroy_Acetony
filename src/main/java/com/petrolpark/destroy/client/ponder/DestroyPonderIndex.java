@@ -51,6 +51,10 @@ public class DestroyPonderIndex {
             .addStoryBoard("bubble_cap/mixtures", DestroyScenes::bubbleCapMixtures)
             .addStoryBoard("pollution/room_temperature", ChemistryScenes::roomTemperature);
 
+        // Catalytic Converter
+        HELPER.forComponents(DestroyBlocks.CATALYTIC_CONVERTER)
+            .addStoryBoard("pollution/catalytic_converter", PollutionScenes::catalyticConverter);
+
         // Centrifuge
         HELPER.forComponents(DestroyBlocks.CENTRIFUGE)
             .addStoryBoard("centrifuge/generic", DestroyScenes::centrifugeGeneric)

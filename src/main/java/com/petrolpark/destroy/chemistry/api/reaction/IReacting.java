@@ -2,6 +2,7 @@ package com.petrolpark.destroy.chemistry.api.reaction;
 
 import com.petrolpark.destroy.chemistry.api.reactor.IReactor;
 import com.petrolpark.destroy.chemistry.api.mixture.IMixture;
+import com.petrolpark.destroy.chemistry.api.reaction.context.IReactionContextProvider;
 
 /**
  * Something in which {@link IReaction}s or other {@link ITransformation}s occur, typically a {@link IMixture}.
@@ -9,10 +10,7 @@ import com.petrolpark.destroy.chemistry.api.mixture.IMixture;
  * @since Destroy 1.0
  * @author petrolpark
  */
-public interface IReacting <
-    R extends IReacting<? super R, ? super T>,
-    T extends ITransformation<? super T, ? extends R>
-> {
+public interface IReacting<R extends IReacting<? super R>> extends IReactionContextProvider {
     
     /**
      * Whether a particular {@link ITransformation} is possible in this {@link IReacting}.
@@ -20,7 +18,7 @@ public interface IReacting <
      * @since Destroy 1.0
      * @author petrolpark
      */
-    public boolean isPossible(T transformation);
+    public boolean isPossible(ITransformation<? extends R> transformation);
 
     /**
      * Simulate the {@link ITransformation}s applicable to this {@link IReacting} for a short while.

@@ -7,7 +7,7 @@
           "items": [
             {
               "items": [
-                "destroy:anfo_block"
+                "destroy:anfo"
               ]
             }
           ]
@@ -31,7 +31,7 @@
           "items": [
             {
               "items": [
-                "destroy:dynamite_block"
+                "destroy:dynamite"
               ]
             }
           ]
@@ -43,7 +43,7 @@
           "items": [
             {
               "items": [
-                "destroy:nitrocellulose_block"
+                "destroy:nitrocellulose"
               ]
             }
           ]
@@ -55,7 +55,7 @@
           "items": [
             {
               "items": [
-                "destroy:picric_acid_block"
+                "destroy:picric_acid_tablet"
               ]
             }
           ]

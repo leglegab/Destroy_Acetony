@@ -4,7 +4,7 @@ import java.lang.ref.WeakReference;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.petrolpark.destroy.chemistry.api.util.AttachedInteger;
+import com.petrolpark.destroy.chemistry.api.util.AttachedInt;
 
 /**
  * Default implementation of {@link IPriorityRegistration}.
@@ -20,7 +20,7 @@ public class PriorityRegistration<T extends IRegisteredChemistryObject<T, ID>, I
      * A set of {@code id}s indexing {@link IRegisteredChemistryObject}s along with the {@code priority} currently associated with that {@code id}, which is used to check if {@link IRegisteredChemistryObject}s should be usurped.
      * It is a {@link WeakReference} to encourage quick discarding after it's finished with.
      */
-    private final WeakReference<Map<ID, AttachedInteger<T>>> objectsToRegister;
+    private final WeakReference<Map<ID, AttachedInt<T>>> objectsToRegister;
 
     /**
      * Create a {@link IPriorityRegistration} which can be fired in a {@link }
@@ -28,12 +28,12 @@ public class PriorityRegistration<T extends IRegisteredChemistryObject<T, ID>, I
      */
     public PriorityRegistration(R registry) {
         this.registry = registry;
-        objectsToRegister = new WeakReference<Map<ID,AttachedInteger<T>>>(new HashMap<>());
+        objectsToRegister = new WeakReference<Map<ID,AttachedInt<T>>>(new HashMap<>());
     };
     
     @Override
     public boolean register(final T object, final int priority) {
-        return object == objectsToRegister.get().compute(object.getId(), (id, oldObject) -> priority > oldObject.value ? AttachedInteger.of(object, priority) : oldObject).object;
+        return object == objectsToRegister.get().compute(object.getId(), (id, oldObject) -> priority > oldObject.value ? AttachedInt.of(object, priority) : oldObject).object;
     };
 
     @Override

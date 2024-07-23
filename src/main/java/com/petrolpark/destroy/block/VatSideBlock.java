@@ -6,7 +6,7 @@ import com.petrolpark.destroy.block.entity.DestroyBlockEntityTypes;
 import com.petrolpark.destroy.block.entity.VatControllerBlockEntity;
 import com.petrolpark.destroy.block.entity.VatSideBlockEntity;
 import com.petrolpark.destroy.block.entity.VatSideBlockEntity.DisplayType;
-import com.petrolpark.destroy.client.gui.screen.QuantityObservingVatSideScreen;
+import com.petrolpark.destroy.client.gui.screen.RedstoneMonitorVatSideScreen;
 import com.petrolpark.destroy.item.DestroyItems;
 import com.petrolpark.destroy.item.IMixtureStorageItem;
 import com.simibubi.create.AllItems;
@@ -73,7 +73,7 @@ public class VatSideBlock extends CopycatBlock implements ISpecialBlockItemRequi
 
     @OnlyIn(Dist.CLIENT)
     public void openScreen(VatSideBlockEntity vbe) {
-        ScreenOpener.open(new QuantityObservingVatSideScreen(vbe));
+        ScreenOpener.open(new RedstoneMonitorVatSideScreen(vbe));
     };
 
     @Override

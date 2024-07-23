@@ -1,0 +1,7 @@
+{
+	"parent": "destroy:block/colorimeter",
+	"textures": {
+		"front": "destroy:block/colorimeter_front_blushing",
+		"back": "destroy:block/colorimeter_back_powered"
+	}
+}

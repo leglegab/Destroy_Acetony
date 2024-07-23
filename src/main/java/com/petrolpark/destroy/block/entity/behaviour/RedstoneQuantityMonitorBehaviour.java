@@ -14,7 +14,7 @@ import net.minecraft.util.Mth;
 
 public class RedstoneQuantityMonitorBehaviour extends BlockEntityBehaviour {
 
-    public static final BehaviourType<?> TYPE = new BehaviourType<>();
+    public static final BehaviourType<RedstoneQuantityMonitorBehaviour> TYPE = new BehaviourType<>();
 
     @Nonnull
     public Optional<Supplier<Float>> quantityObserved;
@@ -71,6 +71,10 @@ public class RedstoneQuantityMonitorBehaviour extends BlockEntityBehaviour {
     @Override
     public BehaviourType<?> getType() {
         return TYPE;
+    };
+
+    public void notifyUpdate() {
+        blockEntity.notifyUpdate();
     };
     
 };

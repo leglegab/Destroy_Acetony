@@ -580,6 +580,40 @@ public class PollutionScenes {
 
     public static final void catalyticConverter(SceneBuilder scene, SceneBuildingUtil util) {
         scene.title("pollution.catalytic_converter", "This text is defined in a language file.");
+        scene.configureBasePlate(0, 0, 5);
+        scene.showBasePlate();
+
+        BlockPos converter = util.grid.at(1, 2, 2);
+        
+        scene.idle(5);
+        scene.world.showSection(util.select.position(2, 0, 5), Direction.NORTH);
+        scene.idle(10);
+        scene.world.showSection(util.select.fromTo(2, 1, 3, 3, 1, 5), Direction.DOWN);
+        scene.idle(10);
+        for (int x = 3; x >= 1; x--) {
+            scene.world.showSection(util.select.position(x, 1, 2), Direction.DOWN);
+            scene.idle(10);
+        };
+        for (int i = 0; i < 4; i++) {
+            scene.idle(20);
+            scene.effects.emitParticles(util.vector.centerOf(converter), emitter, 1f, 1);
+        };
+        scene.overlay.showText(120)
+            .text("This text is defined in a language file.")
+            .pointAt(util.vector.blockSurface(converter, Direction.DOWN));
+        scene.idle(20);
+        scene.effects.emitParticles(util.vector.centerOf(converter), emitter, 1f, 1);
+        scene.idle(20);
+        scene.effects.emitParticles(util.vector.centerOf(converter), emitter, 1f, 1);
+        scene.idle(20);
+        scene.world.showSection(util.select.position(converter), Direction.DOWN);
+        scene.idle(60);
+        scene.effects.emitParticles(util.vector.centerOf(converter.above()), emitter, 1f, 1);
+        scene.idle(20);
+
+        scene.markAsFinished();
+
+
 
     };
 

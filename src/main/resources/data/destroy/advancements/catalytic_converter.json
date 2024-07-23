@@ -1,0 +1,26 @@
+{
+    "parent": "destroy:hyperaccumulate",
+    "criteria": {
+      "use": {
+        "conditions": {},
+        "trigger": "destroy:catalytic_converter"
+      }
+    },
+    "display": {
+      "description": {
+        "color": "#DBA213",
+        "translate": "advancement.destroy.catalytic_converter.description"
+      },
+      "icon": {
+        "item": "destroy:catalytic_converter"
+      },
+      "title": {
+        "translate": "advancement.destroy.catalytic_converter"
+      }
+    },
+    "use": [
+      [
+        "hyperaccumulate"
+      ]
+    ]
+  }

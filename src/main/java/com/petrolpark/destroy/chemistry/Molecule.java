@@ -166,6 +166,7 @@ public class Molecule implements INameableProduct {
      */
     @Nullable
     public static Molecule getMolecule(String id) {
+        if (id == null || id.isEmpty()) return null;
         String[] idComponents = id.split(":");
 
         Molecule molecule = MOLECULES.get(id);

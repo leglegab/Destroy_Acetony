@@ -5,10 +5,7 @@ package com.petrolpark.destroy.chemistry.api.reaction;
  * @since Destroy 1.0
  * @author petrolpark
  */
-public interface IRateTransformation <
-    T extends IRateTransformation<? super T, ? super R>,
-    R extends IReacting<? super R, ? extends T>
-> extends ITransformation<T, R> {
+public interface IRateTransformation<R extends IReacting<? super R>> extends ITransformation<R> {
     
     /**
      * Get the number of moles of {@link ITransformation} which should {@link ITransformation#enact(double, IReacting) proceed} every second.

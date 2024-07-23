@@ -4,9 +4,11 @@ import com.petrolpark.destroy.chemistry.api.event.IChemistryEvent;
 import com.petrolpark.destroy.chemistry.api.event.IChemistryEventFirer;
 
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.eventbus.api.Event;
 
 /**
  * The Minecraft Forge implementation of {@link IChemistryEventFirer}.
+ * {@link IChemistryEvent}s are fired as Forge {@link Event}s.
  * @since Destroy 1.0
  * @author petrolpark
  */

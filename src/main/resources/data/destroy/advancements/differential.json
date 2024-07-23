@@ -1,0 +1,25 @@
+{
+    "parent": "destroy:coaxial_gear",
+    "criteria": {
+      "use": {
+        "trigger": "destroy:differential"
+      }
+    },
+    "display": {
+      "description": {
+        "color": "#DBA213",
+        "translate": "advancement.destroy.differential.description"
+      },
+      "icon": {
+        "item": "destroy:differential"
+      },
+      "title": {
+        "translate": "advancement.destroy.differential"
+      }
+    },
+    "requirements": [
+      [
+        "use"
+      ]
+    ]
+  }

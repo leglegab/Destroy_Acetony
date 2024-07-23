@@ -41,6 +41,7 @@ public enum DestroyGuiTextures implements ScreenElement {
 	VAT_CARD_ARROW("vat", 218, 226, 25, 30),
 	VAT_SCROLL_DOT("vat", 100, 226, 7, 8),
 	VAT_QUANTITY_OBSERVER("logistics", 0, 0, 256, 95),
+	COLORIMETER("colorimeter", 0, 0, 256, 195),
 
 	// REDSTONE PROGRAMMER
 	REDSTONE_PROGRAMMER("redstone_programmer_1", 256, 226),

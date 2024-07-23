@@ -8,6 +8,7 @@ import com.petrolpark.destroy.network.packet.ChainCogwheelsC2SPacket;
 import com.petrolpark.destroy.network.packet.ChangeKeypunchPositionC2SPacket;
 import com.petrolpark.destroy.network.packet.ChemicalPoisonS2CPacket;
 import com.petrolpark.destroy.network.packet.CircuitPatternsS2CPacket;
+import com.petrolpark.destroy.network.packet.ConfigureColorimeterC2SPacket;
 import com.petrolpark.destroy.network.packet.CryingS2CPacket;
 import com.petrolpark.destroy.network.packet.EvaporatingFluidS2CPacket;
 import com.petrolpark.destroy.network.packet.LevelPollutionS2CPacket;
@@ -24,7 +25,7 @@ import com.petrolpark.destroy.network.packet.SwissArmyKnifeToolC2SPacket;
 import com.petrolpark.destroy.network.packet.SyncChunkPollutionS2CPacket;
 import com.petrolpark.destroy.network.packet.SyncVatMaterialsS2CPacket;
 import com.petrolpark.destroy.network.packet.TransferFluidC2SPacket;
-import com.petrolpark.destroy.network.packet.VatSideQuantityThresholdChangeC2SPacket;
+import com.petrolpark.destroy.network.packet.RedstoneQuantityMonitorThresholdChangeC2SPacket;
 
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.server.level.ServerLevel;
@@ -73,9 +74,10 @@ public class DestroyMessages {
         addC2SPacket(net, RedstoneProgramSyncC2SPacket.class, RedstoneProgramSyncC2SPacket::new);
         addC2SPacket(net, NameKeypunchC2SPacket.class, NameKeypunchC2SPacket::new);
         addC2SPacket(net, ChangeKeypunchPositionC2SPacket.class, ChangeKeypunchPositionC2SPacket::new);
-        addC2SPacket(net, VatSideQuantityThresholdChangeC2SPacket.class, VatSideQuantityThresholdChangeC2SPacket::new);
+        addC2SPacket(net, RedstoneQuantityMonitorThresholdChangeC2SPacket.class, RedstoneQuantityMonitorThresholdChangeC2SPacket::new);
         addC2SPacket(net, MarkSeismographC2SPacket.class, MarkSeismographC2SPacket::new);
         addC2SPacket(net, TransferFluidC2SPacket.class, TransferFluidC2SPacket::new);
+        addC2SPacket(net, ConfigureColorimeterC2SPacket.class, ConfigureColorimeterC2SPacket::new);
     };
 
     public static <T extends S2CPacket> void addS2CPacket(SimpleChannel net, Class<T> clazz, Function<FriendlyByteBuf, T> decoder) {

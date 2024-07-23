@@ -2,11 +2,12 @@ package com.petrolpark.destroy.chemistry.api.atom;
 
 import com.petrolpark.destroy.chemistry.api.nuclide.INuclide;
 import com.petrolpark.destroy.chemistry.api.property.ICharge;
+import com.petrolpark.destroy.chemistry.api.species.ISpecies;
 import com.petrolpark.destroy.chemistry.api.property.IElectronegativity;
 import com.petrolpark.destroy.chemistry.api.property.IRelativeAtomicMass;
 
 /**
- * An object which can be found in chemical {@link com.petrolpark.destroy.chemistry.api.species.ISpecies Species}.
+ * An object which can be found in chemical {@link ISpecies Species}.
  * Two individual atoms of oxygen for example, would be considered two different {@link IAtom} instances, though both might have the same {@link INuclide} (element).
  * @since Destroy 1.0
  * @author petrolpark

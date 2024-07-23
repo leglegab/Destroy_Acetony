@@ -42,8 +42,10 @@ public class DestroyPonderTags {
             .add(DestroyBlocks.AGING_BARREL)
             .add(DestroyBlocks.BLACKLIGHT)
             .add(DestroyBlocks.BUBBLE_CAP)
+            .add(DestroyBlocks.CATALYTIC_CONVERTER)
             .add(DestroyBlocks.CENTRIFUGE)
             .add(DestroyBlocks.COAXIAL_GEAR)
+            .add(DestroyBlocks.COLOSSAL_COGWHEEL)
             .add(DestroyBlocks.COOLER)
             .add(DestroyBlocks.CUSTOM_EXPLOSIVE_MIX)
             .add(DestroyBlocks.DIFFERENTIAL)
@@ -67,8 +69,10 @@ public class DestroyPonderTags {
 
         PonderRegistry.TAGS.forTag(AllPonderTags.FLUIDS)
             .add(DestroyBlocks.BUBBLE_CAP)
+            .add(DestroyBlocks.CATALYTIC_CONVERTER)
             .add(DestroyBlocks.CENTRIFUGE)
             .add(DestroyBlocks.PUMPJACK)
+            .add(DestroyBlocks.TREE_TAP)
             .add(DestroyBlocks.VAT_CONTROLLER)
         ;
 
@@ -81,8 +85,10 @@ public class DestroyPonderTags {
 
         PonderRegistry.TAGS.forTag(AllPonderTags.KINETIC_RELAYS)
             .add(DestroyBlocks.COAXIAL_GEAR)
+            .add(DestroyBlocks.COLOSSAL_COGWHEEL)
             .add(DestroyBlocks.DIFFERENTIAL)
             .add(DestroyBlocks.DOUBLE_CARDAN_SHAFT)
+            .add(DestroyBlocks.LARGE_COAXIAL_GEAR)
             .add(DestroyBlocks.PLANETARY_GEARSET)
         ;
 

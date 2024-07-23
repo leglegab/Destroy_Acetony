@@ -7,10 +7,7 @@ package com.petrolpark.destroy.chemistry.api.reaction;
  * @since Destroy 1.0
  * @author petrolpark
  */
-public interface ITransformation <
-    T extends ITransformation<? super T, ? super R>,
-    R extends IReacting<? super R, ? extends T>
-> {
+public interface ITransformation<R extends IReacting<? super R>> {
     
     /**
      * Enact the effects of this {@link ITransformation}.

@@ -108,13 +108,13 @@ public class PollutionHelper {
      * @see PollutionHelper#pollute(Level, BlockPos, int, FluidStack...) Harming Entities and showing evaporation particles too
      */
     @SuppressWarnings("deprecation")
-    public static void pollute(Level level, BlockPos pos, FluidStack fluidStack) {
+    public static void pollute(Level level, BlockPos pos, float multiplier, FluidStack fluidStack) {
         if (DestroyFluids.isMixture(fluidStack) && fluidStack.getOrCreateTag().contains("Mixture", Tag.TAG_COMPOUND)) {
-            polluteMixture(level, pos, fluidStack.getAmount(), fluidStack.getOrCreateTag());
+            polluteMixture(level, pos, multiplier, fluidStack.getAmount(), fluidStack.getOrCreateTag());
         } else {
             for (PollutionType pollutionType : PollutionType.values()) {
                 if (fluidStack.getFluid().is(pollutionType.fluidTag)) {
-                    float pollutionAmount = (float)fluidStack.getAmount() / 250f;
+                    float pollutionAmount = multiplier * (float)fluidStack.getAmount() / 250f;
                     if (pollutionAmount < 1f) {
                         if (level.random.nextFloat() <= pollutionAmount) changePollution(level, pos, pollutionType, 1);
                     } else {
@@ -125,10 +125,10 @@ public class PollutionHelper {
         };
     };
 
-    public static void polluteMixture(Level level, BlockPos pos, int amount, CompoundTag fluidTag) {
+    public static void polluteMixture(Level level, BlockPos pos, float multiplier, int amount, CompoundTag fluidTag) {
         ReadOnlyMixture mixture = ReadOnlyMixture.readNBT(ReadOnlyMixture::new, fluidTag.getCompound("Mixture"));
         for (Molecule molecule : mixture.getContents(true)) {
-            float pollutionAmount = mixture.getConcentrationOf(molecule) * amount / 1000; // One mole of polluting Molecule = one point of Pollution
+            float pollutionAmount = multiplier * mixture.getConcentrationOf(molecule) * amount / 1000; // One mole of polluting Molecule = one point of Pollution
             for (PollutionType pollutionType : PollutionType.values()) {
                 if (molecule.hasTag(pollutionType.moleculeTag)) {
                     if (pollutionAmount < 1) {
@@ -148,16 +148,20 @@ public class PollutionHelper {
      * @param particleWeight There will be a {@code 1} in {@code particleWeight} chance of a Particle being shown. If this is {@code 1} (as is the default), there will always be a Particle
      * @param fluidStacks The Fluids with which to pollute
      */
-    public static void pollute(Level level, BlockPos blockPos, int particleWeight, FluidStack ...fluidStacks) {
+    public static void pollute(Level level, BlockPos blockPos, float multiplier, int particleWeight, FluidStack ...fluidStacks) {
         if (level.isClientSide()) return;
         List<LivingEntity> nearbyEntities = level.getEntities(null, new AABB(blockPos).inflate(2)).stream().filter(e -> e instanceof LivingEntity).map(e -> (LivingEntity)e).toList();
         for (FluidStack fluidStack : List.of(fluidStacks)) {
-            pollute(level, blockPos, fluidStack);
+            pollute(level, blockPos, multiplier, fluidStack);
             if (particleWeight == 1 || level.getRandom().nextInt(particleWeight) == 0); DestroyMessages.sendToAllClients(new EvaporatingFluidS2CPacket(blockPos, fluidStack));
             for (LivingEntity entity : nearbyEntities) {
                 ChemistryDamageHelper.damage(level, entity, fluidStack, true);
             };
         };
+    };
+
+    public static void pollute(Level level, BlockPos pos, FluidStack ...fluidStacks) {
+        pollute(level, pos, 1f, 1, fluidStacks);
     };
 
     /**
@@ -166,8 +170,8 @@ public class PollutionHelper {
      * @param blockPos The position from which the evaporation Particles should originate
      * @param fluidStacks The Fluids with which to pollute
      */
-    public static void pollute(Level level, BlockPos blockPos, FluidStack ...fluidStacks) {
-        pollute(level, blockPos, 1, fluidStacks);
+    public static void pollute(Level level, BlockPos blockPos, float multiplier, FluidStack ...fluidStacks) {
+        pollute(level, blockPos, multiplier, 1, fluidStacks);
     };
 
     public static DustParticleOptions cropGrowthFailureParticles() {

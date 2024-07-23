@@ -1,6 +1,7 @@
 package com.petrolpark.destroy.block;
 
 import com.petrolpark.destroy.block.entity.DestroyBlockEntityTypes;
+import com.petrolpark.destroy.block.entity.behaviour.AbstractRememberPlacerBehaviour;
 import com.petrolpark.destroy.block.shape.DestroyShapes;
 import com.petrolpark.destroy.util.DestroyLang;
 import com.simibubi.create.AllBlocks;
@@ -17,6 +18,7 @@ import net.minecraft.core.Direction.Axis;
 import net.minecraft.core.Direction.AxisDirection;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.UseOnContext;
@@ -75,6 +77,12 @@ public class CoaxialGearBlock extends CogWheelBlock {
     };
 
     @Override
+    public void setPlacedBy(Level worldIn, BlockPos pos, BlockState state, LivingEntity placer, ItemStack stack) {
+        super.setPlacedBy(worldIn, pos, state, placer, stack);
+        AbstractRememberPlacerBehaviour.setPlacedBy(worldIn, pos, placer);
+    };
+
+    @Override
 	public InteractionResult onWrenched(BlockState state, UseOnContext context) {
         if (state.getValue(HAS_SHAFT)) {
             if (tryRemoveBracket(context)) {
@@ -120,7 +128,7 @@ public class CoaxialGearBlock extends CogWheelBlock {
 		super.onRemove(state, world, pos, newState, isMoving);
 	};
 
-    public static boolean tryMakeLongShaft(BlockState state, Block coaxialGearBlock, Level level, BlockPos pos, Direction preferredDirection) {
+    public static boolean tryMakeLongShaft(BlockState state, Block coaxialGearBlock, Level level, BlockPos pos, Player player, Direction preferredDirection) {
         Axis axis = state.getValue(AXIS);
         if (preferredDirection.getAxis() != axis) return false;
         for (Direction direction : new Direction[]{preferredDirection, preferredDirection.getOpposite()}) {
@@ -132,6 +140,7 @@ public class CoaxialGearBlock extends CogWheelBlock {
             if (!level.isClientSide()) {
                 level.setBlockAndUpdate(shaftPos, DestroyBlocks.LONG_SHAFT.getDefaultState().setValue(AXIS, axis).setValue(DirectionalRotatedPillarKineticBlock.POSITIVE_AXIS_DIRECTION, direction.getAxisDirection() != AxisDirection.POSITIVE));
                 level.setBlockAndUpdate(pos, coaxialGearBlock.defaultBlockState().setValue(AXIS, axis).setValue(HAS_SHAFT, true));
+                AbstractRememberPlacerBehaviour.setPlacedBy(level, pos, player);
             };
             return true;
         };
@@ -164,7 +173,7 @@ public class CoaxialGearBlock extends CogWheelBlock {
 		if (player.isShiftKeyDown() || !player.mayBuild()) return InteractionResult.PASS;
         ItemStack stack = player.getItemInHand(hand);
         if (AllBlocks.SHAFT.isIn(stack) && (!state.getValue(HAS_SHAFT))) {
-            if (tryMakeLongShaft(state, state.getBlock(), world, pos, Direction.getFacingAxis(player, state.getValue(AXIS)))) {
+            if (tryMakeLongShaft(state, state.getBlock(), world, pos, player, Direction.getFacingAxis(player, state.getValue(AXIS)))) {
                 if (!player.isCreative() && !world.isClientSide()) stack.shrink(1);
                 return InteractionResult.sidedSuccess(world.isClientSide());
             } else {

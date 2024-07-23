@@ -12,23 +12,7 @@ import com.petrolpark.destroy.chemistry.api.reaction.context.IReactionContextPro
  * @since Destroy 1.0
  * @author petrolpark
  */
-public interface IReaction <
-    T extends IReaction<? super T, ? super R, ? super C>,
-    R extends // They take place in some Reacting...
-        IReacting <
-            ? super R, // ...This Reacting must extend from one which supers it
-            ? extends T // ...It must also allow Transformations which are children of Reactions
-        >
-        & ITemperature // We also need to know the Temperature
-        & IMixture<? super C> // And the concentration of reactants
-        & IReactionContextProvider, // And the Reaction Contexts
-    C extends IMixtureComponent // Reactions take in some Mixture Component and make another
-> extends 
-    ITemperatureDependentTransformation <
-        T,
-        R
-    >
-{
+public interface IReaction<R extends IReacting <? super R> & ITemperature & IMixture<? super C>, C extends IMixtureComponent> extends ITemperatureDependentTransformation<R> {
 
     // /**
     //  * @since Destroy 1.0

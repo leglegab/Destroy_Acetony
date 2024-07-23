@@ -2,27 +2,27 @@ package com.petrolpark.destroy.network.packet;
 
 import java.util.function.Supplier;
 
-import com.petrolpark.destroy.block.entity.VatSideBlockEntity;
+import com.petrolpark.destroy.block.entity.behaviour.RedstoneQuantityMonitorBehaviour;
+import com.simibubi.create.foundation.blockEntity.behaviour.BlockEntityBehaviour;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraftforge.network.NetworkEvent.Context;
 
-public class VatSideQuantityThresholdChangeC2SPacket extends C2SPacket {
+public class RedstoneQuantityMonitorThresholdChangeC2SPacket extends C2SPacket {
 
     public final boolean upper;
     public final float value;
     public final BlockPos pos;
 
-    public VatSideQuantityThresholdChangeC2SPacket(boolean upper, float value, BlockPos pos) {
+    public RedstoneQuantityMonitorThresholdChangeC2SPacket(boolean upper, float value, BlockPos pos) {
         this.upper = upper;
         this.value = value;
         this.pos = pos;
     };
 
-    public VatSideQuantityThresholdChangeC2SPacket(FriendlyByteBuf buffer) {
+    public RedstoneQuantityMonitorThresholdChangeC2SPacket(FriendlyByteBuf buffer) {
         upper = buffer.readBoolean();
         value = buffer.readFloat();
         pos = buffer.readBlockPos();
@@ -40,11 +40,11 @@ public class VatSideQuantityThresholdChangeC2SPacket extends C2SPacket {
         Context context = supplier.get();
         context.enqueueWork(() -> {
             ServerPlayer sender = context.getSender();
-            BlockEntity be = sender.level().getBlockEntity(pos);
-            if (be != null && be instanceof VatSideBlockEntity vbe) {
-                if (upper) vbe.redstoneMonitor.upperThreshold = value;
-                else vbe.redstoneMonitor.lowerThreshold = value;
-                vbe.notifyUpdate();
+            RedstoneQuantityMonitorBehaviour behaviour = BlockEntityBehaviour.get(sender.level(), pos, RedstoneQuantityMonitorBehaviour.TYPE);
+            if (behaviour != null) {
+                if (upper) behaviour.upperThreshold = value;
+                else behaviour.lowerThreshold = value;
+                behaviour.notifyUpdate();
             };
         });
         return true;

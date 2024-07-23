@@ -1,7 +1,6 @@
 package com.petrolpark.destroy.chemistry.api.nuclide;
 
 import com.petrolpark.destroy.chemistry.api.property.IElectronegativity;
-import com.petrolpark.destroy.chemistry.api.registry.IChemistryRegistry;
 import com.petrolpark.destroy.chemistry.api.registry.IRegisteredChemistryObject;
 
 /**
@@ -14,7 +13,7 @@ import com.petrolpark.destroy.chemistry.api.registry.IRegisteredChemistryObject;
  * @since Destroy 1.0
  * @author petrolpark
  */
-public class ElementAveragedNuclide implements INuclide, IRegisteredChemistryObject<ElementAveragedNuclide, String>, IElectronegativity {
+public class ElementAveragedNuclide implements INuclide, IElement, IRegisteredChemistryObject<ElementAveragedNuclide, String>, IElectronegativity {
 
     /**
      * The IUPAC symbol for this element
@@ -41,9 +40,8 @@ public class ElementAveragedNuclide implements INuclide, IRegisteredChemistryObj
     };
 
     @Override
-    public IChemistryRegistry<ElementAveragedNuclide, String> getRegistry() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getRegistry'");
+    public IElement getElement() {
+        return this;
     };
 
     @Override

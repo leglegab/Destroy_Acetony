@@ -1,31 +1,22 @@
 package com.petrolpark.destroy.item.creativeModeTab;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.function.Supplier;
 
 import com.petrolpark.destroy.Destroy;
 import com.petrolpark.destroy.block.DestroyBlocks;
 import com.petrolpark.destroy.config.DestroySubstancesConfigs;
-import com.petrolpark.destroy.item.BadgeItem;
 import com.petrolpark.destroy.item.DestroyItems;
 import com.petrolpark.destroy.item.creativeModeTab.CustomTab.ITabEntry;
 import com.simibubi.create.AllBlocks;
 import com.simibubi.create.AllCreativeModeTabs;
 import com.simibubi.create.AllItems;
-import com.simibubi.create.foundation.utility.Pair;
 import com.tterrag.registrate.util.entry.ItemProviderEntry;
-import com.tterrag.registrate.util.entry.RegistryEntry;
 
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.CreativeModeTab;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
-import net.minecraft.world.item.CreativeModeTab.DisplayItemsGenerator;
-import net.minecraft.world.item.CreativeModeTab.ItemDisplayParameters;
-import net.minecraft.world.item.CreativeModeTab.Output;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraftforge.eventbus.api.IEventBus;
@@ -35,22 +26,13 @@ import net.minecraftforge.registries.RegistryObject;
 public class DestroyCreativeModeTabs {
     public static final DeferredRegister<CreativeModeTab> TABS = DeferredRegister.create(Registries.CREATIVE_MODE_TAB, Destroy.MOD_ID);
 
-    // public static final RegistryObject<CreativeModeTab> MAIN_TAB = TABS.register("base",
-	// 	() -> CreativeModeTab.builder()
-	// 		.title(Component.translatable("itemGroup.destroy.base"))
-	// 		.withTabsBefore(CreativeModeTabs.SPAWN_EGGS)
-	// 		.icon(() -> DestroyItems.LOGO.asStack())
-	// 		.displayItems(new DestroyDisplayItemsGenerator())
-	// 		.build()
-    // );
-
 	public static final RegistryObject<CreativeModeTab> MAIN_TAB = TABS.register(
 		"base",
 		() -> new CustomTab.Builder(CreativeModeTab.Row.TOP, 0)
 			.add(
 
 				s("chemistry_equipment"),
-				i(DestroyBlocks.VAT_CONTROLLER), i(DestroyBlocks.STAINLESS_STEEL_BLOCK), i(DestroyBlocks.BOROSILICATE_GLASS), d(AllBlocks.FLUID_PIPE), d(AllBlocks.MECHANICAL_PUMP), d(AllBlocks.CREATIVE_FLUID_TANK), d(AllBlocks.BLAZE_BURNER), i(DestroyBlocks.COOLER), i(DestroyBlocks.BUBBLE_CAP), i(DestroyBlocks.CENTRIFUGE), i(DestroyBlocks.DYNAMO), i(DestroyBlocks.BLACKLIGHT), i(DestroyBlocks.COLORIMETER),  i(DestroyBlocks.BEAKER), i(DestroyItems.TEST_TUBE), i(DestroyBlocks.TEST_TUBE_RACK), i(DestroyBlocks.MEASURING_CYLINDER), i(DestroyBlocks.ROUND_BOTTOMED_FLASK), i(DestroyItems.PAPER_MASK), i(DestroyItems.LABORATORY_GOGGLES), i(DestroyItems.GAS_MASK), i(DestroyItems.HAZMAT_SUIT), i(DestroyItems.HAZMAT_LEGGINGS), i(DestroyItems.WELLINGTON_BOOTS),
+				i(DestroyBlocks.VAT_CONTROLLER), i(DestroyBlocks.STAINLESS_STEEL_BLOCK), i(DestroyBlocks.BOROSILICATE_GLASS), d(AllBlocks.FLUID_PIPE), d(AllBlocks.MECHANICAL_PUMP), d(AllBlocks.CREATIVE_FLUID_TANK), d(AllBlocks.BLAZE_BURNER), i(DestroyBlocks.COOLER), i(DestroyBlocks.BUBBLE_CAP), i(DestroyBlocks.CENTRIFUGE), i(DestroyBlocks.DYNAMO), i(DestroyBlocks.BLACKLIGHT), i(DestroyBlocks.COLORIMETER),  i(DestroyBlocks.CATALYTIC_CONVERTER), i(DestroyBlocks.BEAKER), i(DestroyItems.TEST_TUBE), i(DestroyBlocks.TEST_TUBE_RACK), i(DestroyBlocks.MEASURING_CYLINDER), i(DestroyBlocks.ROUND_BOTTOMED_FLASK), i(DestroyItems.PAPER_MASK), i(DestroyItems.LABORATORY_GOGGLES), i(DestroyItems.GAS_MASK), i(DestroyItems.HAZMAT_SUIT), i(DestroyItems.HAZMAT_LEGGINGS), i(DestroyItems.WELLINGTON_BOOTS),
 
 				s("common_chemicals"),
 
@@ -77,13 +59,13 @@ public class DestroyCreativeModeTabs {
 				i(DestroyItems.POLYETHENE_TEREPHTHALATE), i(DestroyItems.POLYVINYL_CHLORIDE), i(DestroyItems.POLYETHENE), i(DestroyItems.POLYPROPENE), i(DestroyItems.POLYSTYRENE), i(DestroyItems.ABS), i(DestroyItems.POLYTETRAFLUOROETHENE), i(DestroyItems.NYLON), i(DestroyItems.POLYSTYRENE_BUTADIENE), i(DestroyItems.POLYACRYLONITRILE), i(DestroyItems.POLYISOPRENE), i(DestroyItems.POLYURETHANE), i(DestroyItems.POLYMETHYL_METHACRYLATE), i(DestroyItems.CARD_STOCK),
 
 				s("resources"),
-				i(DestroyItems.FLUORITE), i(DestroyBlocks.FLUORITE_BLOCK), i(DestroyBlocks.FLUORITE_ORE), i(DestroyBlocks.DEEPSLATE_FLUORITE_ORE), i(DestroyBlocks.END_FLUORITE_ORE), i(DestroyItems.BORAX), i(DestroyItems.SILICA), i(DestroyItems.MOLTEN_BOROSILICATE_GLASS_BUCKET), i(DestroyBlocks.BOROSILICATE_GLASS_FIBER), r(DestroyBlocks.BOROSILICATE_GLASS), i(DestroyItems.IODINE), i(DestroyBlocks.IODINE_BLOCK), i(DestroyItems.CARBON_FIBER), i(DestroyBlocks.CARBON_FIBER_BLOCK), i(DestroyBlocks.UNVARNISHED_PLYWOOD), i(DestroyBlocks.PLYWOOD), i(DestroyItems.CHALK_DUST), i(DestroyItems.ZEOLITE), i(DestroyItems.NANODIAMONDS),
+				i(DestroyItems.FLUORITE), i(DestroyBlocks.FLUORITE_BLOCK), i(DestroyBlocks.FLUORITE_ORE), i(DestroyBlocks.DEEPSLATE_FLUORITE_ORE), i(DestroyBlocks.END_FLUORITE_ORE), i(DestroyItems.BORAX), i(DestroyItems.SILICA), i(DestroyItems.MOLTEN_BOROSILICATE_GLASS_BUCKET), i(DestroyBlocks.BOROSILICATE_GLASS_FIBER), r(DestroyBlocks.BOROSILICATE_GLASS), i(DestroyItems.IODINE), i(DestroyBlocks.IODINE_BLOCK), i(DestroyItems.CARBON_FIBER), i(DestroyBlocks.CARBON_FIBER_BLOCK), i(DestroyBlocks.UNVARNISHED_PLYWOOD), i(DestroyBlocks.PLYWOOD), i(DestroyBlocks.CLAY_MONOLITH), i(DestroyBlocks.CERAMIC_MONOLITH), i(DestroyItems.CHALK_DUST), i(DestroyItems.ZEOLITE), i(DestroyItems.NANODIAMONDS),
 				//TODO crude oil bucket
 
 				s("explosives"),
 				n(), i(DestroyItems.ACETONE_PEROXIDE), i(DestroyItems.FULMINATED_MERCURY), i(DestroyItems.NICKEL_HYDRAZINE_NITRATE), i(DestroyItems.TOUCH_POWDER),
 				n(), i(DestroyItems.ANFO), i(DestroyItems.CORDITE), i(DestroyItems.DYNAMITE), i(DestroyItems.NITROCELLULOSE), i(DestroyItems.PICRIC_ACID_TABLET), i(DestroyItems.TNT_TABLET), 
-				n(), i(DestroyBlocks.DYNAMITE_BLOCK), i(DestroyBlocks.CORDITE_BLOCK), i(DestroyBlocks.EXTRUDED_CORDITE_BLOCK),
+				n(), i(DestroyBlocks.CUSTOM_EXPLOSIVE_MIX), i(DestroyBlocks.DYNAMITE_BLOCK), i(DestroyBlocks.CORDITE_BLOCK), i(DestroyBlocks.EXTRUDED_CORDITE_BLOCK),
 				
 				s("pharmaceuticals"),
 				i(DestroyItems.SYRINGE), i(DestroyItems.ASPIRIN_SYRINGE), i(DestroyItems.CISPLATIN_SYRINGE), c(DestroyItems.BABY_BLUE_SYRINGE, DestroySubstancesConfigs::babyBlueEnabled), c(DestroyItems.BABY_BLUE_CRYSTAL, DestroySubstancesConfigs::babyBlueEnabled), c(DestroyItems.BABY_BLUE_POWDER, DestroySubstancesConfigs::babyBlueEnabled), i(DestroyItems.SPRAY_BOTTLE), i(DestroyItems.PERFUME_BOTTLE), i(DestroyItems.SUNSCREEN_BOTTLE),
@@ -151,51 +133,4 @@ public class DestroyCreativeModeTabs {
 		TABS.register(modEventBus);
 	};
 
-	public static class DestroyDisplayItemsGenerator implements DisplayItemsGenerator {
-
-		public static List<ItemProviderEntry<?>> excludedItems = new ArrayList<>();
-		public static List<Pair<ItemProviderEntry<?>, Supplier<Boolean>>> conditionallyExcludedItems = new ArrayList<>();
-
-		static {
-			excludedItems.addAll(List.of(
-				// Meta
-				DestroyItems.LOGO,
-				DestroyItems.POLLUTION_SYMBOL,
-				DestroyItems.MOLECULE_DISPLAY,
-
-				// Temporary items
-				DestroyItems.UNFINISHED_BLACKLIGHT,
-				DestroyItems.UNFINISHED_CIRCUIT_BOARD,
-				DestroyItems.UNFINISHED_VOLTAIC_PILE,
-				DestroyItems.UNFINISHED_UNVARNISHED_PLYWOOD,
-				DestroyItems.UNPROCESSED_MASHED_POTATO,
-				DestroyItems.UNPROCESSED_NAPALM_SUNDAE,
-				DestroyItems.UNFINISHED_CARD_STOCK
-			));
-		};
-
-		static {
-			conditionallyExcludedItems.addAll(List.of(
-				// Baby Blue-related Items
-				Pair.of(DestroyItems.BABY_BLUE_CRYSTAL, DestroySubstancesConfigs::babyBlueEnabled),
-				Pair.of(DestroyItems.BABY_BLUE_POWDER, DestroySubstancesConfigs::babyBlueEnabled),
-				Pair.of(DestroyItems.BABY_BLUE_SYRINGE, DestroySubstancesConfigs::babyBlueEnabled),
-				// Alcoholic Items
-				Pair.of(DestroyItems.UNDISTILLED_MOONSHINE_BOTTLE, DestroySubstancesConfigs::alcoholEnabled),
-				Pair.of(DestroyItems.MOONSHINE_BOTTLE, DestroySubstancesConfigs::alcoholEnabled)
-			));
-		};
-
-		
-		@Override
-		public void accept(ItemDisplayParameters parameters, Output output) {
-			for (RegistryEntry<Item> entry : Destroy.REGISTRATE.getAll(Registries.ITEM)) {
-				if (conditionallyExcludedItems.stream().filter(p -> p.getFirst().equals(entry)).map(pair -> pair.getSecond().get()).findFirst().orElse(false)) continue;
-				if (!excludedItems.contains(entry) && !(entry.get() instanceof BadgeItem)) {
-					output.accept(new ItemStack(entry.get().asItem()));
-				};
-			};
-		};
-		
-	};
 };

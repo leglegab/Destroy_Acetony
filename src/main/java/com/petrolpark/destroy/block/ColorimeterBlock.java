@@ -20,17 +20,23 @@ import net.minecraft.world.level.block.state.properties.BooleanProperty;
 
 public class ColorimeterBlock extends HorizontalDirectionalBlock implements IBE<ColorimeterBlockEntity>, IWrenchable {
 
+    public static final BooleanProperty POWERED = BooleanProperty.create("powered");
     public static final BooleanProperty BLUSHING = BooleanProperty.create("blushing");
 
     protected ColorimeterBlock(Properties properties) {
         super(properties);
-        registerDefaultState(defaultBlockState().setValue(FACING, Direction.NORTH).setValue(BLUSHING, false));
+        registerDefaultState(
+            defaultBlockState()
+            .setValue(FACING, Direction.NORTH)
+            .setValue(BLUSHING, false)
+            .setValue(POWERED, false)
+        );
     };
 
     @Override
     protected void createBlockStateDefinition(Builder<Block, BlockState> builder) {
         super.createBlockStateDefinition(builder);
-        builder.add(FACING).add(BLUSHING);
+        builder.add(FACING).add(BLUSHING).add(POWERED);
     };
 
     @Override

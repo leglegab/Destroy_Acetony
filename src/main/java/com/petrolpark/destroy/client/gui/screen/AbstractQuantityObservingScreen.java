@@ -3,10 +3,7 @@ package com.petrolpark.destroy.client.gui.screen;
 import java.util.List;
 
 import com.mojang.blaze3d.platform.InputConstants;
-import com.petrolpark.destroy.block.entity.VatSideBlockEntity;
 import com.petrolpark.destroy.client.gui.DestroyGuiTextures;
-import com.petrolpark.destroy.network.DestroyMessages;
-import com.petrolpark.destroy.network.packet.VatSideQuantityThresholdChangeC2SPacket;
 import com.petrolpark.destroy.util.DestroyLang;
 import com.simibubi.create.foundation.gui.AbstractSimiScreen;
 import com.simibubi.create.foundation.gui.AllIcons;
@@ -17,22 +14,27 @@ import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.network.chat.Component;
 
-public class QuantityObservingVatSideScreen extends AbstractSimiScreen {
+public abstract class AbstractQuantityObservingScreen extends AbstractSimiScreen {
+    
+    protected final DestroyGuiTextures background;
+        
+    protected EditBox lowerBound;
+    protected EditBox upperBound;
 
-    private DestroyGuiTextures background;
+    protected IconButton confirmButton;
 
-    private EditBox lowerBound;
-    private EditBox upperBound;
-
-    private IconButton confirmButton;
-
-    private final VatSideBlockEntity vatSide;
-
-    public QuantityObservingVatSideScreen(VatSideBlockEntity vatSide) {
-        super(DestroyLang.translate("tooltip.vat.menu.quantity_observed.title").component());
-        background = DestroyGuiTextures.VAT_QUANTITY_OBSERVER;
-        this.vatSide = vatSide;
+    protected AbstractQuantityObservingScreen(Component title, DestroyGuiTextures background) {
+        super(title);
+        this.background = background;
     };
+
+    protected abstract int getEditBoxY();
+
+    protected abstract float getLowerThreshold();
+
+    protected abstract float getUpperThreshold();
+
+    protected abstract void onThresholdChange(boolean upper, float newValue);
 
     @Override
     protected void init() {
@@ -44,7 +46,7 @@ public class QuantityObservingVatSideScreen extends AbstractSimiScreen {
 		confirmButton.withCallback(() -> {if (minecraft != null && minecraft.player != null) minecraft.player.closeContainer();}); // It thinks minecraft and player might be null
 		addRenderableWidget(confirmButton);
 
-        lowerBound = new EditBox(minecraft.font, guiLeft + 15, guiTop + 35, 70, 10, Component.literal(""+vatSide.redstoneMonitor.lowerThreshold));
+        lowerBound = new EditBox(minecraft.font, guiLeft + 15, guiTop + getEditBoxY(), 70, 10, Component.literal(""+getUpperThreshold()));
         lowerBound.setBordered(false);
         lowerBound.setMaxLength(35);
 		lowerBound.setFocused(false);
@@ -52,7 +54,7 @@ public class QuantityObservingVatSideScreen extends AbstractSimiScreen {
 		lowerBound.active = false;
         lowerBound.setTooltip(Tooltip.create(DestroyLang.translate("tooltip.vat.menu.quantity_observed.minimum").component()));
 
-        upperBound = new EditBox(minecraft.font, guiLeft + 171, guiTop + 35, 70, 10, Component.literal(""+vatSide.redstoneMonitor.upperThreshold));
+        upperBound = new EditBox(minecraft.font, guiLeft + 171, guiTop + getEditBoxY(), 70, 10, Component.literal(""+getLowerThreshold()));
         upperBound.setBordered(false);
         upperBound.setMaxLength(35);
 		upperBound.setFocused(false);
@@ -73,10 +75,10 @@ public class QuantityObservingVatSideScreen extends AbstractSimiScreen {
 
                 // Attempt to update the Vat Side with the given number
                 boolean upper = box == upperBound;
-                float oldValue = upper ? vatSide.redstoneMonitor.upperThreshold : vatSide.redstoneMonitor.lowerThreshold;
+                float oldValue = upper ? getUpperThreshold() : getLowerThreshold();
                 try {
                     float value = Float.valueOf(box.getValue());
-                    if (value != oldValue) DestroyMessages.sendToServer(new VatSideQuantityThresholdChangeC2SPacket(upper, value, vatSide.getBlockPos()));
+                    if (value != oldValue) onThresholdChange(upper, value);
                 } catch (NumberFormatException e) {
                     box.setValue(""+oldValue);
                 };
@@ -113,8 +115,6 @@ public class QuantityObservingVatSideScreen extends AbstractSimiScreen {
     @Override
     protected void renderWindow(GuiGraphics graphics, int mouseX, int mouseY, float partialTicks) {
         background.render(graphics, guiLeft, guiTop);
-
         graphics.drawString(font, title, guiLeft + 16, guiTop + 4, 0x828c97, false);
     };
-    
 };

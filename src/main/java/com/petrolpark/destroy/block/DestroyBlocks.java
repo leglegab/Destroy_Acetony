@@ -99,6 +99,13 @@ public class DestroyBlocks {
         .transform(customItemModel())
         .register();
 
+    public static final BlockEntry<CatalyticConverterBlock> CATALYTIC_CONVERTER = REGISTRATE.block("catalytic_converter", CatalyticConverterBlock::new)
+        .initialProperties(SharedProperties::copperMetal)
+        .transform(TagGen.pickaxeOnly())
+        .item()
+        .build()
+        .register();
+
     public static final BlockEntry<CoaxialGearBlock> COAXIAL_GEAR = REGISTRATE.block("coaxial_gear", CoaxialGearBlock::small)
         .initialProperties(AllBlocks.COGWHEEL)
         .properties(p -> p
@@ -1060,7 +1067,9 @@ public class DestroyBlocks {
         .build()
         .register();
 
-    public static final BlockEntry<RotatedPillarBlock> EXTRUDED_CORDITE_BLOCK = REGISTRATE.block("extruded_cordite_block", RotatedPillarBlock::new)
+    public static final BlockEntry<RotatedPillarBlock>
+    
+    EXTRUDED_CORDITE_BLOCK = REGISTRATE.block("extruded_cordite_block", RotatedPillarBlock::new)
         .initialProperties(() -> Blocks.CLAY)
         .properties(p -> p
             .mapColor(MapColor.COLOR_ORANGE)
@@ -1069,6 +1078,20 @@ public class DestroyBlocks {
         ).loot((lt, b) -> lt.add(b, RegistrateBlockLootTables.createSilkTouchDispatchTable(b, LootItem.lootTableItem(DestroyItems.CORDITE).apply(SetItemCountFunction.setCount(ConstantValue.exactly(5f))))))
         .tag(BlockTags.MINEABLE_WITH_SHOVEL)
         .tag(BlockTags.MINEABLE_WITH_HOE)
+        .item()
+        .build()
+        .register(),
+
+    CLAY_MONOLITH = REGISTRATE.block("clay_monolith", RotatedPillarBlock::new)
+        .initialProperties(() -> Blocks.CLAY)
+        .tag(BlockTags.MINEABLE_WITH_SHOVEL)
+        .item()
+        .build()
+        .register(),
+
+    CERAMIC_MONOLITH = REGISTRATE.block("ceramic_monolith", RotatedPillarBlock::new)
+        .initialProperties(() -> Blocks.TERRACOTTA)
+        .tag(BlockTags.MINEABLE_WITH_PICKAXE)
         .item()
         .build()
         .register();

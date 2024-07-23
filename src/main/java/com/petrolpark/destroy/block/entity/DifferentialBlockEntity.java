@@ -2,15 +2,19 @@ package com.petrolpark.destroy.block.entity;
 
 import java.util.List;
 
+import com.petrolpark.destroy.advancement.DestroyAdvancementTrigger;
 import com.petrolpark.destroy.block.DestroyBlocks;
 import com.petrolpark.destroy.block.DifferentialBlock;
 import com.petrolpark.destroy.block.DirectionalRotatedPillarKineticBlock;
+import com.petrolpark.destroy.block.entity.behaviour.AbstractRememberPlacerBehaviour;
+import com.petrolpark.destroy.block.entity.behaviour.DestroyAdvancementBehaviour;
 import com.petrolpark.destroy.mixin.accessor.RotationPropagatorAccessor;
 import com.petrolpark.destroy.util.KineticsHelper;
 import com.simibubi.create.content.kinetics.base.IRotate;
 import com.simibubi.create.content.kinetics.base.KineticBlock;
 import com.simibubi.create.content.kinetics.base.KineticBlockEntity;
 import com.simibubi.create.content.kinetics.transmission.SplitShaftBlockEntity;
+import com.simibubi.create.foundation.blockEntity.behaviour.BlockEntityBehaviour;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -22,10 +26,18 @@ import net.minecraft.world.phys.AABB;
 
 public class DifferentialBlockEntity extends SplitShaftBlockEntity {
 
+    public DestroyAdvancementBehaviour advancementBehaviour;
     public float oldControlSpeed;
 
     public DifferentialBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState state) {
         super(type, pos, state);
+    };
+
+    @Override
+    public void addBehaviours(List<BlockEntityBehaviour> behaviours) {
+        super.addBehaviours(behaviours);
+        advancementBehaviour = new DestroyAdvancementBehaviour(this, DestroyAdvancementTrigger.DIFFERENTIAL);
+        behaviours.add(advancementBehaviour);
     };
 
     @Override
@@ -56,12 +68,25 @@ public class DifferentialBlockEntity extends SplitShaftBlockEntity {
 
         if (getSpeed() == 0f) { // Try switching the direction if we're not powered by the existing side
             BlockPos adjacentPos = getBlockPos().relative(direction);
-            if (!propagatesToMe(adjacentPos, direction.getOpposite()) && propagatesToMe(otherAdjacentPos, direction))
+            if (!propagatesToMe(adjacentPos, direction.getOpposite()) && propagatesToMe(otherAdjacentPos, direction)) {
                 getLevel().setBlockAndUpdate(getBlockPos(), DestroyBlocks.DUMMY_DIFFERENTIAL.getDefaultState().setValue(DifferentialBlock.AXIS, direction.getAxis()).setValue(DirectionalRotatedPillarKineticBlock.POSITIVE_AXIS_DIRECTION, direction.getAxisDirection() == AxisDirection.NEGATIVE)); 
+                AbstractRememberPlacerBehaviour.setPlacedBy(level, getBlockPos(), advancementBehaviour.getPlayer());
+            };
         };
 
         if (getLevel().getBlockEntity(otherAdjacentPos) instanceof KineticBlockEntity kbe) {
             oldControlSpeed = getPropagatedSpeed(kbe, direction);
+        };
+    };
+
+    @Override
+    public void onSpeedChanged(float previousSpeed) {
+        super.onSpeedChanged(previousSpeed);
+        if (speed == 0f || advancementBehaviour.getPlayer() == null) return;
+        Direction direction = DirectionalRotatedPillarKineticBlock.getDirection(getBlockState());
+        BlockPos otherAdjacentPos = getBlockPos().relative(direction.getOpposite());
+        if (propagatesToMe(otherAdjacentPos, direction) && getLevel().getBlockEntity(otherAdjacentPos) instanceof KineticBlockEntity kbe) {
+            if (kbe.getSpeed() != 0f) advancementBehaviour.awardDestroyAdvancement(DestroyAdvancementTrigger.DIFFERENTIAL);
         };
     };
 

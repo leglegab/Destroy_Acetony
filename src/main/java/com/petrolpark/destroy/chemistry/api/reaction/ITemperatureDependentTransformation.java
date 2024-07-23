@@ -7,11 +7,6 @@ import com.petrolpark.destroy.chemistry.api.property.ITemperature;
  * @since Destroy 1.0
  * @author petrolpark
  */
-public interface ITemperatureDependentTransformation <
-    T extends ITemperatureDependentTransformation<? super T, ? super R>,
-    R extends
-        IReacting<? super R, ? extends T>
-        & ITemperature
-> extends IRateTransformation<T, R> {
+public interface ITemperatureDependentTransformation<R extends IReacting<? super R> & ITemperature> extends IRateTransformation<R> {
 
 };

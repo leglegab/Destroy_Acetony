@@ -472,6 +472,9 @@ public class DestroyItems {
     UNFINISHED_BLACKLIGHT = REGISTRATE.item("unfinished_blacklight", SequencedAssemblyItem::new)
         .tab(null)
         .register(),
+    UNFINISHED_CATALYTIC_CONVERTER = REGISTRATE.item("unfinished_catalytic_converter", SequencedAssemblyItem::new)
+        .tab(null)
+        .register(),
     UNFINISHED_CIRCUIT_BOARD = REGISTRATE.item("unfinished_circuit_board", SequencedAssemblyItem::new)
         .tab(null)
         .register(),
