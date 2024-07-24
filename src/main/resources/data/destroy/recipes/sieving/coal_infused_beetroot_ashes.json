@@ -19,6 +19,12 @@
         "item": "minecraft:diamond",
         "count": 1,
         "chance": 0.001
+      },
+      {
+        "item": "destroy:beetroot_ashes",
+        "count": 1,
+        "chance": 0.5
       }
-    ]
-}
+    ],
+    "processingTime": 12800
+  }

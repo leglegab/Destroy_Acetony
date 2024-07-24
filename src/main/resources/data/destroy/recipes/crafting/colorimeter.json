@@ -2,7 +2,7 @@
     "type": "minecraft:crafting_shaped",
     "pattern": [
         "PPP",
-        " BE",
+        "RBE",
         "PPP"
     ],
     "key": {
@@ -16,6 +16,9 @@
         },
         "E": {
             "tag": "destroy:eyes"
+        },
+        "R": {
+            "item": "minecraft:redstone"
         }
     },
     "result": {

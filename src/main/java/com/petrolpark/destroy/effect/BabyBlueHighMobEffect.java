@@ -42,8 +42,8 @@ public class BabyBlueHighMobEffect extends UncurableMobEffect {
             };
 
             if (livingEntity instanceof Animal animal && !animal.isBaby()) {
+                if (animal.getAge() > 0) animal.resetLove();
                 animal.setAge(0);
-                animal.resetLove();
             };
         };
 

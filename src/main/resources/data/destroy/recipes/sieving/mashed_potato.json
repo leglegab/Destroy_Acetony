@@ -1,5 +1,5 @@
 {
-    "type": "destroy:first_time_lucky_milling",
+    "type": "destroy:sieving",
     "ingredients": [
       {
         "item": "destroy:mashed_potato"
@@ -15,5 +15,6 @@
         "chance": 0.4
       }
     ],
-    "processingTime": 50
+    "processingTime": 50,
+    "lucky_first_time": true
   }

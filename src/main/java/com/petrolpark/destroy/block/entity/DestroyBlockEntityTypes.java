@@ -20,6 +20,7 @@ import com.petrolpark.destroy.block.renderer.DifferentialRenderer;
 import com.petrolpark.destroy.block.renderer.DoubleCardanShaftRenderer;
 import com.petrolpark.destroy.block.renderer.DynamoRenderer;
 import com.petrolpark.destroy.block.renderer.KeypunchRenderer;
+import com.petrolpark.destroy.block.renderer.MechanicalSieveRenderer;
 import com.petrolpark.destroy.block.renderer.SimpleMixtureTankRenderer;
 import com.petrolpark.destroy.block.renderer.PlanetaryGearsetRenderer;
 import com.petrolpark.destroy.block.renderer.PollutometerRenderer;
@@ -155,6 +156,12 @@ public class DestroyBlockEntityTypes {
         .blockEntity("measuring_cylinder", MeasuringCylinderBlockEntity::new)
         .validBlock(DestroyBlocks.MEASURING_CYLINDER)
         .renderer(() -> SimpleMixtureTankRenderer::new)
+        .register();
+
+    public static final BlockEntityEntry<MechanicalSieveBlockEntity> MECHANICAL_SIEVE = REGISTRATE
+        .blockEntity("mechanical_sieve", MechanicalSieveBlockEntity::new)
+        .validBlock(DestroyBlocks.MECHANICAL_SIEVE)
+        .renderer(() -> MechanicalSieveRenderer::new)
         .register();
 
     public static final BlockEntityEntry<PlanetaryGearsetBlockEntity> PLANETARY_GEARSET = REGISTRATE

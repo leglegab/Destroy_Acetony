@@ -47,7 +47,6 @@ import com.petrolpark.destroy.item.MeasuringCylinderBlockItem;
 import com.petrolpark.destroy.item.RedstoneProgrammerBlockItem;
 import com.petrolpark.destroy.item.SeismographItem;
 import com.petrolpark.destroy.item.SeismographItem.Seismograph;
-import com.petrolpark.destroy.item.SyringeItem;
 import com.petrolpark.destroy.network.DestroyMessages;
 import com.petrolpark.destroy.network.packet.CircuitPatternsS2CPacket;
 import com.petrolpark.destroy.network.packet.LevelPollutionS2CPacket;
@@ -119,7 +118,6 @@ import net.minecraft.server.packs.repository.PackSource;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.RandomSource;
-import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.Entity;
@@ -161,7 +159,6 @@ import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.entity.EntityJoinLevelEvent;
 import net.minecraftforge.event.entity.EntityTravelToDimensionEvent;
 import net.minecraftforge.event.entity.living.BabyEntitySpawnEvent;
-import net.minecraftforge.event.entity.living.LivingAttackEvent;
 import net.minecraftforge.event.entity.living.LivingEquipmentChangeEvent;
 import net.minecraftforge.event.entity.player.BonemealEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
@@ -543,19 +540,6 @@ public class DestroyCommonEvents {
                 DestroyAdvancementTrigger.HANGOVER.award(player.level(), player);
             };
         };
-    };
-
-    /**
-     * Enact the effect of injecting a syringe when it is used to attack a Mob.
-     */
-    @SubscribeEvent
-    public static void onSyringeAttack(LivingAttackEvent event) {
-        Entity attacker = event.getSource().getEntity();
-        if (!(attacker instanceof LivingEntity livingAttacker)) return;
-        ItemStack itemStack = livingAttacker.getMainHandItem();
-        if (!(itemStack.getItem() instanceof SyringeItem syringeItem)) return;
-        syringeItem.onInject(itemStack, attacker.level(), event.getEntity());
-        livingAttacker.setItemInHand(InteractionHand.MAIN_HAND, new ItemStack(DestroyItems.SYRINGE.get()));
     };
 
     /**

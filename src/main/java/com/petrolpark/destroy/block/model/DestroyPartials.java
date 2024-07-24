@@ -80,7 +80,12 @@ public class DestroyPartials {
     CUSTOM_EXPLOSIVE_MIX_BASE = block("custom_explosive_mix_no_overlay"),
     CUSTOM_EXPLOSIVE_MIX_OVERLAY = block("custom_explosive_mix_overlay"),
     CUSTOM_EXPLOSIVE_MIX_SHELL_BASE = block("custom_explosive_mix_shell_no_overlay"),
-    CUSTOM_EXPLOSIVE_MIX_SHELL_OVERLAY = block("custom_explosive_mix_shell_overlay");
+    CUSTOM_EXPLOSIVE_MIX_SHELL_OVERLAY = block("custom_explosive_mix_shell_overlay"),
+
+    // Mechanical Sieve
+    MECHANICAL_SIEVE_SHAFT = block("mechanical_sieve/shaft"),
+    MECHANICAL_SIEVE_LINKAGES = block("mechanical_sieve/linkages"),
+    MECHANICAL_SIEVE = block("mechanical_sieve/sieve");
 
     // Atoms
     static {

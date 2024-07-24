@@ -36,14 +36,15 @@ public abstract class OpenEndedPipeMixin {
             && world.getBlockState(outputPos).canBeReplaced()
             && stack.getFluid() instanceof ICustomBlockStateFluid customBlockStateFluid
             && AllConfigs.server().fluids.pipesPlaceFluidSourceBlocks.get()
-            && (simulate || stack.getAmount() == 1000)
         ) {
-            if (!simulate) world.setBlockAndUpdate(outputPos, customBlockStateFluid.getBlockState());
-            cir.setReturnValue(true);
-            cir.cancel();
-            return;
+            if (simulate || stack.getAmount() == 1000) {
+                if (!simulate) world.setBlockAndUpdate(outputPos, customBlockStateFluid.getBlockState());
+                cir.setReturnValue(true);
+                cir.cancel();
+            } else {
+                cir.setReturnValue(false);
+                cir.cancel();
+            }
         };
-        cir.setReturnValue(false);
-        cir.cancel();
     };
 };

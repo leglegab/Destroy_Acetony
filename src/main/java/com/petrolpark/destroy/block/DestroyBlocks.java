@@ -254,6 +254,16 @@ public class DestroyBlocks {
         ).build()
         .register();
 
+    public static final BlockEntry<MechanicalSieveBlock> MECHANICAL_SIEVE = REGISTRATE.block("mechanical_sieve", MechanicalSieveBlock::new)
+        .initialProperties(SharedProperties::stone)
+        .properties(p -> p
+            .noOcclusion()
+        ).transform(BlockStressDefaults.setImpact(1.0))
+        .transform(TagGen.axeOrPickaxe())
+        .item()
+        .transform(customItemModel())
+        .register();
+
     public static final BlockEntry<PlanetaryGearsetBlock> PLANETARY_GEARSET = REGISTRATE.block("planetary_gearset", PlanetaryGearsetBlock::new)
         .initialProperties(AllBlocks.LARGE_COGWHEEL)
         .properties(p -> p

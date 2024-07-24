@@ -1,5 +1,5 @@
 {
-    "type": "create:splashing",
+    "type": "destroy:sieving",
     "ingredients": [
       {
         "item": "destroy:nickel_infused_beetroot_ashes"
@@ -24,6 +24,12 @@
         "item": "create:crushed_raw_copper",
         "count": 1,
         "chance": 0.02
+      },
+      {
+        "item": "destroy:beetroot_ashes",
+        "count": 1,
+        "chance": 0.5
       }
-    ]
+    ],
+    "processingTime": 12800
   }

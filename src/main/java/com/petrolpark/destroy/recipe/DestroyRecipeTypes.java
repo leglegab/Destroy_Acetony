@@ -39,6 +39,7 @@ public enum DestroyRecipeTypes implements IRecipeTypeInfo {
     MUTATION(MutationRecipe::new),
     OBLITERATION(ObliterationRecipe::new),
     REACTION(ReactionRecipe::new),
+    SIEVING(SievingRecipe::new),
     TAPPING(TappingRecipe::new),
     CIRCUIT_SEQUENCED_ASSEMBLY(CircuitSequencedAssemblyRecipe.Serializer::new, AllRecipeTypes.SEQUENCED_ASSEMBLY::getType),
 
@@ -110,6 +111,10 @@ public enum DestroyRecipeTypes implements IRecipeTypeInfo {
     @Override
     public <T extends RecipeType<?>> T getType() {
         return (T) type.get();
+    };
+
+    public boolean is(Recipe<?> recipe) {
+        return recipe.getType() == this.getType();
     };
 
     public <C extends Container, T extends Recipe<C>> Optional<T> find(C inv, Level world) {

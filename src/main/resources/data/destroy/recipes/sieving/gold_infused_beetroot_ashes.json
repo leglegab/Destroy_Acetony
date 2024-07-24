@@ -1,5 +1,5 @@
 {
-    "type": "create:splashing",
+    "type": "destroy:sieving",
     "ingredients": [
       {
         "item": "destroy:gold_infused_beetroot_ashes"
@@ -24,6 +24,13 @@
         "item": "destroy:crushed_raw_palladium",
         "count": 1,
         "chance": 0.03
+      },
+      {
+        "item": "destroy:beetroot_ashes",
+        "count": 1,
+        "chance": 0.5
       }
-    ]
+    ],
+    "processingTime": 12800,
+    "lucky_first_time": true
   }

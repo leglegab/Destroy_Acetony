@@ -2,6 +2,7 @@ package com.petrolpark.destroy.capability.blockEntity;
 
 import com.petrolpark.destroy.block.entity.VatSideBlockEntity;
 import com.petrolpark.destroy.block.entity.VatControllerBlockEntity.VatTankWrapper;
+import com.petrolpark.destroy.fluid.DestroyFluids;
 
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.IFluidHandler;
@@ -29,12 +30,12 @@ public class VatSideFluidCapability extends VatTankWrapper {
 
     @Override
     public FluidStack drain(FluidStack resource, FluidAction action) {
-        return vatSide.isPipeSubmerged(false, null) ? drainLiquidTank(resource, action) : drainGasTank(resource, action);
+        return drain(resource.getAmount(), action);
     };
 
     @Override
     public FluidStack drain(int maxDrain, FluidAction action) {
-        return vatSide.isPipeSubmerged(false, null) ? drainLiquidTank(maxDrain, action) : drainGasTank(maxDrain, action);
+        return vatSide.isPipeSubmerged(false, null) ? drainLiquidTank(maxDrain, action) : drainGasTankWithMolarDensity(maxDrain, DestroyFluids.AIR_MOLAR_DENSITY, action);
     };
     
 };

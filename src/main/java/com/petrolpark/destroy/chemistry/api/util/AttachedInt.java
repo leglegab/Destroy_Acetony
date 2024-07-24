@@ -7,7 +7,7 @@ package com.petrolpark.destroy.chemistry.api.util;
 public class AttachedInt<T> {
     
     public final T object;
-    public final int value;
+    public int value;
 
     private AttachedInt(T object, int value) {
         this.object = object;

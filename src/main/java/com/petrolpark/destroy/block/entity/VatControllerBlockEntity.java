@@ -777,6 +777,22 @@ public class VatControllerBlockEntity extends SmartBlockEntity implements IHaveG
             return stack;
         };
 
+        /**
+         * Extract gas at a given total molar density.
+         * The molar density of the Mixture inside will not be affected.
+         * The amount of Fluid lost from the tank and the amount of Fluid extracted will not necessarily be the same.
+         */
+        protected FluidStack drainGasTankWithMolarDensity(int amount, double molarDensity, FluidAction action) {
+            if (vatControllerGetter.get().getGasTankContents().isEmpty()) return FluidStack.EMPTY;
+            Mixture mixture = Mixture.readNBT(vatControllerGetter.get().getGasTankContents().getOrCreateChildTag("Mixture"));
+            double scaleFactor = mixture.getTotalConcentration() / molarDensity;
+            FluidStack lostFluid = drainGasTank((int)(0.5d + scaleFactor * amount), action); // Round up
+            mixture.scale((float)scaleFactor);
+            double drainedAmount = (double)lostFluid.getAmount() / scaleFactor;
+            FluidStack stack = MixtureFluid.of((int)(drainedAmount + 0.5d), mixture);
+            return stack;
+        };
+
         protected void updateVatGasVolume(FluidStack drained, FluidAction action) {
             VatControllerBlockEntity vatController = vatControllerGetter.get();
             if (action == FluidAction.EXECUTE && !drained.isEmpty() && vatController != null && !vatController.getLevel().isClientSide()) {

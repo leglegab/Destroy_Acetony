@@ -72,9 +72,11 @@ public class ColorimeterBlockEntity extends SmartBlockEntity {
     public void setMolecule(Molecule molecule) {
         this.molecule = molecule;
         updateVat();
+        notifyUpdate();
     };
 
     public Optional<VatControllerBlockEntity> getVatOptional() {
+        if (!hasLevel()) return Optional.empty();
         BlockPos vatPos = getBlockPos().relative(getBlockState().getValue(ColorimeterBlock.FACING));
         return getLevel().getBlockEntity(vatPos, DestroyBlockEntityTypes.VAT_SIDE.get()).map(vbe -> {
             if (!VatMaterial.getMaterial(vbe.getMaterial()).map(VatMaterial::transparent).orElse(false)) return null;

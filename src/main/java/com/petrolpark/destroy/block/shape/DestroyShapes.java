@@ -70,6 +70,12 @@ public class DestroyShapes {
         .build(),
 
     ROUND_BOTTOMED_FLASK = shape(5, 0, 5, 11, 11, 11)
+        .build(),
+
+    MECHANICAL_SIEVE = shape(0, 6, 0, 16, 10, 16)
+        .build(),
+
+    MECHANICAL_SIEVE_COLLISION = shape(0, 6, 0, 16, 7, 16)
         .build();
 
     public static final VoxelShaper COAXIAL_GEAR = shape(2, 6, 2, 14, 10, 14)
