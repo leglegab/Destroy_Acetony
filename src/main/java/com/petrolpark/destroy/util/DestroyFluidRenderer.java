@@ -7,6 +7,7 @@ import com.simibubi.create.foundation.utility.Color;
 import com.simibubi.create.foundation.utility.Iterate;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.core.Direction;
@@ -71,4 +72,16 @@ public class DestroyFluidRenderer {
 
 		ms.popPose();
 	};
+
+	public static void renderFluidSquare(GuiGraphics graphics, int x, int y, FluidStack fluidStack) {
+		Fluid fluid = fluidStack.getFluid();
+		IClientFluidTypeExtensions clientFluid = IClientFluidTypeExtensions.of(fluid);
+		TextureAtlasSprite fluidTexture = Minecraft.getInstance()
+			.getTextureAtlas(InventoryMenu.BLOCK_ATLAS)
+			.apply(clientFluid.getStillTexture(fluidStack));
+
+		graphics.blit(x, y, 0, 16, 16, fluidTexture);
+	};
+
+	
 };

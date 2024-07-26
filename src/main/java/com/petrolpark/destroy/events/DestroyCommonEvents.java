@@ -39,6 +39,7 @@ import com.petrolpark.destroy.config.DestroyAllConfigs;
 import com.petrolpark.destroy.config.DestroySubstancesConfigs;
 import com.petrolpark.destroy.effect.DestroyMobEffects;
 import com.petrolpark.destroy.fluid.DestroyFluids;
+import com.petrolpark.destroy.item.BlowpipeItem;
 import com.petrolpark.destroy.item.CircuitPatternItem;
 import com.petrolpark.destroy.item.DestroyItems;
 import com.petrolpark.destroy.item.DiscStamperItem;
@@ -75,6 +76,7 @@ import com.petrolpark.destroy.world.explosion.ExplosiveProperties;
 import com.petrolpark.destroy.world.village.DestroyTrades;
 import com.petrolpark.destroy.world.village.DestroyVillageAddition;
 import com.petrolpark.destroy.world.village.DestroyVillagers;
+import com.simibubi.create.AllBlocks;
 import com.simibubi.create.AllItems;
 import com.simibubi.create.api.event.BlockEntityBehaviourEvent;
 import com.simibubi.create.content.equipment.potatoCannon.PotatoProjectileEntity;
@@ -620,7 +622,9 @@ public class DestroyCommonEvents {
     };
 
     /**
-     * Transfer from {@link IMixtureStorageItem Mixture storage Items} and instantly pick up {@link IPickUpPutDown} Blocks.
+     * Transfer from {@link IMixtureStorageItem Mixture storage Items}
+     * and instantly pick up {@link IPickUpPutDown} Blocks
+     * and allow Blowpipes to break off the finished Item
      */
     @SubscribeEvent
 	public static void onLeftClickBlock(PlayerInteractEvent.LeftClickBlock event) {
@@ -652,14 +656,22 @@ public class DestroyCommonEvents {
 
         // Instantly picking up blocks
         if (state.getBlock() instanceof IPickUpPutDownBlock) {
-            if (player instanceof FakePlayer) return;
-            if (world.isClientSide()) return;
-            if (world instanceof ServerLevel) {
+            if (!(player instanceof FakePlayer)) {
                 ItemStack cloneItemStack = state.getCloneItemStack(new BlockHitResult(Vec3.ZERO, event.getFace(), event.getPos(), false), world, pos, player);
                 world.destroyBlock(pos, false);
-                if (world.getBlockState(pos) != state) player.getInventory().placeItemBackInInventory(cloneItemStack);
+                if (world.getBlockState(pos) != state && !world.isClientSide()) player.getInventory().placeItemBackInInventory(cloneItemStack);
                 event.setCancellationResult(InteractionResult.SUCCESS);
                 event.setCanceled(true);
+                return;
+            };
+        };
+
+        // Blowpipes
+        if (event.getItemStack().getItem() instanceof BlowpipeItem blowpipe) {
+            if (blowpipe.finishBlowing(stack, world, player)) {
+                event.setCancellationResult(InteractionResult.SUCCESS);
+                event.setCanceled(true);
+                return;
             };
         };
 	};
@@ -673,6 +685,7 @@ public class DestroyCommonEvents {
     public static void onRightClickBlock(PlayerInteractEvent.RightClickBlock event) {
         BlockPos pos = event.getPos();
         Level level = event.getLevel();
+        BlockState state = level.getBlockState(pos);
         ItemStack stack = event.getItemStack();
         Player player = event.getEntity();
 
@@ -701,7 +714,7 @@ public class DestroyCommonEvents {
         };
 
         // Consuming certain Items, even if in Creative
-        if (event.getItemStack().getItem() instanceof BlockItem blockItem && blockItem.getBlock() instanceof IPickUpPutDownBlock) {
+        if (!AllBlocks.DEPLOYER.has(state) && event.getItemStack().getItem() instanceof BlockItem blockItem && blockItem.getBlock() instanceof IPickUpPutDownBlock) {
             InteractionResult result = stack.useOn(new UseOnContext(player, event.getHand(), event.getHitVec()));
             if (result.consumesAction() && player instanceof ServerPlayer serverPlayer) CriteriaTriggers.ITEM_USED_ON_BLOCK.trigger(serverPlayer, pos, stack);
             event.setCancellationResult(result);

@@ -34,6 +34,7 @@
         "compat.tfmg.AdvancedDistillationCategoryMixin",
         "compat.tfmg.DistillationCategoryMixin",
         "compat.tfmg.DistillationOutputBlockEntityMixin",
+        "AirCurrentMixin",
         "BasinBlockEntityMixin",
         "BeltInventoryMixin",
         "BlazeBurnerBlockEntityMixin",

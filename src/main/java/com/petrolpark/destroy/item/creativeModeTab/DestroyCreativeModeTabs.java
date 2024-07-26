@@ -37,7 +37,7 @@ public class DestroyCreativeModeTabs {
 				s("common_chemicals"),
 
 				s("processing"),
-				i(DestroyBlocks.AGING_BARREL), i(DestroyBlocks.EXTRUSION_DIE), i(DestroyBlocks.KEYPUNCH), i(DestroyBlocks.PUMPJACK), i(DestroyBlocks.TREE_TAP), i(DestroyItems.SEISMOMETER), i(DestroyBlocks.REDSTONE_PROGRAMMER), i(DestroyBlocks.POLLUTOMETER),
+				i(DestroyBlocks.AGING_BARREL), i(DestroyBlocks.MECHANICAL_SIEVE), i(DestroyBlocks.EXTRUSION_DIE), i(DestroyBlocks.KEYPUNCH), i(DestroyBlocks.PUMPJACK), i(DestroyBlocks.TREE_TAP), i(DestroyBlocks.BLOWPIPE), i(DestroyItems.SEISMOMETER), i(DestroyBlocks.REDSTONE_PROGRAMMER), i(DestroyBlocks.POLLUTOMETER),
 
 				s("kinetics"),
 				i(DestroyBlocks.COAXIAL_GEAR), i(DestroyBlocks.LARGE_COAXIAL_GEAR), i(DestroyBlocks.COLOSSAL_COGWHEEL), i(DestroyBlocks.DIFFERENTIAL), i(DestroyBlocks.DOUBLE_CARDAN_SHAFT), i(DestroyBlocks.PLANETARY_GEARSET),
@@ -85,7 +85,7 @@ public class DestroyCreativeModeTabs {
 				i(DestroyBlocks.HYDROGEN_PERIODIC_TABLE_BLOCK), i(DestroyBlocks.CARBON_PERIODIC_TABLE_BLOCK), i(DestroyBlocks.NITROGEN_PERIODIC_TABLE_BLOCK), i(DestroyBlocks.OXYGEN_PERIODIC_TABLE_BLOCK), i(DestroyBlocks.FLUORINE_PERIODIC_TABLE_BLOCK), i(DestroyBlocks.CHLORINE_PERIODIC_TABLE_BLOCK), i(DestroyBlocks.CHROMIUM_PERIODIC_TABLE_BLOCK), i(DestroyBlocks.IRON_PERIODIC_TABLE_BLOCK), i(DestroyBlocks.NICKEL_PERIODIC_TABLE_BLOCK), i(DestroyBlocks.COPPER_PERIODIC_TABLE_BLOCK), i(DestroyBlocks.ZINC_PERIODIC_TABLE_BLOCK), i(DestroyBlocks.RHODIUM_PERIODIC_TABLE_BLOCK), i(DestroyBlocks.PALLADIUM_PERIODIC_TABLE_BLOCK), i(DestroyBlocks.IODINE_PERIODIC_TABLE_BLOCK), i(DestroyBlocks.PLATINUM_PERIODIC_TABLE_BLOCK), i(DestroyBlocks.GOLD_PERIODIC_TABLE_BLOCK), i(DestroyBlocks.MERCURY_PERIODIC_TABLE_BLOCK), i(DestroyBlocks.LEAD_PERIODIC_TABLE_BLOCK),
 				
 				s("misc"),
-				i(DestroyItems.BLANK_MUSIC_DISC), i(DestroyItems.MUSIC_DISC_SPECTRUM), i(DestroyItems.CIRCUIT_MASK), i(DestroyItems.RUINED_CIRCUIT_MASK), i(DestroyItems.CIRCUIT_BOARD), i(DestroyItems.RUINED_CIRCUIT_BOARD), i(DestroyItems.GAS_FILTER), i(DestroyItems.SWISS_ARMY_KNIFE), i(DestroyItems.BUCKET_AND_SPADE), i(DestroyItems.VOLTAIC_PILE), i(DestroyItems.DISCHARGED_VOLTAIC_PILE), i(DestroyItems.PAPER_PULP), i(DestroyItems.TEAR_BOTTLE), i(DestroyItems.URINE_BOTTLE), i(DestroyItems.YEAST)
+				i(DestroyItems.BLANK_MUSIC_DISC), i(DestroyItems.MUSIC_DISC_SPECTRUM), i(DestroyItems.CIRCUIT_MASK), i(DestroyItems.RUINED_CIRCUIT_MASK), i(DestroyItems.CIRCUIT_BOARD), i(DestroyItems.RUINED_CIRCUIT_BOARD), i(DestroyItems.MESH), i(DestroyItems.GAS_FILTER), i(DestroyItems.SWISS_ARMY_KNIFE), i(DestroyItems.BUCKET_AND_SPADE), i(DestroyItems.VOLTAIC_PILE), i(DestroyItems.DISCHARGED_VOLTAIC_PILE), i(DestroyItems.PAPER_PULP), i(DestroyItems.TEAR_BOTTLE), i(DestroyItems.URINE_BOTTLE), i(DestroyItems.YEAST)
 			
 			).title(Component.translatable("itemGroup.destroy.base"))
 			.withTabsBefore(AllCreativeModeTabs.PALETTES_CREATIVE_TAB.getId())

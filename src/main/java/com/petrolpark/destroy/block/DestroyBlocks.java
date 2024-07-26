@@ -267,7 +267,7 @@ public class DestroyBlocks {
         .initialProperties(SharedProperties::stone)
         .properties(p -> p
             .noOcclusion()
-        ).transform(BlockStressDefaults.setImpact(1.0))
+        ).transform(BlockStressDefaults.setImpact(0.5d))
         .transform(TagGen.axeOrPickaxe())
         .item()
         .transform(customItemModel())

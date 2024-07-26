@@ -1,12 +1,10 @@
 package com.petrolpark.destroy.block.renderer;
 
-import com.jozufozu.flywheel.util.AnimationTickHolder;
 import com.jozufozu.flywheel.util.transform.TransformStack;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.petrolpark.destroy.block.BlowpipeBlock;
 import com.petrolpark.destroy.block.entity.BlowpipeBlockEntity;
 import com.petrolpark.destroy.client.DestroyItemDisplayContexts;
-import com.petrolpark.destroy.fluid.DestroyFluids;
 import com.petrolpark.destroy.recipe.GlassblowingRecipe;
 import com.petrolpark.destroy.recipe.GlassblowingRecipe.BlowingShape;
 import com.petrolpark.destroy.util.DestroyFluidRenderer;
@@ -27,14 +25,19 @@ public class BlowpipeRenderer extends SafeBlockEntityRenderer<BlowpipeBlockEntit
 
     @Override
     protected void renderSafe(BlowpipeBlockEntity blowpipe, float partialTicks, PoseStack ms, MultiBufferSource bufferSource, int light, int overlay) {
-        if (blowpipe.recipe == null) return;
+        if (blowpipe.getRecipe() == null) return;
+        
+        float progress = blowpipe.progressLastTick;
+        if (blowpipe.progress != blowpipe.progressLastTick) progress += partialTicks;
+        progress /= (float)BlowpipeBlockEntity.BLOWING_DURATION;
+
         ms.pushPose();
         TransformStack.cast(ms)
         .centre()
             .rotateToFace(blowpipe.getBlockState().getValue(BlowpipeBlock.FACING).getOpposite())
             .translate(0f, - 2 / 16f, 0.5f);
         ms.translate(0f, INITIAL_BLOB_LENGTH / 2f, 0f);
-        render(blowpipe.recipe, new FluidStack(DestroyFluids.MOLTEN_BOROSILICATE_GLASS.get(), 100), (AnimationTickHolder.getRenderTime() / 100f) % 1f, ms, bufferSource, light, overlay);
+        render(blowpipe.getRecipe(), blowpipe.getFluid(), progress, ms, bufferSource, light, overlay);
         ms.popPose();
     };
 

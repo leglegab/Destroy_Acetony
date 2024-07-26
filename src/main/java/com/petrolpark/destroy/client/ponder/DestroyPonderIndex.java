@@ -11,6 +11,7 @@ import com.petrolpark.destroy.client.ponder.scene.ExplosivesScenes;
 import com.petrolpark.destroy.client.ponder.scene.KineticsScenes;
 import com.petrolpark.destroy.client.ponder.scene.OilScenes;
 import com.petrolpark.destroy.client.ponder.scene.PollutionScenes;
+import com.petrolpark.destroy.client.ponder.scene.ProcessingScenes;
 import com.petrolpark.destroy.client.ponder.scene.TrypolithographyScenes;
 import com.petrolpark.destroy.item.DestroyItems;
 import com.simibubi.create.AllBlocks;
@@ -31,7 +32,7 @@ public class DestroyPonderIndex {
 
         // Aging Barrel
         HELPER.forComponents(DestroyBlocks.AGING_BARREL)
-            .addStoryBoard("aging_barrel", DestroyScenes::agingBarrel);
+            .addStoryBoard("processing/aging_barrel", ProcessingScenes::agingBarrel);
 
         // Basin
         HELPER.forComponents(AllBlocks.BASIN)
@@ -47,8 +48,8 @@ public class DestroyPonderIndex {
 
         // Bubble Cap
         HELPER.forComponents(DestroyBlocks.BUBBLE_CAP)
-            .addStoryBoard("bubble_cap/generic", DestroyScenes::bubbleCapGeneric)
-            .addStoryBoard("bubble_cap/mixtures", DestroyScenes::bubbleCapMixtures)
+            .addStoryBoard("processing/bubble_cap/generic", ProcessingScenes::bubbleCapGeneric)
+            .addStoryBoard("processing/bubble_cap/mixtures", ProcessingScenes::bubbleCapMixtures)
             .addStoryBoard("pollution/room_temperature", ChemistryScenes::roomTemperature);
 
         // Catalytic Converter
@@ -57,15 +58,15 @@ public class DestroyPonderIndex {
 
         // Centrifuge
         HELPER.forComponents(DestroyBlocks.CENTRIFUGE)
-            .addStoryBoard("centrifuge/generic", DestroyScenes::centrifugeGeneric)
-            .addStoryBoard("centrifuge/mixture", DestroyScenes::centrifugeMixture);
+            .addStoryBoard("processing/centrifuge/generic", ProcessingScenes::centrifugeGeneric)
+            .addStoryBoard("processing/centrifuge/mixture", ProcessingScenes::centrifugeMixture);
 
         // Coaxial Gear
         CREATE_HELPER.forComponents(DestroyBlocks.COAXIAL_GEAR)
             .addStoryBoard("cog/small", com.simibubi.create.infrastructure.ponder.scenes.KineticsScenes::cogAsRelay);
         HELPER.forComponents(DestroyBlocks.COAXIAL_GEAR)
-            .addStoryBoard("coaxial_gear/shaftless", DestroyScenes::coaxialGearShaftless)
-            .addStoryBoard("coaxial_gear/through", DestroyScenes::coaxialGearThrough);
+            .addStoryBoard("kinetics/coaxial_gear/shaftless", KineticsScenes::coaxialGearShaftless)
+            .addStoryBoard("kinetics/coaxial_gear/through", KineticsScenes::coaxialGearThrough);
 
         HELPER.forComponents(DestroyBlocks.COLORIMETER)
             .addStoryBoard("colorimeter", ChemistryScenes::colorimeter);
@@ -76,7 +77,7 @@ public class DestroyPonderIndex {
 
         // Cooler
         HELPER.forComponents(DestroyBlocks.COOLER)
-            .addStoryBoard("cooler", DestroyScenes::cooler)
+            .addStoryBoard("processing/cooler", ProcessingScenes::cooler)
             .addStoryBoard("vat/interaction", DestroyScenes::vatInteraction);
 
         // Custom Explosive Mix
@@ -88,25 +89,25 @@ public class DestroyPonderIndex {
 
         // Differential
         HELPER.forComponents(DestroyBlocks.DIFFERENTIAL)
-            .addStoryBoard("differential", DestroyScenes::differential);
+            .addStoryBoard("kinetics/differential", KineticsScenes::differential);
 
         // Double Cardan Shaft
         HELPER.forComponents(DestroyBlocks.DOUBLE_CARDAN_SHAFT)
-            .addStoryBoard("double_cardan_shaft", DestroyScenes::doubleCardanShaft);
+            .addStoryBoard("kinetics/double_cardan_shaft", KineticsScenes::doubleCardanShaft);
         
         // Dynamo
         HELPER.forComponents(DestroyBlocks.DYNAMO)
-            .addStoryBoard("dynamo/redstone", DestroyScenes::dynamoRedstone)
-            .addStoryBoard("dynamo/charging", DestroyScenes::dynamoCharging)
-            .addStoryBoard("dynamo/electrolysis", DestroyScenes::dynamoElectrolysis);
+            .addStoryBoard("processing/dynamo/redstone", ProcessingScenes::dynamoRedstone)
+            .addStoryBoard("processing/dynamo/charging", ProcessingScenes::dynamoCharging)
+            .addStoryBoard("processing/dynamo/electrolysis", ProcessingScenes::dynamoElectrolysis);
 
         // Extrusion Die
         HELPER.forComponents(DestroyBlocks.EXTRUSION_DIE)
-            .addStoryBoard("extrusion_die", DestroyScenes::extrusionDie);
+            .addStoryBoard("processing/extrusion_die", ProcessingScenes::extrusionDie);
 
         // Hyperaccumulating Fertilizer
         HELPER.forComponents(DestroyItems.HYPERACCUMULATING_FERTILIZER)
-            .addStoryBoard("phytomining", DestroyScenes::phytomining)
+            .addStoryBoard("processing/phytomining", ProcessingScenes::phytomining)
             .addStoryBoard("pollution/crop_growth_failure", PollutionScenes::cropGrowthFailure);
 
         // Circuit Mask and Keypunch
@@ -141,7 +142,7 @@ public class DestroyPonderIndex {
             .addStoryBoard("cog/speedup", com.simibubi.create.infrastructure.ponder.scenes.KineticsScenes::cogsSpeedUp)
             .addStoryBoard("cog/large", com.simibubi.create.infrastructure.ponder.scenes.KineticsScenes::largeCogAsRelay);
         HELPER.forComponents(DestroyBlocks.PLANETARY_GEARSET)
-            .addStoryBoard("planetary_gearset", DestroyScenes::planetaryGearset);
+            .addStoryBoard("kinetics/planetary_gearset", KineticsScenes::planetaryGearset);
 
         // Pumpjack
         HELPER.forComponents(DestroyBlocks.PUMPJACK)
@@ -164,7 +165,7 @@ public class DestroyPonderIndex {
 
         // Tree Tap
         HELPER.forComponents(DestroyBlocks.TREE_TAP)      
-            .addStoryBoard("tree_tap", DestroyScenes::treeTap);
+            .addStoryBoard("processing/tree_tap", ProcessingScenes::treeTap);
 
         // Vat Controller
         HELPER.forComponents(DestroyBlocks.VAT_CONTROLLER)
@@ -191,7 +192,7 @@ public class DestroyPonderIndex {
                 ResourceLocation rl = BuiltInRegistries.ITEM.getKey(block.asItem());
                 List<PonderStoryBoardEntry> list = PonderRegistry.ALL.get(rl);
                 if (list != null) list.removeIf(storyBoard -> storyBoard.getSchematicLocation().equals(periodicTableSchematicLocation));
-                HELPER.addStoryBoard(rl, periodicTableSchematicLocation, DestroyScenes::periodicTable);
+                HELPER.addStoryBoard(rl, periodicTableSchematicLocation, ChemistryScenes::periodicTable);
             });
         });
     };
