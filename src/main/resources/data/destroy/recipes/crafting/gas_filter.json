@@ -10,7 +10,7 @@
         "tag": "forge:plates/stainless_steel"
       },
       "F": {
-        "item": "create:filter"
+        "item": "destroy:mesh"
       },
       "C": {
         "tag": "minecraft:coals"

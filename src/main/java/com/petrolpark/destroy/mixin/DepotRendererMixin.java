@@ -7,7 +7,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Redirect;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.petrolpark.destroy.Destroy;
+import com.petrolpark.destroy.client.DestroyItemDisplayContexts;
 import com.simibubi.create.content.logistics.depot.DepotRenderer;
 
 import net.minecraft.client.renderer.MultiBufferSource;
@@ -28,6 +28,6 @@ public class DepotRendererMixin {
         remap = false
     )
     private static void renderOnBelt(ItemRenderer renderer, ItemStack pItemStack, ItemDisplayContext pDiplayContext, int pCombinedLight, int pCombinedOverlay, PoseStack pPoseStack, MultiBufferSource pBuffer, @Nullable Level pLevel, int pSeed) {
-        renderer.renderStatic(pItemStack, Destroy.BELT_DISPLAY_CONTEXT, pCombinedLight, pCombinedOverlay, pPoseStack, pBuffer, pLevel, pSeed);
+        renderer.renderStatic(pItemStack, DestroyItemDisplayContexts.BELT, pCombinedLight, pCombinedOverlay, pPoseStack, pBuffer, pLevel, pSeed);
     };
 };

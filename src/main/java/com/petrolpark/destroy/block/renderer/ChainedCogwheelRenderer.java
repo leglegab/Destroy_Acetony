@@ -6,7 +6,6 @@ import java.util.List;
 import com.jozufozu.flywheel.backend.Backend;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import com.petrolpark.destroy.Destroy;
 import com.petrolpark.destroy.block.IChainableBlock;
 import com.petrolpark.destroy.block.entity.ChainedCogwheelBlockEntity;
 import com.petrolpark.destroy.block.model.DestroyPartials;

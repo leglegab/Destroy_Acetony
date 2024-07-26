@@ -499,7 +499,7 @@ public class DestroyCommonEvents {
         ItemStack stack = event.getItemStack();
         Player player = event.getEntity();
         if (stack.getItem().isEdible()) {
-            if (DestroyItemTags.CHEMICAL_PROTECTION_MOUTH.matches(player.getItemBySlot(EquipmentSlot.HEAD).getItem())) {
+            if (ChemistryDamageHelper.Protection.MOUTH_COVERED.isProtected(player)) {
                 player.displayClientMessage(DestroyLang.translate("tooltip.eating_prevented.mouth_protected").component(), true);
                 event.setCanceled(true);
                 return;

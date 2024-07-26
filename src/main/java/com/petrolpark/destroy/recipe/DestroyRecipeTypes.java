@@ -35,6 +35,7 @@ public enum DestroyRecipeTypes implements IRecipeTypeInfo {
     ELECTROLYSIS(ElectrolysisRecipe::new),
     EXTRUSION(ExtrusionRecipe::new),
     FIRST_TIME_LUCKY_MILLING(FirstTimeLuckyMillingRecipe::new, AllRecipeTypes.MILLING::getType),
+    GLASSBLOWING(GlassblowingRecipe::new),
     MIXTURE_CONVERSION(MixtureConversionRecipe::new),
     MUTATION(MutationRecipe::new),
     OBLITERATION(ObliterationRecipe::new),

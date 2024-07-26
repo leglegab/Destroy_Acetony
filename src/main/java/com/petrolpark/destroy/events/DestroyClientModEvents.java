@@ -12,6 +12,7 @@ import com.petrolpark.destroy.block.color.TankPeriodicTableBlockColor;
 import com.petrolpark.destroy.chemistry.naming.SaltNameOverrides;
 import com.petrolpark.destroy.client.model.CircuitPatternItemModel;
 import com.petrolpark.destroy.client.model.UniversalArmorTrimModel;
+import com.petrolpark.destroy.entity.renderer.layer.BlowpipeLayer;
 import com.petrolpark.destroy.item.MoleculeDisplayItem.MoleculeTooltip;
 import com.petrolpark.destroy.item.color.DyeableCustomExplosiveMixItemColor;
 import com.petrolpark.destroy.item.color.TankPeriodicTableBlockItemColor;
@@ -19,11 +20,14 @@ import com.petrolpark.destroy.item.tooltip.CircuitPatternTooltip;
 import com.petrolpark.destroy.item.tooltip.ExplosivePropertiesTooltip;
 import com.petrolpark.destroy.util.NameLists;
 
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.entity.EntityRenderDispatcher;
 import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.client.resources.model.SimpleBakedModel;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.client.event.EntityRenderersEvent;
 import net.minecraftforge.client.event.ModelEvent;
 import net.minecraftforge.client.event.RegisterClientReloadListenersEvent;
 import net.minecraftforge.client.event.RegisterClientTooltipComponentFactoriesEvent;
@@ -100,6 +104,12 @@ public class DestroyClientModEvents {
             ) .toList();
         for (Entry<ResourceLocation, BakedModel> entry : modelsToReplace) 
             event.getModels().put(entry.getKey(), new UniversalArmorTrimModel(entry.getValue())); // Replace the model with one which wraps the old one but also provides the additional Armor Trims
+    };
+
+    @SubscribeEvent
+    public static void addEntityRendererLayers(EntityRenderersEvent.AddLayers event) {
+        EntityRenderDispatcher dispatcher = Minecraft.getInstance().getEntityRenderDispatcher();
+        BlowpipeLayer.registerOnAll(dispatcher);
     };
 
 };

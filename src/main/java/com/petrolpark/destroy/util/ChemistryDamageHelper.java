@@ -112,7 +112,8 @@ public class ChemistryDamageHelper {
         HEAD(EquipmentSlot.HEAD, DestroyItemTags.CHEMICAL_PROTECTION_HEAD),
         EYES(EquipmentSlot.HEAD, DestroyItemTags.CHEMICAL_PROTECTION_EYES),
         NOSE(EquipmentSlot.HEAD, DestroyItemTags.CHEMICAL_PROTECTION_NOSE),
-        MOUTH(EquipmentSlot.HEAD, DestroyItemTags.CHEMICAL_PROTECTION_MOUTH);
+        MOUTH(EquipmentSlot.HEAD, DestroyItemTags.CHEMICAL_PROTECTION_MOUTH),
+        MOUTH_COVERED(EquipmentSlot.HEAD, DestroyItemTags.CHEMICAL_PROTECTION_MOUTH);
 
         private List<Predicate<LivingEntity>> tests = new ArrayList<>();
 

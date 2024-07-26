@@ -14,6 +14,7 @@ import com.petrolpark.destroy.block.shape.DestroyShapes;
 import com.petrolpark.destroy.block.spriteshifts.DestroySpriteShifts;
 import com.petrolpark.destroy.config.DestroyAllConfigs;
 import com.petrolpark.destroy.entity.PrimedBomb;
+import com.petrolpark.destroy.item.BlowpipeItem;
 import com.petrolpark.destroy.item.CoaxialGearBlockItem;
 import com.petrolpark.destroy.item.ColossalCogwheelBlockItem;
 import com.petrolpark.destroy.item.CombustibleBlockItem;
@@ -87,6 +88,14 @@ public class DestroyBlocks {
         .item()
         .tag(DestroyItemTags.LIABLE_TO_CHANGE.tag)
         .transform(customItemModel())
+        .register();
+
+    public static final BlockEntry<BlowpipeBlock> BLOWPIPE = REGISTRATE.block("blowpipe", BlowpipeBlock::new)
+        .initialProperties(AllBlocks.SHAFT)
+        .properties(p -> p
+            .mapColor(MapColor.NONE)
+        ).item(BlowpipeItem::new)
+        .build()
         .register();
 
     public static final BlockEntry<BubbleCapBlock> BUBBLE_CAP = REGISTRATE.block("bubble_cap", BubbleCapBlock::new)

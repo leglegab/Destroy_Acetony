@@ -43,12 +43,12 @@ public class MechanicalSieveRenderer extends KineticBlockEntityRenderer<Mechanic
 
         ms.pushPose();
         TransformStack.cast(ms)
-        .centre()
+            .centre()
             .rotateZRadians(-angle)
             .unCentre();
         CachedBufferer.partial(DestroyPartials.MECHANICAL_SIEVE_LINKAGES, state)
             .renderInto(ms, vc);
-        ms.popPose();;
+        ms.popPose();
 
 
         ms.popPose();

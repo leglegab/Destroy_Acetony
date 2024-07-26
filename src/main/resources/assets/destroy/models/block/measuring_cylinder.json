@@ -68,6 +68,10 @@
 			"rotation": [0, 180, 0],
 			"translation": [0, 5, 0],
 			"scale": [1.5, 1.5, 1.5]
+		},
+		"destroy:blowpipe": {
+			"rotation": [270, 0, 0],
+			"translation": [0, 0, 6.01]
 		}
 	}
 }

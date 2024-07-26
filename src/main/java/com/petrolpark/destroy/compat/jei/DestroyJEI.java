@@ -32,6 +32,7 @@ import com.petrolpark.destroy.compat.jei.category.MixtureConversionCategory;
 import com.petrolpark.destroy.compat.jei.category.MutationCategory;
 import com.petrolpark.destroy.compat.jei.category.ObliterationCategory;
 import com.petrolpark.destroy.compat.jei.category.ReactionCategory;
+import com.petrolpark.destroy.compat.jei.category.SievingCategory;
 import com.petrolpark.destroy.compat.jei.category.TappingCategory;
 import com.petrolpark.destroy.compat.jei.category.VatMaterialCategory;
 import com.petrolpark.destroy.compat.jei.category.VatMaterialCategory.VatMaterialRecipe;
@@ -57,6 +58,7 @@ import com.petrolpark.destroy.recipe.ObliterationRecipe;
 import com.petrolpark.destroy.recipe.ReactionRecipe;
 import com.petrolpark.destroy.recipe.TappingRecipe;
 import com.petrolpark.destroy.recipe.ReactionRecipe.GenericReactionRecipe;
+import com.petrolpark.destroy.recipe.SievingRecipe;
 import com.petrolpark.destroy.util.DestroyLang;
 import com.simibubi.create.AllBlocks;
 import com.simibubi.create.compat.jei.CreateJEI;
@@ -269,7 +271,14 @@ public class DestroyJEI implements IModPlugin {
             .catalysts(DestroyJEISetup.CUSTOM_MIX_EXPLOSIVES)
             .doubleItemIcon(CustomExplosiveMixBlockItem::getExampleItemStack, () -> new ItemStack(Items.GUNPOWDER))
             .emptyBackground(180, 121)
-            .build("mixable_explosive", MixableExplosiveCategory::new);
+            .build("mixable_explosive", MixableExplosiveCategory::new),
+
+        sieving = builder(SievingRecipe.class)
+            .addTypedRecipes(DestroyRecipeTypes.SIEVING)
+            .catalyst(DestroyBlocks.MECHANICAL_SIEVE::get)
+            .itemIcon(DestroyBlocks.MECHANICAL_SIEVE)
+            .emptyBackground(150, 90)
+            .build("sieving", SievingCategory::new);
             
 
         DestroyJEI.MOLECULE_RECIPES_NEED_PROCESSING = false;

@@ -109,6 +109,12 @@ public enum DestroyGuiTextures implements ScreenElement {
 	CUSTOM_EXPLOSIVE_SLOT("custom_explosive", 187, 24, 18, 18),
 	CUSTOM_EXPLOSIVE_JEI_BACKGROUND("custom_explosive", 76, 135, 90, 94),
 
+	BLOWPIPE_BACKGROUND("blowpipe", 0, 0, 95, 77),
+	BLOWPIPE_RECIPE("blowpipe", 0, 77, 64, 18),
+	BLOWPIPE_RECIPE_SELECTED("blowpipe", 0, 77 + 18, 64, 18),
+	BLOWPIPE_SCROLL("blowpipe", 95, 0, 12, 15),
+	BLOWPIPE_SCROLL_LOCKED("blowpipe", 95 + 12, 0, 12, 15),
+
 	// CREATIVE MODE TAB
 	CREATIVE_MODE_TAB_BLANK_ROW("creative_inventory", 0, 0, 162, 18),
 

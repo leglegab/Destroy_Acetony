@@ -7,7 +7,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Redirect;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.petrolpark.destroy.Destroy;
+import com.petrolpark.destroy.client.DestroyItemDisplayContexts;
 import com.simibubi.create.content.kinetics.belt.BeltRenderer;
 
 import net.minecraft.client.renderer.MultiBufferSource;
@@ -29,6 +29,6 @@ public class BeltRendererMixin {
         remap = false
     )
     private void renderOnBelt(ItemRenderer renderer, @Nullable LivingEntity pEntity, ItemStack pItemStack, ItemDisplayContext pDiplayContext, boolean pLeftHand, PoseStack pPoseStack, MultiBufferSource pBuffer, @Nullable Level pLevel, int pCombinedLight, int pCombinedOverlay, int pSeed) {
-        renderer.renderStatic(pItemStack, Destroy.BELT_DISPLAY_CONTEXT, pCombinedLight, pCombinedOverlay, pPoseStack, pBuffer, pLevel, pSeed);
+        renderer.renderStatic(pItemStack, DestroyItemDisplayContexts.BELT, pCombinedLight, pCombinedOverlay, pPoseStack, pBuffer, pLevel, pSeed);
     };
 };

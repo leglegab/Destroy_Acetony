@@ -1,0 +1,17 @@
+{
+    "type": "minecraft:crafting_shaped",
+    "pattern": [
+      "ASA"
+    ],
+    "key": {
+      "S": {
+        "item": "destroy:mesh"
+      },
+      "A": {
+        "tag": "forge:nuggets/iron"
+      }
+    },
+    "result": {
+      "item": "create:filter"
+    }
+  }

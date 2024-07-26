@@ -7,6 +7,7 @@ import com.jozufozu.flywheel.util.transform.TransformStack;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.datafixers.util.Either;
 import com.petrolpark.destroy.Destroy;
+import com.petrolpark.destroy.client.DestroyItemDisplayContexts;
 import com.petrolpark.destroy.client.model.DummyBaker;
 import com.petrolpark.destroy.item.CircuitMaskItem;
 import com.petrolpark.destroy.item.CircuitPatternItem;
@@ -50,7 +51,7 @@ public class CircuitPatternItemRenderer extends CustomRenderedItemModelRenderer 
         ms.pushPose();
         Minecraft mc = Minecraft.getInstance();
 
-        if (transformType == Destroy.BELT_DISPLAY_CONTEXT) {
+        if (transformType == DestroyItemDisplayContexts.BELT) {
             if (stack.getOrCreateTag().contains("Flipped")) TransformStack.cast(ms).rotateY(180);
         };
 

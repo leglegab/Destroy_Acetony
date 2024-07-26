@@ -643,6 +643,8 @@ public class DestroyItems {
         .register(),
     PAPER_PULP = REGISTRATE.item("paper_pulp", Item::new)
         .register(),
+    MESH = REGISTRATE.item("mesh", Item::new)
+        .register(),
     TEAR_BOTTLE = REGISTRATE.item("tear_bottle", Item::new)
         .register(),
     URINE_BOTTLE = REGISTRATE.item("urine_bottle", Item::new)

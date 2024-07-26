@@ -10,6 +10,7 @@ import com.petrolpark.destroy.block.instance.DynamoCogInstance;
 import com.petrolpark.destroy.block.instance.HorizontalShaftlessCogwheelInstance;
 import com.petrolpark.destroy.block.instance.PlanetaryGearsetInstance;
 import com.petrolpark.destroy.block.renderer.AgingBarrelRenderer;
+import com.petrolpark.destroy.block.renderer.BlowpipeRenderer;
 import com.petrolpark.destroy.block.renderer.BubbleCapRenderer;
 import com.petrolpark.destroy.block.renderer.CentrifugeRenderer;
 import com.petrolpark.destroy.block.renderer.ChainedCogwheelRenderer;
@@ -46,6 +47,12 @@ public class DestroyBlockEntityTypes {
         .blockEntity("simple_mixture_tank", SimplePlaceableMixtureTankBlockEntity::new)
         .validBlocks(DestroyBlocks.BEAKER, DestroyBlocks.ROUND_BOTTOMED_FLASK)
         .renderer(() -> SimpleMixtureTankRenderer::new)
+        .register();
+
+    public static final BlockEntityEntry<BlowpipeBlockEntity> BLOWPIPE = REGISTRATE
+        .blockEntity("blowpipe", BlowpipeBlockEntity::new)
+        .validBlocks(DestroyBlocks.BLOWPIPE)
+        .renderer(() -> BlowpipeRenderer::new)
         .register();
 
     public static final BlockEntityEntry<BubbleCapBlockEntity> BUBBLE_CAP = REGISTRATE

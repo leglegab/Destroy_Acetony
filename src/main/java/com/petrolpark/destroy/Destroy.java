@@ -16,6 +16,7 @@ import com.petrolpark.destroy.chemistry.index.DestroyGroupFinder;
 import com.petrolpark.destroy.chemistry.index.DestroyMolecules;
 import com.petrolpark.destroy.chemistry.index.DestroyReactions;
 import com.petrolpark.destroy.chemistry.index.DestroyTopologies;
+import com.petrolpark.destroy.client.DestroyItemDisplayContexts;
 import com.petrolpark.destroy.client.fog.FogHandler;
 import com.petrolpark.destroy.client.gui.menu.DestroyMenuTypes;
 import com.petrolpark.destroy.client.particle.DestroyParticleTypes;
@@ -66,7 +67,6 @@ import com.simibubi.create.foundation.placement.PlacementHelpers;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.data.event.GatherDataEvent;
@@ -99,7 +99,9 @@ public class Destroy {
 
     // Client things
     public static final FogHandler FOG_HANDLER = new FogHandler();
-    public static final ItemDisplayContext BELT_DISPLAY_CONTEXT = ItemDisplayContext.create("belt", Destroy.asResource("belt"), ItemDisplayContext.FIXED);
+    static {
+        DestroyItemDisplayContexts.register();
+    };
 
     public static ResourceLocation asResource(String path) {
         return new ResourceLocation(MOD_ID, path);
