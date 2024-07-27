@@ -81,6 +81,8 @@ public class DestroyPonderTags {
             .add(DestroyBlocks.CENTRIFUGE)
             .add(DestroyBlocks.DYNAMO)
             .add(DestroyBlocks.KEYPUNCH)
+            .add(DestroyBlocks.MECHANICAL_SIEVE)
+            .add(DestroyBlocks.PUMPJACK)
             .add(DestroyBlocks.TREE_TAP)
         ;
 

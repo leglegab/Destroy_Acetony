@@ -19,6 +19,7 @@ import com.simibubi.create.Create;
 import com.simibubi.create.foundation.ponder.PonderRegistrationHelper;
 import com.simibubi.create.foundation.ponder.PonderRegistry;
 import com.simibubi.create.foundation.ponder.PonderStoryBoardEntry;
+import com.simibubi.create.infrastructure.ponder.AllPonderTags;
 
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
@@ -36,7 +37,7 @@ public class DestroyPonderIndex {
 
         // Basin
         HELPER.forComponents(AllBlocks.BASIN)
-            .addStoryBoard("reactions", DestroyScenes::reactions);
+            .addStoryBoard("reactions", DestroyScenes::reactions, DestroyPonderTags.CHEMISTRY);
 
         // Blacklight
         HELPER.forComponents(DestroyBlocks.BLACKLIGHT)
@@ -44,12 +45,17 @@ public class DestroyPonderIndex {
 
         // Blaze Burner
         HELPER.forComponents(AllBlocks.BLAZE_BURNER)
-            .addStoryBoard("vat/interaction", DestroyScenes::vatInteraction);
+            .addStoryBoard("vat/interaction", DestroyScenes::vatInteraction, DestroyPonderTags.CHEMISTRY);
+
+        // Blowpipe
+        HELPER.forComponents(DestroyBlocks.BLOWPIPE)
+            .addStoryBoard("blank_3x3", ProcessingScenes::blowpipe)
+            .addStoryBoard("processing/blowpipe_automation", ProcessingScenes::blowpipeAutomation);
 
         // Bubble Cap
         HELPER.forComponents(DestroyBlocks.BUBBLE_CAP)
             .addStoryBoard("processing/bubble_cap/generic", ProcessingScenes::bubbleCapGeneric)
-            .addStoryBoard("processing/bubble_cap/mixtures", ProcessingScenes::bubbleCapMixtures)
+            .addStoryBoard("processing/bubble_cap/mixtures", ProcessingScenes::bubbleCapMixtures, DestroyPonderTags.CHEMISTRY)
             .addStoryBoard("pollution/room_temperature", ChemistryScenes::roomTemperature);
 
         // Catalytic Converter
@@ -59,13 +65,13 @@ public class DestroyPonderIndex {
         // Centrifuge
         HELPER.forComponents(DestroyBlocks.CENTRIFUGE)
             .addStoryBoard("processing/centrifuge/generic", ProcessingScenes::centrifugeGeneric)
-            .addStoryBoard("processing/centrifuge/mixture", ProcessingScenes::centrifugeMixture);
+            .addStoryBoard("processing/centrifuge/mixture", ProcessingScenes::centrifugeMixture, DestroyPonderTags.CHEMISTRY);
 
         // Coaxial Gear
         CREATE_HELPER.forComponents(DestroyBlocks.COAXIAL_GEAR)
             .addStoryBoard("cog/small", com.simibubi.create.infrastructure.ponder.scenes.KineticsScenes::cogAsRelay);
         HELPER.forComponents(DestroyBlocks.COAXIAL_GEAR)
-            .addStoryBoard("kinetics/coaxial_gear/shaftless", KineticsScenes::coaxialGearShaftless)
+            .addStoryBoard("kinetics/coaxial_gear/shaftless", KineticsScenes::coaxialGearShaftless, DestroyPonderTags.DESTROY)
             .addStoryBoard("kinetics/coaxial_gear/through", KineticsScenes::coaxialGearThrough);
 
         HELPER.forComponents(DestroyBlocks.COLORIMETER)
@@ -78,7 +84,7 @@ public class DestroyPonderIndex {
         // Cooler
         HELPER.forComponents(DestroyBlocks.COOLER)
             .addStoryBoard("processing/cooler", ProcessingScenes::cooler)
-            .addStoryBoard("vat/interaction", DestroyScenes::vatInteraction);
+            .addStoryBoard("vat/interaction", DestroyScenes::vatInteraction, DestroyPonderTags.CHEMISTRY);
 
         // Custom Explosive Mix
         HELPER.forComponents(DestroyBlocks.CUSTOM_EXPLOSIVE_MIX)
@@ -98,7 +104,7 @@ public class DestroyPonderIndex {
         // Dynamo
         HELPER.forComponents(DestroyBlocks.DYNAMO)
             .addStoryBoard("processing/dynamo/redstone", ProcessingScenes::dynamoRedstone)
-            .addStoryBoard("processing/dynamo/charging", ProcessingScenes::dynamoCharging)
+            .addStoryBoard("processing/dynamo/charging", ProcessingScenes::dynamoCharging, AllPonderTags.KINETIC_APPLIANCES)
             .addStoryBoard("processing/dynamo/electrolysis", ProcessingScenes::dynamoElectrolysis);
 
         // Extrusion Die
@@ -118,9 +124,12 @@ public class DestroyPonderIndex {
 
         // Mechanical Mixer
         HELPER.forComponents(AllBlocks.MECHANICAL_MIXER)
-            .addStoryBoard("reactions", DestroyScenes::reactions)
+            .addStoryBoard("reactions", DestroyScenes::reactions, DestroyPonderTags.CHEMISTRY)
             .addStoryBoard("pollution/basins_and_vats", PollutionScenes::basinsAndVats);
 
+        HELPER.forComponents(DestroyBlocks.MECHANICAL_SIEVE)
+            .addStoryBoard("processing/mechanical_sieve", ProcessingScenes::mechanicalSieve);
+        
         // Pollution
         HELPER.forComponents(DestroyItems.POLLUTION_SYMBOL)
             .addStoryBoard("pollution/tanks", PollutionScenes::pipesAndTanks)
@@ -142,12 +151,12 @@ public class DestroyPonderIndex {
             .addStoryBoard("cog/speedup", com.simibubi.create.infrastructure.ponder.scenes.KineticsScenes::cogsSpeedUp)
             .addStoryBoard("cog/large", com.simibubi.create.infrastructure.ponder.scenes.KineticsScenes::largeCogAsRelay);
         HELPER.forComponents(DestroyBlocks.PLANETARY_GEARSET)
-            .addStoryBoard("kinetics/planetary_gearset", KineticsScenes::planetaryGearset);
+            .addStoryBoard("kinetics/planetary_gearset", KineticsScenes::planetaryGearset, DestroyPonderTags.DESTROY);
 
         // Pumpjack
         HELPER.forComponents(DestroyBlocks.PUMPJACK)
             .addStoryBoard("oil/seismometer", OilScenes::seismometer)
-            .addStoryBoard("oil/pumpjack", OilScenes::pumpjack);
+            .addStoryBoard("oil/pumpjack", OilScenes::pumpjack, AllPonderTags.KINETIC_APPLIANCES);
 
         // Redstone Programmer
         HELPER.forComponents(DestroyBlocks.REDSTONE_PROGRAMMER)

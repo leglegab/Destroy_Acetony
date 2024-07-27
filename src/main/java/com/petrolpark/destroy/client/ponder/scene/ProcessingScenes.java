@@ -1,11 +1,14 @@
 package com.petrolpark.destroy.client.ponder.scene;
 
+import java.util.Collections;
 import java.util.List;
 
+import com.petrolpark.destroy.Destroy;
 import com.petrolpark.destroy.block.AgingBarrelBlock;
 import com.petrolpark.destroy.block.BubbleCapBlock;
 import com.petrolpark.destroy.block.DestroyBlocks;
 import com.petrolpark.destroy.block.entity.AgingBarrelBlockEntity;
+import com.petrolpark.destroy.block.entity.BlowpipeBlockEntity;
 import com.petrolpark.destroy.block.entity.BubbleCapBlockEntity;
 import com.petrolpark.destroy.block.entity.CentrifugeBlockEntity;
 import com.petrolpark.destroy.block.entity.DynamoBlockEntity;
@@ -16,6 +19,8 @@ import com.petrolpark.destroy.chemistry.ReadOnlyMixture;
 import com.petrolpark.destroy.chemistry.index.DestroyMolecules;
 import com.petrolpark.destroy.client.particle.DestroyParticleTypes;
 import com.petrolpark.destroy.client.particle.data.GasParticleData;
+import com.petrolpark.destroy.client.ponder.PonderPlayer;
+import com.petrolpark.destroy.client.ponder.instruction.OutlineAABBInstruction;
 import com.petrolpark.destroy.fluid.DestroyFluids;
 import com.petrolpark.destroy.fluid.MixtureFluid;
 import com.petrolpark.destroy.item.DestroyItems;
@@ -25,24 +30,31 @@ import com.simibubi.create.AllItems;
 import com.simibubi.create.content.contraptions.chassis.StickerBlock;
 import com.simibubi.create.content.contraptions.chassis.StickerBlockEntity;
 import com.simibubi.create.content.fluids.potion.PotionFluid;
+import com.simibubi.create.content.fluids.spout.SpoutBlockEntity;
 import com.simibubi.create.content.fluids.tank.FluidTankBlockEntity;
+import com.simibubi.create.content.kinetics.deployer.DeployerBlockEntity;
+import com.simibubi.create.content.processing.basin.BasinBlockEntity;
 import com.simibubi.create.content.redstone.nixieTube.NixieTubeBlockEntity;
 import com.simibubi.create.foundation.ponder.ElementLink;
 import com.simibubi.create.foundation.ponder.PonderPalette;
 import com.simibubi.create.foundation.ponder.SceneBuilder;
 import com.simibubi.create.foundation.ponder.SceneBuildingUtil;
 import com.simibubi.create.foundation.ponder.Selection;
+import com.simibubi.create.foundation.ponder.element.EntityElement;
 import com.simibubi.create.foundation.ponder.element.InputWindowElement;
 import com.simibubi.create.foundation.ponder.element.WorldSectionElement;
 import com.simibubi.create.foundation.ponder.instruction.EmitParticlesInstruction.Emitter;
 import com.simibubi.create.foundation.utility.Pointing;
 import com.simibubi.create.foundation.utility.VecHelper;
 
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Direction.Axis;
 import net.minecraft.core.particles.BlockParticleOption;
 import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.monster.Stray;
@@ -56,9 +68,12 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.material.Fluids;
+import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
+import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.IFluidHandler.FluidAction;
+import net.minecraftforge.fluids.capability.templates.FluidTank;
 
 public class ProcessingScenes {
     
@@ -427,6 +442,160 @@ public class ProcessingScenes {
         scene.markAsFinished();
     };
 
+    public static void blowpipe(SceneBuilder scene, SceneBuildingUtil util) {
+        scene.title("blowpipe", "This text is defined in a language file.");
+        scene.configureBasePlate(0, 0, 3);
+        scene.showBasePlate();
+
+        ElementLink<EntityElement> playerElement = scene.world.createEntity(w -> {
+            Minecraft minecraft = Minecraft.getInstance();
+            LocalPlayer localPlayer = minecraft.player;
+            if (localPlayer == null) return null;
+            PonderPlayer player = new PonderPlayer(w, localPlayer.getScoreboardName());
+            Vec3 v = util.vector.topOf(2, 0, 1);
+            player.setPos(v.x, v.y, v.z);
+            player.xo = v.x;
+            player.yo = v.y;
+            player.zo = v.z;
+            player.yBodyRot = player.yBodyRotO = player.yHeadRot = player.yHeadRotO = player.yRotO = 90;
+            player.setYRot(90);
+            player.xRotO = 35;
+            player.setXRot(35);
+            player.setInvisible(true);
+            return player;
+        });
+
+        scene.markAsFinished();
+    };
+
+    public static void blowpipeAutomation(SceneBuilder scene, SceneBuildingUtil util) {
+        scene.title("blowpipe.automation", "This text is defined in a language file.");
+        scene.configureBasePlate(0, 0, 5);
+        scene.showBasePlate();
+
+        BlockPos depot = util.grid.at(2, 1, 3);
+        BlockPos spout = util.grid.at(2, 3, 3);
+        ItemStack filledPipe = DestroyBlocks.BLOWPIPE.asStack();
+        FluidTank tank = new FluidTank(BlowpipeBlockEntity.TANK_CAPACITY);
+        tank.fill(new FluidStack(DestroyFluids.MOLTEN_BOROSILICATE_GLASS.get(), 250), FluidAction.EXECUTE);
+        filledPipe.getOrCreateTag().put("Tank", tank.writeToNBT(new CompoundTag()));
+        filledPipe.getOrCreateTag().putString("Recipe", Destroy.asResource("glassblowing/round_bottomed_flask").toString());
+        BlockPos deployer = util.grid.at(3, 3, 2);
+        Selection deployerS = util.select.position(deployer);
+        BlockPos basin = util.grid.at(3, 1, 2);
+        BlockPos deployerAfter = util.grid.at(1, 3, 2);
+        Selection shaft = util.select.fromTo(1, 3, 3, 1, 3, 5);
+
+        scene.idle(10);
+        scene.world.showSection(util.select.position(depot), Direction.DOWN);
+        scene.world.showSection(util.select.position(spout), Direction.DOWN);
+        scene.idle(10);
+        scene.overlay.showText(120)
+            .text("This text is defined in a language file.")
+            .pointAt(util.vector.blockSurface(spout, Direction.WEST));
+        scene.idle(20);
+        scene.overlay.showControls(new InputWindowElement(util.vector.blockSurface(depot, Direction.EAST), Pointing.RIGHT).withItem(DestroyBlocks.BLOWPIPE.asStack()), 40);
+        scene.world.createItemOnBeltLike(depot, Direction.EAST, DestroyBlocks.BLOWPIPE.asStack());
+        scene.idle(20);
+        scene.world.modifyBlockEntityNBT(util.select.position(spout), SpoutBlockEntity.class, nbt -> nbt.putInt("ProcessingTicks", 20));
+        scene.idle(20);
+        scene.world.removeItemsFromBelt(depot);
+        scene.world.createItemOnBeltLike(depot, Direction.UP, filledPipe);
+        scene.idle(20);
+        //scene.overlay.showControls(new InputWindowElement(util.vector.blockSurface(depot, Direction.EAST), Pointing.RIGHT).withItem(filledPipe), 40);
+        scene.idle(60);
+        scene.world.hideSection(util.select.position(depot), Direction.UP);
+        scene.world.hideSection(util.select.position(spout), Direction.UP);
+        scene.idle(20);
+
+        scene.world.showSection(util.select.position(5, 0, 1), Direction.WEST);
+        scene.idle(10);
+        scene.world.showSection(util.select.fromTo(3, 1, 1, 4, 3, 1), Direction.SOUTH);
+        scene.idle(10);
+        scene.world.modifyBlockEntityNBT(deployerS, DeployerBlockEntity.class, nbt -> nbt.put("HeldItem", DestroyBlocks.BLOWPIPE.asStack().serializeNBT()));
+        ElementLink<WorldSectionElement> deployerLink = scene.world.showIndependentSection(deployerS, Direction.DOWN);
+        scene.world.showSection(util.select.position(basin), Direction.EAST);
+        scene.idle(20);
+
+        scene.overlay.showText(120)
+            .text("This text is defined in a language file")
+            .attachKeyFrame()
+            .pointAt(util.vector.blockSurface(deployer, Direction.WEST));
+        scene.idle(20);
+        scene.overlay.showControls(new InputWindowElement(util.vector.blockSurface(deployer, Direction.UP), Pointing.DOWN).withItem(DestroyBlocks.BLOWPIPE.asStack()), 40);
+        scene.idle(20);
+        scene.world.moveDeployer(deployer, 1, 20);
+        scene.idle(20);
+        scene.world.modifyBlockEntityNBT(deployerS, DeployerBlockEntity.class, nbt -> nbt.put("HeldItem", filledPipe.serializeNBT()));
+        scene.world.modifyBlockEntity(basin, BasinBlockEntity.class, be -> be.getCapability(ForgeCapabilities.FLUID_HANDLER).ifPresent(fh -> fh.drain(250, FluidAction.EXECUTE)));
+        scene.idle(10);
+        scene.world.moveDeployer(deployer, -1, 20);
+        scene.idle(50);
+
+        scene.world.showSection(util.select.fromTo(4, 4, 1, 4, 5, 2), Direction.WEST);
+        scene.idle(10);
+        scene.world.showSection(util.select.fromTo(1, 5, 2, 3, 5, 2), Direction.DOWN);
+        scene.world.showSectionAndMerge(util.select.position(3, 4, 2), Direction.DOWN, deployerLink);
+        scene.idle(20);
+        scene.world.multiplyKineticSpeed(deployerS, 1f / 256f / 256f);
+        scene.world.moveSection(deployerLink, util.vector.of(-2d, 0d, 0d), 40);
+        scene.idle(50);
+        scene.world.showSection(util.select.position(2, 0, 5), Direction.NORTH);
+        scene.idle(10);
+        scene.world.showSection(util.select.position(1, 1, 5), Direction.NORTH);
+        scene.idle(10);
+        ElementLink<WorldSectionElement> cogLink = scene.world.showIndependentSection(util.select.position(0, 2, 5), Direction.NORTH);
+        scene.idle(10);
+        scene.world.showSection(shaft, Direction.DOWN);
+        scene.idle(10);
+        scene.world.multiplyKineticSpeed(deployerS, 256f * 256f);
+        scene.idle(20);
+
+        scene.overlay.showText(120)
+            .text("This text is defined in a language file.")
+            .attachKeyFrame()
+            .pointAt(util.vector.blockSurface(deployerAfter, Direction.WEST));
+        scene.idle(20);
+        scene.world.moveDeployer(deployer, 1, 20);
+        scene.idle(20);
+        scene.world.modifyBlockEntityNBT(util.select.position(deployer), DeployerBlockEntity.class, nbt -> nbt.remove("ItemHeld"));
+        ElementLink<WorldSectionElement> pipeLink = scene.world.showIndependentSectionImmediately(util.select.position(1, 1, 2));
+        scene.idle(10);
+        scene.world.moveDeployer(deployer, -1, 20);
+        scene.idle(40);
+        scene.effects.rotationSpeedIndicator(deployer, util.grid.at(1, 1, 3));
+        scene.effects.rotationSpeedIndicator(deployer, util.grid.at(1, 3, 1));
+        scene.idle(30);
+
+        scene.overlay.showText(120)
+            .text("This text is defined in a language file.")
+            .pointAt(util.vector.blockSurface(deployerAfter, Direction.WEST));
+        scene.addInstruction(new OutlineAABBInstruction(PonderPalette.RED, "pipe_end", new AABB(22 / 16f, 22 / 16f, 46 / 16f, 26 / 16f, 26 / 16f, 3f), 30));
+        scene.idle(40);
+        scene.world.modifyBlockEntityNBT(deployerS, DeployerBlockEntity.class, nbt -> nbt.putString("Mode", "PUNCH"));
+        scene.idle(10);
+        scene.world.moveDeployer(deployer, 1, 10);
+        scene.idle(10);
+        scene.world.modifyBlockEntityNBT(deployerS, DeployerBlockEntity.class, nbt -> nbt.put("HeldItem", filledPipe.serializeNBT()));
+        scene.world.hideIndependentSectionImmediately(pipeLink);
+        scene.world.moveDeployer(deployer, -1, 10);
+        scene.idle(20);
+        scene.world.modifyBlockEntityNBT(deployerS, DeployerBlockEntity.class, nbt -> nbt.putString("Mode", "USE"));
+        scene.idle(20);
+        scene.world.hideIndependentSection(cogLink, Direction.SOUTH);
+        scene.world.multiplyKineticSpeed(shaft, 1f / 256f / 256f);
+        scene.world.multiplyKineticSpeed(deployerS,  1f / 256f / 256f);
+        ElementLink<WorldSectionElement> otherCogs = scene.world.showIndependentSection(util.select.fromTo(0, 2, 6, 0, 3, 6), Direction.NORTH);
+        scene.world.moveSection(otherCogs, util.vector.of(0d, 0d, -1d), 0);
+        scene.idle(10);
+        scene.world.multiplyKineticSpeed(shaft, -2f * 256f * 256f);
+        scene.world.multiplyKineticSpeed(deployerS, -2f * 256f * 256f);
+        scene.idle(20);
+        
+
+        scene.markAsFinished();
+    };
+    
     public static void cooler(SceneBuilder scene, SceneBuildingUtil util) {
         scene.title("cooler", "This text is defined in a language file.");
         scene.configureBasePlate(0, 0, 5);
@@ -729,6 +898,14 @@ public class ProcessingScenes {
         scene.markAsFinished();
     };
 
+    public static void mechanicalSieve(SceneBuilder scene, SceneBuildingUtil util) {
+        scene.title("mechanical_sieve", "This text is defined in a language file.");
+        scene.configureBasePlate(0, 0, 5);
+        scene.showBasePlate();
+
+        scene.markAsFinished();
+    };
+    
     public static void treeTap(SceneBuilder scene, SceneBuildingUtil util) {
         scene.title("tree_tap", "This text is defined in a language file.");
         scene.configureBasePlate(0, 0, 5);
