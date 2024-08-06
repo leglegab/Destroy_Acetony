@@ -1,0 +1,26 @@
+{
+    "parent": "destroy:borax",
+    "criteria": {
+      "blow": {
+        "conditions": {},
+        "trigger": "destroy:blowpipe"
+      }
+    },
+    "display": {
+      "description": {
+        "color": "#DBA213",
+        "translate": "advancement.destroy.blowpipe.description"
+      },
+      "icon": {
+        "item": "destroy:blowpipe"
+      },
+      "title": {
+        "translate": "advancement.destroy.blowpipe"
+      }
+    },
+    "blow": [
+      [
+        "blowpipe"
+      ]
+    ]
+  }

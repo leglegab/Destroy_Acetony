@@ -6,6 +6,7 @@ public class DestroyWorldConfigs extends DestroyConfigBase {
     public final DestroyBlocksConfigs blocks = nested(0, DestroyBlocksConfigs::new, "Destroy's blocks");
 	public final DestroyPollutionConfigs pollution = nested(0, DestroyPollutionConfigs::new, "The effects of pollution on the world");
     public final DestroySubstancesConfigs substances = nested(0, DestroySubstancesConfigs::new, "Destroy's drugs and medicines");
+    public final DestroyEquipmentConfigs equipment = nested(0, DestroyEquipmentConfigs::new, "Destroy's armor and tools");
     public final DestroyCompatConfigs compat = nested(0, DestroyCompatConfigs::new, "Compatibility with other mods");
     
     @Override

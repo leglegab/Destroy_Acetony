@@ -9,6 +9,7 @@ import com.petrolpark.destroy.MoveToPetrolparkLibrary;
 import com.petrolpark.destroy.advancement.BadgeAdvancementRewards;
 import com.petrolpark.destroy.advancement.SimpleDestroyTrigger;
 import com.petrolpark.destroy.badge.Badge;
+import com.petrolpark.destroy.compat.curios.CuriosSetup;
 import com.petrolpark.destroy.item.BadgeItem;
 import com.tterrag.registrate.builders.AbstractBuilder;
 import com.tterrag.registrate.builders.BuilderCallback;
@@ -44,6 +45,8 @@ public class BadgeBuilder<T extends Badge, P> extends AbstractBuilder<Badge, T, 
             .properties(p -> p
                 .stacksTo(1)
             ).register();
+
+        CuriosSetup.BADGES.add(item);
     };
 
     public BadgeBuilder<T, P> duplicationIngredient(Ingredient ingredient) {

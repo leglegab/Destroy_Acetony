@@ -4,6 +4,8 @@ import static com.petrolpark.destroy.Destroy.REGISTRATE;
 import static com.simibubi.create.AllTags.forgeItemTag;
 
 import com.petrolpark.destroy.block.DestroyBlocks;
+import com.petrolpark.destroy.compat.curios.CuriosSetup;
+import com.petrolpark.destroy.config.DestroyAllConfigs;
 import com.petrolpark.destroy.effect.DestroyMobEffects;
 import com.petrolpark.destroy.item.food.DestroyFoods;
 import com.petrolpark.destroy.item.renderer.GasMaskModel;
@@ -33,6 +35,7 @@ import net.minecraft.world.item.SimpleFoiledItem;
 import net.minecraft.world.item.SolidBucketItem;
 import net.minecraft.world.item.Tiers;
 import net.minecraft.world.item.ArmorItem.Type;
+import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraftforge.common.Tags;
 
 public class DestroyItems {
@@ -94,7 +97,7 @@ public class DestroyItems {
         .tag(DestroyItemTags.PLASTICS.tag, DestroyItemTags.RIGID_PLASTICS.tag, DestroyItemTags.TEXTILE_PLASTICS.tag, DestroyItemTags.POROUS_PLASTICS.tag)
         .register(),
     POLYMETHYL_METHACRYLATE = REGISTRATE.item("polymethyl_methacrylate", Item::new)
-        .tag(DestroyItemTags.PLASTICS.tag, DestroyItemTags.RIGID_PLASTICS.tag)
+        .tag(DestroyItemTags.PLASTICS.tag, DestroyItemTags.RIGID_PLASTICS.tag, DestroyItemTags.TRANSPARENT_PLASTICS.tag)
         .register(),
 
     CARD_STOCK = REGISTRATE.item("card_stock", Item::new)
@@ -289,6 +292,11 @@ public class DestroyItems {
             .stacksTo(1)
         ).onRegister(CreateRegistrate.itemModel(() -> LaboratoryGogglesModel::new))
         .tag(DestroyItemTags.CHEMICAL_PROTECTION_EYES.tag)
+        .transform(CuriosSetup.renderOnHead())
+        .transform(CuriosSetup.goggles())
+        .onRegister(ChemistryProtectionHeadwearItem.goggles())
+        .onRegister(ChemistryProtectionHeadwearItem.durability(() -> DestroyAllConfigs.SERVER.equipment.laboratoryGogglesDurability))
+        .onRegister(ChemistryProtectionHeadwearItem.repairIngredient(() -> Ingredient.of(DestroyItemTags.TRANSPARENT_PLASTICS.tag)))
         .register(),
 
     GOLD_LABORATORY_GOGGLES = REGISTRATE.item("gold_laboratory_goggles", ChemistryProtectionHeadwearItem::new)
@@ -296,6 +304,12 @@ public class DestroyItems {
             .stacksTo(1)
         ).onRegister(CreateRegistrate.itemModel(() -> GoldLaboratoryGogglesModel::new))
         .tag(DestroyItemTags.CHEMICAL_PROTECTION_EYES.tag)
+        .transform(CuriosSetup.renderOnHead())
+        .transform(CuriosSetup.goggles())
+        .onRegister(ChemistryProtectionHeadwearItem.goggles())
+        .onRegister(ChemistryProtectionHeadwearItem.durability(() -> DestroyAllConfigs.SERVER.equipment.goldLaboratoryGogglesDurability))
+        .onRegister(ChemistryProtectionHeadwearItem.repairIngredient(() -> Ingredient.of(forgeItemTag("plates/gold"))))
+        .onRegister(ChemistryProtectionHeadwearItem.enchantable())
         .register(),
 
     PAPER_MASK = REGISTRATE.item("paper_mask", ChemistryProtectionHeadwearItem::new)
@@ -303,6 +317,9 @@ public class DestroyItems {
             .stacksTo(1)
         ).onRegister(CreateRegistrate.itemModel(() -> PaperMaskModel::new))
         .tag(DestroyItemTags.CHEMICAL_PROTECTION_NOSE.tag, DestroyItemTags.CHEMICAL_PROTECTION_MOUTH.tag)
+        .transform(CuriosSetup.renderOnHead())
+        .onRegister(ChemistryProtectionHeadwearItem.durability(() -> DestroyAllConfigs.SERVER.equipment.paperMaskDurability))
+        .onRegister(ChemistryProtectionHeadwearItem.repairIngredient(() -> Ingredient.of(Items.PAPER)))
         .register(),
 
     GAS_MASK = REGISTRATE.item("gas_mask", ChemistryProtectionHeadwearItem::new)
@@ -310,6 +327,10 @@ public class DestroyItems {
             .stacksTo(1)
         ).onRegister(CreateRegistrate.itemModel(() -> GasMaskModel::new))
         .tag(DestroyItemTags.CHEMICAL_PROTECTION_HEAD.tag, DestroyItemTags.CHEMICAL_PROTECTION_EYES.tag, DestroyItemTags.CHEMICAL_PROTECTION_NOSE.tag, DestroyItemTags.CHEMICAL_PROTECTION_MOUTH.tag, DestroyItemTags.CONTAMINABLE.tag)
+        .transform(CuriosSetup.renderOnHead())
+        .onRegister(ChemistryProtectionHeadwearItem.goggles())
+        .onRegister(ChemistryProtectionHeadwearItem.durability(() -> DestroyAllConfigs.SERVER.equipment.gasMaskDurability))
+        .onRegister(ChemistryProtectionHeadwearItem.repairIngredient(() -> Ingredient.of(DestroyItemTags.TEXTILE_PLASTICS.tag)))
         .register();
 
     public static final ItemEntry<? extends HazmatSuitArmorItem>

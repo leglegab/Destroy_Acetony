@@ -8,8 +8,8 @@ import java.util.Optional;
 import com.petrolpark.destroy.block.ColorimeterBlock;
 import com.petrolpark.destroy.block.display.MixtureContentsDisplaySource;
 import com.petrolpark.destroy.block.entity.behaviour.RedstoneQuantityMonitorBehaviour;
-import com.petrolpark.destroy.chemistry.Molecule;
-import com.petrolpark.destroy.chemistry.ReadOnlyMixture;
+import com.petrolpark.destroy.chemistry.legacy.LegacySpecies;
+import com.petrolpark.destroy.chemistry.legacy.ReadOnlyMixture;
 import com.petrolpark.destroy.fluid.DestroyFluids;
 import com.petrolpark.destroy.util.DestroyLang;
 import com.petrolpark.destroy.util.vat.VatMaterial;
@@ -32,7 +32,7 @@ import net.minecraftforge.fluids.FluidStack;
 public class ColorimeterBlockEntity extends SmartBlockEntity {
 
     public boolean observingGas;
-    protected Molecule molecule;
+    protected LegacySpecies molecule;
     public RedstoneQuantityMonitorBehaviour redstoneMonitor;
 
     public ColorimeterBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState state) {
@@ -49,7 +49,7 @@ public class ColorimeterBlockEntity extends SmartBlockEntity {
     @Override
     protected void read(CompoundTag tag, boolean clientPacket) {
         super.read(tag, clientPacket);
-        setMolecule(Molecule.getMolecule(tag.getString("Molecule")));
+        setMolecule(LegacySpecies.getMolecule(tag.getString("Molecule")));
         if (tag.contains("ObservingGas")) observingGas = true;
     };
 
@@ -60,16 +60,16 @@ public class ColorimeterBlockEntity extends SmartBlockEntity {
         if (observingGas) tag.putBoolean("ObservingGas", true);
     };
 
-    public void configure(Molecule observedMolecule, boolean observingGas) {
+    public void configure(LegacySpecies observedMolecule, boolean observingGas) {
         this.observingGas = observingGas;
         setMolecule(observedMolecule);
     };
 
-    public Molecule getMolecule() {
+    public LegacySpecies getMolecule() {
         return molecule;
     };
 
-    public void setMolecule(Molecule molecule) {
+    public void setMolecule(LegacySpecies molecule) {
         this.molecule = molecule;
         updateVat();
         notifyUpdate();

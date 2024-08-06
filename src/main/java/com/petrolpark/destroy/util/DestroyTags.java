@@ -9,6 +9,7 @@ import net.minecraft.tags.FluidTags;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.material.Fluid;
 
@@ -43,6 +44,7 @@ public class DestroyTags {
         POROUS_PLASTICS("plastics/porous"),
         INERT_PLASTICS("plastics/inert"),
         RUBBER_PLASTICS("plastics/rubber"),
+        TRANSPARENT_PLASTICS("plastics/transparent"),
 
         PRIMARY_EXPLOSIVES("explosives/primary"),
         SCHEMATICANNON_FUELS,
@@ -70,6 +72,10 @@ public class DestroyTags {
         @SuppressWarnings("deprecation") // Create does it therefore so can I
         public boolean matches(Item item) {
             return item.builtInRegistryHolder().containsTag(tag);
+        };
+
+        public boolean matches(ItemStack item) {
+            return item.is(tag);
         };
 
         public static void init() {};

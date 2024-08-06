@@ -3,9 +3,9 @@ package com.petrolpark.destroy.chemistry.serializer;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.petrolpark.destroy.chemistry.Atom;
-import com.petrolpark.destroy.chemistry.Element;
-import com.petrolpark.destroy.chemistry.Bond.BondType;
+import com.petrolpark.destroy.chemistry.legacy.LegacyAtom;
+import com.petrolpark.destroy.chemistry.legacy.LegacyElement;
+import com.petrolpark.destroy.chemistry.legacy.LegacyBond.BondType;
 
 public class Branch {
     private List<Node> nodes = new ArrayList<>(); //list of Nodes in this Branch, not including Nodes in side Branches
@@ -101,7 +101,7 @@ public class Branch {
         return total;
     };
 
-    public static Float getMassForComparisonInSerialization(Atom atom) {
-        return atom.getElement().getMass() * (atom.getElement() == Element.R_GROUP ? atom.rGroupNumber : 1);
+    public static Float getMassForComparisonInSerialization(LegacyAtom atom) {
+        return atom.getElement().getMass() * (atom.getElement() == LegacyElement.R_GROUP ? atom.rGroupNumber : 1);
     };
 };

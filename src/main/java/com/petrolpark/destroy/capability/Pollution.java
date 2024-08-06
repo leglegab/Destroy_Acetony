@@ -7,8 +7,8 @@ import java.util.function.Supplier;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import com.petrolpark.destroy.chemistry.MoleculeTag;
-import com.petrolpark.destroy.chemistry.index.DestroyMolecules;
+import com.petrolpark.destroy.chemistry.legacy.LegacySpeciesTag;
+import com.petrolpark.destroy.chemistry.legacy.index.DestroyMolecules;
 import com.petrolpark.destroy.client.gui.DestroyIcons;
 import com.petrolpark.destroy.config.DestroyAllConfigs;
 import com.petrolpark.destroy.util.PollutionHelper;
@@ -251,10 +251,10 @@ public class Pollution {
          * Whether this applies to chunks (if {@code false}, it applies to the whole level)
          */
         public final boolean local;
-        public final MoleculeTag moleculeTag;
+        public final LegacySpeciesTag moleculeTag;
         public final TagKey<Fluid> fluidTag;
 
-        PollutionType(AllIcons icon, boolean local, int max, MoleculeTag moleculeTag, TagKey<Fluid> fluidTag) {
+        PollutionType(AllIcons icon, boolean local, int max, LegacySpeciesTag moleculeTag, TagKey<Fluid> fluidTag) {
             this.icon = icon;
             this.local = local;
             this.max = max;

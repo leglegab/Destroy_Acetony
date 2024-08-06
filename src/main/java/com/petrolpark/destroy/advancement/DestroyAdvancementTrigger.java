@@ -1,9 +1,9 @@
 package com.petrolpark.destroy.advancement;
 
 import com.petrolpark.destroy.Destroy;
-import com.petrolpark.destroy.chemistry.Reaction;
-import com.petrolpark.destroy.chemistry.ReactionResult;
-import com.petrolpark.destroy.chemistry.reactionresult.DestroyAdvancementReactionResult;
+import com.petrolpark.destroy.chemistry.legacy.LegacyReaction;
+import com.petrolpark.destroy.chemistry.legacy.ReactionResult;
+import com.petrolpark.destroy.chemistry.legacy.reactionresult.DestroyAdvancementReactionResult;
 import com.simibubi.create.foundation.utility.Lang;
 
 import net.minecraft.advancements.Advancement;
@@ -22,6 +22,7 @@ public enum DestroyAdvancementTrigger {
     OPEN_AGING_BARREL("open_aging_barrel", "aging_barrel"),
     TAKE_BABY_BLUE("take_baby_blue", "baby_blue", "baby_blue_high"),
     SHOOT_HEFTY_BEETROOT("beetroot_potato_cannon"),
+    BLOWPIPE,
     CAPTURE_STRAY,
     CATALYTIC_CONVERTER,
     USE_CENTRIFUGE("use_centrifuge", "centrifuge"),
@@ -42,6 +43,7 @@ public enum DestroyAdvancementTrigger {
     USE_KEYPUNCH("keypunch"),
     KEYPUNCH_FIVE,
     TRY_TO_MAKE_METH("try_to_make_meth", "meth"),
+    MECHANICAL_SIEVE,
     OSTWALD_PROCESS,
     PERIODIC_TABLE,
     USE_PUMPJACK("use_pumpjack", "pumpjack"),
@@ -91,7 +93,7 @@ public enum DestroyAdvancementTrigger {
         return false;
 	};
 
-    public ReactionResult asReactionResult(Float moles, Reaction reaction) {
+    public ReactionResult asReactionResult(Float moles, LegacyReaction reaction) {
         return new DestroyAdvancementReactionResult(moles, reaction, this);
     };
 

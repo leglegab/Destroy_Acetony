@@ -18,7 +18,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-import com.petrolpark.destroy.chemistry.Molecule;
+import com.petrolpark.destroy.chemistry.legacy.LegacySpecies;
 import com.petrolpark.destroy.item.MoleculeDisplayItem;
 
 @Mixin(TooltipRenderer.class)
@@ -36,7 +36,7 @@ public abstract class TooltipRendererMixin {
     )
     private static <T> void inDrawHoveringText(GuiGraphics graphics, List<Component> textLines, int x, int y, ITypedIngredient<T> typedIngredient, IIngredientRenderer<T> ingredientRenderer, IIngredientManager ingredientManager, CallbackInfo ci) {
         T ingredient = typedIngredient.getIngredient();
-        if (ingredient instanceof Molecule molecule) {
+        if (ingredient instanceof LegacySpecies molecule) {
             Minecraft minecraft = Minecraft.getInstance();
             Font font = ingredientRenderer.getFontRenderer(minecraft, ingredient);
             invokeDrawHoveringText(graphics, textLines, x, y, MoleculeDisplayItem.with(molecule), font);

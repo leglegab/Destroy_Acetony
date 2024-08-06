@@ -11,11 +11,11 @@ import com.petrolpark.destroy.block.entity.DestroyBlockEntityTypes;
 import com.petrolpark.destroy.block.model.DestroyPartials;
 import com.petrolpark.destroy.chemistry.api.Chemistry;
 import com.petrolpark.destroy.chemistry.forge.event.ForgeChemistryEventFirer;
-import com.petrolpark.destroy.chemistry.index.DestroyGenericReactions;
-import com.petrolpark.destroy.chemistry.index.DestroyGroupFinder;
-import com.petrolpark.destroy.chemistry.index.DestroyMolecules;
-import com.petrolpark.destroy.chemistry.index.DestroyReactions;
-import com.petrolpark.destroy.chemistry.index.DestroyTopologies;
+import com.petrolpark.destroy.chemistry.legacy.index.DestroyGenericReactions;
+import com.petrolpark.destroy.chemistry.legacy.index.DestroyGroupFinder;
+import com.petrolpark.destroy.chemistry.legacy.index.DestroyMolecules;
+import com.petrolpark.destroy.chemistry.legacy.index.DestroyReactions;
+import com.petrolpark.destroy.chemistry.legacy.index.DestroyTopologies;
 import com.petrolpark.destroy.client.DestroyItemDisplayContexts;
 import com.petrolpark.destroy.client.fog.FogHandler;
 import com.petrolpark.destroy.client.gui.menu.DestroyMenuTypes;
@@ -25,6 +25,7 @@ import com.petrolpark.destroy.client.ponder.DestroyPonderTags;
 import com.petrolpark.destroy.client.sprites.DestroySpriteSource;
 import com.petrolpark.destroy.compat.CompatMods;
 import com.petrolpark.destroy.compat.createbigcannons.CreateBigCannons;
+import com.petrolpark.destroy.compat.curios.Curios;
 import com.petrolpark.destroy.compat.jei.DestroyJEI;
 import com.petrolpark.destroy.config.DestroyAllConfigs;
 import com.petrolpark.destroy.effect.DestroyMobEffects;
@@ -178,6 +179,7 @@ public class Destroy {
 
         // Optional compatibility mods. According to the Create main class doing the same thing, this isn't thread safe
         CompatMods.BIG_CANNONS.executeIfInstalled(() -> () -> CreateBigCannons.init(modEventBus, forgeEventBus));
+        CompatMods.CURIOS.executeIfInstalled(() -> () -> Curios.init(modEventBus, forgeEventBus));
     };
 
     // Initiation Events

@@ -6,9 +6,9 @@ import java.util.List;
 import javax.annotation.Nullable;
 
 import com.petrolpark.destroy.Destroy;
-import com.petrolpark.destroy.chemistry.Mixture;
-import com.petrolpark.destroy.chemistry.Molecule;
-import com.petrolpark.destroy.chemistry.index.DestroyMolecules;
+import com.petrolpark.destroy.chemistry.legacy.LegacyMixture;
+import com.petrolpark.destroy.chemistry.legacy.LegacySpecies;
+import com.petrolpark.destroy.chemistry.legacy.index.DestroyMolecules;
 import com.petrolpark.destroy.config.DestroyAllConfigs;
 import com.petrolpark.destroy.fluid.MixtureFluid;
 import com.petrolpark.destroy.item.DestroyItems;
@@ -34,70 +34,70 @@ public class MoleculeJEIIngredient {
         illegalFish.setHoverName(Component.literal("Impossible Fish"));
     };
 
-    public static final IIngredientType<Molecule> TYPE = new IIngredientType<Molecule>() {
+    public static final IIngredientType<LegacySpecies> TYPE = new IIngredientType<LegacySpecies>() {
 
         @Override
-        public Class<? extends Molecule> getIngredientClass() {
-            return Molecule.class;
+        public Class<? extends LegacySpecies> getIngredientClass() {
+            return LegacySpecies.class;
         };
 
     };
 
-    public static final IIngredientHelper<Molecule> HELPER = new IIngredientHelper<Molecule>() {
+    public static final IIngredientHelper<LegacySpecies> HELPER = new IIngredientHelper<LegacySpecies>() {
 
         @Override
-        public IIngredientType<Molecule> getIngredientType() {
+        public IIngredientType<LegacySpecies> getIngredientType() {
             return TYPE;
         };
 
         @Override
-        public String getDisplayName(Molecule ingredient) {
+        public String getDisplayName(LegacySpecies ingredient) {
             return ingredient.getName(false).getString()+ingredient.getName(true).getString();
         };
 
         @Override
-        public String getUniqueId(Molecule ingredient, UidContext context) {
+        public String getUniqueId(LegacySpecies ingredient, UidContext context) {
             return ingredient.getFullID();
         };
 
         @Override
-        public ResourceLocation getResourceLocation(Molecule ingredient) {
+        public ResourceLocation getResourceLocation(LegacySpecies ingredient) {
             if (ingredient.isNovel()) return Destroy.asResource("novel_molecule");
             return new ResourceLocation(ingredient.getFullID());
         };
 
         @Override
-        public String getDisplayModId(Molecule ingredient) {
+        public String getDisplayModId(LegacySpecies ingredient) {
             if (ingredient.isNovel()) return "Destroy";
             return IIngredientHelper.super.getDisplayModId(ingredient);
         };
 
         @Override
-        public Molecule copyIngredient(Molecule ingredient) {
+        public LegacySpecies copyIngredient(LegacySpecies ingredient) {
             return ingredient; // There should be no need to copy Molecules as they cannot be modified
         };
 
         @Override
-        public String getErrorInfo(@Nullable Molecule ingredient) {
+        public String getErrorInfo(@Nullable LegacySpecies ingredient) {
             return ingredient == null ? "Molecule ingredient is null" : "Something is wrong with: " + ingredient.getFullID();
         };
 
         @Override
-        public ItemStack getCheatItemStack(Molecule ingredient) {
+        public ItemStack getCheatItemStack(LegacySpecies ingredient) {
             if (ingredient.isHypothetical() || ingredient == DestroyMolecules.PROTON) return illegalFish;
-            return DestroyItems.TEST_TUBE.get().of(MixtureFluid.of(TestTubeItem.CAPACITY, Mixture.pure(ingredient), ""));
+            return DestroyItems.TEST_TUBE.get().of(MixtureFluid.of(TestTubeItem.CAPACITY, LegacyMixture.pure(ingredient), ""));
         };
     };
 
-    public static final IIngredientRenderer<Molecule> RENDERER = new IIngredientRenderer<Molecule>() {
+    public static final IIngredientRenderer<LegacySpecies> RENDERER = new IIngredientRenderer<LegacySpecies>() {
 
         @Override
-        public void render(GuiGraphics graphics, Molecule ingredient) {
+        public void render(GuiGraphics graphics, LegacySpecies ingredient) {
             graphics.renderItem(MoleculeDisplayItem.with(ingredient), 0, 0); // TODO check positioning
         };
 
         @Override
-        public List<Component> getTooltip(Molecule ingredient, TooltipFlag tooltipFlag) {
+        public List<Component> getTooltip(LegacySpecies ingredient, TooltipFlag tooltipFlag) {
             List<Component> tooltips = new ArrayList<>();
             tooltips.add(ingredient.getName(DestroyAllConfigs.CLIENT.chemistry.iupacNames.get()));
             tooltips.addAll(MoleculeDisplayItem.getLore(ingredient));

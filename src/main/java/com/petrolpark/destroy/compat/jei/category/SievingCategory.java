@@ -29,7 +29,7 @@ public class SievingCategory extends DestroyRecipeCategory<SievingRecipe> {
         int xOffset = (int)(recipe.getRollableResults().size() * 9.5f);
         int i = 0;
         for (ProcessingOutput output : recipe.getRollableResults()) {
-            builder.addSlot(RecipeIngredientRole.INPUT, 75 + i * 19 - xOffset, 70)
+            builder.addSlot(RecipeIngredientRole.OUTPUT, 75 + i * 19 - xOffset, 70)
                 .setBackground(getRenderedSlot(output), -1, -1)
                 .addItemStack(output.getStack())
                 .addTooltipCallback(addStochasticTooltip(output));

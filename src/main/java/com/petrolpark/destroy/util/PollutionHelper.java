@@ -8,8 +8,8 @@ import org.joml.Vector3f;
 import com.petrolpark.destroy.Destroy;
 import com.petrolpark.destroy.capability.Pollution;
 import com.petrolpark.destroy.capability.Pollution.PollutionType;
-import com.petrolpark.destroy.chemistry.Molecule;
-import com.petrolpark.destroy.chemistry.ReadOnlyMixture;
+import com.petrolpark.destroy.chemistry.legacy.LegacySpecies;
+import com.petrolpark.destroy.chemistry.legacy.ReadOnlyMixture;
 import com.petrolpark.destroy.config.DestroyAllConfigs;
 import com.petrolpark.destroy.fluid.DestroyFluids;
 import com.petrolpark.destroy.network.DestroyMessages;
@@ -127,7 +127,7 @@ public class PollutionHelper {
 
     public static void polluteMixture(Level level, BlockPos pos, float multiplier, int amount, CompoundTag fluidTag) {
         ReadOnlyMixture mixture = ReadOnlyMixture.readNBT(ReadOnlyMixture::new, fluidTag.getCompound("Mixture"));
-        for (Molecule molecule : mixture.getContents(true)) {
+        for (LegacySpecies molecule : mixture.getContents(true)) {
             float pollutionAmount = multiplier * mixture.getConcentrationOf(molecule) * amount / 1000; // One mole of polluting Molecule = one point of Pollution
             for (PollutionType pollutionType : PollutionType.values()) {
                 if (molecule.hasTag(pollutionType.moleculeTag)) {

@@ -4,7 +4,7 @@ import java.util.List;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.petrolpark.destroy.block.entity.ColorimeterBlockEntity;
-import com.petrolpark.destroy.chemistry.Molecule;
+import com.petrolpark.destroy.chemistry.legacy.LegacySpecies;
 import com.petrolpark.destroy.client.gui.DestroyGuiTextures;
 import com.petrolpark.destroy.client.gui.DestroyIcons;
 import com.petrolpark.destroy.client.gui.MoleculeRenderer;
@@ -25,9 +25,9 @@ public class ColorimeterScreen extends AbstractQuantityObservingScreen {
 
     protected final ColorimeterBlockEntity colorimeter;
 
-    protected List<Molecule> availableSpecies;
+    protected List<LegacySpecies> availableSpecies;
     protected int speciesIndex;
-    protected Molecule species;
+    protected LegacySpecies species;
 
     protected boolean observingGas;
 
@@ -36,7 +36,7 @@ public class ColorimeterScreen extends AbstractQuantityObservingScreen {
     protected IconButton leftButton;
     protected IconButton rightButton;
 
-    public ColorimeterScreen(ColorimeterBlockEntity colorimeter, List<Molecule> availableSpecies) {
+    public ColorimeterScreen(ColorimeterBlockEntity colorimeter, List<LegacySpecies> availableSpecies) {
         super(Component.translatable("block.destroy.colorimeter"), DestroyGuiTextures.COLORIMETER);
         this.colorimeter = colorimeter;
 

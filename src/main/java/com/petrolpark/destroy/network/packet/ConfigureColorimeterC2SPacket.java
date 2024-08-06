@@ -3,7 +3,7 @@ package com.petrolpark.destroy.network.packet;
 import java.util.function.Supplier;
 
 import com.petrolpark.destroy.block.entity.DestroyBlockEntityTypes;
-import com.petrolpark.destroy.chemistry.Molecule;
+import com.petrolpark.destroy.chemistry.legacy.LegacySpecies;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.FriendlyByteBuf;
@@ -12,10 +12,10 @@ import net.minecraftforge.network.NetworkEvent.Context;
 public class ConfigureColorimeterC2SPacket extends C2SPacket {
 
     protected final boolean observingGas;
-    protected final Molecule species;
+    protected final LegacySpecies species;
     protected final BlockPos pos;
 
-    public ConfigureColorimeterC2SPacket(boolean observingGas, Molecule species, BlockPos pos) {
+    public ConfigureColorimeterC2SPacket(boolean observingGas, LegacySpecies species, BlockPos pos) {
         this.observingGas = observingGas;
         this.species = species;
         this.pos = pos;
@@ -24,7 +24,7 @@ public class ConfigureColorimeterC2SPacket extends C2SPacket {
     public ConfigureColorimeterC2SPacket(FriendlyByteBuf buffer) {
         observingGas = buffer.readBoolean();
         if (buffer.readBoolean()) {
-            species = Molecule.getMolecule(buffer.readUtf());
+            species = LegacySpecies.getMolecule(buffer.readUtf());
         } else {
             species = null;
         }

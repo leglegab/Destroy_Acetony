@@ -5,9 +5,9 @@ import java.util.List;
 import java.util.function.Predicate;
 
 import com.petrolpark.destroy.capability.entity.EntityChemicalPoison;
-import com.petrolpark.destroy.chemistry.Molecule;
-import com.petrolpark.destroy.chemistry.ReadOnlyMixture;
-import com.petrolpark.destroy.chemistry.index.DestroyMolecules;
+import com.petrolpark.destroy.chemistry.legacy.LegacySpecies;
+import com.petrolpark.destroy.chemistry.legacy.ReadOnlyMixture;
+import com.petrolpark.destroy.chemistry.legacy.index.DestroyMolecules;
 import com.petrolpark.destroy.effect.DestroyMobEffects;
 import com.petrolpark.destroy.fluid.DestroyFluids;
 import com.petrolpark.destroy.util.DestroyTags.DestroyItemTags;
@@ -41,9 +41,9 @@ public class ChemistryDamageHelper {
         boolean smelly = false;
         boolean carcinogen = false;
         boolean lacrimator = false;
-        Molecule toxicMolecule = null;
+        LegacySpecies toxicMolecule = null;
 
-        for (Molecule molecule : mixture.getContents(true)) {
+        for (LegacySpecies molecule : mixture.getContents(true)) {
             if (molecule.hasTag(DestroyMolecules.Tags.ACUTELY_TOXIC)) toxicMolecule = molecule;
             if (molecule.hasTag(DestroyMolecules.Tags.SMELLY)) smelly = true;
             if (molecule.hasTag(DestroyMolecules.Tags.CARCINOGEN)) carcinogen = true;
@@ -113,7 +113,12 @@ public class ChemistryDamageHelper {
         EYES(EquipmentSlot.HEAD, DestroyItemTags.CHEMICAL_PROTECTION_EYES),
         NOSE(EquipmentSlot.HEAD, DestroyItemTags.CHEMICAL_PROTECTION_NOSE),
         MOUTH(EquipmentSlot.HEAD, DestroyItemTags.CHEMICAL_PROTECTION_MOUTH),
+        /**
+         * Whether the mouth is obstructed, preventing things that require an open mouth like eating.
+         */
         MOUTH_COVERED(EquipmentSlot.HEAD, DestroyItemTags.CHEMICAL_PROTECTION_MOUTH);
+
+        public final DestroyItemTags defaultTag;
 
         private List<Predicate<LivingEntity>> tests = new ArrayList<>();
 
@@ -126,6 +131,7 @@ public class ChemistryDamageHelper {
         };
 
         private Protection(EquipmentSlot defaultEquipmentSlot, DestroyItemTags defaultTag) {
+            this.defaultTag = defaultTag;
             registerTest(le -> defaultTag.matches(le.getItemBySlot(defaultEquipmentSlot).getItem()));
         };
 

@@ -11,9 +11,9 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.petrolpark.destroy.block.DestroyBlocks;
 import com.petrolpark.destroy.block.VatControllerBlock;
 import com.petrolpark.destroy.block.entity.VatControllerBlockEntity;
-import com.petrolpark.destroy.chemistry.ClientMixture;
-import com.petrolpark.destroy.chemistry.Molecule;
-import com.petrolpark.destroy.chemistry.ReadOnlyMixture;
+import com.petrolpark.destroy.chemistry.legacy.ClientMixture;
+import com.petrolpark.destroy.chemistry.legacy.LegacySpecies;
+import com.petrolpark.destroy.chemistry.legacy.ReadOnlyMixture;
 import com.petrolpark.destroy.client.gui.DestroyGuiTextures;
 import com.petrolpark.destroy.client.gui.DestroyIcons;
 import com.petrolpark.destroy.client.gui.MoleculeRenderer;
@@ -62,8 +62,8 @@ public class VatScreen extends AbstractSimiScreen {
 
     private DestroyGuiTextures background;
 
-    private Molecule selectedMolecule;
-    private List<Pair<Molecule, Float>> orderedMolecules;
+    private LegacySpecies selectedMolecule;
+    private List<Pair<LegacySpecies, Float>> orderedMolecules;
 
     private View selectedView;
 
@@ -189,7 +189,7 @@ public class VatScreen extends AbstractSimiScreen {
         };
 
         orderedMolecules = new ArrayList<>(mixture.getContents(false).size());
-        for (Molecule molecule : mixture.getContents(false)) {
+        for (LegacySpecies molecule : mixture.getContents(false)) {
             String search = filter.getValue().toUpperCase();
             if (
                 filter == null || filter.getValue().isEmpty()
@@ -263,7 +263,7 @@ public class VatScreen extends AbstractSimiScreen {
                 int yPos = guiTop + ((i + 1) * CARD_HEIGHT) - (int)moleculeScroll.getChaseTarget() - 14;
                 Rect2i clickArea = new Rect2i(moleculeScrollArea.getX() + 15, yPos, 97, 28);
                 if (clickArea.contains((int)mouseX, (int)mouseY)) {
-                    Molecule molecule = orderedMolecules.get(i).getFirst();
+                    LegacySpecies molecule = orderedMolecules.get(i).getFirst();
                     if (selectedMolecule != null && selectedMolecule.getFullID().equals(molecule.getFullID())) {
                         selectedMolecule = null;
                     } else {
@@ -309,9 +309,9 @@ public class VatScreen extends AbstractSimiScreen {
         GuiHelper.startStencil(graphics, moleculeScrollArea.getX(), moleculeScrollArea.getY(), moleculeScrollArea.getWidth(), moleculeScrollArea.getHeight());
         ms.pushPose();
         ms.translate(guiLeft + 25, guiTop + 20 + scrollOffset, 0);
-        for (Pair<Molecule, Float> pair : orderedMolecules) {
+        for (Pair<LegacySpecies, Float> pair : orderedMolecules) {
             ms.pushPose();
-            Molecule molecule = pair.getFirst();
+            LegacySpecies molecule = pair.getFirst();
             boolean selected = selectedMolecule != null && molecule.getFullID().equals(selectedMolecule.getFullID());
             (selected ? DestroyGuiTextures.VAT_CARD_SELECTED : DestroyGuiTextures.VAT_CARD_UNSELECTED).render(graphics, selected ? -1 : 0, selected ? -1 : 0);
             graphics.drawString(font, DestroyLang.shorten(molecule.getName(iupac).getString(), font, 92), 4, 4, 0xFFFFFF);

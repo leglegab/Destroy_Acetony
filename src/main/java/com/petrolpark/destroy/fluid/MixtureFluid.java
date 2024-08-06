@@ -2,10 +2,10 @@ package com.petrolpark.destroy.fluid;
 
 import javax.annotation.Nullable;
 
-import com.petrolpark.destroy.chemistry.ClientMixture;
-import com.petrolpark.destroy.chemistry.Mixture;
-import com.petrolpark.destroy.chemistry.ReadOnlyMixture;
-import com.petrolpark.destroy.chemistry.index.DestroyMolecules;
+import com.petrolpark.destroy.chemistry.legacy.ClientMixture;
+import com.petrolpark.destroy.chemistry.legacy.LegacyMixture;
+import com.petrolpark.destroy.chemistry.legacy.ReadOnlyMixture;
+import com.petrolpark.destroy.chemistry.legacy.index.DestroyMolecules;
 import com.simibubi.create.AllFluids.TintedFluidType;
 import com.simibubi.create.content.fluids.VirtualFluid;
 
@@ -23,9 +23,9 @@ public class MixtureFluid extends VirtualFluid {
         super(properties);
     };
 
-    public static Mixture airMixture(float temperature) {
+    public static LegacyMixture airMixture(float temperature) {
         if (temperature <= 0f || Float.isNaN(temperature)) throw new IllegalStateException("Temperature cannot be negative or 0.");
-        Mixture air = new Mixture();
+        LegacyMixture air = new LegacyMixture();
         air.addMolecule(DestroyMolecules.NITROGEN, 32.80f * 279f / temperature);
         air.addMolecule(DestroyMolecules.OXYGEN, 8.83f * 279f / temperature);
         air.setTemperature(temperature);
@@ -33,7 +33,7 @@ public class MixtureFluid extends VirtualFluid {
     };
 
     /**
-     * Creates a Fluid Stack of the given {@link com.petrolpark.destroy.chemistry.Mixture Mixture}.
+     * Creates a Fluid Stack of the given {@link com.petrolpark.destroy.chemistry.legacy.LegacyMixture Mixture}.
      * @param amount How many mB this Fluid Stack is
      * @param mixture This does not have to be read-only
      */
@@ -50,7 +50,7 @@ public class MixtureFluid extends VirtualFluid {
     };
 
     /**
-     * Creates a Fluid Stack of the given {@link com.petrolpark.destroy.chemistry.Mixture Mixture}.
+     * Creates a Fluid Stack of the given {@link com.petrolpark.destroy.chemistry.legacy.LegacyMixture Mixture}.
      * @param amount How many mB this Fluid Stack is
      * @param mixture This does not have to be read-only
      * @param translationKey The translation key of the custom name of this Mixture (which will override the normal naming algorithm). {@code null} or {@code ""} for no name

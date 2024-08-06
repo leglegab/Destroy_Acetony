@@ -2,6 +2,7 @@ package com.petrolpark.destroy.item;
 
 import com.petrolpark.destroy.capability.player.previousposition.PlayerPreviousPositionsProvider;
 import com.petrolpark.destroy.config.DestroyAllConfigs;
+import com.petrolpark.destroy.config.DestroySubstancesConfigs;
 import com.petrolpark.destroy.item.tooltip.IDynamicItemDescription;
 import com.simibubi.create.foundation.item.ItemDescription;
 import com.simibubi.create.foundation.item.TooltipHelper.Palette;
@@ -43,6 +44,11 @@ public class ChorusWineItem extends AlcoholicDrinkItem implements IDynamicItemDe
         };
         return stack;
     }
+
+    @Override
+    public String getDescriptionId() {
+        return DestroySubstancesConfigs.alcoholEnabled() ? super.getDescriptionId() : "item.destroy.chorus_wine_bottle.pg";
+    };
 
     @Override
     public ItemDescription getItemDescription() {

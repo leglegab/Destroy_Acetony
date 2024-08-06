@@ -1,6 +1,7 @@
 package com.petrolpark.destroy.compat.jei;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
@@ -14,7 +15,7 @@ import java.util.function.Supplier;
 
 import com.petrolpark.destroy.Destroy;
 import com.petrolpark.destroy.block.DestroyBlocks;
-import com.petrolpark.destroy.chemistry.Molecule;
+import com.petrolpark.destroy.chemistry.legacy.LegacySpecies;
 import com.petrolpark.destroy.client.gui.screen.RedstoneProgrammerScreen;
 import com.petrolpark.destroy.compat.jei.category.AgingCategory;
 import com.petrolpark.destroy.compat.jei.category.CartographyTableCategory;
@@ -25,6 +26,7 @@ import com.petrolpark.destroy.compat.jei.category.DistillationCategory;
 import com.petrolpark.destroy.compat.jei.category.ElectrolysisCategory;
 import com.petrolpark.destroy.compat.jei.category.ExtrusionCategory;
 import com.petrolpark.destroy.compat.jei.category.GenericReactionCategory;
+import com.petrolpark.destroy.compat.jei.category.GlassblowingCategory;
 import com.petrolpark.destroy.compat.jei.category.ITickableCategory;
 import com.petrolpark.destroy.compat.jei.category.ManualOnlyCategory;
 import com.petrolpark.destroy.compat.jei.category.MixableExplosiveCategory;
@@ -43,6 +45,7 @@ import com.petrolpark.destroy.effect.potion.PotionSeparationRecipes;
 import com.petrolpark.destroy.fluid.DestroyFluids;
 import com.petrolpark.destroy.item.CustomExplosiveMixBlockItem;
 import com.petrolpark.destroy.item.DestroyItems;
+import com.petrolpark.destroy.item.armorMaterial.DestroyArmorMaterials;
 import com.petrolpark.destroy.recipe.AgingRecipe;
 import com.petrolpark.destroy.recipe.CentrifugationRecipe;
 import com.petrolpark.destroy.recipe.ChargingRecipe;
@@ -51,6 +54,7 @@ import com.petrolpark.destroy.recipe.DistillationRecipe;
 import com.petrolpark.destroy.recipe.ElectrolysisRecipe;
 import com.petrolpark.destroy.recipe.ExtendedDurationFireworkRocketRecipe;
 import com.petrolpark.destroy.recipe.ExtrusionRecipe;
+import com.petrolpark.destroy.recipe.GlassblowingRecipe;
 import com.petrolpark.destroy.recipe.ManualOnlyShapedRecipe;
 import com.petrolpark.destroy.recipe.MixtureConversionRecipe;
 import com.petrolpark.destroy.recipe.MutationRecipe;
@@ -70,6 +74,7 @@ import com.simibubi.create.compat.jei.category.CreateRecipeCategory.Info;
 import com.simibubi.create.content.processing.basin.BasinRecipe;
 import com.simibubi.create.foundation.config.ConfigBase.ConfigBool;
 import com.simibubi.create.foundation.recipe.IRecipeTypeInfo;
+import com.simibubi.create.foundation.utility.Pair;
 import com.simibubi.create.infrastructure.config.AllConfigs;
 import com.simibubi.create.infrastructure.config.CRecipes;
 
@@ -81,6 +86,7 @@ import mezz.jei.api.gui.drawable.IDrawable;
 import mezz.jei.api.helpers.IJeiHelpers;
 import mezz.jei.api.helpers.IPlatformFluidHelper;
 import mezz.jei.api.recipe.category.IRecipeCategory;
+import mezz.jei.api.recipe.vanilla.IJeiAnvilRecipe;
 import mezz.jei.api.registration.IAdvancedRegistration;
 import mezz.jei.api.registration.IGuiHandlerRegistration;
 import mezz.jei.api.registration.IModIngredientRegistration;
@@ -89,13 +95,16 @@ import mezz.jei.api.registration.IRecipeCategoryRegistration;
 import mezz.jei.api.registration.IRecipeRegistration;
 import mezz.jei.api.registration.ISubtypeRegistration;
 import mezz.jei.api.runtime.IJeiRuntime;
+import mezz.jei.library.plugins.vanilla.anvil.AnvilRecipe;
 import net.minecraft.client.Minecraft;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtUtils;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.CraftingRecipe;
+import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.ItemLike;
@@ -115,14 +124,14 @@ public class DestroyJEI implements IModPlugin {
     public static final Map<mezz.jei.api.recipe.RecipeType<?>, Class<? extends Recipe<?>>> RECIPE_TYPES = new HashMap<>();
     /**
      * A map of Molecules to the Recipes in which they are inputs.
-     * This does not include {@link com.petrolpark.destroy.chemistry.Reaction Reactions}.
+     * This does not include {@link com.petrolpark.destroy.chemistry.legacy.LegacyReaction Reactions}.
      */
-    public static final Map<Molecule, List<Recipe<?>>> MOLECULES_INPUT = new HashMap<>();
+    public static final Map<LegacySpecies, List<Recipe<?>>> MOLECULES_INPUT = new HashMap<>();
     /**
      * A map of Molecules to the Recipes in which they are outputs.u
-     * This does not include {@link com.petrolpark.destroy.chemistry.Reaction Reactions}.
+     * This does not include {@link com.petrolpark.destroy.chemistry.legacy.LegacyReaction Reactions}.
      */
-    public static final Map<Molecule, List<Recipe<?>>> MOLECULES_OUTPUT = new HashMap<>();
+    public static final Map<LegacySpecies, List<Recipe<?>>> MOLECULES_OUTPUT = new HashMap<>();
     /**
      * Whether Recipes have not yet been added to {@link DestroyJEI#MOLECULES_INPUT} and {@link DestroyJEI#MOLECULES_OUTPUT}.
      */
@@ -278,7 +287,14 @@ public class DestroyJEI implements IModPlugin {
             .catalyst(DestroyBlocks.MECHANICAL_SIEVE::get)
             .itemIcon(DestroyBlocks.MECHANICAL_SIEVE)
             .emptyBackground(150, 90)
-            .build("sieving", SievingCategory::new);
+            .build("sieving", SievingCategory::new),
+
+        glassblowing = builder(GlassblowingRecipe.class)
+            .addTypedRecipes(DestroyRecipeTypes.GLASSBLOWING)
+            .reactionCatalysts()
+            .itemIcon(DestroyBlocks.BLOWPIPE)
+            .emptyBackground(125, 50)
+            .build("glassblowing", GlassblowingCategory::new);
             
 
         DestroyJEI.MOLECULE_RECIPES_NEED_PROCESSING = false;
@@ -302,6 +318,9 @@ public class DestroyJEI implements IModPlugin {
 
         // Example crafts
         registration.addRecipes(RecipeTypes.CRAFTING, ExtendedDurationFireworkRocketRecipe.exampleRecipes());
+
+        // Anvil repairs
+        registration.addRecipes(RecipeTypes.ANVIL, getAnvilRepairs());
 	};
 
     @Override
@@ -311,7 +330,7 @@ public class DestroyJEI implements IModPlugin {
     
     @Override
     public void registerIngredients(IModIngredientRegistration registration) {
-        registration.register(MoleculeJEIIngredient.TYPE, Molecule.MOLECULES.values(), MoleculeJEIIngredient.HELPER, MoleculeJEIIngredient.RENDERER);
+        registration.register(MoleculeJEIIngredient.TYPE, LegacySpecies.MOLECULES.values(), MoleculeJEIIngredient.HELPER, MoleculeJEIIngredient.RENDERER);
     };
 
     @Override
@@ -572,5 +591,28 @@ public class DestroyJEI implements IModPlugin {
                 tick();
             };
         };
+    };
+
+    private static List<IJeiAnvilRecipe> getAnvilRepairs() {
+        List<Pair<Item, Ingredient>> repairables = List.of(
+            Pair.of(DestroyItems.HAZMAT_SUIT.get(), DestroyArmorMaterials.HAZMAT.getRepairIngredient()),
+            Pair.of(DestroyItems.HAZMAT_LEGGINGS.get(), DestroyArmorMaterials.HAZMAT.getRepairIngredient()),
+            Pair.of(DestroyItems.WELLINGTON_BOOTS.get(), DestroyArmorMaterials.HAZMAT.getRepairIngredient()),
+
+            Pair.of(DestroyItems.GAS_MASK.get(), DestroyItems.GAS_MASK.get().getRepairIngredient()),
+            Pair.of(DestroyItems.PAPER_MASK.get(), DestroyItems.PAPER_MASK.get().getRepairIngredient()),
+            Pair.of(DestroyItems.LABORATORY_GOGGLES.get(), DestroyItems.LABORATORY_GOGGLES.get().getRepairIngredient()),
+            Pair.of(DestroyItems.GOLD_LABORATORY_GOGGLES.get(), DestroyItems.GOLD_LABORATORY_GOGGLES.get().getRepairIngredient())
+        );
+
+        return repairables.stream().map(pair -> makeRepairRecipe(new ItemStack(pair.getFirst()), pair.getSecond())).toList();
+    };
+
+    public static IJeiAnvilRecipe makeRepairRecipe(ItemStack input, Ingredient repairItem) {
+        ItemStack halfDurability = input.copy();
+        halfDurability.setDamageValue(halfDurability.getMaxDamage() / 2);
+        ItemStack threeQuarterDurability = input.copy();
+        threeQuarterDurability.setDamageValue(threeQuarterDurability.getMaxDamage() * 3 / 4);
+        return new AnvilRecipe(Collections.singletonList(halfDurability), Arrays.asList(repairItem.getItems()), Collections.singletonList(threeQuarterDurability));
     };
 };

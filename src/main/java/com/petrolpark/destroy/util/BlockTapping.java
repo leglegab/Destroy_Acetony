@@ -4,8 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Predicate;
 
-import com.petrolpark.destroy.chemistry.Mixture;
-import com.petrolpark.destroy.chemistry.index.DestroyMolecules;
+import com.petrolpark.destroy.chemistry.legacy.LegacyMixture;
+import com.petrolpark.destroy.chemistry.legacy.index.DestroyMolecules;
 import com.petrolpark.destroy.fluid.MixtureFluid;
 
 import net.minecraft.world.item.ItemStack;
@@ -18,7 +18,7 @@ public class BlockTapping {
 
     public static final List<BlockTapping> ALL_TAPPINGS = new ArrayList<>();
 
-    public static final FluidStack latex = MixtureFluid.of(10, Mixture.pure(DestroyMolecules.ISOPRENE), "fluid.destroy.latex");
+    public static final FluidStack latex = MixtureFluid.of(10, LegacyMixture.pure(DestroyMolecules.ISOPRENE), "fluid.destroy.latex");
     static {
         ALL_TAPPINGS.add(create(latex, Blocks.STRIPPED_JUNGLE_LOG, Blocks.STRIPPED_JUNGLE_WOOD));
     };

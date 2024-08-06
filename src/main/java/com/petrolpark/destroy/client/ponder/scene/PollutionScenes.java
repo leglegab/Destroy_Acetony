@@ -4,8 +4,8 @@ import com.petrolpark.destroy.block.entity.VatControllerBlockEntity;
 import com.petrolpark.destroy.block.entity.VatSideBlockEntity;
 import com.petrolpark.destroy.block.entity.VatSideBlockEntity.DisplayType;
 import com.petrolpark.destroy.capability.Pollution.PollutionType;
-import com.petrolpark.destroy.chemistry.Mixture;
-import com.petrolpark.destroy.chemistry.index.DestroyMolecules;
+import com.petrolpark.destroy.chemistry.legacy.LegacyMixture;
+import com.petrolpark.destroy.chemistry.legacy.index.DestroyMolecules;
 import com.petrolpark.destroy.client.particle.DestroyParticleTypes;
 import com.petrolpark.destroy.client.particle.data.GasParticleData;
 import com.petrolpark.destroy.client.ponder.PonderPlayer;
@@ -51,7 +51,7 @@ import net.minecraft.world.phys.Vec3;
 
 public class PollutionScenes {
 
-    private static final Emitter emitter = Emitter.simple(new GasParticleData(DestroyParticleTypes.EVAPORATION.get(), MixtureFluid.of(100, Mixture.pure(DestroyMolecules.NITROGEN_DIOXIDE))), new Vec3(0d, 0.05d, 0d));
+    private static final Emitter emitter = Emitter.simple(new GasParticleData(DestroyParticleTypes.EVAPORATION.get(), MixtureFluid.of(100, LegacyMixture.pure(DestroyMolecules.NITROGEN_DIOXIDE))), new Vec3(0d, 0.05d, 0d));
     
     public static final void pipesAndTanks(SceneBuilder scene, SceneBuildingUtil util) {
         scene.title("pollution.tanks", "This text is defined in a language file.");

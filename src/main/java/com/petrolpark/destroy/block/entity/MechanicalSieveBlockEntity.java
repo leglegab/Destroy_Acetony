@@ -5,15 +5,19 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
 
+import com.petrolpark.destroy.advancement.DestroyAdvancementTrigger;
+import com.petrolpark.destroy.block.entity.behaviour.DestroyAdvancementBehaviour;
 import com.petrolpark.destroy.block.entity.behaviour.FirstTimeLuckyRecipesBehaviour;
 import com.petrolpark.destroy.recipe.DestroyRecipeTypes;
 import com.petrolpark.destroy.recipe.RecipeHelper;
 import com.petrolpark.destroy.recipe.SievingRecipe;
 import com.simibubi.create.content.kinetics.base.KineticBlockEntity;
+import com.simibubi.create.content.kinetics.belt.behaviour.DirectBeltInputBehaviour;
 import com.simibubi.create.foundation.blockEntity.behaviour.BlockEntityBehaviour;
 import com.simibubi.create.foundation.utility.NBTHelper;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.core.NonNullList;
 import net.minecraft.core.particles.ItemParticleOption;
 import net.minecraft.core.particles.ParticleTypes;
@@ -25,12 +29,14 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.items.ItemStackHandler;
 import net.minecraftforge.items.wrapper.RecipeWrapper;
 
 public class MechanicalSieveBlockEntity extends KineticBlockEntity {
 
     protected FirstTimeLuckyRecipesBehaviour luckyBehaviour;
+    protected DestroyAdvancementBehaviour advancementBehaviour;
 
     protected SievingRecipe lastRecipe;
 
@@ -45,8 +51,23 @@ public class MechanicalSieveBlockEntity extends KineticBlockEntity {
     @Override
     public void addBehaviours(List<BlockEntityBehaviour> behaviours) {
         super.addBehaviours(behaviours);
+
         luckyBehaviour = new FirstTimeLuckyRecipesBehaviour(this, DestroyRecipeTypes.SIEVING::is);
         behaviours.add(luckyBehaviour);
+
+        advancementBehaviour = new DestroyAdvancementBehaviour(this, DestroyAdvancementTrigger.MECHANICAL_SIEVE);
+        behaviours.add(advancementBehaviour);
+
+        behaviours.add(
+            new DirectBeltInputBehaviour(this)
+            .onlyInsertWhen(s -> s != Direction.DOWN)
+            .setInsertionHandler((transportedStack, side, simulate) -> {
+                Vec3 loc = getBlockPos().getCenter().add(Vec3.atBottomCenterOf(side.getNormal()).scale(-4 / 16d));
+                if (side != Direction.UP) loc = loc.add(0d, 2 / 16d, 0d);
+                getLevel().addFreshEntity(new ItemEntity(getLevel(), loc.x,loc.y, loc.z, transportedStack.stack, 0d, 0d, 0d));
+                return ItemStack.EMPTY;
+            })
+        );
     };
 
     @Override
@@ -97,9 +118,10 @@ public class MechanicalSieveBlockEntity extends KineticBlockEntity {
                 ItemEntity entity = item.item;
                 entity.kill();
                 for (ItemStack stack : RecipeHelper.rollResults(item.getRecipe(), luckyBehaviour.getPlayer(), entity.getItem().getCount())) {
-                    getLevel().addFreshEntity(new ItemEntity(getLevel(), entity.getX() - 0.125d + level.random.nextDouble() * 0.25d, entity.getY() - 0.5d, entity.getZ() - 0.125d + level.random.nextDouble() * 0.25d, stack));
+                    getLevel().addFreshEntity(new ItemEntity(getLevel(), entity.getX() - 0.125d + level.random.nextDouble() * 0.25d, getBlockPos().getY(), entity.getZ() - 0.125d + level.random.nextDouble() * 0.25d, stack, 0d, 0d, 0d));
                 };
                 iterator.remove();
+                advancementBehaviour.awardDestroyAdvancement(DestroyAdvancementTrigger.MECHANICAL_SIEVE);
             };
         };
         sendData();

@@ -3,7 +3,7 @@ package com.petrolpark.destroy.block.entity.behaviour.fluidTankBehaviour;
 import java.util.Map;
 import java.util.function.Consumer;
 
-import com.petrolpark.destroy.chemistry.Mixture;
+import com.petrolpark.destroy.chemistry.legacy.LegacyMixture;
 import com.petrolpark.destroy.fluid.DestroyFluids;
 import com.petrolpark.destroy.fluid.MixtureFluid;
 import com.simibubi.create.foundation.blockEntity.SmartBlockEntity;
@@ -72,13 +72,13 @@ public class GeniusFluidTankBehaviour extends SmartFluidTankBehaviour {
             if (filled == 0 && getSpace() > 0) { // If we wouldn't usually be able to insert, and we're not full (i.e. the Fluids are 'different')
                 if (!DestroyFluids.isMixture(resource) || !DestroyFluids.isMixture(fluid)) return 0;
                 if (!resource.getOrCreateTag().contains("Mixture", Tag.TAG_COMPOUND) || !fluid.getOrCreateTag().contains("Mixture", Tag.TAG_COMPOUND)) return 0;
-                Mixture existingMixture = Mixture.readNBT(fluid.getOrCreateTag().getCompound("Mixture"));
-                Mixture addedMixture = Mixture.readNBT(resource.getOrCreateTag().getCompound("Mixture"));
+                LegacyMixture existingMixture = LegacyMixture.readNBT(fluid.getOrCreateTag().getCompound("Mixture"));
+                LegacyMixture addedMixture = LegacyMixture.readNBT(resource.getOrCreateTag().getCompound("Mixture"));
 
                 int amountOfMixtureAdded = Math.min(getSpace(), resource.getAmount());
                 int existingAmount = fluid.getAmount();
                 if (!action.simulate()) { // We don't need to do anything further if we're just simulating
-                    Mixture newMixture = Mixture.mix(Map.of(existingMixture, (double)existingAmount / 1000d, addedMixture, (double)amountOfMixtureAdded / 1000d));
+                    LegacyMixture newMixture = LegacyMixture.mix(Map.of(existingMixture, (double)existingAmount / 1000d, addedMixture, (double)amountOfMixtureAdded / 1000d));
                     setFluid(MixtureFluid.of(existingAmount + amountOfMixtureAdded, newMixture));
                 };
 

@@ -67,6 +67,9 @@ public class CatalyticConverterBlockEntity extends SmartBlockEntity {
         tankBehaviour = new GeniusFluidTankBehaviour(SmartFluidTankBehaviour.INPUT, this, 1, 1000000, false);
         tankBehaviour.forbidExtraction();
         behaviours.add(tankBehaviour);
+
+        advancementBehaviour = new DestroyAdvancementBehaviour(this, DestroyAdvancementTrigger.CATALYTIC_CONVERTER);
+        behaviours.add(advancementBehaviour);
     };
 
     @Override

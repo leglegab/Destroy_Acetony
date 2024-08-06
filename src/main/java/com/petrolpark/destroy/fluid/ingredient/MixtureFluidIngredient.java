@@ -4,8 +4,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.petrolpark.destroy.chemistry.Mixture;
-import com.petrolpark.destroy.chemistry.ReadOnlyMixture;
+import com.petrolpark.destroy.chemistry.legacy.LegacyMixture;
+import com.petrolpark.destroy.chemistry.legacy.ReadOnlyMixture;
 import com.petrolpark.destroy.fluid.DestroyFluids;
 import com.petrolpark.destroy.fluid.MixtureFluid;
 import com.petrolpark.destroy.fluid.ingredient.mixturesubtype.MixtureFluidIngredientSubType;
@@ -35,7 +35,7 @@ public abstract class MixtureFluidIngredient<T extends MixtureFluidIngredient<T>
         if (!(fluidStack.getFluid().getFluidType() == DestroyFluids.MIXTURE.getType())) return false; // If it's not a Mixture
         CompoundTag mixtureTag = fluidStack.getChildTag("Mixture");
         if (mixtureTag.isEmpty()) return false; // If this Mixture Fluid has no associated Mixture
-        return testMixture(Mixture.readNBT(mixtureTag));
+        return testMixture(LegacyMixture.readNBT(mixtureTag));
     };
 
     @Override
@@ -50,7 +50,7 @@ public abstract class MixtureFluidIngredient<T extends MixtureFluidIngredient<T>
 
     public abstract MixtureFluidIngredientSubType<T> getType();
 
-    protected abstract boolean testMixture(Mixture mixture);
+    protected abstract boolean testMixture(LegacyMixture mixture);
 
     /**
      * Add data to the NBT of the Fluid Ingredient when it is displayed in JEI. The only use of this is to control the

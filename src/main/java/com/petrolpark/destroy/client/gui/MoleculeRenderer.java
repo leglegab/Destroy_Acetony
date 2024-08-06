@@ -14,10 +14,10 @@ import com.google.common.collect.ImmutableList;
 import com.jozufozu.flywheel.util.AnimationTickHolder;
 import com.jozufozu.flywheel.util.transform.TransformStack;
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.petrolpark.destroy.chemistry.Atom;
-import com.petrolpark.destroy.chemistry.Molecule;
-import com.petrolpark.destroy.chemistry.Bond.BondType;
-import com.petrolpark.destroy.chemistry.Formula.Topology.SideChainInformation;
+import com.petrolpark.destroy.chemistry.legacy.LegacyAtom;
+import com.petrolpark.destroy.chemistry.legacy.LegacySpecies;
+import com.petrolpark.destroy.chemistry.legacy.LegacyBond.BondType;
+import com.petrolpark.destroy.chemistry.legacy.LegacyMolecularStructure.Topology.SideChainInformation;
 import com.petrolpark.destroy.chemistry.serializer.Branch;
 import com.petrolpark.destroy.chemistry.serializer.Edge;
 import com.petrolpark.destroy.chemistry.serializer.Node;
@@ -63,7 +63,7 @@ public class MoleculeRenderer {
      */
     List<Pair<Vec3, IRenderableMoleculePart>> RENDERED_OBJECTS;
 
-    public MoleculeRenderer(Molecule molecule) {
+    public MoleculeRenderer(LegacySpecies molecule) {
         moleculeID = molecule.getFullID();
         width = 0;
         height = 0;
@@ -79,7 +79,7 @@ public class MoleculeRenderer {
         // Cyclic Molecules
         } else if (molecule.isCyclic()) {
             // Add all Atoms in the cycle
-            Map<Atom, Vec3> cyclicAtomsAndLocations = new HashMap<>(); // Store the location of each Atom so we can refer to them when adding the Bonds
+            Map<LegacyAtom, Vec3> cyclicAtomsAndLocations = new HashMap<>(); // Store the location of each Atom so we can refer to them when adding the Bonds
             molecule.getCyclicAtomsForRendering().forEach(pair -> {
                 cyclicAtomsAndLocations.put(pair.getSecond(), pair.getFirst());
                 RENDERED_OBJECTS.add(Pair.of(
@@ -365,7 +365,7 @@ public class MoleculeRenderer {
 
         /**
          * Generate a Bond render instance betweem two Atoms
-         * @param type The {@link com.petrolpark.destroy.chemistry.Bond.BondType type} of the bond
+         * @param type The {@link com.petrolpark.destroy.chemistry.legacy.LegacyBond.BondType type} of the bond
          * @param zig The direction vector which connects the two Atoms this Bond connects
          */
         public static BondRenderInstance fromZig(BondType type, Vec3 zig) {
@@ -390,7 +390,7 @@ public class MoleculeRenderer {
         };
     };
 
-    protected static record AtomRenderInstance(Atom atom) implements IRenderableMoleculePart {
+    protected static record AtomRenderInstance(LegacyAtom atom) implements IRenderableMoleculePart {
 
         @Override
         public void render(GuiGraphics graphics, Vec3 location) {

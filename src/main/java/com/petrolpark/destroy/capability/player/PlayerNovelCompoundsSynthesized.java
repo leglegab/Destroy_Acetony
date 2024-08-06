@@ -6,7 +6,7 @@ import java.util.Set;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import com.petrolpark.destroy.chemistry.Molecule;
+import com.petrolpark.destroy.chemistry.legacy.LegacySpecies;
 import com.petrolpark.destroy.stats.DestroyStats;
 
 import net.minecraft.core.Direction;
@@ -26,7 +26,7 @@ public class PlayerNovelCompoundsSynthesized {
   
     protected Set<String> novelCompoundFROWNSStrings = new HashSet<>();
 
-    public static void add(Player player, Molecule novelCompound) {
+    public static void add(Player player, LegacySpecies novelCompound) {
         player.getCapability(Provider.PLAYER_NOVEL_COMPOUNDS_SYNTHESIZED).ifPresent(pncs -> {
             if (pncs.novelCompoundFROWNSStrings.add(novelCompound.getFROWNSCode())) player.awardStat(DestroyStats.NOVEL_COMPOUNDS_SYNTHESIZED.get());
         });

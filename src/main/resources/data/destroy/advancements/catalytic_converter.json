@@ -1,5 +1,5 @@
 {
-    "parent": "destroy:hyperaccumulate",
+    "parent": "destroy:mechanical_sieve",
     "criteria": {
       "use": {
         "conditions": {},

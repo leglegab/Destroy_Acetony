@@ -2,7 +2,9 @@ package com.petrolpark.destroy.block.entity;
 
 import java.util.List;
 
+import com.petrolpark.destroy.advancement.DestroyAdvancementTrigger;
 import com.petrolpark.destroy.block.BlowpipeBlock;
+import com.petrolpark.destroy.block.entity.behaviour.DestroyAdvancementBehaviour;
 import com.petrolpark.destroy.block.entity.behaviour.ISpecialAirCurrentBehaviour;
 import com.petrolpark.destroy.recipe.GlassblowingRecipe;
 import com.simibubi.create.content.kinetics.belt.behaviour.TransportedItemStackHandlerBehaviour;
@@ -33,6 +35,8 @@ public class BlowpipeBlockEntity extends SmartBlockEntity {
 
     public FluidTank tank;
 
+    protected DestroyAdvancementBehaviour advancementBehaviour;
+
     protected ResourceLocation recipeId;
     protected GlassblowingRecipe recipe;
     public int progress = 0;
@@ -47,6 +51,7 @@ public class BlowpipeBlockEntity extends SmartBlockEntity {
     @Override
     public void addBehaviours(List<BlockEntityBehaviour> behaviours) {
         behaviours.add(new GlassblowingBehaviour());
+        advancementBehaviour = new DestroyAdvancementBehaviour(this, DestroyAdvancementTrigger.BLOWPIPE);
     };
 
     public FluidStack getFluid() {
@@ -98,7 +103,7 @@ public class BlowpipeBlockEntity extends SmartBlockEntity {
     public void tick() {
         super.tick();
 
-        if ((float)progress / (float)BLOWING_DURATION > BLOWING_TIME_PROPORTION) progress++;
+        if ((float)progress / (float)BLOWING_DURATION > BLOWING_TIME_PROPORTION && progress < BLOWING_DURATION) progress++;
 
         boolean send = progress != progressLastTick;
         progressLastTick = progress;
@@ -106,7 +111,9 @@ public class BlowpipeBlockEntity extends SmartBlockEntity {
         if (progress >= BLOWING_DURATION) {
             tank.setFluid(FluidStack.EMPTY);
             progress = progressLastTick = 0;
+            advancementBehaviour.awardDestroyAdvancement(DestroyAdvancementTrigger.BLOWPIPE);
             send = true;
+            //TODO spawn item
         };
 
         if (send) notifyUpdate();

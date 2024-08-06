@@ -7,18 +7,18 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import com.petrolpark.destroy.chemistry.Atom;
-import com.petrolpark.destroy.chemistry.Element;
-import com.petrolpark.destroy.chemistry.Bond.BondType;
+import com.petrolpark.destroy.chemistry.legacy.LegacyAtom;
+import com.petrolpark.destroy.chemistry.legacy.LegacyElement;
+import com.petrolpark.destroy.chemistry.legacy.LegacyBond.BondType;
 
 public class Node {
-    private Atom atom;
+    private LegacyAtom atom;
     public Boolean visited;
     private List<Edge> edges;
     private Branch branch;
     private Map<Branch, BondType> sideBranches;
 
-    public Node(Atom atom) {
+    public Node(LegacyAtom atom) {
         this.atom = atom;
         visited = false;
         edges = new ArrayList<>();
@@ -36,7 +36,7 @@ public class Node {
                 break;
             };
         };
-        if (atom.rGroupNumber != 0 && atom.getElement() == Element.R_GROUP) {
+        if (atom.rGroupNumber != 0 && atom.getElement() == LegacyElement.R_GROUP) {
             string += atom.rGroupNumber;
         };
         if (atom.formalCharge != 0) {
@@ -54,7 +54,7 @@ public class Node {
         return string;
     };
 
-    public Atom getAtom() {
+    public LegacyAtom getAtom() {
         return this.atom;
     };
 

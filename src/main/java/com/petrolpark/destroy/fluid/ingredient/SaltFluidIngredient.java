@@ -5,10 +5,10 @@ import java.util.Collection;
 import java.util.List;
 
 import com.google.gson.JsonObject;
-import com.petrolpark.destroy.chemistry.Mixture;
-import com.petrolpark.destroy.chemistry.Molecule;
-import com.petrolpark.destroy.chemistry.ReadOnlyMixture;
-import com.petrolpark.destroy.chemistry.index.DestroyMolecules;
+import com.petrolpark.destroy.chemistry.legacy.LegacyMixture;
+import com.petrolpark.destroy.chemistry.legacy.LegacySpecies;
+import com.petrolpark.destroy.chemistry.legacy.ReadOnlyMixture;
+import com.petrolpark.destroy.chemistry.legacy.index.DestroyMolecules;
 import com.petrolpark.destroy.chemistry.naming.NamedSalt;
 import com.petrolpark.destroy.config.DestroyAllConfigs;
 import com.petrolpark.destroy.fluid.ingredient.mixturesubtype.MixtureFluidIngredientSubType;
@@ -25,8 +25,8 @@ public class SaltFluidIngredient extends ConcentrationRangeFluidIngredient<SaltF
 
     public static final Type TYPE = new Type();
 
-    protected Molecule cation;
-    protected Molecule anion;
+    protected LegacySpecies cation;
+    protected LegacySpecies anion;
 
     @Override
     public MixtureFluidIngredientSubType<SaltFluidIngredient> getType() {
@@ -41,15 +41,15 @@ public class SaltFluidIngredient extends ConcentrationRangeFluidIngredient<SaltF
     };
 
     @Override
-    protected boolean testMixture(Mixture mixture) {
+    protected boolean testMixture(LegacyMixture mixture) {
         return mixture.hasUsableMolecule(cation, minConcentration * cation.getCharge(), maxConcentration * cation.getCharge(), (molecule) -> molecule == anion) && mixture.hasUsableMolecule(anion, minConcentration * -anion.getCharge(), maxConcentration * -anion.getCharge(), (molecule) -> molecule == cation);
     };
 
     @Override
     protected void readInternal(FriendlyByteBuf buffer) {
         super.readInternal(buffer);
-        cation = Molecule.getMolecule(buffer.readUtf());
-        anion = Molecule.getMolecule(buffer.readUtf());
+        cation = LegacySpecies.getMolecule(buffer.readUtf());
+        anion = LegacySpecies.getMolecule(buffer.readUtf());
     };
 
     @Override
@@ -63,9 +63,9 @@ public class SaltFluidIngredient extends ConcentrationRangeFluidIngredient<SaltF
     protected void readInternal(JsonObject json) {
         super.readInternal(json);
         if (!json.has("cation") || !json.has("anion")) throw new IllegalStateException("Salt Mixture Ingredients must declare a cation and anion");
-        cation = Molecule.getMolecule(GsonHelper.getAsString(json, "cation"));
+        cation = LegacySpecies.getMolecule(GsonHelper.getAsString(json, "cation"));
         if (cation.getCharge() <= 0) throw new IllegalStateException("Cations must be positively charged.");
-        anion = Molecule.getMolecule(GsonHelper.getAsString(json, "anion"));
+        anion = LegacySpecies.getMolecule(GsonHelper.getAsString(json, "anion"));
         if (anion.getCharge() >= 0) throw new IllegalStateException("Anions must be negatively charged.");
     };
 
@@ -106,20 +106,20 @@ public class SaltFluidIngredient extends ConcentrationRangeFluidIngredient<SaltF
             float maxConc = fluidTag.getFloat("MaximumConcentration");
             boolean iupac = DestroyAllConfigs.CLIENT.chemistry.iupacNames.get();
     
-            Molecule cation = Molecule.getMolecule(cationID);
-            Molecule anion = Molecule.getMolecule(anionID);
+            LegacySpecies cation = LegacySpecies.getMolecule(cationID);
+            LegacySpecies anion = LegacySpecies.getMolecule(anionID);
             Component compoundName = (cation == null || anion == null) ? DestroyLang.translate("tooltip.unknown_molecule").component() : new NamedSalt(cation, anion).getName(iupac);
     
             return TooltipHelper.cutStringTextComponent(DestroyLang.translate("tooltip.mixture_ingredient.molecule", compoundName, df.format(minConc), df.format(maxConc)).string(), Palette.GRAY_AND_WHITE);
         };
     
         @Override
-        public Collection<Molecule> getContainedMolecules(CompoundTag fluidTag) {
+        public Collection<LegacySpecies> getContainedMolecules(CompoundTag fluidTag) {
             String cationID = fluidTag.getString("RequiredCation");
             String anionID = fluidTag.getString("RequiredAnion");
-            Molecule cation = Molecule.getMolecule(cationID);
-            Molecule anion = Molecule.getMolecule(anionID);
-            List<Molecule> molecules = new ArrayList<>(2);
+            LegacySpecies cation = LegacySpecies.getMolecule(cationID);
+            LegacySpecies anion = LegacySpecies.getMolecule(anionID);
+            List<LegacySpecies> molecules = new ArrayList<>(2);
             if (cation != null) molecules.add(cation);
             if (anion != null) molecules.add(anion);
             return molecules;

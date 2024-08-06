@@ -1,6 +1,6 @@
 package com.petrolpark.destroy.world.damage;
 
-import com.petrolpark.destroy.chemistry.Molecule;
+import com.petrolpark.destroy.chemistry.legacy.LegacySpecies;
 import com.petrolpark.destroy.config.DestroyAllConfigs;
 
 import net.minecraft.core.Holder;
@@ -11,9 +11,9 @@ import net.minecraft.world.entity.LivingEntity;
 
 public class ChemicalDamageSource extends DamageSource {
 
-    public final Molecule molecule;
+    public final LegacySpecies molecule;
 
-    public ChemicalDamageSource(Holder<DamageType> type, Molecule molecule) {
+    public ChemicalDamageSource(Holder<DamageType> type, LegacySpecies molecule) {
         super(type);
         this.molecule = molecule;
     };

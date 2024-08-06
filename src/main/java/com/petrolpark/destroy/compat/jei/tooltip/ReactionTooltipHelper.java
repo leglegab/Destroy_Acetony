@@ -1,9 +1,9 @@
 package com.petrolpark.destroy.compat.jei.tooltip;
 
-import com.petrolpark.destroy.chemistry.IItemReactant;
-import com.petrolpark.destroy.chemistry.Molecule;
-import com.petrolpark.destroy.chemistry.Reaction;
-import com.petrolpark.destroy.chemistry.reactionresult.PrecipitateReactionResult;
+import com.petrolpark.destroy.chemistry.legacy.IItemReactant;
+import com.petrolpark.destroy.chemistry.legacy.LegacySpecies;
+import com.petrolpark.destroy.chemistry.legacy.LegacyReaction;
+import com.petrolpark.destroy.chemistry.legacy.reactionresult.PrecipitateReactionResult;
 import com.petrolpark.destroy.config.DestroyAllConfigs;
 import com.petrolpark.destroy.util.DestroyLang;
 import com.simibubi.create.foundation.item.TooltipHelper;
@@ -15,7 +15,7 @@ import net.minecraft.network.chat.Component;
 
 public class ReactionTooltipHelper {
 
-    public static IRecipeSlotTooltipCallback reactantTooltip(Reaction reaction, Molecule reactant) {
+    public static IRecipeSlotTooltipCallback reactantTooltip(LegacyReaction reaction, LegacySpecies reactant) {
         boolean nerdMode = DestroyAllConfigs.CLIENT.chemistry.nerdMode.get();
         int ratio = reaction.getReactantMolarRatio(reactant);
         return (view, tooltip) -> {
@@ -30,7 +30,7 @@ public class ReactionTooltipHelper {
         };
     };
 
-    public static IRecipeSlotTooltipCallback productTooltip(Reaction reaction, Molecule product) {
+    public static IRecipeSlotTooltipCallback productTooltip(LegacyReaction reaction, LegacySpecies product) {
         int ratio = reaction.getProductMolarRatio(product);
         return (view, tooltip) -> {
             tooltip.add(Component.literal(" "));
@@ -43,7 +43,7 @@ public class ReactionTooltipHelper {
         };
     };
 
-    public static IRecipeSlotTooltipCallback catalystTooltip(Reaction reaction, Molecule catalyst) {
+    public static IRecipeSlotTooltipCallback catalystTooltip(LegacyReaction reaction, LegacySpecies catalyst) {
         boolean nerdMode = DestroyAllConfigs.CLIENT.chemistry.nerdMode.get();
         return (view, tooltip) -> {
             if (nerdMode) {
@@ -53,7 +53,7 @@ public class ReactionTooltipHelper {
         };
     };
 
-    public static IRecipeSlotTooltipCallback itemReactantTooltip(Reaction reaction, IItemReactant itemReactant) {
+    public static IRecipeSlotTooltipCallback itemReactantTooltip(LegacyReaction reaction, IItemReactant itemReactant) {
         return (view, tooltip) -> {
             if (!itemReactant.isCatalyst()) {
                 tooltip.add(Component.literal(" "));
@@ -62,14 +62,14 @@ public class ReactionTooltipHelper {
         };
     };
 
-    public static IRecipeSlotTooltipCallback precipitateTooltip(Reaction reaction, PrecipitateReactionResult precipitate) {
+    public static IRecipeSlotTooltipCallback precipitateTooltip(LegacyReaction reaction, PrecipitateReactionResult precipitate) {
         return (view, tooltip) -> {
             tooltip.add(Component.literal(" "));
             tooltip.addAll(TooltipHelper.cutTextComponent(DestroyLang.translate("tooltip.reaction.precipitate", precipitate.getRequiredMoles()).component(), Palette.GRAY_AND_WHITE));
         };
     };
 
-    public static IRecipeSlotTooltipCallback nerdModeTooltip(Reaction reaction) {
+    public static IRecipeSlotTooltipCallback nerdModeTooltip(LegacyReaction reaction) {
         return (view, tooltip) -> {
             tooltip.clear();
             boolean reversible = reaction.getReverseReactionForDisplay().isPresent();
@@ -81,7 +81,7 @@ public class ReactionTooltipHelper {
             tooltip.add(Component.literal(reversible ? "  " : "").append(DestroyLang.preexponentialFactor(reaction)).withStyle(ChatFormatting.GRAY));
             if (reversible) {
                 tooltip.add(DestroyLang.translate("tooltip.reaction.reverse").component());
-                Reaction reverseReaction = reaction.getReverseReactionForDisplay().get();
+                LegacyReaction reverseReaction = reaction.getReverseReactionForDisplay().get();
                 tooltip.add(Component.literal("  ").append(DestroyLang.translate("tooltip.reaction.activation_energy", reverseReaction.getActivationEnergy()).style(ChatFormatting.GRAY).component()));
                 tooltip.add(Component.literal("  ").append(DestroyLang.translate("tooltip.reaction.enthalpy_change", reverseReaction.getEnthalpyChange()).style(ChatFormatting.GRAY).component()));
                 tooltip.add(Component.literal("  ").append(DestroyLang.preexponentialFactor(reverseReaction)).withStyle(ChatFormatting.GRAY));

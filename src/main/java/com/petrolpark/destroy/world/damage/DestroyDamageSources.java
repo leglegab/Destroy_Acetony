@@ -1,6 +1,6 @@
 package com.petrolpark.destroy.world.damage;
 
-import com.petrolpark.destroy.chemistry.Molecule;
+import com.petrolpark.destroy.chemistry.legacy.LegacySpecies;
 
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.Registries;
@@ -21,7 +21,7 @@ public class DestroyDamageSources {
         return source(DestroyDamageTypes.Keys.CHEMICAL_BURN, level);
     };
 
-    public static ChemicalDamageSource chemicalPoison(Level level, Molecule molecule) {
+    public static ChemicalDamageSource chemicalPoison(Level level, LegacySpecies molecule) {
         return chemicalSource(DestroyDamageTypes.Keys.CHEMICAL_POISON, level, molecule);
     };
 
@@ -61,7 +61,7 @@ public class DestroyDamageSources {
 		return new DamageSource(registry.getHolderOrThrow(key), entity);
 	};
 
-    private static ChemicalDamageSource chemicalSource(ResourceKey<DamageType> key, LevelReader level, Molecule molecule) {
+    private static ChemicalDamageSource chemicalSource(ResourceKey<DamageType> key, LevelReader level, LegacySpecies molecule) {
 		Registry<DamageType> registry = level.registryAccess().registryOrThrow(Registries.DAMAGE_TYPE);
 		return new ChemicalDamageSource(registry.getHolderOrThrow(key), molecule);
 	};

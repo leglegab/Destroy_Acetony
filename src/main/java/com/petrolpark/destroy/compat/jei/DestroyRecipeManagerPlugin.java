@@ -5,9 +5,9 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
-import com.petrolpark.destroy.chemistry.Group;
-import com.petrolpark.destroy.chemistry.Molecule;
-import com.petrolpark.destroy.chemistry.ReadOnlyMixture;
+import com.petrolpark.destroy.chemistry.legacy.LegacyFunctionalGroup;
+import com.petrolpark.destroy.chemistry.legacy.LegacySpecies;
+import com.petrolpark.destroy.chemistry.legacy.ReadOnlyMixture;
 import com.petrolpark.destroy.compat.jei.category.GenericReactionCategory;
 import com.petrolpark.destroy.compat.jei.category.ReactionCategory;
 import com.petrolpark.destroy.fluid.DestroyFluids;
@@ -63,7 +63,7 @@ public class DestroyRecipeManagerPlugin implements IRecipeManagerPlugin {
             if (!DestroyFluids.isMixture(fluidStack)) return;
             MixtureFluidIngredientSubType<?> ingredientType = MixtureFluidIngredient.MIXTURE_FLUID_INGREDIENT_SUBTYPES.get(fluidStack.getOrCreateTag().getString("MixtureFluidIngredientSubtype"));
             
-            Collection<Molecule> molecules = List.of();
+            Collection<LegacySpecies> molecules = List.of();
 
             //TODO replace with disambiguation page of all contained Molecules, rather than just include the uses/recipes of all component Molecules in one
             if (ingredientType != null) { // Mixture ingredients
@@ -79,7 +79,7 @@ public class DestroyRecipeManagerPlugin implements IRecipeManagerPlugin {
         });
 
         // Molecules
-        Molecule molecule = focus.checkedCast(MoleculeJEIIngredient.TYPE).map(moleculeIngredient -> moleculeIngredient.getTypedValue().getIngredient()).orElse(null);
+        LegacySpecies molecule = focus.checkedCast(MoleculeJEIIngredient.TYPE).map(moleculeIngredient -> moleculeIngredient.getTypedValue().getIngredient()).orElse(null);
         if (molecule != null) { // Ignore this if we're not dealing with a Molecule
             switch (focus.getRole()) {
                 case INPUT: {
@@ -87,7 +87,7 @@ public class DestroyRecipeManagerPlugin implements IRecipeManagerPlugin {
                     // Add Generic Reaction Recipes
                     if (recipeCategory instanceof GenericReactionCategory) {
                         molecule.getFunctionalGroups().forEach(group -> {
-                            Optional.ofNullable((Group.groupTypesAndReactions.get(group.getType()))).ifPresent(set -> set.forEach(genericReaction -> {
+                            Optional.ofNullable((LegacyFunctionalGroup.groupTypesAndReactions.get(group.getType()))).ifPresent(set -> set.forEach(genericReaction -> {
                                 ReactionRecipe recipe = GenericReactionCategory.RECIPES.get(genericReaction);
                                 if (recipe != null) recipes.add((T)recipe);
                             }));

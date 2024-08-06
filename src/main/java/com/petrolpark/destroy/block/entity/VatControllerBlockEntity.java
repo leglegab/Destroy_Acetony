@@ -19,10 +19,10 @@ import com.petrolpark.destroy.block.entity.behaviour.DestroyAdvancementBehaviour
 import com.petrolpark.destroy.block.entity.behaviour.fluidTankBehaviour.VatFluidTankBehaviour;
 import com.petrolpark.destroy.block.entity.behaviour.fluidTankBehaviour.VatFluidTankBehaviour.VatTankSegment.VatFluidTank;
 import com.petrolpark.destroy.capability.Pollution;
-import com.petrolpark.destroy.chemistry.Mixture;
-import com.petrolpark.destroy.chemistry.Reaction;
-import com.petrolpark.destroy.chemistry.ReadOnlyMixture;
-import com.petrolpark.destroy.chemistry.Mixture.ReactionContext;
+import com.petrolpark.destroy.chemistry.legacy.LegacyMixture;
+import com.petrolpark.destroy.chemistry.legacy.LegacyReaction;
+import com.petrolpark.destroy.chemistry.legacy.ReadOnlyMixture;
+import com.petrolpark.destroy.chemistry.legacy.LegacyMixture.ReactionContext;
 import com.petrolpark.destroy.client.particle.BoilingFluidBubbleParticle;
 import com.petrolpark.destroy.config.DestroyAllConfigs;
 import com.petrolpark.destroy.fluid.DestroyFluids;
@@ -85,7 +85,7 @@ public class VatControllerBlockEntity extends SmartBlockEntity implements IHaveG
      * Server-side only storage of the Mixture so it doesn't have to be de/serialized every tick.
      * This Mixture belongs to an imaginary Fluid Stack with a size equal to the capacity of the Vat.
      */
-    protected Mixture cachedMixture;
+    protected LegacyMixture cachedMixture;
     /**
      * The power (in W) being supplied to this Vat. This can be positive (if the Vat is
      * being heated) or negative (if it is being cooled).
@@ -385,7 +385,7 @@ public class VatControllerBlockEntity extends SmartBlockEntity implements IHaveG
      * @see VatControllerBlockEntity#updateFluidMixture Doing the opposite
      */
     public void updateCachedMixture() {
-        Mixture emptyMixture = new Mixture();
+        LegacyMixture emptyMixture = new LegacyMixture();
         if (!getVatOptional().isPresent()) {
             cachedMixture = emptyMixture;
             return;
@@ -504,7 +504,7 @@ public class VatControllerBlockEntity extends SmartBlockEntity implements IHaveG
         heatingPower = 0f;
         UVPower = 0f;
 
-        cachedMixture = new Mixture();
+        cachedMixture = new LegacyMixture();
         vat = Optional.empty();
         underDeconstruction = false;
         invalidateRenderBoundingBox(); // Update the render bounding box to be smaller
@@ -642,7 +642,7 @@ public class VatControllerBlockEntity extends SmartBlockEntity implements IHaveG
         if (getGasTank().isEmpty()) {
             return getLiquidTank().getFluidAmount() == getLiquidTank().getCapacity() ? 0f : AIR_PRESSURE; // Return 0 for a vacuum, and normal air pressure for a full Vat
         };
-        return Reaction.GAS_CONSTANT * getTemperature() * ReadOnlyMixture.readNBT(ReadOnlyMixture::new, getGasTank().getFluid().getOrCreateChildTag("Mixture")).getTotalConcentration() - AIR_PRESSURE;
+        return LegacyReaction.GAS_CONSTANT * getTemperature() * ReadOnlyMixture.readNBT(ReadOnlyMixture::new, getGasTank().getFluid().getOrCreateChildTag("Mixture")).getTotalConcentration() - AIR_PRESSURE;
     };
 
     /**
@@ -784,7 +784,7 @@ public class VatControllerBlockEntity extends SmartBlockEntity implements IHaveG
          */
         protected FluidStack drainGasTankWithMolarDensity(int amount, double molarDensity, FluidAction action) {
             if (vatControllerGetter.get().getGasTankContents().isEmpty()) return FluidStack.EMPTY;
-            Mixture mixture = Mixture.readNBT(vatControllerGetter.get().getGasTankContents().getOrCreateChildTag("Mixture"));
+            LegacyMixture mixture = LegacyMixture.readNBT(vatControllerGetter.get().getGasTankContents().getOrCreateChildTag("Mixture"));
             double scaleFactor = mixture.getTotalConcentration() / molarDensity;
             FluidStack lostFluid = drainGasTank((int)(0.5d + scaleFactor * amount), action); // Round up
             mixture.scale((float)scaleFactor);

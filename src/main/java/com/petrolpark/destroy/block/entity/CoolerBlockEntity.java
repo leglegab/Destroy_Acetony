@@ -6,9 +6,9 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import com.petrolpark.destroy.block.CoolerBlock;
-import com.petrolpark.destroy.chemistry.Molecule;
-import com.petrolpark.destroy.chemistry.ReadOnlyMixture;
-import com.petrolpark.destroy.chemistry.index.DestroyMolecules;
+import com.petrolpark.destroy.chemistry.legacy.LegacySpecies;
+import com.petrolpark.destroy.chemistry.legacy.ReadOnlyMixture;
+import com.petrolpark.destroy.chemistry.legacy.index.DestroyMolecules;
 import com.petrolpark.destroy.config.DestroyAllConfigs;
 import com.petrolpark.destroy.fluid.DestroyFluids;
 import com.petrolpark.destroy.util.DestroyLang;
@@ -95,7 +95,7 @@ public class CoolerBlockEntity extends SmartBlockEntity implements IHaveGoggleIn
 
             float totalMolesPerBucket = 0f;
             float totalRefrigerantMolesPerBucket = 0f;
-            for (Molecule molecule : mixture.getContents(true)) {
+            for (LegacySpecies molecule : mixture.getContents(true)) {
                 float concentration = mixture.getConcentrationOf(molecule);
                 totalMolesPerBucket += concentration;
                 if (molecule.hasTag(DestroyMolecules.Tags.REFRIGERANT)) {

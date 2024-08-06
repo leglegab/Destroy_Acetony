@@ -10,11 +10,11 @@ import javax.annotation.Nullable;
 import com.petrolpark.destroy.Destroy;
 import com.petrolpark.destroy.block.entity.behaviour.ExtendedBasinBehaviour;
 import com.petrolpark.destroy.capability.Pollution;
-import com.petrolpark.destroy.chemistry.Mixture;
-import com.petrolpark.destroy.chemistry.ReactionResult;
-import com.petrolpark.destroy.chemistry.Mixture.Phases;
-import com.petrolpark.destroy.chemistry.reactionresult.CombinedReactionResult;
-import com.petrolpark.destroy.chemistry.reactionresult.PrecipitateReactionResult;
+import com.petrolpark.destroy.chemistry.legacy.LegacyMixture;
+import com.petrolpark.destroy.chemistry.legacy.ReactionResult;
+import com.petrolpark.destroy.chemistry.legacy.LegacyMixture.Phases;
+import com.petrolpark.destroy.chemistry.legacy.reactionresult.CombinedReactionResult;
+import com.petrolpark.destroy.chemistry.legacy.reactionresult.PrecipitateReactionResult;
 import com.petrolpark.destroy.fluid.DestroyFluids;
 import com.petrolpark.destroy.fluid.MixtureFluid;
 import com.petrolpark.destroy.util.vat.IVatHeaterBlock;
@@ -58,16 +58,16 @@ public class ReactionInBasinRecipe extends BasinRecipe {
         float heatingPower = IVatHeaterBlock.getHeatingPower(level, pos.below(), Direction.UP);
         float outsideTemperature = Pollution.getLocalTemperature(level, pos);
 
-        Map<Mixture, Double> mixtures = new HashMap<>(availableFluids.size()); // A Map of all available Mixtures to the volume of them available (in Buckets)
+        Map<LegacyMixture, Double> mixtures = new HashMap<>(availableFluids.size()); // A Map of all available Mixtures to the volume of them available (in Buckets)
         int totalAmount = 0; // How much Mixture there is
 
         // Check all Fluids are Mixturess
         for (FluidStack fluidStack : availableFluids) {
 
-            Mixture mixture;
+            LegacyMixture mixture;
             if (DestroyFluids.isMixture(fluidStack)) {
                 // True Mixtures
-                mixture = Mixture.readNBT(fluidStack.getOrCreateTag().getCompound("Mixture"));
+                mixture = LegacyMixture.readNBT(fluidStack.getOrCreateTag().getCompound("Mixture"));
                 containsMixtures = true;
             } else {
                 // Non-Mixture -> Mixture conversions
@@ -81,7 +81,7 @@ public class ReactionInBasinRecipe extends BasinRecipe {
                     canReact = false;
                     break;
                 } else {
-                    mixture = Mixture.readNBT(recipe.getFluidResults().get(0).getOrCreateTag().getCompound("Mixture"));
+                    mixture = LegacyMixture.readNBT(recipe.getFluidResults().get(0).getOrCreateTag().getCompound("Mixture"));
                 };
             };
 
@@ -94,7 +94,7 @@ public class ReactionInBasinRecipe extends BasinRecipe {
 
         tryReact: if (canReact) {
             // TODO modify temp according to Heat Level
-            Mixture mixture = Mixture.mix(mixtures);
+            LegacyMixture mixture = LegacyMixture.mix(mixtures);
             ReactionInBasinResult result = mixture.reactInBasin(totalAmount, availableItemsCopy, heatingPower, outsideTemperature); // Mutably react the Mixture and change the Item Stacks
 
             // If equilibrium was not disturbed, don't do anything else
@@ -175,9 +175,9 @@ public class ReactionInBasinRecipe extends BasinRecipe {
     };
 
     /**
-     * The outcome of {@link com.petrolpark.destroy.chemistry.Reaction reacting} a {@link com.petrolpark.destroy.chemistry.Reaction Mixture} in a Basin.
+     * The outcome of {@link com.petrolpark.destroy.chemistry.legacy.LegacyReaction reacting} a {@link com.petrolpark.destroy.chemistry.legacy.LegacyReaction Mixture} in a Basin.
      * @param ticks The number of ticks it took for the Mixture to reach equilibrium
-     * @param reactionresults The {@link com.petrolpark.destroy.chemistry.ReactionResult results} of Reacting this Mixture
+     * @param reactionresults The {@link com.petrolpark.destroy.chemistry.legacy.ReactionResult results} of Reacting this Mixture
      * @param amount The amount (in mB) of resultant Mixture
      */
     public static record ReactionInBasinResult(int ticks, Map<ReactionResult, Integer> reactionresults, int amount) {};

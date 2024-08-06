@@ -13,7 +13,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-import com.petrolpark.destroy.chemistry.ClientMixture;
+import com.petrolpark.destroy.chemistry.legacy.ClientMixture;
 import com.petrolpark.destroy.compat.jei.DestroyJEI;
 import com.petrolpark.destroy.config.DestroyAllConfigs;
 import com.petrolpark.destroy.fluid.DestroyFluids;
@@ -65,7 +65,7 @@ public abstract class CreateRecipeCategoryMixin<T extends Recipe<?>> {
     /**
      * Injection into {@link com.simibubi.create.compat.jei.category.CreateRecipeCategory#CreateRecipeCategory CreateRecipeCategory}.
      * As Create's {@link mezz.jei.api.recipe.RecipeType Recipe Types} are not exposed by default, we snipe them here and add them to the
-     * {@link com.petrolpark.destroy.compat.jei.DestroyJEI#RECIPE_TYPES list of Recipe Types} for which {@link com.petrolpark.destroy.chemistry.Mixture Mixtures}
+     * {@link com.petrolpark.destroy.compat.jei.DestroyJEI#RECIPE_TYPES list of Recipe Types} for which {@link com.petrolpark.destroy.chemistry.legacy.LegacyMixture Mixtures}
      * can be {@link com.petrolpark.destroy.fluid.ingredient.MoleculeFluidIngredient ingredients} or results.
      */
     @Inject(
@@ -83,7 +83,7 @@ public abstract class CreateRecipeCategoryMixin<T extends Recipe<?>> {
     
     /**
      * Copied from the {@link com.simibubi.create.compat.jei.category.CreateRecipeCategory#addFluidTooltip Create source code} because I can't be bothered to deal with Injection.
-     * Modifies the tooltip for Fluid Stacks which are {@link com.petrolpark.destroy.chemistry.Mixture Mixtures}.
+     * Modifies the tooltip for Fluid Stacks which are {@link com.petrolpark.destroy.chemistry.legacy.LegacyMixture Mixtures}.
      */
     @Overwrite(remap = false)
     public static IRecipeSlotTooltipCallback addFluidTooltip(int mbAmount) {

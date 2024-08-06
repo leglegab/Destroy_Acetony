@@ -7,9 +7,9 @@ import java.util.stream.Collectors;
 import com.petrolpark.destroy.Destroy;
 import com.petrolpark.destroy.block.entity.BubbleCapBlockEntity;
 import com.petrolpark.destroy.capability.Pollution;
-import com.petrolpark.destroy.chemistry.Mixture;
-import com.petrolpark.destroy.chemistry.Molecule;
-import com.petrolpark.destroy.chemistry.ReadOnlyMixture;
+import com.petrolpark.destroy.chemistry.legacy.LegacyMixture;
+import com.petrolpark.destroy.chemistry.legacy.LegacySpecies;
+import com.petrolpark.destroy.chemistry.legacy.ReadOnlyMixture;
 import com.petrolpark.destroy.compat.tfmg.SharedDistillationRecipes;
 import com.petrolpark.destroy.config.DestroyAllConfigs;
 import com.petrolpark.destroy.fluid.DestroyFluids;
@@ -243,17 +243,17 @@ public class DistillationTower {
         if (numberOfFractions == 0) return fractions;
         if (numberOfFractions == 1) return List.of(MixtureFluid.of(mixtureAmount, mixture));
 
-        Mixture gasMixture = new Mixture().setTemperature(roomTemperature); // If there are gases, these do not separate by boiling point (as they never condense), so these are all grouped into one FluidStack
+        LegacyMixture gasMixture = new LegacyMixture().setTemperature(roomTemperature); // If there are gases, these do not separate by boiling point (as they never condense), so these are all grouped into one FluidStack
         boolean thereAreGases = false;
 
-        Mixture residueMixture = new Mixture(); // If there are Molecules with a higher boiling point than the Mixture or Blaze Burner can reach, these do not separate by boiling point as they never evaporate
+        LegacyMixture residueMixture = new LegacyMixture(); // If there are Molecules with a higher boiling point than the Mixture or Blaze Burner can reach, these do not separate by boiling point as they never evaporate
 
-        List<Molecule> liquids = new ArrayList<>();
+        List<LegacySpecies> liquids = new ArrayList<>();
 
         float lowestBoilingPoint = roomTemperature;
         float highestBoilingPoint = roomTemperature;
 
-        for (Molecule molecule : mixture.getContents(false)) {
+        for (LegacySpecies molecule : mixture.getContents(false)) {
             if (molecule.getBoilingPoint() < roomTemperature) { // Add all gases to the gas fraction
                 thereAreGases = true;
                 gasMixture.addMolecule(molecule, mixture.getConcentrationOf(molecule));
@@ -271,10 +271,10 @@ public class DistillationTower {
         if (thereAreGases) numberOfFractions--; // If there is a gas fraction, there must be one fewer liquid fractions
 
         float interval = (highestBoilingPoint - lowestBoilingPoint) / numberOfFractions; // Split the whole temperature range into (numberOfFraction) equal-sized temperature ranges...
-        List<Mixture> liquidMixtures = new ArrayList<>(numberOfFractions);
-        for (int i = 0; i < numberOfFractions; i++) liquidMixtures.add(new Mixture().setTemperature(roomTemperature));
+        List<LegacyMixture> liquidMixtures = new ArrayList<>(numberOfFractions);
+        for (int i = 0; i < numberOfFractions; i++) liquidMixtures.add(new LegacyMixture().setTemperature(roomTemperature));
 
-        for (Molecule molecule : liquids) {
+        for (LegacySpecies molecule : liquids) {
             checkEachFraction: for (int fraction = 0; fraction < numberOfFractions; fraction++) { // ...If a Molecule's BP is in the nth temperature range, it goes in the nth fraction
                 if (molecule.getBoilingPoint() <= lowestBoilingPoint + ((fraction + 1) * interval)) {
                     liquidMixtures.get(fraction).addMolecule(molecule, mixture.getConcentrationOf(molecule));
@@ -287,7 +287,7 @@ public class DistillationTower {
         fractions.add(MixtureFluid.of(residueAmount, residueMixture)); // Add Residue regardless of whether there is anything there
 
         for (int fraction = 0; fraction < numberOfFractions; fraction++) { // Add all the liquid fractions
-            Mixture fractionMixture = liquidMixtures.get(fraction);
+            LegacyMixture fractionMixture = liquidMixtures.get(fraction);
             int amount = fractionMixture.recalculateVolume(mixtureAmount);
             if (amount == 0) continue;
             fractions.add(MixtureFluid.of(amount, fractionMixture));

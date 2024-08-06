@@ -7,8 +7,8 @@ import java.util.Set;
 
 import com.petrolpark.destroy.block.entity.ColorimeterBlockEntity;
 import com.petrolpark.destroy.block.entity.DestroyBlockEntityTypes;
-import com.petrolpark.destroy.chemistry.Molecule;
-import com.petrolpark.destroy.chemistry.ReadOnlyMixture;
+import com.petrolpark.destroy.chemistry.legacy.LegacySpecies;
+import com.petrolpark.destroy.chemistry.legacy.ReadOnlyMixture;
 import com.petrolpark.destroy.client.gui.screen.ColorimeterScreen;
 import com.petrolpark.destroy.fluid.DestroyFluids;
 import com.petrolpark.destroy.item.IMixtureStorageItem;
@@ -65,7 +65,7 @@ public class ColorimeterBlock extends HorizontalDirectionalBlock implements IBE<
         if (AllItems.WRENCH.isIn(player.getItemInHand(hand))) return InteractionResult.PASS;
         return onBlockEntityUse(level, pos, be -> {
             List<FluidStack> fluids = new ArrayList<>();
-            Set<Molecule> species = new HashSet<>();
+            Set<LegacySpecies> species = new HashSet<>();
             species.add(null);
 
             be.getVatOptional().ifPresent(vat -> {
@@ -87,7 +87,7 @@ public class ColorimeterBlock extends HorizontalDirectionalBlock implements IBE<
     };
 
     @OnlyIn(Dist.CLIENT)
-    public void openScreen(ColorimeterBlockEntity be, Set<Molecule> species) {
+    public void openScreen(ColorimeterBlockEntity be, Set<LegacySpecies> species) {
         ScreenOpener.open(new ColorimeterScreen(be, new ArrayList<>(species)));
     };
 

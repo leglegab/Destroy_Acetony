@@ -4,12 +4,14 @@ import java.util.function.Supplier;
 
 import com.simibubi.create.foundation.utility.Lang;
 
+import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.fml.ModList;
 import net.minecraftforge.fml.loading.FMLLoader;
 
 public enum CompatMods {
 
     BIG_CANNONS("createbigcannons"),
+    CURIOS,
     JEI,
     TFMG("createindustry");
 
@@ -34,4 +36,8 @@ public enum CompatMods {
     public void executeIfInstalled(Supplier<Runnable> toExecute) {
 		if (isLoaded()) toExecute.get().run();
 	};
+
+    public ResourceLocation asResource(String path) {
+        return new ResourceLocation(id, path);
+    };
 };

@@ -21,9 +21,9 @@ import com.petrolpark.destroy.block.display.MixtureContentsDisplaySource;
 import com.petrolpark.destroy.block.entity.behaviour.DestroyAdvancementBehaviour;
 import com.petrolpark.destroy.block.entity.behaviour.PollutingBehaviour;
 import com.petrolpark.destroy.block.entity.behaviour.fluidTankBehaviour.GeniusFluidTankBehaviour;
-import com.petrolpark.destroy.chemistry.Mixture;
-import com.petrolpark.destroy.chemistry.Molecule;
-import com.petrolpark.destroy.chemistry.Mixture.Phases;
+import com.petrolpark.destroy.chemistry.legacy.LegacyMixture;
+import com.petrolpark.destroy.chemistry.legacy.LegacySpecies;
+import com.petrolpark.destroy.chemistry.legacy.LegacyMixture.Phases;
 import com.petrolpark.destroy.config.DestroyAllConfigs;
 import com.petrolpark.destroy.effect.potion.PotionSeparationRecipes;
 import com.petrolpark.destroy.fluid.DestroyFluids;
@@ -238,7 +238,7 @@ public class CentrifugeBlockEntity extends KineticBlockEntity implements IDirect
             if (DestroyFluids.isMixture(getInputTank().getFluid())) { // If there are Fluids to Centrifuge
 
                 boolean debug = false;
-                Mixture mixture = Mixture.readNBT(getInputTank().getFluid().getOrCreateChildTag("Mixture"));
+                LegacyMixture mixture = LegacyMixture.readNBT(getInputTank().getFluid().getOrCreateChildTag("Mixture"));
 
                 if (mixture == null) return;
                 if (!(DestroyFluids.isMixture(getDenseOutputTank().getFluid()) || getDenseOutputTank().isEmpty()) || !(DestroyFluids.isMixture(getLightOutputTank().getFluid()) || getLightOutputTank().isEmpty())) return; // Don't go any further if either output tank can't take Mixture
@@ -249,28 +249,28 @@ public class CentrifugeBlockEntity extends KineticBlockEntity implements IDirect
 
                 if (debug) Destroy.LOGGER.info("Total starting volume: "+totalVolume);
 
-                Map<Pair<Molecule, Boolean>, Float> phasedMoleculesRemainingMoles = new HashMap<>();
-                Map<Pair<Molecule, Boolean>, Float> phasedMoleculesRemainingVolumes = new HashMap<>();
-                Map<Pair<Molecule, Boolean>, Float> phasedMoleculesMolesInLightMixture = new HashMap<>();
-                Map<Pair<Molecule, Boolean>, Float> phasedMoleculesMolesInDenseMixture = new HashMap<>();
+                Map<Pair<LegacySpecies, Boolean>, Float> phasedMoleculesRemainingMoles = new HashMap<>();
+                Map<Pair<LegacySpecies, Boolean>, Float> phasedMoleculesRemainingVolumes = new HashMap<>();
+                Map<Pair<LegacySpecies, Boolean>, Float> phasedMoleculesMolesInLightMixture = new HashMap<>();
+                Map<Pair<LegacySpecies, Boolean>, Float> phasedMoleculesMolesInDenseMixture = new HashMap<>();
 
                 Phases phases = mixture.separatePhases(totalVolume);
                 float liquidVolume = (float)(double)phases.liquidVolume();
                 float gasVolume = totalVolume - liquidVolume;
-                Mixture gasMixture = phases.gasMixture();
+                LegacyMixture gasMixture = phases.gasMixture();
                 gasMixture.scale(gasVolume);
-                Mixture liquidMixture = phases.liquidMixture();
+                LegacyMixture liquidMixture = phases.liquidMixture();
 
-                for (Molecule molecule : liquidMixture.getContents(false)) {
-                    Pair<Molecule, Boolean> phasedMolecule = Pair.of(molecule, false);
+                for (LegacySpecies molecule : liquidMixture.getContents(false)) {
+                    Pair<LegacySpecies, Boolean> phasedMolecule = Pair.of(molecule, false);
                     float moles = liquidMixture.getConcentrationOf(molecule) * liquidVolume;
                     phasedMoleculesRemainingVolumes.put(phasedMolecule, moles / molecule.getPureConcentration());
                     phasedMoleculesRemainingMoles.put(phasedMolecule, moles);
                 };
                 
                 float totalGasConcentration = gasMixture.getTotalConcentration();
-                for (Molecule molecule : gasMixture.getContents(false)) {
-                    Pair<Molecule, Boolean> phasedMolecule = Pair.of(molecule, true);
+                for (LegacySpecies molecule : gasMixture.getContents(false)) {
+                    Pair<LegacySpecies, Boolean> phasedMolecule = Pair.of(molecule, true);
                     float moles = gasMixture.getConcentrationOf(molecule) * gasVolume;
                     phasedMoleculesRemainingVolumes.put(phasedMolecule, moles / totalGasConcentration); 
                     phasedMoleculesRemainingMoles.put(phasedMolecule, moles);
@@ -282,10 +282,10 @@ public class CentrifugeBlockEntity extends KineticBlockEntity implements IDirect
                     Destroy.LOGGER.info("Total volume of all Molecules: "+sumVolume);
                 };
 
-                List<Pair<Molecule, Boolean>> orderedPhasedMolecules = new ArrayList<>(phasedMoleculesRemainingVolumes.keySet());
+                List<Pair<LegacySpecies, Boolean>> orderedPhasedMolecules = new ArrayList<>(phasedMoleculesRemainingVolumes.keySet());
                 Collections.sort(orderedPhasedMolecules, (p1, p2) -> {
-                    Molecule m1 = p1.getFirst();
-                    Molecule m2 = p2.getFirst();
+                    LegacySpecies m1 = p1.getFirst();
+                    LegacySpecies m2 = p2.getFirst();
                     return Float.compare(
                         mixture.getConcentrationOf(m2) * m2.getMass() / phasedMoleculesRemainingVolumes.get(p2), // This quantity is proportional to the density of Molecule 1 in this Mixture
                         mixture.getConcentrationOf(m1) * m1.getMass() / phasedMoleculesRemainingVolumes.get(p1)
@@ -294,9 +294,9 @@ public class CentrifugeBlockEntity extends KineticBlockEntity implements IDirect
 
                 float volumeOfDenseMixture = 0f;
 
-                splitEachMolecule: for (Pair<Molecule, Boolean> phasedMolecule : orderedPhasedMolecules) {
+                splitEachMolecule: for (Pair<LegacySpecies, Boolean> phasedMolecule : orderedPhasedMolecules) {
                     
-                    Molecule molecule = phasedMolecule.getFirst();
+                    LegacySpecies molecule = phasedMolecule.getFirst();
                     if (!phasedMoleculesRemainingMoles.containsKey(phasedMolecule)) continue splitEachMolecule; // Don't try if this Molecule has already been removed (implying it is an ion)
                     float moles = phasedMoleculesRemainingMoles.get(phasedMolecule);
 
@@ -327,8 +327,8 @@ public class CentrifugeBlockEntity extends KineticBlockEntity implements IDirect
 
                         findCounterions: while (Optional.ofNullable(phasedMoleculesRemainingVolumes.get(phasedMolecule)).orElse(0f) > 0f) {
 
-                            Pair<Molecule, Boolean> phasedCounterion = getNextIon(orderedPhasedMolecules, phasedMoleculesRemainingVolumes, molecule.getCharge() < 0);
-                            Molecule counterion = phasedCounterion.getFirst();
+                            Pair<LegacySpecies, Boolean> phasedCounterion = getNextIon(orderedPhasedMolecules, phasedMoleculesRemainingVolumes, molecule.getCharge() < 0);
+                            LegacySpecies counterion = phasedCounterion.getFirst();
                             if (counterion == null) {
                                 Destroy.LOGGER.error("Tried to centrifuge charge-imbalanced Mixture");
                                 break findCounterions;
@@ -404,19 +404,19 @@ public class CentrifugeBlockEntity extends KineticBlockEntity implements IDirect
                     };
                 };
 
-                Mixture denseMixture = new Mixture();
+                LegacyMixture denseMixture = new LegacyMixture();
                 denseMixture.setTemperature(mixture.getTemperature());
-                Mixture lightMixture = new Mixture();
+                LegacyMixture lightMixture = new LegacyMixture();
                 lightMixture.setTemperature(mixture.getTemperature());
 
-                for (Pair<Mixture, Map<Pair<Molecule, Boolean>, Float>> mixtureAndMap : List.of(Pair.of(denseMixture, phasedMoleculesMolesInDenseMixture), Pair.of(lightMixture, phasedMoleculesMolesInLightMixture))) {
-                    Mixture resultMixture = mixtureAndMap.getFirst();
-                    Map<Pair<Molecule, Boolean>, Float> map = mixtureAndMap.getSecond();
-                    Map<Molecule, Couple<Float>> moleculeStates = new HashMap<>(map.size()); // Couple is of the form <gas moles, liquid moles>
+                for (Pair<LegacyMixture, Map<Pair<LegacySpecies, Boolean>, Float>> mixtureAndMap : List.of(Pair.of(denseMixture, phasedMoleculesMolesInDenseMixture), Pair.of(lightMixture, phasedMoleculesMolesInLightMixture))) {
+                    LegacyMixture resultMixture = mixtureAndMap.getFirst();
+                    Map<Pair<LegacySpecies, Boolean>, Float> map = mixtureAndMap.getSecond();
+                    Map<LegacySpecies, Couple<Float>> moleculeStates = new HashMap<>(map.size()); // Couple is of the form <gas moles, liquid moles>
                     
                     // Determine the number of moles of gas and the number of moles of liquid for each Molecule
-                    for (Entry<Pair<Molecule, Boolean>, Float> entry : map.entrySet()) {
-                        Pair<Molecule, Boolean> phasedMolecule = entry.getKey();
+                    for (Entry<Pair<LegacySpecies, Boolean>, Float> entry : map.entrySet()) {
+                        Pair<LegacySpecies, Boolean> phasedMolecule = entry.getKey();
                         moleculeStates.compute(phasedMolecule.getFirst(), (molecule, couple) -> {
                             if (couple == null) couple = Couple.create(0f, 0f);
                             couple.set(phasedMolecule.getSecond(), entry.getValue());
@@ -425,9 +425,9 @@ public class CentrifugeBlockEntity extends KineticBlockEntity implements IDirect
                     };
 
                     // Add each Molecule to its result Mixture
-                    addMoleculesToMixture: for (Entry<Molecule, Couple<Float>> entry : moleculeStates.entrySet()) {
+                    addMoleculesToMixture: for (Entry<LegacySpecies, Couple<Float>> entry : moleculeStates.entrySet()) {
                         Couple<Float> moles = entry.getValue();
-                        Molecule molecule = entry.getKey();
+                        LegacySpecies molecule = entry.getKey();
                         float totalMoles = moles.getFirst() + moles.getSecond();
                         if (totalMoles <= 0f) continue addMoleculesToMixture;
                         if (debug) {
@@ -457,8 +457,8 @@ public class CentrifugeBlockEntity extends KineticBlockEntity implements IDirect
         notifyUpdate();
     };
 
-    private static Pair<Molecule, Boolean> getNextIon(List<Pair<Molecule, Boolean>> list, Map<Pair<Molecule, Boolean>, Float> map, boolean cation) {
-        for (Pair<Molecule, Boolean> pair : list) {
+    private static Pair<LegacySpecies, Boolean> getNextIon(List<Pair<LegacySpecies, Boolean>> list, Map<Pair<LegacySpecies, Boolean>, Float> map, boolean cation) {
+        for (Pair<LegacySpecies, Boolean> pair : list) {
             int charge = pair.getFirst().getCharge();
             if (charge != 0 && charge > 0 == cation && map.containsKey(pair) && map.get(pair) > 0f) return pair;
         };

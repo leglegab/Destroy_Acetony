@@ -5,8 +5,8 @@ import java.util.List;
 
 import com.jozufozu.flywheel.core.PartialModel;
 import com.petrolpark.destroy.Destroy;
-import com.petrolpark.destroy.chemistry.Element;
-import com.petrolpark.destroy.chemistry.Bond.BondType;
+import com.petrolpark.destroy.chemistry.legacy.LegacyElement;
+import com.petrolpark.destroy.chemistry.legacy.LegacyBond.BondType;
 import com.simibubi.create.foundation.utility.Lang;
 
 import net.minecraft.resources.ResourceLocation;
@@ -89,8 +89,8 @@ public class DestroyPartials {
 
     // Atoms
     static {
-        for (Element element : Element.values()) {
-            if (element != Element.R_GROUP) element.setPartial(atom(Lang.asId(element.name())));
+        for (LegacyElement element : LegacyElement.values()) {
+            if (element != LegacyElement.R_GROUP) element.setPartial(atom(Lang.asId(element.name())));
         };
     };
 

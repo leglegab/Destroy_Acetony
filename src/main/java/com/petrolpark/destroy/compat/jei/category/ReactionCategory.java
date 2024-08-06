@@ -9,12 +9,12 @@ import java.util.Map;
 import org.joml.Vector2i;
 
 import com.petrolpark.destroy.Destroy;
-import com.petrolpark.destroy.chemistry.IItemReactant;
-import com.petrolpark.destroy.chemistry.Molecule;
-import com.petrolpark.destroy.chemistry.Reaction;
-import com.petrolpark.destroy.chemistry.ReactionResult;
-import com.petrolpark.destroy.chemistry.reactionresult.CombinedReactionResult;
-import com.petrolpark.destroy.chemistry.reactionresult.PrecipitateReactionResult;
+import com.petrolpark.destroy.chemistry.legacy.IItemReactant;
+import com.petrolpark.destroy.chemistry.legacy.LegacySpecies;
+import com.petrolpark.destroy.chemistry.legacy.LegacyReaction;
+import com.petrolpark.destroy.chemistry.legacy.ReactionResult;
+import com.petrolpark.destroy.chemistry.legacy.reactionresult.CombinedReactionResult;
+import com.petrolpark.destroy.chemistry.legacy.reactionresult.PrecipitateReactionResult;
 import com.petrolpark.destroy.client.gui.DestroyGuiTextures;
 import com.petrolpark.destroy.client.gui.stackedtextbox.AbstractStackedTextBox;
 import com.petrolpark.destroy.client.gui.stackedtextbox.AbstractStackedTextBox.LinesAndActivationAreas;
@@ -49,7 +49,7 @@ public class ReactionCategory<T extends ReactionRecipe> extends HoverableTextCat
 
     public static RecipeType<? extends ReactionRecipe> TYPE;
 
-    public static final Map<Reaction, ReactionRecipe> RECIPES = new HashMap<>();
+    public static final Map<LegacyReaction, ReactionRecipe> RECIPES = new HashMap<>();
 
     public ReactionCategory(Info<T> info, IJeiHelpers helpers) {
         super(info, helpers);
@@ -60,14 +60,14 @@ public class ReactionCategory<T extends ReactionRecipe> extends HoverableTextCat
      * Generate every Reaction's recipe to go in JEI.
      */
     static {
-        for (Reaction reaction : Reaction.REACTIONS.values()) {
+        for (LegacyReaction reaction : LegacyReaction.REACTIONS.values()) {
             if (reaction.includeInJei()) RECIPES.put(reaction, ReactionRecipe.create(reaction));
         };
     };
 
     @Override
     public Collection<LinesAndActivationAreas> getHoverableTexts(ReactionRecipe recipe) {
-        Reaction reaction = recipe.getReaction();
+        LegacyReaction reaction = recipe.getReaction();
         if (reaction.getId() == null && !(recipe instanceof GenericReactionRecipe)) return List.of();
 
         Minecraft minecraft = Minecraft.getInstance();
@@ -91,7 +91,7 @@ public class ReactionCategory<T extends ReactionRecipe> extends HoverableTextCat
     };
 
     protected String getTranslationKey(ReactionRecipe recipe) {
-        Reaction reaction = recipe.getReaction();
+        LegacyReaction reaction = recipe.getReaction();
         return reaction.getNameSpace() + ".reaction." + reaction.getId();
     };
 
@@ -100,21 +100,21 @@ public class ReactionCategory<T extends ReactionRecipe> extends HoverableTextCat
         return WHITE_AND_AQUA;
     };
 
-    private static void tooManyMoleculesWarning(boolean reactants, Reaction reaction) {
+    private static void tooManyMoleculesWarning(boolean reactants, LegacyReaction reaction) {
         Destroy.LOGGER.warn("Reaction '"+reaction.getFullId()+"' has too many " + (reactants ? "reactants" : "products") + " to fit on JEI.");
     };
 
     @Override
     public void setRecipe(IRecipeLayoutBuilder builder, T recipe, IFocusGroup focuses) {
         super.setRecipe(builder, recipe, focuses);
-        Reaction reaction = recipe.getReaction();
+        LegacyReaction reaction = recipe.getReaction();
 
         int i = 0;
 
         int numberOfReactants = getNumberOfReactants(reaction);
         if (numberOfReactants >= 6) tooManyMoleculesWarning(true, reaction);
 
-        for (Molecule reactant : reaction.getReactants()) {
+        for (LegacySpecies reactant : reaction.getReactants()) {
             if (i >= 6) continue;
             Vector2i pos = getReactantRenderPosition(i, numberOfReactants);
             builder.addSlot(RecipeIngredientRole.INPUT, pos.x, pos.y)
@@ -163,7 +163,7 @@ public class ReactionCategory<T extends ReactionRecipe> extends HoverableTextCat
 
         int l = numberOfProducts == 4 ? 2 : 3;
 
-        for (Molecule product : reaction.getProducts()) {
+        for (LegacySpecies product : reaction.getProducts()) {
             if (j >= 6) continue;
             builder.addSlot(RecipeIngredientRole.OUTPUT, productsXOffset + (19 * (j % l)), productYOffset + (j / l) * 19)
                 .addIngredient(MoleculeJEIIngredient.TYPE, product)
@@ -185,7 +185,7 @@ public class ReactionCategory<T extends ReactionRecipe> extends HoverableTextCat
         int m = 0;
         if (reaction.needsUV()) m++; // If there is UV catalyst, this is already drawn
 
-        for (Molecule catalyst : reaction.getOrders().keySet()) {
+        for (LegacySpecies catalyst : reaction.getOrders().keySet()) {
             if (reaction.getReactants().contains(catalyst)) continue;
             Vector2i pos = getCatalystRenderPosition(m, numberOfCatalysts);
             builder.addSlot(RecipeIngredientRole.CATALYST, pos.x, pos.y)
@@ -228,7 +228,7 @@ public class ReactionCategory<T extends ReactionRecipe> extends HoverableTextCat
         return new Vector2i(reactantsXOffset + (19 * (position % k)), reactantYOffset + (position / k) * 19);
     };
 
-    protected int getNumberOfReactants(Reaction reaction) {
+    protected int getNumberOfReactants(LegacyReaction reaction) {
         return reaction.getReactants().size() + reaction.getItemReactants().stream().filter(ir -> !ir.isCatalyst()).toList().size() + (reaction.isHalfReaction() ? 1 : 0);
     };
 
@@ -244,9 +244,9 @@ public class ReactionCategory<T extends ReactionRecipe> extends HoverableTextCat
         return new Vector2i(x, y);
     };
 
-    protected int getNumberOfCatalysts(Reaction reaction) {
+    protected int getNumberOfCatalysts(LegacyReaction reaction) {
         int number = 0;
-        for (Molecule molecule : reaction.getOrders().keySet()) {
+        for (LegacySpecies molecule : reaction.getOrders().keySet()) {
             if (!reaction.getReactants().contains(molecule)) number++;
         };
         for (IItemReactant itemReactant : reaction.getItemReactants()) {

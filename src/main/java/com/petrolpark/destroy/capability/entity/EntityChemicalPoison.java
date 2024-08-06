@@ -3,7 +3,7 @@ package com.petrolpark.destroy.capability.entity;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import com.petrolpark.destroy.chemistry.Molecule;
+import com.petrolpark.destroy.chemistry.legacy.LegacySpecies;
 import com.petrolpark.destroy.network.DestroyMessages;
 import com.petrolpark.destroy.network.packet.ChemicalPoisonS2CPacket;
 
@@ -22,9 +22,9 @@ import net.minecraftforge.common.util.LazyOptional;
 
 public class EntityChemicalPoison {
   
-    private Molecule molecule;
+    private LegacySpecies molecule;
 
-    public static void setMolecule(Entity entity, Molecule molecule) {
+    public static void setMolecule(Entity entity, LegacySpecies molecule) {
         if (!(entity instanceof LivingEntity)) return;
         entity.getCapability(Provider.ENTITY_CHEMICAL_POISON).ifPresent(cp -> {
             if (cp.molecule != null) return; // Don't replace existing poison
@@ -37,12 +37,12 @@ public class EntityChemicalPoison {
         if (!(entity instanceof LivingEntity)) return;
         entity.getCapability(Provider.ENTITY_CHEMICAL_POISON).ifPresent(cp -> {
             cp.molecule = null;
-            if (entity instanceof ServerPlayer serverPlayer) DestroyMessages.sendToClient(new ChemicalPoisonS2CPacket((Molecule)null), serverPlayer);
+            if (entity instanceof ServerPlayer serverPlayer) DestroyMessages.sendToClient(new ChemicalPoisonS2CPacket((LegacySpecies)null), serverPlayer);
         });
     };
 
     @Nullable
-    public Molecule getMolecule() {
+    public LegacySpecies getMolecule() {
         return molecule;
     };
 
@@ -69,7 +69,7 @@ public class EntityChemicalPoison {
         @Override
         public void deserializeNBT(CompoundTag tag) {
             if (tag.contains("ToxicMolecule", Tag.TAG_STRING))
-                createEntityChemicalPoison().molecule = Molecule.getMolecule(tag.getString("ToxicMolecule"));
+                createEntityChemicalPoison().molecule = LegacySpecies.getMolecule(tag.getString("ToxicMolecule"));
         };
 
         @Override

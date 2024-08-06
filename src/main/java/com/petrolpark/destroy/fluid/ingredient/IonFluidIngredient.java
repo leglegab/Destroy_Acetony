@@ -2,10 +2,10 @@ package com.petrolpark.destroy.fluid.ingredient;
 
 import java.util.List;
 
-import com.petrolpark.destroy.chemistry.Mixture;
-import com.petrolpark.destroy.chemistry.Molecule;
-import com.petrolpark.destroy.chemistry.ReadOnlyMixture;
-import com.petrolpark.destroy.chemistry.index.DestroyMolecules;
+import com.petrolpark.destroy.chemistry.legacy.LegacyMixture;
+import com.petrolpark.destroy.chemistry.legacy.LegacySpecies;
+import com.petrolpark.destroy.chemistry.legacy.ReadOnlyMixture;
+import com.petrolpark.destroy.chemistry.legacy.index.DestroyMolecules;
 import com.petrolpark.destroy.config.DestroyAllConfigs;
 import com.petrolpark.destroy.fluid.ingredient.mixturesubtype.MixtureFluidIngredientSubType;
 import com.petrolpark.destroy.util.DestroyLang;
@@ -26,7 +26,7 @@ public class IonFluidIngredient extends MoleculeFluidIngredient {
     };
 
     @Override
-    protected boolean testMixture(Mixture mixture) {
+    protected boolean testMixture(LegacyMixture mixture) {
         return mixture.hasUsableMolecule(molecule, minConcentration, maxConcentration, m -> m.getCharge() != 0 && Math.signum(m.getCharge()) != Math.signum(molecule.getCharge()));
     };
 
@@ -58,7 +58,7 @@ public class IonFluidIngredient extends MoleculeFluidIngredient {
             float minConc = fluidTag.getFloat("MinimumConcentration");
             float maxConc = fluidTag.getFloat("MaximumConcentration");
     
-            Molecule molecule = Molecule.getMolecule(moleculeID);
+            LegacySpecies molecule = LegacySpecies.getMolecule(moleculeID);
             Component moleculeName = molecule == null ? DestroyLang.translate("tooltip.unknown_molecule").component() : molecule.getName(DestroyAllConfigs.CLIENT.chemistry.iupacNames.get());
             boolean anion = molecule != null && molecule.getCharge() < 0;
     

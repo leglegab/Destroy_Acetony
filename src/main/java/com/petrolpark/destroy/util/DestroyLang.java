@@ -8,7 +8,7 @@ import java.util.function.UnaryOperator;
 import com.petrolpark.destroy.Destroy;
 import com.petrolpark.destroy.MoveToPetrolparkLibrary;
 import com.petrolpark.destroy.block.DestroyBlocks;
-import com.petrolpark.destroy.chemistry.Reaction;
+import com.petrolpark.destroy.chemistry.legacy.LegacyReaction;
 import com.petrolpark.destroy.config.DestroyAllConfigs;
 import com.petrolpark.destroy.fluid.ingredient.MixtureFluidIngredient;
 import com.petrolpark.destroy.fluid.ingredient.mixturesubtype.MixtureFluidIngredientSubType;
@@ -283,7 +283,7 @@ public class DestroyLang {
         return string;
     };
 
-    public static Component preexponentialFactor(Reaction reaction) {
+    public static Component preexponentialFactor(LegacyReaction reaction) {
         int totalOrder = 0;
         for (int order : reaction.getOrders().values()) totalOrder += order;
         if (totalOrder == 1) return translate("tooltip.reaction.preexponential_factor.frequency_factor", reaction.getPreexponentialFactor()).component();

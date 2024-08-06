@@ -49,7 +49,7 @@ public class DestroyPonderIndex {
 
         // Blowpipe
         HELPER.forComponents(DestroyBlocks.BLOWPIPE)
-            .addStoryBoard("blank_3x3", ProcessingScenes::blowpipe)
+            .addStoryBoard("processing/blowpipe", ProcessingScenes::blowpipe)
             .addStoryBoard("processing/blowpipe_automation", ProcessingScenes::blowpipeAutomation);
 
         // Bubble Cap
@@ -122,11 +122,20 @@ public class DestroyPonderIndex {
             .addStoryBoard("trypolithography/rotating", TrypolithographyScenes::rotating)
             .addStoryBoard("trypolithography/flipping", TrypolithographyScenes::flipping);
 
+        // Large Coaxial Cogwheel
+        CREATE_HELPER.forComponents(DestroyBlocks.LARGE_COAXIAL_GEAR)
+            .addStoryBoard("cog/speedup", com.simibubi.create.infrastructure.ponder.scenes.KineticsScenes::cogsSpeedUp)
+            .addStoryBoard("cog/large", com.simibubi.create.infrastructure.ponder.scenes.KineticsScenes::largeCogAsRelay, AllPonderTags.KINETIC_RELAYS);
+        HELPER.forComponents(DestroyBlocks.LARGE_COAXIAL_GEAR)
+            .addStoryBoard("kinetics/coaxial_gear/shaftless", KineticsScenes::coaxialGearShaftless, DestroyPonderTags.DESTROY)
+            .addStoryBoard("kinetics/coaxial_gear/through", KineticsScenes::coaxialGearThrough);
+
         // Mechanical Mixer
         HELPER.forComponents(AllBlocks.MECHANICAL_MIXER)
             .addStoryBoard("reactions", DestroyScenes::reactions, DestroyPonderTags.CHEMISTRY)
             .addStoryBoard("pollution/basins_and_vats", PollutionScenes::basinsAndVats);
 
+        // Mechanical Sieve
         HELPER.forComponents(DestroyBlocks.MECHANICAL_SIEVE)
             .addStoryBoard("processing/mechanical_sieve", ProcessingScenes::mechanicalSieve);
         
