@@ -48,7 +48,7 @@ public class ChemistryDamageHelper {
             if (molecule.hasTag(DestroyMolecules.Tags.SMELLY)) smelly = true;
             if (molecule.hasTag(DestroyMolecules.Tags.CARCINOGEN)) carcinogen = true;
             if (molecule.hasTag(DestroyMolecules.Tags.LACRIMATOR)) lacrimator = true;
-            if (toxicMolecule != null && smelly && carcinogen) break;
+            if (toxicMolecule != null && smelly && carcinogen && lacrimator) break;
         };
 
         boolean noseProtected = Protection.NOSE.isProtected(entity);

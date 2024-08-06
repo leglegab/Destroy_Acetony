@@ -349,6 +349,15 @@ public final class DestroyMolecules {
         .tag(Tags.REFRIGERANT)
         .build(),
 
+    DINITROTOLUENE = builder()
+        .id("dinitrotoluene")
+        .structure(LegacyMolecularStructure.deserialize("destroy:benzene:C,N~(~O)O,,N~(~O)O,,"))
+        .boilingPoint(250f)
+        .density(1520f)
+        .molarHeatCapacity(243.3f) // Couldn't find data so assume same as TNT
+        .tag(Tags.ACUTELY_TOXIC)
+        .build(),
+
     ETHANOL = builder()
         .id("ethanol")
         .structure(LegacyMolecularStructure.deserialize("destroy:linear:CCO"))
@@ -479,6 +488,13 @@ public final class DestroyMolecules {
         .translationKey("ester")
         .build(),
 
+    GENERIC_ISOCYANATE = builder()
+        .id("generic_isocyanate")
+        .structure(LegacyMolecularStructure.deserialize("destroy:linear:RC(R)(R)N=C=O"))
+        .hypothetical()
+        .translationKey("isocyanate")
+        .build(),
+
     GENERIC_NITRILE = builder()
         .id("generic_nitrile")
         .structure(LegacyMolecularStructure.deserialize("destroy:linear:RC(R)(R)C#N"))
@@ -486,9 +502,16 @@ public final class DestroyMolecules {
         .translationKey("nitrile")
         .build(),
 
+    GENERIC_NITRO = builder()
+        .id("generic_nitro")
+        .structure(LegacyMolecularStructure.deserialize("destroy:linear:RC(R)(R)N~(~O)O"))
+        .hypothetical()
+        .translationKey("nitro")
+        .build(),
+
     GENERIC_PRIMARY_AMINE = builder()
         .id("generic_primary_amine")
-        .structure(LegacyMolecularStructure.deserialize("destroy:linear:RC(R)(R)NR"))
+        .structure(LegacyMolecularStructure.deserialize("destroy:linear:RC(R)(R)N"))
         .hypothetical()
         .translationKey("non_tertiary_amine")
         .build(),
@@ -500,6 +523,15 @@ public final class DestroyMolecules {
         .density(1261f)
         .molarHeatCapacity(213.8f)
         .tag(Tags.SMOG)
+        .build(),
+
+    HEXANE_DIISOCYANATE = builder()
+        .id("hexane_diisocyanate")
+        .structure(LegacyMolecularStructure.deserialize("destroy:linear:O=C=NCCCCCCN=C=O"))
+        .boilingPoint(255f)
+        .density(1047f)
+        .molarHeatCapacity(222.7f)
+        .tag(Tags.ACUTELY_TOXIC)
         .build(),
 
     HEXANEDIAMINE = builder()
@@ -1037,6 +1069,16 @@ public final class DestroyMolecules {
         .tag(Tags.CARCINOGEN)
         .tag(Tags.SMOG)
         .tag(Tags.SOLVENT)
+        .build(),
+
+    TOLUENE_DIISOCYANATE = builder()
+        .id("toluene_diisocyanate")
+        .structure(LegacyMolecularStructure.deserialize("destroy:benzene:C,N=C=O,,N=C=O,,"))
+        .boilingPoint(251f)
+        .density(1214f)
+        .molarHeatCapacity(222.7f) // Couldn't find data, assume same as hexane diisocyanate
+        .tag(Tags.CARCINOGEN)
+        .tag(Tags.ACUTELY_TOXIC)
         .build(),
 
     TRICHLOROFLUOROMETHANE = builder()

@@ -8,8 +8,11 @@ import com.petrolpark.destroy.chemistry.legacy.index.group.CarbonylGroup;
 import com.petrolpark.destroy.chemistry.legacy.index.group.CarboxylicAcidGroup;
 import com.petrolpark.destroy.chemistry.legacy.index.group.EsterGroup;
 import com.petrolpark.destroy.chemistry.legacy.index.group.HalideGroup;
+import com.petrolpark.destroy.chemistry.legacy.index.group.IsocyanateGroup;
 import com.petrolpark.destroy.chemistry.legacy.index.group.NitrileGroup;
+import com.petrolpark.destroy.chemistry.legacy.index.group.NitroGroup;
 import com.petrolpark.destroy.chemistry.legacy.index.group.NonTertiaryAmineGroup;
+import com.petrolpark.destroy.chemistry.legacy.index.group.PrimaryAmineGroup;
 import com.petrolpark.destroy.chemistry.legacy.index.group.SaturatedCarbonGroup;
 import com.petrolpark.destroy.chemistry.legacy.index.group.UnsubstitutedAmideGroup;
 
@@ -24,7 +27,10 @@ public class DestroyGroupTypes {
     public static LegacyFunctionalGroupType<CarboxylicAcidGroup> CARBOXYLIC_ACID = new LegacyFunctionalGroupType<>(() -> DestroyMolecules.GENERIC_CARBOXYLIC_ACID);
     public static LegacyFunctionalGroupType<EsterGroup> ESTER = new LegacyFunctionalGroupType<>(() -> DestroyMolecules.GENERIC_ESTER);
     public static LegacyFunctionalGroupType<HalideGroup> HALIDE = new LegacyFunctionalGroupType<>(() -> DestroyMolecules.GENERIC_CHLORIDE);
+    public static LegacyFunctionalGroupType<IsocyanateGroup> ISOCYANATE = new LegacyFunctionalGroupType<>(() -> DestroyMolecules.GENERIC_ISOCYANATE);
     public static LegacyFunctionalGroupType<NitrileGroup> NITRILE = new LegacyFunctionalGroupType<>(() -> DestroyMolecules.GENERIC_NITRILE);
+    public static LegacyFunctionalGroupType<NitroGroup> NITRO = new LegacyFunctionalGroupType<>(() -> DestroyMolecules.GENERIC_NITRO);
     public static LegacyFunctionalGroupType<NonTertiaryAmineGroup> NON_TERTIARY_AMINE = new LegacyFunctionalGroupType<>(() -> DestroyMolecules.GENERIC_PRIMARY_AMINE);
+    public static LegacyFunctionalGroupType<PrimaryAmineGroup> PRIMARY_AMINE = new LegacyFunctionalGroupType<>(() -> DestroyMolecules.GENERIC_PRIMARY_AMINE);
     public static LegacyFunctionalGroupType<UnsubstitutedAmideGroup> UNSUBSTITUTED_AMIDE = new LegacyFunctionalGroupType<>(() -> DestroyMolecules.GENERIC_AMIDE);
 };

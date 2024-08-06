@@ -254,6 +254,15 @@ public class DestroyReactions {
         .addProduct(DestroyMolecules.COPPER_II)
         .build(),
 
+    DINITROTOLUENE_NITRATION = builder()
+        .id("dinitrotoluene_nitration")
+        .addReactant(DestroyMolecules.DINITROTOLUENE)
+        .addReactant(DestroyMolecules.NITRONIUM)
+        .addProduct(DestroyMolecules.TRINITROTOLUENE)
+        .addProduct(DestroyMolecules.PROTON)
+        .preexponentialFactor(10f) // Slower than toluene nitration to allow selectivity
+        .build(),
+
     ETHENE_POLYMERIZATION = builder()
         .id("ethene_polymerization")
         .addReactant(DestroyMolecules.ETHENE)
@@ -693,9 +702,9 @@ public class DestroyReactions {
     TOLUENE_NITRATION = builder()
         .id("toluene_nitration")
         .addReactant(DestroyMolecules.TOLUENE)
-        .addReactant(DestroyMolecules.NITRONIUM, 3, 1)
-        .addProduct(DestroyMolecules.TRINITROTOLUENE)
-        .addProduct(DestroyMolecules.PROTON, 3)
+        .addReactant(DestroyMolecules.NITRONIUM, 2, 1)
+        .addProduct(DestroyMolecules.DINITROTOLUENE)
+        .addProduct(DestroyMolecules.PROTON, 2)
         .build(),
 
     TOLUENE_TRANSALKYLATION = builder()
@@ -714,6 +723,20 @@ public class DestroyReactions {
         .addReactant(DestroyMolecules.AMMONIA)
         .addSimpleItemReactant(DestroyItems.IODINE::get, 3f)
         .withResult(3f, PrecipitateReactionResult.of(DestroyItems.TOUCH_POWDER::asStack))
+        .build(),
+
+    URETHANE_HDI_POLYMERIZATION = builder()
+        .id("urethane_hdi_polymerization")
+        .addReactant(DestroyMolecules.GLYCEROL)
+        .addReactant(DestroyMolecules.HEXANE_DIISOCYANATE)
+        .withResult(1f, PrecipitateReactionResult.of(DestroyItems.POLYURETHANE::asStack))
+        .build(),
+
+    URETHANE_TDI_POLYMERIZATION = builder()
+        .id("urethane_tdi_polymerization")
+        .addReactant(DestroyMolecules.GLYCEROL)
+        .addReactant(DestroyMolecules.TOLUENE_DIISOCYANATE)
+        .withResult(1f, PrecipitateReactionResult.of(DestroyItems.POLYURETHANE::asStack))
         .build(),
 
     VINYL_ACETATE_SYNTHESIS = builder()

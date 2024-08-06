@@ -19,8 +19,11 @@ import com.petrolpark.destroy.chemistry.legacy.index.group.CarbonylGroup;
 import com.petrolpark.destroy.chemistry.legacy.index.group.CarboxylicAcidGroup;
 import com.petrolpark.destroy.chemistry.legacy.index.group.EsterGroup;
 import com.petrolpark.destroy.chemistry.legacy.index.group.HalideGroup;
+import com.petrolpark.destroy.chemistry.legacy.index.group.IsocyanateGroup;
 import com.petrolpark.destroy.chemistry.legacy.index.group.NitrileGroup;
+import com.petrolpark.destroy.chemistry.legacy.index.group.NitroGroup;
 import com.petrolpark.destroy.chemistry.legacy.index.group.NonTertiaryAmineGroup;
+import com.petrolpark.destroy.chemistry.legacy.index.group.PrimaryAmineGroup;
 import com.petrolpark.destroy.chemistry.legacy.index.group.UnsubstitutedAmideGroup;
 
 public class DestroyGroupFinder extends GroupFinder {
@@ -50,11 +53,15 @@ public class DestroyGroupFinder extends GroupFinder {
             List<LegacyAtom> carbons = bondedAtomsOfElementTo(structure, carbon, LegacyElement.CARBON, BondType.SINGLE);
             List<LegacyAtom> alkeneCarbons = bondedAtomsOfElementTo(structure, carbon, LegacyElement.CARBON, BondType.DOUBLE);
             List<LegacyAtom> alkyneCarbons = bondedAtomsOfElementTo(structure, carbon, LegacyElement.CARBON, BondType.TRIPLE);
+            List<LegacyAtom> doubleBondedNitrogens = bondedAtomsOfElementTo(structure, carbon, LegacyElement.NITROGEN, BondType.DOUBLE);
             List<LegacyAtom> nitrileNitrogens = bondedAtomsOfElementTo(structure, carbon, LegacyElement.NITROGEN, BondType.TRIPLE);
             List<LegacyAtom> rGroups = bondedAtomsOfElementTo(structure, carbon, LegacyElement.R_GROUP);
 
             if (carbonylOxygens.size() == 1) { // Ketones, aldehydes, esters, acids, acid anhydrides, acyl chlorides, amides
                 LegacyAtom carbonylOxygen = carbonylOxygens.get(0);
+
+                if (doubleBondedNitrogens.size() == 1) continue; // Isocyanates are handled on the other carbon in the isocyanate group
+
                 if (singleBondOxygens.size() == 1) { // Esters, carboxylic acids and acid anhydrides
                     LegacyAtom alcoholOxygen = singleBondOxygens.get(0);
                     if (bondedAtomsOfElementTo(structure, alcoholOxygen, LegacyElement.CARBON, BondType.SINGLE).size() == 2) { // Esters and acid anhydrides
@@ -88,7 +95,7 @@ public class DestroyGroupFinder extends GroupFinder {
                         };
                      }
                 };
-            } else { // Alcohols, halides, nitriles, amines
+            } else { // Alcohols, halides, nitriles, amines, isocyanates, nitros
                 for (LegacyAtom halogen : halogens) {
                     groups.add(new HalideGroup(carbon, halogen, carbons.size()));
                 };
@@ -97,10 +104,24 @@ public class DestroyGroupFinder extends GroupFinder {
                         groups.add(new AlcoholGroup(carbon, oxygen, bondedAtomsOfElementTo(structure, oxygen, LegacyElement.HYDROGEN).get(0), carbons.size()));
                     };
                 };
-                for (LegacyAtom nitrogen : nitrogens) { // Primary and secondary amines
-                    for (LegacyAtom hydrogen : bondedAtomsOfElementTo(structure, nitrogen, LegacyElement.HYDROGEN)) {
-                        groups.add(new NonTertiaryAmineGroup(carbon, nitrogen, hydrogen));
+                for (LegacyAtom nitrogen : nitrogens) { // Primary and secondary amines, isocyanates and nitros
+                    List<LegacyAtom> doubleBondedCarbons = bondedAtomsOfElementTo(structure, nitrogen, LegacyElement.CARBON, BondType.DOUBLE);
+                    List<LegacyAtom> aromaticBondedOxygens = bondedAtomsOfElementTo(structure, nitrogen, LegacyElement.OXYGEN, BondType.AROMATIC);
+                    
+                    if (doubleBondedCarbons.size() == 1) { // Isocyanates
+                        LegacyAtom isocyanateCarbon = doubleBondedCarbons.get(0);
+                        List<LegacyAtom> isocyanateOxygens = bondedAtomsOfElementTo(structure, isocyanateCarbon, LegacyElement.OXYGEN, BondType.DOUBLE);
+                        if (isocyanateOxygens.size() == 1) groups.add(new IsocyanateGroup(carbon, nitrogen, isocyanateCarbon, isocyanateOxygens.get(0)));
+                    } else if (aromaticBondedOxygens.size() == 2) { // Nitros
+                        groups.add(new NitroGroup(carbon, nitrogen, aromaticBondedOxygens.get(0), aromaticBondedOxygens.get(1)));
+                    } else {
+                        List<LegacyAtom> amineHydrogens = bondedAtomsOfElementTo(structure, nitrogen, LegacyElement.HYDROGEN);
+                        for (LegacyAtom hydrogen : amineHydrogens) {
+                            groups.add(new NonTertiaryAmineGroup(carbon, nitrogen, hydrogen));
+                        };
+                        if (amineHydrogens.size() == 2) groups.add(new PrimaryAmineGroup(carbon, nitrogen, amineHydrogens.get(0), amineHydrogens.get(1)));
                     };
+
                 };
 
                 // Nitriles
