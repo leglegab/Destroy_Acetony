@@ -238,6 +238,15 @@ public class DestroyReactions {
         .addProduct(DestroyMolecules.CYCLOHEXENE)
         .build(),
 
+    CHROMATE_CONVERSION = builder()
+        .id("chromate_conversion")
+        .addReactant(DestroyMolecules.CHROMATE, 2, 1)
+        .addReactant(DestroyMolecules.PROTON, 2, 1)
+        .addProduct(DestroyMolecules.DICHROMATE)
+        .addProduct(DestroyMolecules.WATER)
+        .reverseReaction(r -> {})
+        .build(),
+
     COPPER_DISSOLUTION = builder() //TODO replace with redox
         .id("copper_dissolution")
         .addReactant(DestroyMolecules.PROTON, 2, 1)

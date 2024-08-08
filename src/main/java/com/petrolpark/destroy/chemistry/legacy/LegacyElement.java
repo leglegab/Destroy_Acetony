@@ -36,7 +36,8 @@ public enum LegacyElement {
     PLATINUM("Pt", 195.08f, 2.2f, new double[]{1}),
     GOLD("Au", 196.97f, 2.4f, new double[]{0, 4}),
     MERCURY("Hg", 200.59f, 1.9f, new double[]{2}),
-    LEAD("Pb", 207.20f, 1.8f, new double[]{2, 4})
+    LEAD("Pb", 207.20f, 1.8f, new double[]{2, 4}),
+    ARGON("Ar", 39.95f, 0f, new double[]{0})
     ;
 
     public final String symbol;

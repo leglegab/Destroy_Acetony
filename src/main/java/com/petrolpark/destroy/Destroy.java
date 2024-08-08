@@ -35,6 +35,7 @@ import com.petrolpark.destroy.fluid.DestroyFluids;
 import com.petrolpark.destroy.fluid.pipeEffectHandler.DestroyOpenEndedPipeEffects;
 import com.petrolpark.destroy.item.CoaxialGearBlockItem.GearOnShaftPlacementHelper;
 import com.petrolpark.destroy.item.CoaxialGearBlockItem.ShaftOnGearPlacementHelper;
+import com.petrolpark.destroy.item.DecayingItemHandler;
 import com.petrolpark.destroy.item.DestroyItemProperties;
 import com.petrolpark.destroy.item.DestroyItems;
 import com.petrolpark.destroy.item.attributes.DestroyItemAttributes;
@@ -65,6 +66,7 @@ import com.simibubi.create.foundation.item.TooltipHelper.Palette;
 import com.simibubi.create.foundation.item.TooltipModifier;
 import com.simibubi.create.foundation.placement.PlacementHelpers;
 
+import net.minecraft.client.Minecraft;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
@@ -97,6 +99,7 @@ public class Destroy {
     // Level-attached managers
     public static final CircuitPuncherHandler CIRCUIT_PUNCHER_HANDLER = new CircuitPuncherHandler();
     public static final CircuitPatternHandler CIRCUIT_PATTERN_HANDLER = new CircuitPatternHandler();
+    public static final ThreadLocal<DecayingItemHandler> DECAYING_ITEM_HANDLER = ThreadLocal.withInitial(() -> () -> 0l);
 
     // Client things
     public static final FogHandler FOG_HANDLER = new FogHandler();
@@ -209,8 +212,12 @@ public class Destroy {
     };
 
     public static void clientInit(final FMLClientSetupEvent event) {
-        event.enqueueWork(() -> {
+        event.enqueueWork(() -> { // Work which must be done on main thread
             DestroyItemProperties.register();
+            DECAYING_ITEM_HANDLER.set(() -> {
+                Minecraft mc = Minecraft.getInstance();
+                return mc.level.getGameTime();
+            });
         });
         DestroyPonderTags.register();
         DestroyPonderIndex.register();

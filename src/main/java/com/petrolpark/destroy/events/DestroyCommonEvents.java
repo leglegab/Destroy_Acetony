@@ -47,6 +47,7 @@ import com.petrolpark.destroy.item.IMixtureStorageItem;
 import com.petrolpark.destroy.item.MeasuringCylinderBlockItem;
 import com.petrolpark.destroy.item.RedstoneProgrammerBlockItem;
 import com.petrolpark.destroy.item.SeismographItem;
+import com.petrolpark.destroy.item.DecayingItemHandler.ServerDecayingItemHandler;
 import com.petrolpark.destroy.item.SeismographItem.Seismograph;
 import com.petrolpark.destroy.network.DestroyMessages;
 import com.petrolpark.destroy.network.packet.CircuitPatternsS2CPacket;
@@ -139,6 +140,7 @@ import net.minecraft.world.item.MapItem;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.chunk.LevelChunk;
@@ -875,7 +877,7 @@ public class DestroyCommonEvents {
     };
 
     /**
-     * Remove dead Redstone Programmer items and naturally decrease Pollution over time.
+     * Remove dead Redstone Programmer items, naturally decrease Pollution over time, and tick decaying Items.
      */
     @SubscribeEvent
     public static void onTick(TickEvent.LevelTickEvent event) {
@@ -889,6 +891,9 @@ public class DestroyCommonEvents {
         for (PollutionType pollutionType : PollutionType.values()) {
             if (PollutionHelper.pollutionEnabled() && !pollutionType.local && level.random.nextFloat() <= DestroyAllConfigs.SERVER.pollution.pollutionDecreaseRates.get(pollutionType).getF()) PollutionHelper.changePollutionGlobal(event.level, pollutionType, -1);
         };
+
+        // Decaying Items
+        if (event.phase == TickEvent.Phase.END && !event.level.isClientSide() && event.level.getServer().overworld() == event.level) ((ServerDecayingItemHandler)Destroy.DECAYING_ITEM_HANDLER.get()).gameTime++;
     };
 
     @SubscribeEvent
@@ -957,8 +962,14 @@ public class DestroyCommonEvents {
 
     @SubscribeEvent
 	public static void onLoadWorld(LevelEvent.Load event) {
-		Destroy.CIRCUIT_PUNCHER_HANDLER.onLoadWorld(event.getLevel());
-        Destroy.CIRCUIT_PATTERN_HANDLER.onLevelLoaded(event.getLevel());
+        LevelAccessor level = event.getLevel();
+		Destroy.CIRCUIT_PUNCHER_HANDLER.onLoadWorld(level);
+        Destroy.CIRCUIT_PATTERN_HANDLER.onLevelLoaded(level);
+        if (!level.isClientSide() && level.getServer().overworld() == level && level instanceof ServerLevel serverLevel) {
+            ServerDecayingItemHandler decayHandler = new ServerDecayingItemHandler();
+            decayHandler.gameTime = serverLevel.getGameTime();
+            Destroy.DECAYING_ITEM_HANDLER.set(decayHandler);  
+        };
 	};
 
 	@SubscribeEvent

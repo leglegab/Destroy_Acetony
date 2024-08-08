@@ -128,6 +128,14 @@ public final class DestroyMolecules {
         .structure(LegacyMolecularStructure.atom(LegacyElement.NITROGEN, 1).addAtom(LegacyElement.HYDROGEN).addAtom(LegacyElement.HYDROGEN).addAtom(LegacyElement.HYDROGEN).addAtom(LegacyElement.HYDROGEN))
         .build(),
 
+    ARGON = builder()
+        .id("argon")
+        .structure(LegacyMolecularStructure.atom(LegacyElement.ARGON))
+        .boilingPointInKelvins(87.302f)
+        .density(1395.4f)
+        .molarHeatCapacity(20.85f)
+        .build(),
+
     ASPIRIN = builder()
         .id("aspirin")
         .structure(LegacyMolecularStructure.deserialize("destroy:benzene:OC(=O)C,C(=O)O,,,,"))
@@ -261,6 +269,18 @@ public final class DestroyMolecules {
         .tag(Tags.SOLVENT)
         .build(),
 
+    CHROMATE = builder()
+        .id("chromate")
+        .structure(LegacyMolecularStructure.deserialize("destroy:linear:O=Cr=(-O^-1)(-O^-1)O"))
+        .color(0xD0F7ED2C)
+        .build(),
+
+    CHROMIUM_III = builder()
+        .id("chromium_iii")
+        .structure(LegacyMolecularStructure.atom(LegacyElement.CHROMIUM, 3))
+        .color(0xD00D9614)
+        .build(),
+
     CISPLATIN = builder()
         .id("cisplatin")
         .structure(LegacyMolecularStructure.atom(
@@ -349,6 +369,12 @@ public final class DestroyMolecules {
         .tag(Tags.REFRIGERANT)
         .build(),
 
+    DICHROMATE = builder()
+        .id("dichromate")
+        .structure(LegacyMolecularStructure.deserialize("destroy:linear:O=Cr(=O)(O^-1)OCr=(=O)(O^-1)O"))
+        .color(0xD0DB3D0D)
+        .build(),
+
     DINITROTOLUENE = builder()
         .id("dinitrotoluene")
         .structure(LegacyMolecularStructure.deserialize("destroy:benzene:C,N~(~O)O,,N~(~O)O,,"))
@@ -356,6 +382,8 @@ public final class DestroyMolecules {
         .density(1520f)
         .molarHeatCapacity(243.3f) // Couldn't find data so assume same as TNT
         .tag(Tags.ACUTELY_TOXIC)
+        .tag(Tags.CARCINOGEN)
+        .tag(Tags.PLASTICIZER)
         .build(),
 
     ETHANOL = builder()

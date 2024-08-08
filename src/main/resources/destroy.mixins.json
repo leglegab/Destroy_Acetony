@@ -55,6 +55,7 @@
         "HeatConditionMixin",
         "HeatLevelMixin",
         "ItemDrainBlockMixin",
+        "ItemStackMixin",
         "KineticBlockEntityMixin",
         "LevelSettingsMixin",
         "MechanicalMixerBlockEntityMixin",

@@ -280,9 +280,9 @@ public class DestroyItems {
             .durability(1600)
         ).register();
 
-    public static final ItemEntry<Item>
+    public static final ItemEntry<ConfiguredDecayingItem>
 
-    GAS_FILTER = REGISTRATE.item("gas_filter", Item::new)
+    GAS_FILTER = REGISTRATE.item("gas_filter", p -> new ConfiguredDecayingItem(p, () -> new ItemStack(Items.ROTTEN_FLESH), () -> DestroyAllConfigs.SERVER.substances.sodiumDecayTime))
         .register();
 
     public static final ItemEntry<ChemistryProtectionHeadwearItem>

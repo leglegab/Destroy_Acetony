@@ -13,9 +13,11 @@ import com.petrolpark.destroy.chemistry.naming.SaltNameOverrides;
 import com.petrolpark.destroy.client.model.CircuitPatternItemModel;
 import com.petrolpark.destroy.client.model.UniversalArmorTrimModel;
 import com.petrolpark.destroy.entity.renderer.layer.BlowpipeLayer;
+import com.petrolpark.destroy.item.DestroyItems;
 import com.petrolpark.destroy.item.MoleculeDisplayItem.MoleculeTooltip;
 import com.petrolpark.destroy.item.color.DyeableCustomExplosiveMixItemColor;
 import com.petrolpark.destroy.item.color.TankPeriodicTableBlockItemColor;
+import com.petrolpark.destroy.item.decorator.DecayingItemDecorator;
 import com.petrolpark.destroy.item.tooltip.CircuitPatternTooltip;
 import com.petrolpark.destroy.item.tooltip.ExplosivePropertiesTooltip;
 import com.petrolpark.destroy.util.NameLists;
@@ -32,6 +34,7 @@ import net.minecraftforge.client.event.ModelEvent;
 import net.minecraftforge.client.event.RegisterClientReloadListenersEvent;
 import net.minecraftforge.client.event.RegisterClientTooltipComponentFactoriesEvent;
 import net.minecraftforge.client.event.RegisterColorHandlersEvent;
+import net.minecraftforge.client.event.RegisterItemDecorationsEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 
@@ -42,6 +45,11 @@ public class DestroyClientModEvents {
     public static void registerClientReloadListeners(RegisterClientReloadListenersEvent event) {
         event.registerReloadListener(SaltNameOverrides.RELOAD_LISTENER);
         event.registerReloadListener(NameLists.RELOAD_LISTENER);
+    };
+
+    @SubscribeEvent
+    public static void registerItemDecorations(RegisterItemDecorationsEvent event) {
+        event.register(DestroyItems.GAS_FILTER, new DecayingItemDecorator());
     };
 
     @SubscribeEvent
