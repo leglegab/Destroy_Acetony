@@ -1,0 +1,24 @@
+{
+    "type": "create:mixing",
+    "ingredients": [
+      {
+        "tag": "minecraft:sand"
+      },
+      {
+        "tag": "minecraft:sand"
+      },
+      {
+        "item": "destroy:oxidized_sodium_ingot"
+      },
+      {
+        "tag": "forge:raw_materials/borax"
+      }
+    ],
+    "results": [
+      {
+        "fluid": "destroy:molten_borosilicate_glass",
+        "amount": 1000
+      }
+    ],
+    "heatRequirement": "heated"
+  }

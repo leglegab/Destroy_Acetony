@@ -1,5 +1,6 @@
 {
   "values": [
-    "destroy:stainless_steel_block"
+    "destroy:molten_stainless_steel",
+    "destroy:molten_borosilicate_glass"
   ]
 }

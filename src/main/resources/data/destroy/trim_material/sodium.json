@@ -1,0 +1,9 @@
+{
+    "asset_name": "sodium",
+    "description": {
+      "color": "#c9c8d3",
+      "translate": "destroy.trim_material.sodium"
+    },
+    "ingredient": "destroy:sodium_ingot",
+    "item_model_index": -1.0
+  }

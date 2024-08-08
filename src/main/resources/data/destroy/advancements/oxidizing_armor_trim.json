@@ -1,0 +1,39 @@
+{
+    "parent": "destroy:dynamo_electrolysis",
+    "criteria": {
+      "sodium_armor": {
+        "conditions": {
+          "items": [
+            {
+              "nbt": "{Trim:{material:\"destroy:sodium\"}}"
+            }
+          ]
+        },
+        "trigger": "minecraft:inventory_changed"
+      }
+    },
+    "display": {
+      "announce_to_chat": true,
+      "description": {
+        "translate": "advancement.destroy.oxidizing_armor_trim.description"
+      },
+      "frame": "challenge",
+      "hidden": false,
+      "icon": {
+        "item": "destroy:sodium_ingot"
+      },
+      "show_toast": true,
+      "title": {
+        "translate": "advancement.destroy.oxidizing_armor_trim"
+      }
+    },
+    "requirements": [
+      [
+        "sodium_armor"
+      ]
+    ],
+    "rewards": {
+      "experience": 100
+    },
+    "sends_telemetry_event": true
+  }

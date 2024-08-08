@@ -119,6 +119,9 @@ public class DestroyItems {
     LEAD_INGOT = REGISTRATE.item("lead_ingot", Item::new)
         .tag(DestroyItemTags.DESTROY_INGOTS.tag, forgeItemTag("ingots/lead"), Tags.Items.INGOTS, ItemTags.TRIM_MATERIALS)
         .register(),
+    OXIDIZED_SODIUM_INGOT = REGISTRATE.item("oxidized_sodium_ingot", Item::new)
+        .tag(DestroyItemTags.DESTROY_INGOTS.tag, Tags.Items.INGOTS)
+        .register(),
     PALLADIUM_INGOT = REGISTRATE.item("palladium_ingot", Item::new)
         .tag(DestroyItemTags.DESTROY_INGOTS.tag, forgeItemTag("ingots/palladium"), Tags.Items.INGOTS, ItemTags.TRIM_MATERIALS)
         .register(),
@@ -145,7 +148,15 @@ public class DestroyItems {
         .register(),
     STAINLESS_STEEL_ROD = REGISTRATE.item("stainless_steel_rod", Item::new)
         .tag(forgeItemTag("rods/steel"), forgeItemTag("rods/stainless_steel"), Tags.Items.RODS)
-        .register(),
+        .register();
+
+    public static final ItemEntry<OxidizingItem>
+
+    SODIUM_INGOT = REGISTRATE.item("sodium_ingot", p -> new OxidizingItem(p, DestroyItems.OXIDIZED_SODIUM_INGOT::asStack, () -> DestroyAllConfigs.SERVER.substances.sodiumDecayTime))
+        .tag(DestroyItemTags.DESTROY_INGOTS.tag, forgeItemTag("ingots/sodium"), Tags.Items.INGOTS, ItemTags.TRIM_MATERIALS)
+        .register();
+
+    public static final ItemEntry<Item>
 
     // RAW MATERIALS
 
@@ -280,9 +291,9 @@ public class DestroyItems {
             .durability(1600)
         ).register();
 
-    public static final ItemEntry<ConfiguredDecayingItem>
+    public static final ItemEntry<Item>
 
-    GAS_FILTER = REGISTRATE.item("gas_filter", p -> new ConfiguredDecayingItem(p, () -> new ItemStack(Items.ROTTEN_FLESH), () -> DestroyAllConfigs.SERVER.substances.sodiumDecayTime))
+    GAS_FILTER = REGISTRATE.item("gas_filter", Item::new)
         .register();
 
     public static final ItemEntry<ChemistryProtectionHeadwearItem>

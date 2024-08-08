@@ -52,6 +52,7 @@ public class DestroyCreativeModeTabs {
 				n(), i(DestroyItems.PALLADIUM_INGOT), i(DestroyBlocks.PALLADIUM_BLOCK), i(DestroyItems.PALLADIUM_POWDER), i(DestroyItems.CRUSHED_RAW_PALLADIUM),
 				n(), i(DestroyItems.PLATINUM_INGOT), i(DestroyBlocks.PLATINUM_BLOCK), i(DestroyItems.PLATINUM_POWDER), d(AllItems.CRUSHED_PLATINUM),
 				n(), i(DestroyItems.RHODIUM_INGOT), i(DestroyBlocks.RHODIUM_BLOCK), i(DestroyItems.RHODIUM_POWDER), i(DestroyItems.CRUSHED_RAW_RHODIUM), 
+				n(), i(DestroyItems.SODIUM_INGOT), e(), e(), e(), e(), i(DestroyItems.OXIDIZED_SODIUM_INGOT),
 				n(), d(AllItems.ZINC_INGOT), d(AllBlocks.ZINC_BLOCK), i(DestroyItems.ZINC_POWDER), d(AllItems.CRUSHED_ZINC), i(DestroyItems.ZINC_SHEET), d(AllItems.RAW_ZINC), d(AllBlocks.RAW_ZINC_BLOCK), d(AllBlocks.ZINC_ORE), d(AllBlocks.DEEPSLATE_ZINC_ORE), //107?
 				//TODO pure gold
 

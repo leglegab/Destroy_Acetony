@@ -40,12 +40,11 @@ public abstract class DecayingItem extends Item implements IDecayingItem {
         };
         if (displayedSecondsRemaining < 0) displayedSecondsRemaining = 0;
         tooltip.add(Component.translatable(getDecayTimeTranslationKey(stack), String.format("%02d:%02d", displayedSecondsRemaining / 60, displayedSecondsRemaining % 60)).copy().withStyle(ChatFormatting.GRAY));
-        
     };
 
     @Override
     public void onCraftedBy(ItemStack stack, Level pLevel, Player pPlayer) {
-        IDecayingItem.startDecay(stack);
+        IDecayingItem.startDecay(stack, 0);
     };
 
     @Override

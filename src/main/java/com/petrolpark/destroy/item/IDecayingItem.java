@@ -34,13 +34,12 @@ public interface IDecayingItem {
         if (stack.isEmpty()) return stack;
         if (stack.getItem() instanceof IDecayingItem item) {
             CompoundTag tag = stack.getOrCreateTag();
-            long gameTime = Destroy.DECAYING_ITEM_HANDLER.get().getGameTime();
             if (tag.contains("CreationTime", Tag.TAG_LONG)) {
-                long timeDead = gameTime - tag.getLong("CreationTime") - item.getLifetime(stack);
+                long timeDead = -getRemainingTime(item, stack, tag);
                 if (timeDead >= 0) {
                     ItemStack product = item.getDecayProduct(stack);
                     startDecay(product, timeDead);
-                    return product;
+                    return checkDecay(product);
                 };
             };
         };
@@ -56,6 +55,16 @@ public interface IDecayingItem {
             CompoundTag tag = stack.getOrCreateTag();
             if (!tag.contains("CreationTime", Tag.TAG_LONG)) tag.putLong("CreationTime", Destroy.DECAYING_ITEM_HANDLER.get().getGameTime() - timeElapsed);
         };
+    };
+
+    public static void extendLifetime(ItemStack decayingItemStack, int additionalLifetime) {
+        if (decayingItemStack.getItem() instanceof IDecayingItem item) {
+            CompoundTag tag = decayingItemStack.getOrCreateTag();
+            long remainingTime = getRemainingTime(item, decayingItemStack, tag);
+            long newLifetime = Math.max(0, additionalLifetime + remainingTime);
+            tag.putLong("CreationTime", Destroy.DECAYING_ITEM_HANDLER.get().getGameTime() + newLifetime - item.getLifetime(decayingItemStack));
+        };
+        
     };
     
 };

@@ -13,6 +13,7 @@
         "rainbow": "destroy:trims/color_palettes/rainbow",
         "rhodium": "destroy:trims/color_palettes/rhodium",
         "shadow_steel": "destroy:trims/color_palettes/shadow_steel",
+        "sodium": "destroy:trims/color_palettes/sodium",
         "stainless_steel": "destroy:trims/color_palettes/stainless_steel",
         "zinc": "destroy:trims/color_palettes/zinc"
     }

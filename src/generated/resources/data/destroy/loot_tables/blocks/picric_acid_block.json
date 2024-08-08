@@ -11,7 +11,7 @@
       "entries": [
         {
           "type": "minecraft:item",
-          "name": "minecraft:air"
+          "name": "destroy:picric_acid_block"
         }
       ],
       "rolls": 1.0
