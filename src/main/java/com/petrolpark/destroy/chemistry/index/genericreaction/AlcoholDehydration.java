@@ -23,9 +23,9 @@ public class AlcoholDehydration extends SingleGroupGenericReaction<AlcoholGroup>
 
     @Override
     public Reaction generateReaction(GenericReactant<AlcoholGroup> reactant) {
+
         Formula structure = reactant.getMolecule().shallowCopyStructure();
         AlcoholGroup alcohol = reactant.getGroup();
-
         ReactionBuilder builder = reactionBuilder();
 
         int products = 0;
@@ -39,7 +39,7 @@ public class AlcoholDehydration extends SingleGroupGenericReaction<AlcoholGroup>
                 .remove(alcohol.oxygen)
                 .remove(alcohol.hydrogen)
                 .moveTo(carbon)
-                .replaceBondTo(alcohol.carbon, BondType.SINGLE);
+                .replaceBondTo(alcohol.carbon, BondType.DOUBLE);
             builder.addProduct(moleculeBuilder().structure(productStructure).build());
             products++;
         };
@@ -48,8 +48,10 @@ public class AlcoholDehydration extends SingleGroupGenericReaction<AlcoholGroup>
 
         builder
             .addReactant(reactant.getMolecule(), products)
-            .addCatalyst(DestroyMolecules.SULFURIC_ACID, 1)
-            .addProduct(DestroyMolecules.WATER, products);
+            .addCatalyst(DestroyMolecules.HYDROGENSULFATE, 1)
+            .addCatalyst(DestroyMolecules.PROTON, 1)
+            .addProduct(DestroyMolecules.WATER, products)
+            .activationEnergy(50f);
 
         return builder.build(); //TODO finish
 
