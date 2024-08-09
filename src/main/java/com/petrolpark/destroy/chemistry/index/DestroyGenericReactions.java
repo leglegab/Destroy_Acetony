@@ -1,23 +1,6 @@
 package com.petrolpark.destroy.chemistry.index;
 
-import com.petrolpark.destroy.chemistry.index.genericreaction.AcylChlorideEsterification;
-import com.petrolpark.destroy.chemistry.index.genericreaction.AcylChlorideFormation;
-import com.petrolpark.destroy.chemistry.index.genericreaction.AcylChlorideHydrolysis;
-import com.petrolpark.destroy.chemistry.index.genericreaction.AlcoholOxidation;
-import com.petrolpark.destroy.chemistry.index.genericreaction.AldehydeOxidation;
-import com.petrolpark.destroy.chemistry.index.genericreaction.AlkeneHydrolysis;
-import com.petrolpark.destroy.chemistry.index.genericreaction.AlkeneHydrogenation;
-import com.petrolpark.destroy.chemistry.index.genericreaction.AmideHydrolysis;
-import com.petrolpark.destroy.chemistry.index.genericreaction.CarbonylReduction;
-import com.petrolpark.destroy.chemistry.index.genericreaction.CarboxylicAcidEsterification;
-import com.petrolpark.destroy.chemistry.index.genericreaction.CarboxylicAcidReduction;
-import com.petrolpark.destroy.chemistry.index.genericreaction.CyanideNucleophilicAddition;
-import com.petrolpark.destroy.chemistry.index.genericreaction.HalideAmineSubstitution;
-import com.petrolpark.destroy.chemistry.index.genericreaction.HalideAmmoniaSubstitution;
-import com.petrolpark.destroy.chemistry.index.genericreaction.HalideCyanideSubstitution;
-import com.petrolpark.destroy.chemistry.index.genericreaction.HalideHydroxideSubstitution;
-import com.petrolpark.destroy.chemistry.index.genericreaction.NitrileHydrogenation;
-import com.petrolpark.destroy.chemistry.index.genericreaction.NitrileHydrolysis;
+import com.petrolpark.destroy.chemistry.index.genericreaction.*;
 
 public class DestroyGenericReactions {
 
@@ -25,6 +8,7 @@ public class DestroyGenericReactions {
     public static final AcylChlorideFormation ACYL_CHLORIDE_FORMATION = new AcylChlorideFormation();
     public static final AcylChlorideHydrolysis ACYL_CHLORIDE_HYDROLYSIS = new AcylChlorideHydrolysis();
     public static final AlcoholOxidation ALCOHOL_OXIDATION = new AlcoholOxidation();
+    public static final AlcoholDehydration ALCOHOL_DEHYDRATION = new AlcoholDehydration();
     public static final AldehydeOxidation ALDEHYDE_OXIDATION = new AldehydeOxidation();
     public static final AlkeneHydrolysis ALKENE_HYDROLYSIS = new AlkeneHydrolysis();
     public static final AlkeneHydrogenation ALKENE_HYDROGENATION = new AlkeneHydrogenation();
@@ -39,6 +23,7 @@ public class DestroyGenericReactions {
     public static final HalideHydroxideSubstitution HALIDE_HYDROXIDE_SUBSTITUTION = new HalideHydroxideSubstitution();
     public static final NitrileHydrogenation NITRILE_HYDROGENATION = new NitrileHydrogenation();
     public static final NitrileHydrolysis NITRILE_HYDROLYSIS = new NitrileHydrolysis();
+    public static final ThionylChlorideSubstitution THIONYL_CHLORIDE_SUBSTITUTION = new ThionylChlorideSubstitution();
 
     public static void register() {};
 }
