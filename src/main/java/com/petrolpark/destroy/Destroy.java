@@ -86,6 +86,7 @@ import net.minecraftforge.registries.RegistryBuilder;
 @Mod(Destroy.MOD_ID)
 public class Destroy {
     public static final String MOD_ID = "destroy";
+    public static final String NAME = "Destroy";
 
     // Utility
     public static final Logger LOGGER = LogUtils.getLogger();

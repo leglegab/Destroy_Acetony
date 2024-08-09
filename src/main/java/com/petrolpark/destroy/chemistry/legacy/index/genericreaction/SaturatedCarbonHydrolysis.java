@@ -26,8 +26,8 @@ public class SaturatedCarbonHydrolysis extends ElectrophilicAddition {
     public void transform(ReactionBuilder builder) {
         builder.addReactant(DestroyMolecules.WATER, 1, 0)
             .displayAsReversible()
-            .addCatalyst(DestroyMolecules.SULFURIC_ACID, 1)
-            .activationEnergy(200f);
+            .addCatalyst(DestroyMolecules.PROTON, 2)
+            .activationEnergy(20f);
     };
 
     

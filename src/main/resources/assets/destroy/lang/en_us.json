@@ -1192,7 +1192,7 @@
     "destroy.tooltip.mixture_ingredient.anion": "Must contain _%1$s_ at a concentration between _%2$sM_ and _%3$sM_. All other molecules must be _cations_, _solvents_ or _low in concentration_.",
     "destroy.tooltip.mixture_ingredient.cation": "Must contain _%1$s_ at a concentration between _%2$sM_ and _%3$sM_. All other molecules must be _anions_, _solvents_ or _low in concentration_.",
     "destroy.tooltip.mixture_ingredient.molecule_tag_1": "Must contain molecules with the following tag:",
-    "destroy.tooltip.mixture_ingredient.molecule_tag_2": "The _combined concentration_ of these Molecules must be between _%1$sM_ and _%2$sM_. All other molecules must be _solvents_ or _low in concentration_. Remember you can _search_ for the tag in JEI.",
+    "destroy.tooltip.mixture_ingredient.molecule_tag_2": "The _combined concentration_ of these species must be between _%1$sM_ and _%2$sM_. All other molecules must be _solvents_ or _low in concentration_. Remember you can _search_ for the tag in JEI.",
     "destroy.tooltip.mixture_ingredient.refrigerants": "For best results, use _high concentration_ refrigerants. Remember you can _search_ for 'Refrigerant' in JEI.",
     "destroy.tooltip.molecule.boiling_point": "Boiling Point: %1$s",
     "destroy.tooltip.molecule.charge": "Charge: %1$s",
@@ -1300,6 +1300,10 @@
     "destroy.trim_material.sodium": "Sodium Material",
     "destroy.trim_material.stainless_steel": "Inox Material",
     "destroy.trim_material.zinc": "Zinc Material",
+
+    "destroy.key.hotbar.10": "Hotbar Slot 10",
+    "destroy.key.hotbar.11": "Hotbar Slot 11",
+    "destroy.key.hotbar.12": "Hotbar Slot 12",
     
     "effect.destroy.cancer": "Cancer Awareness",
     "effect.destroy.cancer.description": "_Has no effect in-game_. Many things in Destroy are jokes, but _cancer is not one of them_. This is here to _raise awareness_ of the increase in cancer risk associated with occupational exposure, and with _harm to the ozone layer_. Please see a professional source like '_cancerresearchuk.org_'. This pop-up can be removed with _Cisplatin_.",

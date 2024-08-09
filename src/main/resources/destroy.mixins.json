@@ -32,8 +32,7 @@
         "compat.jei.PackingCategoryMixin",
         "compat.jei.TooltipRendererMixin",
         "compat.tfmg.AdvancedDistillationCategoryMixin",
-        "compat.tfmg.DistillationCategoryMixin",
-        "compat.tfmg.DistillationOutputBlockEntityMixin",
+        "AbstractContainerMenuMixin",
         "AirCurrentMixin",
         "BasinBlockEntityMixin",
         "BeltInventoryMixin",
@@ -65,6 +64,7 @@
         "PonderTagScreenMixin",
         "PonderUIMixin",
         "PonderWorldMixin",
+        "ProcessingRecipeMixin",
         "RotationPropagatorMixin",
         "SchematicannonInventoryMixin",
         "SequencedAssemblyRecipeMixin",
@@ -81,7 +81,7 @@
         "VillagerMixin"
     ],
     "client": [
-        "compat.jei.ProcessingRecipeMixin",
+        "compat.jei.JeiProcessingRecipeMixin",
         "BeltRendererMixin",
         "ClientLevelMixin",
         "CreativeModeInventoryScreenMixin",

@@ -106,7 +106,7 @@ public class MoleculeTagFluidIngredient extends ConcentrationRangeFluidIngredien
             List<Component> tooltip = new ArrayList<>();
             tooltip.addAll(TooltipHelper.cutStringTextComponent(DestroyLang.translate("tooltip.mixture_ingredient.molecule_tag_1").string(), Palette.GRAY_AND_WHITE));
             tooltip.add(tag.getFormattedName());
-            tooltip.addAll(TooltipHelper.cutStringTextComponent(DestroyLang.translate("tooltip.mixture_ingredient.molecule_tag_2", df.format(minConc), df.format(maxConc)).string(), Palette.GRAY_AND_WHITE));
+            tooltip.addAll(TooltipHelper.cutTextComponent(DestroyLang.translate("tooltip.mixture_ingredient.molecule_tag_2", df.format(minConc), df.format(maxConc)).component(), Palette.GRAY_AND_WHITE.primary(), Palette.GRAY_AND_WHITE.highlight()));
     
             return tooltip;
         };

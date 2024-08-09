@@ -24,6 +24,7 @@ import com.petrolpark.destroy.capability.chunk.ChunkCrudeOil;
 import com.petrolpark.destroy.capability.entity.EntityChemicalPoison;
 import com.petrolpark.destroy.capability.player.PlayerBadges;
 import com.petrolpark.destroy.capability.player.PlayerCrouching;
+import com.petrolpark.destroy.capability.player.PlayerExtendedInventory;
 import com.petrolpark.destroy.capability.player.PlayerLuckyFirstRecipes;
 import com.petrolpark.destroy.capability.player.PlayerNovelCompoundsSynthesized;
 import com.petrolpark.destroy.capability.player.babyblue.PlayerBabyBlueAddiction;
@@ -213,6 +214,10 @@ public class DestroyCommonEvents {
             if (!player.getCapability(PlayerBabyBlueAddictionProvider.PLAYER_BABY_BLUE_ADDICTION).isPresent()) {
                 event.addCapability(Destroy.asResource("baby_blue_addiction"), new PlayerBabyBlueAddictionProvider());
             };
+            // Add extended Inventory Capability
+            if (!player.getCapability(PlayerExtendedInventory.CAPABILITY).isPresent()) {
+                event.addCapability(Destroy.asResource("extra_inventory"), new PlayerExtendedInventory.Provider());
+            };
             // Add Previous Positions Capability
             if (!player.getCapability(PlayerPreviousPositionsProvider.PLAYER_PREVIOUS_POSITIONS).isPresent()) {
                 event.addCapability(Destroy.asResource("previous_positions"), new PlayerPreviousPositionsProvider());
@@ -309,18 +314,22 @@ public class DestroyCommonEvents {
     };
 
     /**
-     * Conserve Baby Blue addiction and Badges across death.
+     * Conserve Baby Blue addiction, Badges etc. across death.
      */
     @SubscribeEvent
     @MoveToPetrolparkLibrary
     public static void onPlayerCloned(PlayerEvent.Clone event) {
         if (event.isWasDeath()) {
             // Copy Baby Blue Addiction Data
-            event.getOriginal().getCapability(PlayerBabyBlueAddictionProvider.PLAYER_BABY_BLUE_ADDICTION).ifPresent(oldStore -> {
+            if (DestroyAllConfigs.SERVER.substances.keepBabyBlueAddictionOnDeath.get()) event.getOriginal().getCapability(PlayerBabyBlueAddictionProvider.PLAYER_BABY_BLUE_ADDICTION).ifPresent(oldStore -> {
                 event.getEntity().getCapability(PlayerBabyBlueAddictionProvider.PLAYER_BABY_BLUE_ADDICTION).ifPresent(newStore -> {
                     newStore.copyFrom(oldStore);
                 });
             });
+
+            // Copy Extra Inventory Data
+            PlayerExtendedInventory.copyOverDeath(event.getOriginal(), event.getEntity());
+
             // Copy Badge data
             event.getOriginal().getCapability(PlayerBadges.Provider.PLAYER_BADGES).ifPresent(oldStore -> {
                 event.getEntity().getCapability(PlayerBadges.Provider.PLAYER_BADGES).ifPresent(newStore -> {

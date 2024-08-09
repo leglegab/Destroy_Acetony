@@ -18,6 +18,7 @@ public class DestroySubstancesConfigs extends DestroyConfigBase {
     public final ConfigInt babyBlueMaxAddictionLevel = i(590, 0, "maxAddictionLevel", Comments.toDisable, Comments.maxAddictionLevel);
     public final ConfigFloat babyBlueMiningSpeedBonus = f(0.5f, Float.MIN_VALUE, "babyBlueMiningSpeedBonus", "The proportion by which mining speed is boosted for every level of Baby Blue High", "For example, 0.5 gives +50% per level");
     public final ConfigFloat babyBlueWidthdrawalSpeedBonus = f(-0.3f, Float.MIN_VALUE, "babyBlueMiningSpeedBonus", "The proportion by which mining speed is \"boosted\" for every level of Baby Blue Withdrawal", "For example, -0.3 gives -30% per level");
+    public final ConfigBool keepBabyBlueAddictionOnDeath = b(true, "keepBabyBlueAddictionOnDeath", "Conserve the level of Baby Blue Addiction a player has when they die");
 
     public final ConfigGroup alcohol = group(0, "alcohol", Comments.alcohol);
     public final ConfigInt inebriationDuration = i(1200, 0, "inebriationDuration", Comments.inTicks, Comments.inebriationDuration);
@@ -27,6 +28,9 @@ public class DestroySubstancesConfigs extends DestroyConfigBase {
     public final EnumMap<SoundSource, ConfigFloat> soundSourceDamage = enumFloatMap(SoundSource.class, SoundSource.values(), v -> "hangoverDamage" + DestroyLang.pascal(v.name()), v -> new String[]{"The damage done by sounds from the source " + DestroyLang.pascal(v.name()) + " to entities with hangovers"}, 0f, Float.MAX_VALUE, 1f);
     public final ConfigFloat hangoverNoiseTriggerRadius = f(5f, 0f, 128f, "hangoverNoiseTriggerRadius", "[in blocks]", "The square radius away from a noise which will be checked for entities with hangovers");
     
+    public final ConfigGroup creatine = group(0, "creatine", "Creatine");
+    public final ConfigBool keepExtraInventorySizeOnDeath = b(false, "keepExtraInventorySizeOnDeath", "Conserve the size of the additional inventory if the player dies", "[This will be overriden as true if the Game Rule keepInventory is true]");
+
     @Override
     public String getName() {
         return "substances";

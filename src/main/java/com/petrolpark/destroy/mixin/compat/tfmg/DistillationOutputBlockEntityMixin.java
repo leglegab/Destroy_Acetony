@@ -5,9 +5,9 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-import com.drmangotea.tfmg.blocks.machines.oil_processing.distillation.distillation_tower.DistillationControllerBlockEntity;
-import com.drmangotea.tfmg.blocks.machines.oil_processing.distillation.distillation_tower.DistillationOutputBlockEntity;
-import com.drmangotea.tfmg.recipes.distillation.AdvancedDistillationRecipe;
+import com.drmangotea.tfmg.blocks.machines.oil_processing.distillation.controller.DistillationControllerBlockEntity;
+import com.drmangotea.tfmg.blocks.machines.oil_processing.distillation.output.DistillationOutputBlockEntity;
+import com.drmangotea.tfmg.recipes.distillation.DistillationRecipe;
 
 @Mixin(DistillationOutputBlockEntity.class)
 public class DistillationOutputBlockEntityMixin {
@@ -18,7 +18,7 @@ public class DistillationOutputBlockEntityMixin {
         cancellable = true,
         remap = false
     )
-    public void inGetMatchingRecipes(DistillationControllerBlockEntity be, CallbackInfoReturnable<AdvancedDistillationRecipe> cir) {
+    public void inGetMatchingRecipes(DistillationControllerBlockEntity be, CallbackInfoReturnable<DistillationRecipe> cir) {
         //TODO reimplement once TFMG distillation is fixed
         // if (cir.getReturnValue() == null) {
         //     List<AdvancedDistillationRecipe> recipes = SharedDistillationRecipes.getDestroyToTFMGRecipes(be.getLevel()).stream().map(DistillationRecipeConversion::convertToAdvancedDistillationRecipe).filter(recipe -> recipe.getFluidIngredients().get(0).test(be.inputTank.getPrimaryHandler().getFluid())).toList();

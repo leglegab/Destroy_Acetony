@@ -25,7 +25,6 @@ public class NitroHydrogenation extends SingleGroupGenericReaction<NitroGroup> {
             .remove(group.firstOxygen)
             .remove(group.secondOxygen)
             .addAtom(LegacyElement.HYDROGEN)
-            .addAtom(LegacyElement.HYDROGEN)
             .addAtom(LegacyElement.HYDROGEN);
         return reactionBuilder()
             .addReactant(reactant.getMolecule())

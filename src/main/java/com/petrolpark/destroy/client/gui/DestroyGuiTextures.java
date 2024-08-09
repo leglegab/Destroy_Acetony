@@ -23,7 +23,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 
 public enum DestroyGuiTextures implements ScreenElement {
 
-	// CIRCUITS
+	// Circuits
 	CIRCUIT_BOARD_BORDER("circuit", 48, 48),
 	CIRCUIT_BOARD_CELL_SHADING("circuit", 48, 0, 10, 10),
 	CIRCUIT_BOARD_CELL("circuit", 48, 16, 8, 8),
@@ -31,10 +31,10 @@ public enum DestroyGuiTextures implements ScreenElement {
 	CIRCUIT_MASK_CELL_SHADING("circuit", 48, 48, 10, 10),
 	CIRCUIT_MASK_CELL("circuit", 48, 64, 8, 8),
 	
-	// KEYPUNCH
+	// Keypunch
 	KEYPUNCH("keypunch", 187, 169),
 
-	// VAT
+	// Vat
 	VAT("vat", 256, 226),
 	VAT_CARD_UNSELECTED("vat", 0, 227, 100, 28),
 	VAT_CARD_SELECTED("vat", 116, 226, 102, 30),
@@ -43,7 +43,7 @@ public enum DestroyGuiTextures implements ScreenElement {
 	VAT_QUANTITY_OBSERVER("logistics", 0, 0, 256, 95),
 	COLORIMETER("colorimeter", 0, 0, 256, 195),
 
-	// REDSTONE PROGRAMMER
+	// Redstone Programmer
 	REDSTONE_PROGRAMMER("redstone_programmer_1", 256, 226),
 	REDSTONE_PROGRAMMER_NOTE_BORDER_MIDDLE("redstone_programmer_2", 192, 0, 4, 18),
 	REDSTONE_PROGRAMMER_NOTE_BORDER_LEFT("redstone_programmer_2", 196, 0, 4, 18),
@@ -75,7 +75,7 @@ public enum DestroyGuiTextures implements ScreenElement {
 	REDSTONE_PROGRAMMER_REMOVE_BAR("redstone_programmer_2", 192, 54, 12, 13),
 	REDSTONE_PROGRAMMER_ADD_BAR("redstone_programmer_2", 204, 54, 12, 13),
 
-	// SEISMOGRAPH
+	// Seismograph
 	SEISMOGRAPH_BACKGROUND("seismograph", 0, 0, 64, 64, 64, 64),
 	SEISMOGRAPH_OVERLAY("seismograph_overlay", 0, 0, 64, 64, 64, 64),
 	SEISMOGRAPH_TICK("seismograph_symbols", 0, 0, 5, 5, 64, 64),
@@ -109,13 +109,14 @@ public enum DestroyGuiTextures implements ScreenElement {
 	CUSTOM_EXPLOSIVE_SLOT("custom_explosive", 187, 24, 18, 18),
 	CUSTOM_EXPLOSIVE_JEI_BACKGROUND("custom_explosive", 76, 135, 90, 94),
 
+	// Blowpipe Recipe selection
 	BLOWPIPE_BACKGROUND("blowpipe", 0, 0, 95, 77),
 	BLOWPIPE_RECIPE("blowpipe", 0, 77, 64, 18),
 	BLOWPIPE_RECIPE_SELECTED("blowpipe", 0, 77 + 18, 64, 18),
 	BLOWPIPE_SCROLL("blowpipe", 95, 0, 12, 15),
 	BLOWPIPE_SCROLL_LOCKED("blowpipe", 95 + 12, 0, 12, 15),
 
-	// CREATIVE MODE TAB
+	// Creative Mode Tab
 	CREATIVE_MODE_TAB_BLANK_ROW("creative_inventory", 0, 0, 162, 18),
 
     // JEI
@@ -132,8 +133,9 @@ public enum DestroyGuiTextures implements ScreenElement {
 	JEI_DISTILLATION_TOWER_BRANCH("jei/widgets", 20, 45, 20, 2),
 	JEI_EXPLOSION("jei/widgets", 169, 0, 18, 21),
 
-	// MISC
+	// Misc
 	NERD_EMOJI("jei/widgets", 115, 19, 16, 14),
+	INVENTORY_9_SLICE("inventory_9_slice", 0, 0, 9, 9, 16, 16),
 	GLOBE("jei/widgets", 115 + 16, 19, 16, 14);
 
     public final ResourceLocation location;

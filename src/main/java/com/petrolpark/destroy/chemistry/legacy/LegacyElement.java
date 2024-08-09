@@ -16,7 +16,7 @@ public enum LegacyElement {
     CARBON("C", 12.01f, 2.5f, new double[]{4}),
     HYDROGEN("H", 1.01f, 2.1f, new double[]{1}),
     SULFUR("S", 32.07f, 2.5f, new double[]{2, 0, 4, 6}),
-    NITROGEN("N", 14.01f, 3.0f, new double[]{3, 5}, ((i) -> {return i == 3 ? Geometry.TRIGONAL_PYRAMIDAL : null;})),
+    NITROGEN("N", 14.01f, 3.0f, new double[]{3, 4}, ((i) -> {return i == 3 ? Geometry.TRIGONAL_PYRAMIDAL : null;})),
     OXYGEN("O", 16.00f, 3.5f, new double[]{0, 1.5d, 2}, ((i) -> {return i == 2 ? Geometry.V_SHAPE : null;})),
     BORON("B", 10.81f, 2.04f, new double[]{3d}),
     FLUORINE("F", 19.00f, 4.0f, new double[]{1}),

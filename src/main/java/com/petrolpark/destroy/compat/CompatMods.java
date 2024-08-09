@@ -13,9 +13,9 @@ public enum CompatMods {
     BIG_CANNONS("createbigcannons"),
     CURIOS,
     JEI,
-    TFMG("createindustry");
+    TFMG;
 
-    private final String id;
+    public final String id;
 
     private CompatMods() {
         id = Lang.asId(name());

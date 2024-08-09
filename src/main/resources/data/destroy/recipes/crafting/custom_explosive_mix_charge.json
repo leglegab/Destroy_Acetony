@@ -11,7 +11,7 @@
     ],
     "key": {
       "P": {
-        "tag": "destroy:plastic/textile"
+        "tag": "destroy:plastics/textile"
       },
       "S": {
         "tag": "forge:string"

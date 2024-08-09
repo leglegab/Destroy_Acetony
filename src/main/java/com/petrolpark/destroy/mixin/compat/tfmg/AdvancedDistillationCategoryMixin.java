@@ -2,7 +2,7 @@ package com.petrolpark.destroy.mixin.compat.tfmg;
 
 import org.spongepowered.asm.mixin.Mixin;
 
-import com.drmangotea.tfmg.recipes.distillation.AdvancedDistillationRecipe;
+import com.drmangotea.tfmg.recipes.distillation.DistillationRecipe;
 import com.drmangotea.tfmg.recipes.jei.AdvancedDistillationCategory;
 import com.petrolpark.destroy.compat.tfmg.DistillationRecipeConversion;
 import com.petrolpark.destroy.compat.tfmg.SharedDistillationRecipes;
@@ -12,9 +12,9 @@ import mezz.jei.api.registration.IRecipeRegistration;
 import net.minecraft.client.Minecraft;
 
 @Mixin(AdvancedDistillationCategory.class)
-public abstract class AdvancedDistillationCategoryMixin extends CreateRecipeCategory<AdvancedDistillationRecipe> {
+public abstract class AdvancedDistillationCategoryMixin extends CreateRecipeCategory<DistillationRecipe> {
 
-    public AdvancedDistillationCategoryMixin(Info<AdvancedDistillationRecipe> info) {
+    public AdvancedDistillationCategoryMixin(Info<DistillationRecipe> info) {
         super(info);
     };
 
@@ -22,6 +22,6 @@ public abstract class AdvancedDistillationCategoryMixin extends CreateRecipeCate
     public void registerRecipes(IRecipeRegistration registration) {
         super.registerRecipes(registration);
         Minecraft mc = Minecraft.getInstance();
-        registration.addRecipes(getRecipeType(), SharedDistillationRecipes.getDestroyToTFMGRecipes(mc.level).stream().map(DistillationRecipeConversion::convertToAdvancedDistillationRecipe).toList());
+        registration.addRecipes(getRecipeType(), SharedDistillationRecipes.getDestroyToTFMGRecipes(mc.level).stream().map(DistillationRecipeConversion::convertToDistillationRecipe).toList());
     };
 };

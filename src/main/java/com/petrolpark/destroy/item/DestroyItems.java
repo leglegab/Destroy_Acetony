@@ -85,7 +85,7 @@ public class DestroyItems {
         .tag(DestroyItemTags.PLASTICS.tag, DestroyItemTags.RIGID_PLASTICS.tag, DestroyItemTags.TEXTILE_PLASTICS.tag)
         .register(),
     POLYSTYRENE_BUTADIENE = REGISTRATE.item("polystyrene_butadiene", Item::new)
-        .tag(DestroyItemTags.PLASTICS.tag, DestroyItemTags.RUBBER_PLASTICS.tag)
+        .tag(DestroyItemTags.PLASTICS.tag, DestroyItemTags.RUBBER_PLASTICS.tag, Tags.Items.STRING)
         .register(),
     POLYACRYLONITRILE = REGISTRATE.item("polyacrylonitrile", Item::new)
         .tag(DestroyItemTags.PLASTICS.tag)

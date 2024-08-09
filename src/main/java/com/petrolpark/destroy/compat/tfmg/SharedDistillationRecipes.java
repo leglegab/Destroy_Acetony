@@ -42,7 +42,7 @@ public class SharedDistillationRecipes {
     
     private static List<DistillationRecipe> convertTFMGToDestroyRecipes(Level level) {
         List<DistillationRecipe> recipes = new ArrayList<>();
-        if (FMLLoader.getLoadingModList().getModFileById("tfmg") == null) return recipes;
+        if (FMLLoader.getLoadingModList().getModFileById(CompatMods.TFMG.id) == null) return recipes;
 
         for (ProcessingRecipe<?> recipe : 
             RecipeFinder.get(TFMGRecipeCacheKey, level, r -> 

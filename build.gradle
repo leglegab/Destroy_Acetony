@@ -196,7 +196,7 @@ dependencies {
     compileOnly fg.deobf("curse.maven:spark-361579:${spark_version}")
 
     // TFMG
-    compileOnly fg.deobf("curse.maven:create-industry-693815:5079967")
+    compileOnly fg.deobf("curse.maven:create-industry-693815:5558101")
 
     // CBC
     implementation fg.deobf("com.rbasamoyai:ritchiesprojectilelib:1.0.0-369e88d+1.20.1-forge")

@@ -1,10 +1,10 @@
 package com.petrolpark.destroy.client.gui.screen;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import com.ibm.icu.text.DecimalFormat;
 import com.jozufozu.flywheel.util.transform.TransformStack;
 import com.mojang.blaze3d.platform.InputConstants;
 import com.mojang.blaze3d.vertex.PoseStack;
@@ -315,7 +315,7 @@ public class VatScreen extends AbstractSimiScreen {
             boolean selected = selectedMolecule != null && molecule.getFullID().equals(selectedMolecule.getFullID());
             (selected ? DestroyGuiTextures.VAT_CARD_SELECTED : DestroyGuiTextures.VAT_CARD_UNSELECTED).render(graphics, selected ? -1 : 0, selected ? -1 : 0);
             graphics.drawString(font, DestroyLang.shorten(molecule.getName(iupac).getString(), font, 92), 4, 4, 0xFFFFFF);
-            graphics.drawString(font, DestroyLang.translate("tooltip.vat.menu.moles", df.format(pair.getSecond())).component(), 4, 17, 0xFFFFFF);
+            graphics.drawString(font, DestroyLang.quantity(pair.getSecond(), true, df).component(), 4, 17, 0xFFFFFF);
             ms.popPose();
             ms.translate(0, CARD_HEIGHT, 0);
         };
