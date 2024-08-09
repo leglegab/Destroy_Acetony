@@ -32,7 +32,7 @@ public class CarbonylReduction extends SingleGroupGenericReaction<CarbonylGroup>
             .addReactant(reactant.getMolecule())
             .addSimpleItemCatalyst(DestroyItems.MAGIC_REDUCTANT::get, 1f)
             .addProduct(moleculeBuilder().structure(structure).build())
-            .activationEnergy(200f)
+            .activationEnergy(40f)
             .build();
     };
     
