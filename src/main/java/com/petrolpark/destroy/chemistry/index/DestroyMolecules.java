@@ -653,6 +653,15 @@ public final class DestroyMolecules {
         .charge(3)
         .build(),
 
+    ISOPROPANOL = builder()
+            .id("isopropanol")
+            .structure(Formula.deserialize("destroy:linear:CC(O)C"))
+            .boilingPoint(82.6f)
+            .density(786f)
+            .specificHeatCapacity(1.54f)
+            .tag(Tags.SOLVENT)
+            .build(),
+
     MERCURY = builder()
         .id("mercury")
         .structure(Formula.atom(Element.MERCURY))
@@ -1019,6 +1028,16 @@ public final class DestroyMolecules {
         .tag(Tags.ACUTELY_TOXIC)
         .tag(Tags.GREENHOUSE)
         .tag(Tags.SMOG)
+        .build(),
+
+    THIONYL_CHLORIDE = builder()
+        .id("thionyl_chloride")
+        .structure(Formula.deserialize("destroy:linear:S=(=O)(Cl)(Cl)"))
+        .boilingPoint(74.6f)
+        .density(1638f)
+        .molarHeatCapacity(121f)
+        .tag(Tags.SMELLY)
+        .tag(Tags.ACUTELY_TOXIC)
         .build(),
     
     TOLUENE = builder()
