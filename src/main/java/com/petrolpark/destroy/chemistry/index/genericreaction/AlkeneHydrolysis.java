@@ -26,8 +26,9 @@ public class AlkeneHydrolysis extends AlkeneAddition {
     public void transform(ReactionBuilder builder) {
         builder.addReactant(DestroyMolecules.WATER, 1, 0)
             .displayAsReversible()
-            .addCatalyst(DestroyMolecules.SULFURIC_ACID, 1)
-            .activationEnergy(200f);
+            .addCatalyst(DestroyMolecules.HYDROGENSULFATE, 1)
+            .addCatalyst(DestroyMolecules.PROTON, 1)
+            .activationEnergy(20f);
     };
 
     
