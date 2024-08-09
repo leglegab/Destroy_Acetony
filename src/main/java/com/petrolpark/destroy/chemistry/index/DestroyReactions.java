@@ -668,6 +668,14 @@ public class DestroyReactions {
         .activationEnergy(10f)
         .build(),
 
+    THIONYL_CHLORIDE_SYNTHESIS = builder()
+            .id("thionyl_chloride_synthesis")
+            .addReactant(DestroyMolecules.SULFUR_DIOXIDE)
+            .addReactant(DestroyMolecules.PHOSGENE)
+            .addProduct(DestroyMolecules.THIONYL_CHLORIDE)
+            .addProduct(DestroyMolecules.CARBON_DIOXIDE)
+            .build(),
+
     TOLUENE_NITRATION = builder()
         .id("toluene_nitration")
         .addReactant(DestroyMolecules.TOLUENE)
