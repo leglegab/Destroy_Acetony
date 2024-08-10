@@ -5,6 +5,7 @@ import java.util.function.Function;
 import com.petrolpark.destroy.Destroy;
 import com.petrolpark.destroy.network.packet.C2SPacket;
 import com.petrolpark.destroy.network.packet.ChainCogwheelsC2SPacket;
+import com.petrolpark.destroy.network.packet.ChangeExtraInventorySideC2SPacket;
 import com.petrolpark.destroy.network.packet.ChangeKeypunchPositionC2SPacket;
 import com.petrolpark.destroy.network.packet.ChemicalPoisonS2CPacket;
 import com.petrolpark.destroy.network.packet.CircuitPatternsS2CPacket;
@@ -80,6 +81,7 @@ public class DestroyMessages {
         addC2SPacket(net, TransferFluidC2SPacket.class, TransferFluidC2SPacket::new);
         addC2SPacket(net, ConfigureColorimeterC2SPacket.class, ConfigureColorimeterC2SPacket::new);
         addC2SPacket(net, SelectGlassblowingRecipeC2SPacket.class, SelectGlassblowingRecipeC2SPacket::new);
+        addC2SPacket(net, ChangeExtraInventorySideC2SPacket.class, ChangeExtraInventorySideC2SPacket::new);
     };
 
     public static <T extends S2CPacket> void addS2CPacket(SimpleChannel net, Class<T> clazz, Function<FriendlyByteBuf, T> decoder) {

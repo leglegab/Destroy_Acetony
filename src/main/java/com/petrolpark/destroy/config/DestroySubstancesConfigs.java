@@ -18,7 +18,7 @@ public class DestroySubstancesConfigs extends DestroyConfigBase {
     public final ConfigInt babyBlueMaxAddictionLevel = i(590, 0, "maxAddictionLevel", Comments.toDisable, Comments.maxAddictionLevel);
     public final ConfigFloat babyBlueMiningSpeedBonus = f(0.5f, Float.MIN_VALUE, "babyBlueMiningSpeedBonus", "The proportion by which mining speed is boosted for every level of Baby Blue High", "For example, 0.5 gives +50% per level");
     public final ConfigFloat babyBlueWidthdrawalSpeedBonus = f(-0.3f, Float.MIN_VALUE, "babyBlueMiningSpeedBonus", "The proportion by which mining speed is \"boosted\" for every level of Baby Blue Withdrawal", "For example, -0.3 gives -30% per level");
-    public final ConfigBool keepBabyBlueAddictionOnDeath = b(true, "keepBabyBlueAddictionOnDeath", "Conserve the level of Baby Blue Addiction a player has when they die");
+    public final ConfigBool keepBabyBlueAddictionOnDeath = b(true, "keepBabyBlueAddictionOnDeath", "Conserve the level of Baby Blue Addiction a player has when they die", Comments.overriddenKeepInv);
 
     public final ConfigGroup alcohol = group(0, "alcohol", Comments.alcohol);
     public final ConfigInt inebriationDuration = i(1200, 0, "inebriationDuration", Comments.inTicks, Comments.inebriationDuration);
@@ -29,7 +29,7 @@ public class DestroySubstancesConfigs extends DestroyConfigBase {
     public final ConfigFloat hangoverNoiseTriggerRadius = f(5f, 0f, 128f, "hangoverNoiseTriggerRadius", "[in blocks]", "The square radius away from a noise which will be checked for entities with hangovers");
     
     public final ConfigGroup creatine = group(0, "creatine", "Creatine");
-    public final ConfigBool keepExtraInventorySizeOnDeath = b(false, "keepExtraInventorySizeOnDeath", "Conserve the size of the additional inventory if the player dies", "[This will be overriden as true if the Game Rule keepInventory is true]");
+    public final ConfigBool keepExtraInventorySizeOnDeath = b(false, "keepExtraInventorySizeOnDeath", Comments.overriddenKeepInv);
 
     @Override
     public String getName() {
@@ -40,6 +40,7 @@ public class DestroySubstancesConfigs extends DestroyConfigBase {
         static String toDisable = "[0 to disable this feature]";
         static String inTicks = "[in ticks]";
         static String inSeconds = "[in seconds]";
+        static String overriddenKeepInv = "[This will be overriden as true if the Game Rule keepInventory is true]";
 
         static String babyBlue = "Baby Blue";
         static String maxAddictionLevel = "Each level corresponds to an additional second of withdrawal.";
