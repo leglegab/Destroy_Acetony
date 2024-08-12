@@ -3,15 +3,19 @@ package com.petrolpark.destroy.util;
 import com.petrolpark.destroy.Destroy;
 import com.simibubi.create.foundation.utility.Lang;
 
+import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.FluidTags;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.tags.TagKey;
+import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.material.Fluid;
+import net.minecraftforge.registries.ForgeRegistries;
 
 public class DestroyTags {
 
@@ -126,5 +130,30 @@ public class DestroyTags {
 
     public static void register() {
         DestroyItemTags.init();
+    };
+
+    public enum DestroyMenuTypeTags {
+
+        ALWAYS_SHOWS_EXTENDED_INVENTORY,
+        NEVER_SHOWS_EXTENDED_INVENTORY,
+        ALLOWS_MANUAL_ONLY_CRAFTING;
+
+        public final TagKey<MenuType<?>> tag;
+
+        DestroyMenuTypeTags() {
+            tag = TagKey.create(Registries.MENU, Destroy.asResource(Lang.asId(name())));
+        };
+
+        public boolean matches(AbstractContainerMenu menu) {
+            try {
+                return matches(menu.getType());
+            } catch (UnsupportedOperationException e) {
+                return false;
+            }
+        };
+
+        public boolean matches(MenuType<?> menuType) {
+            return ForgeRegistries.MENU_TYPES.getHolder(menuType).orElseThrow().is(tag);
+        };
     };
 }

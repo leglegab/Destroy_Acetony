@@ -1304,6 +1304,11 @@
     "destroy.key.hotbar.10": "Hotbar Slot 10",
     "destroy.key.hotbar.11": "Hotbar Slot 11",
     "destroy.key.hotbar.12": "Hotbar Slot 12",
+    "destroy.key.hotbar.13": "Hotbar Slot 13",
+    "destroy.key.hotbar.14": "Hotbar Slot 14",
+    "destroy.key.hotbar.15": "Hotbar Slot 15",
+    "destroy.key.hotbar.16": "Hotbar Slot 16",
+    "destroy.key.hotbar.17": "Hotbar Slot 17",
     
     "effect.destroy.cancer": "Cancer Awareness",
     "effect.destroy.cancer.description": "_Has no effect in-game_. Many things in Destroy are jokes, but _cancer is not one of them_. This is here to _raise awareness_ of the increase in cancer risk associated with occupational exposure, and with _harm to the ozone layer_. Please see a professional source like '_cancerresearchuk.org_'. This pop-up can be removed with _Cisplatin_.",

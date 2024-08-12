@@ -60,7 +60,6 @@ import com.petrolpark.destroy.network.packet.SyncVatMaterialsS2CPacket;
 import com.petrolpark.destroy.recipe.CircuitDeployerApplicationRecipe;
 import com.petrolpark.destroy.recipe.DestroyRecipeTypes;
 import com.petrolpark.destroy.recipe.DiscStampingRecipe;
-import com.petrolpark.destroy.recipe.ManualOnlyShapedRecipe;
 import com.petrolpark.destroy.recipe.condition.ConfigBooleanCondition;
 import com.petrolpark.destroy.recipe.ingredient.BlockIngredient;
 import com.petrolpark.destroy.recipe.ingredient.CircuitPatternIngredient;
@@ -960,7 +959,6 @@ public class DestroyCommonEvents {
         event.addListener(new PeriodicTableBlock.Listener(event.getConditionContext()));
         event.addListener(Destroy.CIRCUIT_PATTERN_HANDLER.RELOAD_LISTENER);
         event.addListener(new ExplosiveProperties.Listener(event.getConditionContext()));
-        event.addListener(ManualOnlyShapedRecipe.ALLOWED_MENU_LISTENER);
         VatMaterialResourceListener vatMaterialListener = new VatMaterialResourceListener(event.getConditionContext());
         event.addListener(vatMaterialListener);
     };

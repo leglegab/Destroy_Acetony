@@ -15,9 +15,14 @@ public enum DestroyKeys {
     
     HOTBAR_SLOT_9("hotbar.10", GLFW.GLFW_KEY_0),
 	HOTBAR_SLOT_10("hotbar.11", GLFW.GLFW_KEY_MINUS),
-	HOTBAR_SLOT_11("hotbar.12", GLFW.GLFW_KEY_EQUAL);
+	HOTBAR_SLOT_11("hotbar.12", GLFW.GLFW_KEY_EQUAL),
+	HOTBAR_SLOT_12("hotbar.13", -1),
+	HOTBAR_SLOT_13("hotbar.14", -1),
+	HOTBAR_SLOT_14("hotbar.15", -1),
+	HOTBAR_SLOT_15("hotbar.16", -1),
+	HOTBAR_SLOT_16("hotbar.17", -1);
 
-	private KeyMapping keybind;
+	public KeyMapping keybind;
 	private String description;
 	private int key;
 

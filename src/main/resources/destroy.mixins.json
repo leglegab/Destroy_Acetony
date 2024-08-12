@@ -51,6 +51,7 @@
         "FluidIngredientMixin",
         "FluidNetworkMixin",
         "FluidTankBlockEntityMixin",
+        "GhostItemMenuMixin",
         "HeatConditionMixin",
         "HeatLevelMixin",
         "ItemDrainBlockMixin",
@@ -83,6 +84,7 @@
         "VillagerMixin"
     ],
     "client": [
+        "compat.jei.GhostIngredientHandlerMixin",
         "compat.jei.JeiProcessingRecipeMixin",
         "BeltRendererMixin",
         "ClientLevelMixin",
@@ -93,7 +95,8 @@
         "GuiMixin",
         "HeartTypeMixin",
         "LevelRendererMixin",
-        "MultiPlayerGameModeMixin"
+        "MultiPlayerGameModeMixin",
+        "RecipeBookComponentMixin"
     ],
     "injectors": {
         "defaultRequire": 1

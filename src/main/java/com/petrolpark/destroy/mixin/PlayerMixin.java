@@ -7,7 +7,6 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import com.mojang.authlib.GameProfile;
-import com.petrolpark.destroy.Destroy;
 import com.petrolpark.destroy.entity.player.ExtendedInventory;
 
 import net.minecraft.core.BlockPos;
@@ -44,8 +43,7 @@ public abstract class PlayerMixin extends LivingEntity {
     public void inInit(Level level, BlockPos pos, float yRot, GameProfile gameProfile, CallbackInfo ci) {
         ExtendedInventory extendedInv = new ExtendedInventory((Player)(Object)this);
         inventory = extendedInv;
-        inventoryMenu = new InventoryMenu(inventory, !level.isClientSide(), (Player)(Object)this);
-        extendedInv.addExtraInventorySlotsToMenu(inventoryMenu, 5, 0, 0, 0, 0);
+        ExtendedInventory.refreshPlayerInventoryMenu((Player)(Object)this);
         containerMenu = inventoryMenu;
     };
 
@@ -61,7 +59,6 @@ public abstract class PlayerMixin extends LivingEntity {
             ItemStack oldStack = inv.getItem(inv.selected);
             inv.setItem(inv.selected, stack);
             onEquipItem(slot, oldStack, stack);
-            Destroy.LOGGER.info("setting "+inv.selected);
             ci.cancel();
         };
     };

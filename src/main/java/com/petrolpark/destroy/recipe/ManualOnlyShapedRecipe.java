@@ -5,17 +5,11 @@ import java.util.Set;
 
 import org.jetbrains.annotations.Nullable;
 
-import java.util.Optional;
-
 import com.google.gson.JsonObject;
-import com.petrolpark.destroy.util.DestroyReloadListener;
+import com.petrolpark.destroy.util.DestroyTags.DestroyMenuTypeTags;
 
-import net.minecraft.core.Holder;
 import net.minecraft.core.NonNullList;
-import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.core.registries.Registries;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.inventory.CraftingContainer;
 import net.minecraft.world.inventory.InventoryMenu;
@@ -30,8 +24,6 @@ import net.minecraft.world.level.Level;
 
 public class ManualOnlyShapedRecipe extends ShapedRecipe {
 
-    public static final AllowedMenuListener ALLOWED_MENU_LISTENER = new AllowedMenuListener();
-
     public static final Set<MenuType<?>> ALLOWED_MENUS = new HashSet<>();
 
     public ManualOnlyShapedRecipe(ResourceLocation id, String group, CraftingBookCategory category, int width, int height, NonNullList<Ingredient> recipeItems, ItemStack result) {
@@ -39,7 +31,7 @@ public class ManualOnlyShapedRecipe extends ShapedRecipe {
     };
 
     public static boolean isAllowed(CraftingContainer inv) {
-        return inv instanceof TransientCraftingContainer container && (container.menu instanceof InventoryMenu || ALLOWED_MENUS.contains(container.menu.getType()));
+        return inv instanceof TransientCraftingContainer container && (container.menu instanceof InventoryMenu || DestroyMenuTypeTags.ALLOWS_MANUAL_ONLY_CRAFTING.matches(container.menu));
     };
 
     @Override
@@ -59,31 +51,6 @@ public class ManualOnlyShapedRecipe extends ShapedRecipe {
 
     public ItemStack getExampleResult() {
         return getResultItem(null);
-    };
-
-    public static class AllowedMenuListener extends DestroyReloadListener {
-
-        @Override
-        public String getPath() {
-            return "destroy_compat/manual_crafting_allowed_menus";
-        };
-
-        @Override
-        public void beforeReload() {
-            ALLOWED_MENUS.clear();
-        };
-
-        @Override
-        @SuppressWarnings("deprecation")
-        public void forEachNameSpaceJsonFile(JsonObject jsonObject) {
-            jsonObject.get("values").getAsJsonArray().forEach(element -> {
-                ResourceLocation menuTypeRl = new ResourceLocation(element.getAsString());
-                Optional<Holder.Reference<MenuType<?>>> menuTypeOptional = BuiltInRegistries.MENU.asLookup().get(ResourceKey.create(Registries.MENU, menuTypeRl));
-                if (menuTypeOptional.isEmpty()) throw new IllegalArgumentException("Invalid menu type ID: "+menuTypeRl);
-                ALLOWED_MENUS.add(menuTypeOptional.get().value());
-            });
-        };
-
     };
 
     public static class Serializer implements RecipeSerializer<ManualOnlyShapedRecipe> {

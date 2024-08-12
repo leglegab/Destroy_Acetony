@@ -3,6 +3,8 @@ package com.petrolpark.destroy.entity.player;
 import java.util.function.Predicate;
 
 import com.petrolpark.destroy.Destroy;
+import com.petrolpark.destroy.config.DestroyAllConfigs;
+import com.petrolpark.destroy.util.DestroyTags.DestroyMenuTypeTags;
 
 import net.minecraft.CrashReport;
 import net.minecraft.CrashReportCategory;
@@ -12,13 +14,13 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.tags.TagKey;
-import net.minecraft.world.Container;
 import net.minecraft.world.ContainerHelper;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.player.StackedContents;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.InventoryMenu;
+import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -31,8 +33,7 @@ import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
 public class ExtendedInventory extends Inventory {
 
     public NonNullList<ItemStack> extraItems = NonNullList.of(ItemStack.EMPTY);
-    protected int extraHotbarSlots = 0;
-    public boolean extraHotbarLeft = true;
+    private int extraHotbarSlots = 0;
 
     public ExtendedInventory(Player player) {
         super(player);
@@ -46,9 +47,13 @@ public class ExtendedInventory extends Inventory {
         return (ExtendedInventory)player.getInventory();
     };
 
-    public static void refresh(Player player) {
-        player.inventoryMenu = new InventoryMenu(player.getInventory(), !player.level().isClientSide(), player);
-        get(player).addExtraInventorySlotsToMenu(player.inventoryMenu, 5, 0, 0, 0, 0);
+    public static void refreshPlayerInventoryMenu(Player player, int columns, int invX, int invY, int leftHotbarSlots, int leftHotbarX, int leftHotbarY, int rightHotbarX, int rightHotbarY) {
+        player.inventoryMenu = new InventoryMenu(player.getInventory(), !player.level().isClientSide(), player); // Usually this field would be final; don't tell anybody I did this
+        get(player).addExtraInventorySlotsToMenu(player.inventoryMenu, columns, invX, invY, leftHotbarSlots, leftHotbarX, leftHotbarY, rightHotbarX, rightHotbarY);
+    };
+
+    public static void refreshPlayerInventoryMenu(Player player) {
+        refreshPlayerInventoryMenu(player, 5, 0, 0, 0, 0, 0, 0, 0);
     };
 
     public static void copyOverDeath(Player deadPlayer, Player newPlayer) {
@@ -56,7 +61,6 @@ public class ExtendedInventory extends Inventory {
         ExtendedInventory newInv = get(newPlayer);
         newInv.setExtraInventorySize(deadInv.extraItems.size());
         newInv.extraHotbarSlots = deadInv.extraHotbarSlots;
-        newInv.extraHotbarLeft = deadInv.extraHotbarLeft;
     };
 
     public void setExtraInventorySize(int size) {
@@ -96,55 +100,54 @@ public class ExtendedInventory extends Inventory {
      */
     protected int getSlotIndex(int hotbarIndex) {
         if (hotbarIndex < 0 || hotbarIndex >= getHotbarSize()) return -1;
-        if (extraHotbarLeft) {
-            if (hotbarIndex < getExtraHotbarSlots()) {
-                return getExtraInventoryStartSlotIndex() + hotbarIndex;
-            } else {
-                return hotbarIndex - getExtraHotbarSlots();
-            }
-        } else {
-            if (hotbarIndex < getSelectionSize()) {
-                return hotbarIndex;
-            } else {
-                return getExtraInventoryStartSlotIndex() + hotbarIndex - getSelectionSize();
-            }
-        }
+        if (hotbarIndex < 9) return hotbarIndex;
+        return getExtraInventoryStartSlotIndex() + hotbarIndex - getSelectionSize();
     };
 
     protected int getSelectedHotbarIndex() {
-        if (extraHotbarLeft) {
-            if (isHotbarSlot(selected)) {
-                return getExtraHotbarSlots() + selected;
-            } else { // Assuming that if it isn't a vanilla hotbar slot selected, it must be an extra one
-                return selected - getExtraInventoryStartSlotIndex();
-            }
-        } else {
-            if (isHotbarSlot(selected)) {
-                return selected;
-            } else { // Same assumption
-                return getSelectionSize() + selected - getExtraInventoryStartSlotIndex();
-            }
-        }
+        if (isHotbarSlot(selected)) return selected;
+        return selected - getExtraInventoryStartSlotIndex() + getSelectionSize();
     };
 
     @SubscribeEvent
     public static void onOpenContainer(PlayerContainerEvent.Open event) {
         AbstractContainerMenu menu = event.getContainer();
-        get(event.getEntity()).addExtraInventorySlotsToMenu(menu, 5, 0, 0, 0, 0);
+        if (!supportsExtraInventory(menu)) return;
+        get(event.getEntity()).addExtraInventorySlotsToMenu(menu, 5, 0, 0, 0, 0, 0, 0, 0);
     };
 
-    public void addExtraInventorySlotsToMenu(AbstractContainerMenu menu, int columns, int invX, int invY, int hotbarX, int hotbarY) {
+    public static boolean supportsExtraInventory(AbstractContainerMenu menu) {
+        try {
+            MenuType<?> menuType = menu.getType();
+            if (DestroyAllConfigs.SERVER.extendedInventorySafeMode.get()) {
+                return DestroyMenuTypeTags.ALWAYS_SHOWS_EXTENDED_INVENTORY.matches(menuType);
+            } else {
+                return !DestroyMenuTypeTags.NEVER_SHOWS_EXTENDED_INVENTORY.matches(menuType);
+            }
+        } catch (UnsupportedOperationException e) {
+            return false;
+        }
+    };
+
+    public void addExtraInventorySlotsToMenu(AbstractContainerMenu menu, int columns, int invX, int invY, int leftHotbarSlots, int leftHotbarX, int leftHotbarY, int rightHotbarX, int rightHotbarY) {
         int extraItemsStart = getExtraInventoryStartSlotIndex();
 
-        // Add hotbar slots
-        for (int i = 0; i < getExtraHotbarSlots(); i++) {
-            menu.addSlot(new ExtraInventorySlot(this, extraItemsStart + i, hotbarX = i * 18, hotbarY));
+        // Add right hotbar slots
+        for (int i = 0; i < getExtraHotbarSlots() - leftHotbarSlots; i++) {
+            menu.addSlot(new Slot(this, extraItemsStart + i, rightHotbarX + i * 18, rightHotbarY));
+        };
+        
+        // Add left hotbar slots
+        int j = 0;
+        for (int i = getExtraHotbarSlots() - leftHotbarSlots; i < getExtraHotbarSlots(); i++) {
+            menu.addSlot(new Slot(this, extraItemsStart + i, leftHotbarX + j * 18, leftHotbarY));
+            j++;
         };
 
         // Add non-hotbar slots
-        int j = 0;
+        j = 0;
         for (int i = getExtraHotbarSlots(); i < extraItems.size(); i++) {
-            menu.addSlot(new ExtraInventorySlot(this, extraItemsStart + i, invX + 18 * (j % columns), invY + 18 * (j / columns)));
+            menu.addSlot(new Slot(this, extraItemsStart + i, invX + 18 * (j % columns), invY + 18 * (j / columns)));
             j++;
         };
     };
@@ -381,14 +384,12 @@ public class ExtendedInventory extends Inventory {
         CompoundTag tag = new CompoundTag();
         tag.putInt("Size", extraItems.size());
         tag.putInt("HotbarSlots", extraHotbarSlots);
-        tag.putBoolean("Left", extraHotbarLeft);
         return tag;
     };
 
     public void readExtraInventoryData(CompoundTag tag) {
         setExtraInventorySize(tag.getInt("Size"));
         extraHotbarSlots = tag.getInt("HotbarSlots");
-        extraHotbarLeft = tag.getBoolean("Left");
     };
 
     @Override
@@ -477,14 +478,6 @@ public class ExtendedInventory extends Inventory {
     public void fillStackedContents(StackedContents stackedContents) {
         super.fillStackedContents(stackedContents);
         extraItems.forEach(stackedContents::accountSimpleStack);
-    };
-
-    public static class ExtraInventorySlot extends Slot {
-
-        public ExtraInventorySlot(Container container, int slot, int x, int y) {
-            super(container, slot, x, y);
-        };
-
     };
 
     public static interface DelayedSlotPopulation {

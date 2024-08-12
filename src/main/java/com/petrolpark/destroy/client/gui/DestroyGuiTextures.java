@@ -136,6 +136,7 @@ public enum DestroyGuiTextures implements ScreenElement {
 	// Misc
 	NERD_EMOJI("jei/widgets", 115, 19, 16, 14),
 	INVENTORY_BACKGROUND("inventory", 0, 0, 9, 9, 64, 64),
+	INVENTORY_SLOT("inventory", 0, 22, 18, 18, 64, 64),
 	HOTBAR_BACKGROUND("inventory", 9, 0, 22, 22, 64, 64),
 	HOTBAR_SLOT("inventory", 31, 0, 20, 20, 64, 64),
 	GLOBE("jei/widgets", 115 + 16, 19, 16, 14);

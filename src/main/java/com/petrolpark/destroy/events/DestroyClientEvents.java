@@ -5,7 +5,7 @@ import javax.annotation.Nonnull;
 import org.apache.commons.lang3.mutable.MutableObject;
 
 import com.mojang.datafixers.util.Either;
-import com.petrolpark.destroy.Destroy;
+import com.petrolpark.destroy.DestroyClient;
 import com.petrolpark.destroy.block.renderer.BlockEntityBehaviourRenderer;
 import com.petrolpark.destroy.capability.Pollution.PollutionType;
 import com.petrolpark.destroy.client.gui.button.OpenDestroyMenuButton;
@@ -65,7 +65,8 @@ public class DestroyClientEvents {
             CogwheelChainingHandler.tick();
             SeismometerItemRenderer.tick();
             SwissArmyKnifeItem.clientPlayerTick();
-            Destroy.FOG_HANDLER.tick();
+            DestroyClient.FOG_HANDLER.tick();
+            DestroyClient.EXTENDED_INVENTORY_CLIENT_HANDLER.tick(event);
         } else {
             BlockEntityBehaviourRenderer.tick();
         };
@@ -96,8 +97,8 @@ public class DestroyClientEvents {
             Minecraft mc = Minecraft.getInstance();
             float smog = (float)PollutionHelper.getPollution(mc.level, mc.player.blockPosition(), PollutionType.SMOG);
             Color existing = new Color(event.getRed(), event.getGreen(), event.getBlue(), 1f);
-            Destroy.FOG_HANDLER.setTargetColor(Color.mixColors(existing, BROWN, 0.8f * smog / (float)PollutionType.SMOG.max));
-            Color color = Destroy.FOG_HANDLER.getColor(AnimationTickHolder.getPartialTicks());
+            DestroyClient.FOG_HANDLER.setTargetColor(Color.mixColors(existing, BROWN, 0.8f * smog / (float)PollutionType.SMOG.max));
+            Color color = DestroyClient.FOG_HANDLER.getColor(AnimationTickHolder.getPartialTicks());
             event.setRed(color.getRedAsFloat());
             event.setGreen(color.getGreenAsFloat());
             event.setBlue(color.getBlueAsFloat());
@@ -181,5 +182,20 @@ public class DestroyClientEvents {
             properties = ExplosiveProperties.ITEM_EXPLOSIVE_PROPERTIES.get(event.getItemStack().getItem());
         };
         if (properties != null) event.getTooltipElements().add(Either.right(new ExplosivePropertiesTooltip(properties)));
+    };
+
+    @SubscribeEvent
+    public static void onOpenContainerScreen(ScreenEvent.Init.Post event) {
+        DestroyClient.EXTENDED_INVENTORY_CLIENT_HANDLER.onOpenContainerScreen(event);
+    };
+
+    @SubscribeEvent
+    public static void onRenderScreen(ScreenEvent.Render.Pre event) {
+        DestroyClient.EXTENDED_INVENTORY_CLIENT_HANDLER.renderScreen(event);
+    };
+
+    @SubscribeEvent
+    public static void onCloseScreen(ScreenEvent.Closing event) {
+        DestroyClient.EXTENDED_INVENTORY_CLIENT_HANDLER.onCloseScreen(event);
     };
 };

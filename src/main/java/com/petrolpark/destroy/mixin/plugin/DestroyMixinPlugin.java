@@ -24,6 +24,7 @@ public class DestroyMixinPlugin implements IMixinConfigPlugin {
         onlyLoadIfModPresent("CreateRecipeCategoryAccessor", "jei");
         onlyLoadIfModPresent("CreateRecipeCategoryMixin", "jei");
         onlyLoadIfModPresent("DeployingCategoryMixin", "jei");
+        onlyLoadIfModPresent("GhostIngredientHandlerMixin", "jei");
         onlyLoadIfModPresent("MixingCategoryMixin", "jei");
         onlyLoadIfModPresent("PackingCategoryMixin", "jei");
         onlyLoadIfModPresent("ProcessingRecipeMixin", "jei");

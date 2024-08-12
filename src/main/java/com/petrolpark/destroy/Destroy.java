@@ -8,7 +8,6 @@ import com.petrolpark.destroy.badge.Badge;
 import com.petrolpark.destroy.badge.DestroyBadges;
 import com.petrolpark.destroy.block.DestroyBlocks;
 import com.petrolpark.destroy.block.entity.DestroyBlockEntityTypes;
-import com.petrolpark.destroy.block.model.DestroyPartials;
 import com.petrolpark.destroy.chemistry.api.Chemistry;
 import com.petrolpark.destroy.chemistry.forge.event.ForgeChemistryEventFirer;
 import com.petrolpark.destroy.chemistry.legacy.index.DestroyGenericReactions;
@@ -16,13 +15,8 @@ import com.petrolpark.destroy.chemistry.legacy.index.DestroyGroupFinder;
 import com.petrolpark.destroy.chemistry.legacy.index.DestroyMolecules;
 import com.petrolpark.destroy.chemistry.legacy.index.DestroyReactions;
 import com.petrolpark.destroy.chemistry.legacy.index.DestroyTopologies;
-import com.petrolpark.destroy.client.DestroyItemDisplayContexts;
-import com.petrolpark.destroy.client.fog.FogHandler;
 import com.petrolpark.destroy.client.gui.menu.DestroyMenuTypes;
 import com.petrolpark.destroy.client.particle.DestroyParticleTypes;
-import com.petrolpark.destroy.client.ponder.DestroyPonderIndex;
-import com.petrolpark.destroy.client.ponder.DestroyPonderTags;
-import com.petrolpark.destroy.client.sprites.DestroySpriteSource;
 import com.petrolpark.destroy.compat.CompatMods;
 import com.petrolpark.destroy.compat.createbigcannons.CreateBigCannons;
 import com.petrolpark.destroy.compat.curios.Curios;
@@ -36,7 +30,6 @@ import com.petrolpark.destroy.fluid.pipeEffectHandler.DestroyOpenEndedPipeEffect
 import com.petrolpark.destroy.item.CoaxialGearBlockItem.GearOnShaftPlacementHelper;
 import com.petrolpark.destroy.item.CoaxialGearBlockItem.ShaftOnGearPlacementHelper;
 import com.petrolpark.destroy.item.DecayingItemHandler;
-import com.petrolpark.destroy.item.DestroyItemProperties;
 import com.petrolpark.destroy.item.DestroyItems;
 import com.petrolpark.destroy.item.attributes.DestroyItemAttributes;
 import com.petrolpark.destroy.item.compostable.DestroyCompostables;
@@ -66,7 +59,6 @@ import com.simibubi.create.foundation.item.TooltipHelper.Palette;
 import com.simibubi.create.foundation.item.TooltipModifier;
 import com.simibubi.create.foundation.placement.PlacementHelpers;
 
-import net.minecraft.client.Minecraft;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
@@ -78,7 +70,6 @@ import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.registries.RegistryBuilder;
@@ -101,12 +92,6 @@ public class Destroy {
     public static final CircuitPuncherHandler CIRCUIT_PUNCHER_HANDLER = new CircuitPuncherHandler();
     public static final CircuitPatternHandler CIRCUIT_PATTERN_HANDLER = new CircuitPatternHandler();
     public static final ThreadLocal<DecayingItemHandler> DECAYING_ITEM_HANDLER = ThreadLocal.withInitial(() -> () -> 0l);
-
-    // Client things
-    public static final FogHandler FOG_HANDLER = new FogHandler();
-    static {
-        DestroyItemDisplayContexts.register();
-    };
 
     public static ResourceLocation asResource(String path) {
         return new ResourceLocation(MOD_ID, path);
@@ -170,7 +155,7 @@ public class Destroy {
         // Initiation Events
         modEventBus.addListener(Destroy::init);
         if (!datagen) modEventBus.addListener(DestroySoundEvents::register);
-        modEventBus.addListener(Destroy::clientInit);
+        modEventBus.addListener(DestroyClient::clientInit);
         modEventBus.addListener(EventPriority.LOWEST, Destroy::gatherData);
 
         // JEI compat
@@ -179,7 +164,7 @@ public class Destroy {
         };
 
         // Client
-        DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> clientCtor(modEventBus, forgeEventBus));
+        DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> DestroyClient.clientCtor(modEventBus, forgeEventBus));
 
         // Optional compatibility mods. According to the Create main class doing the same thing, this isn't thread safe
         CompatMods.BIG_CANNONS.executeIfInstalled(() -> () -> CreateBigCannons.init(modEventBus, forgeEventBus));
@@ -210,24 +195,6 @@ public class Destroy {
 
         // Config
         GogglesItem.addIsWearingPredicate(player -> player.isCreative() && DestroyAllConfigs.SERVER.automaticGoggles.get());
-    };
-
-    public static void clientInit(final FMLClientSetupEvent event) {
-        event.enqueueWork(() -> { // Work which must be done on main thread
-            DestroyItemProperties.register();
-            DECAYING_ITEM_HANDLER.set(() -> {
-                Minecraft mc = Minecraft.getInstance();
-                return mc.level.getGameTime();
-            });
-        });
-        DestroyPonderTags.register();
-        DestroyPonderIndex.register();
-    };
-
-    public static void clientCtor(IEventBus modEventBus, IEventBus forgeEventBus) {
-        DestroySpriteSource.register();
-        DestroyPartials.init();
-        modEventBus.addListener(DestroyParticleTypes::registerProviders);
     };
 
     public static void gatherData(GatherDataEvent event) {

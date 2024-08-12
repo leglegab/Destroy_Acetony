@@ -343,6 +343,7 @@ public class DestroyJEI implements IModPlugin {
 	@Override
 	public void registerGuiHandlers(IGuiHandlerRegistration registration) {
 		registration.addGhostIngredientHandler(RedstoneProgrammerScreen.class, new DestroyGhostIngredientHandler());
+        registration.addGlobalGuiHandler(new ExtendedInventoryGuiHandler());
 	};
 
     @Override

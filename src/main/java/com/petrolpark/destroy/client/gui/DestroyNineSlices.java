@@ -11,6 +11,7 @@ import com.simibubi.create.foundation.utility.Color;
 
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.GameRenderer;
+import net.minecraft.client.renderer.Rect2i;
 
 public enum DestroyNineSlices {
     
@@ -32,6 +33,10 @@ public enum DestroyNineSlices {
         this.rightColumn = rightColumn;
         this.topRow = topRow;
         this.bottomRow = bottomRow;
+    };
+
+    public void render(GuiGraphics graphics, Rect2i rect) {
+        render(graphics, rect.getX(), rect.getY(), rect.getWidth(), rect.getHeight());
     };
 
     public void render(GuiGraphics graphics, int x, int y, int width, int height) {
