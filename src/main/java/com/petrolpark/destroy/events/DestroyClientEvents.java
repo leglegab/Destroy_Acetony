@@ -66,7 +66,7 @@ public class DestroyClientEvents {
             SeismometerItemRenderer.tick();
             SwissArmyKnifeItem.clientPlayerTick();
             DestroyClient.FOG_HANDLER.tick();
-            DestroyClient.EXTENDED_INVENTORY_CLIENT_HANDLER.tick(event);
+            DestroyClient.EXTENDED_INVENTORY_HANDLER.tick(event);
         } else {
             BlockEntityBehaviourRenderer.tick();
         };
@@ -186,16 +186,16 @@ public class DestroyClientEvents {
 
     @SubscribeEvent
     public static void onOpenContainerScreen(ScreenEvent.Init.Post event) {
-        DestroyClient.EXTENDED_INVENTORY_CLIENT_HANDLER.onOpenContainerScreen(event);
+        DestroyClient.EXTENDED_INVENTORY_HANDLER.onOpenContainerScreen(event);
     };
 
     @SubscribeEvent
     public static void onRenderScreen(ScreenEvent.Render.Pre event) {
-        DestroyClient.EXTENDED_INVENTORY_CLIENT_HANDLER.renderScreen(event);
+        DestroyClient.EXTENDED_INVENTORY_HANDLER.renderScreen(event);
     };
 
     @SubscribeEvent
     public static void onCloseScreen(ScreenEvent.Closing event) {
-        DestroyClient.EXTENDED_INVENTORY_CLIENT_HANDLER.onCloseScreen(event);
+        DestroyClient.EXTENDED_INVENTORY_HANDLER.onCloseScreen(event);
     };
 };

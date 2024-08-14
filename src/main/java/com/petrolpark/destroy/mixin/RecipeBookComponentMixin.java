@@ -28,6 +28,6 @@ public abstract class RecipeBookComponentMixin {
         )
     )
     public void inInitVisuals(CallbackInfo ci) {
-        if (!widthTooNarrow) xOffset += - DestroyClient.EXTENDED_INVENTORY_CLIENT_HANDLER.getLeftmostX() + ExtendedInventoryClientHandler.INVENTORY_SPACING;
+        if (!widthTooNarrow) xOffset += - DestroyClient.EXTENDED_INVENTORY_HANDLER.getLeftmostX() + ExtendedInventoryClientHandler.INVENTORY_SPACING;
     };
 };

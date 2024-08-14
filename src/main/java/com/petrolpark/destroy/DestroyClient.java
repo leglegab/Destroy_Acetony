@@ -17,7 +17,7 @@ import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 public class DestroyClient {
     
     public static final FogHandler FOG_HANDLER = new FogHandler();
-    public static final ExtendedInventoryClientHandler EXTENDED_INVENTORY_CLIENT_HANDLER = new ExtendedInventoryClientHandler();
+    public static final ExtendedInventoryClientHandler EXTENDED_INVENTORY_HANDLER = new ExtendedInventoryClientHandler();
     static {
         DestroyItemDisplayContexts.register();
     };

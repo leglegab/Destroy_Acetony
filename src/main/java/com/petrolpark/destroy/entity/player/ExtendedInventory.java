@@ -1,8 +1,11 @@
 package com.petrolpark.destroy.entity.player;
 
+import java.util.function.Consumer;
 import java.util.function.Predicate;
+import java.util.stream.Stream;
 
 import com.petrolpark.destroy.Destroy;
+import com.petrolpark.destroy.client.gui.menu.IExtendedInventoryMenu;
 import com.petrolpark.destroy.config.DestroyAllConfigs;
 import com.petrolpark.destroy.util.DestroyTags.DestroyMenuTypeTags;
 
@@ -14,6 +17,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.tags.TagKey;
+import net.minecraft.world.Container;
 import net.minecraft.world.ContainerHelper;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
@@ -43,6 +47,10 @@ public class ExtendedInventory extends Inventory {
         setExtraInventorySize(12);
     };
 
+    /**
+     * @param player
+     * @return The Player's Extended Inventory
+     */
     public static ExtendedInventory get(Player player) {
         return (ExtendedInventory)player.getInventory();
     };
@@ -112,11 +120,12 @@ public class ExtendedInventory extends Inventory {
     @SubscribeEvent
     public static void onOpenContainer(PlayerContainerEvent.Open event) {
         AbstractContainerMenu menu = event.getContainer();
-        if (!supportsExtraInventory(menu)) return;
+        if (!supportsExtraInventory(menu) || menu instanceof IExtendedInventoryMenu) return;
         get(event.getEntity()).addExtraInventorySlotsToMenu(menu, 5, 0, 0, 0, 0, 0, 0, 0);
     };
 
     public static boolean supportsExtraInventory(AbstractContainerMenu menu) {
+        if (menu instanceof IExtendedInventoryMenu) return true;
         try {
             MenuType<?> menuType = menu.getType();
             if (DestroyAllConfigs.SERVER.extendedInventorySafeMode.get()) {
@@ -130,26 +139,46 @@ public class ExtendedInventory extends Inventory {
     };
 
     public void addExtraInventorySlotsToMenu(AbstractContainerMenu menu, int columns, int invX, int invY, int leftHotbarSlots, int leftHotbarX, int leftHotbarY, int rightHotbarX, int rightHotbarY) {
+        addExtraInventorySlotsToMenu(menu::addSlot, Slot::new, columns, invX, invY, leftHotbarSlots, leftHotbarX, leftHotbarY, rightHotbarX, rightHotbarY);
+    };
+
+    public void addExtraInventorySlotsToMenu(Consumer<Slot> slotAdder, SlotFactory slotFactory, int columns, int invX, int invY, int leftHotbarSlots, int leftHotbarX, int leftHotbarY, int rightHotbarX, int rightHotbarY) {
         int extraItemsStart = getExtraInventoryStartSlotIndex();
 
         // Add right hotbar slots
         for (int i = 0; i < getExtraHotbarSlots() - leftHotbarSlots; i++) {
-            menu.addSlot(new Slot(this, extraItemsStart + i, rightHotbarX + i * 18, rightHotbarY));
+            slotAdder.accept(slotFactory.create(this, extraItemsStart + i, rightHotbarX + i * 18, rightHotbarY));
         };
         
         // Add left hotbar slots
         int j = 0;
         for (int i = getExtraHotbarSlots() - leftHotbarSlots; i < getExtraHotbarSlots(); i++) {
-            menu.addSlot(new Slot(this, extraItemsStart + i, leftHotbarX + j * 18, leftHotbarY));
+            slotAdder.accept(slotFactory.create(this, extraItemsStart + i, leftHotbarX + j * 18, leftHotbarY));
             j++;
         };
 
         // Add non-hotbar slots
         j = 0;
         for (int i = getExtraHotbarSlots(); i < extraItems.size(); i++) {
-            menu.addSlot(new Slot(this, extraItemsStart + i, invX + 18 * (j % columns), invY + 18 * (j / columns)));
+            slotAdder.accept(slotFactory.create(this, extraItemsStart + i, invX + 18 * (j % columns), invY + 18 * (j / columns)));
             j++;
         };
+    };
+
+    @FunctionalInterface
+    public static interface SlotFactory {
+        public Slot create(Container container, int slotIndex, int x, int y);
+    };
+
+    public void forEach(Consumer<? super ItemStack> action) {
+        items.forEach(action);
+        armor.forEach(action);
+        offhand.forEach(action);
+        extraItems.forEach(action);
+    };
+
+    public Stream<ItemStack> stream() {
+        return Stream.concat(Stream.concat(items.stream(), armor.stream()), Stream.concat(offhand.stream(), extraItems.stream()));
     };
 
     @Override

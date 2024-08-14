@@ -4,7 +4,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.stream.Stream;
 
 import com.petrolpark.destroy.Destroy;
 import com.petrolpark.destroy.MoveToPetrolparkLibrary;
@@ -740,7 +739,7 @@ public class DestroyCommonEvents {
                 int chunkX = SectionPos.blockToSectionCoord(player.getOnPos().getX());
                 int chunkZ = SectionPos.blockToSectionCoord(player.getOnPos().getZ());
                 
-                List<ItemStack> seismographs = Stream.concat(player.getInventory().items.stream(), player.getInventory().offhand.stream())
+                List<ItemStack> seismographs = ExtendedInventory.get(player).stream()
                     .filter(DestroyItems.SEISMOGRAPH::isIn)
                     .filter(stack -> {
                         MapItemSavedData mapData = MapItem.getSavedData(stack, level);

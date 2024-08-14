@@ -11,6 +11,6 @@ public class ExtendedInventoryGuiHandler implements IGlobalGuiHandler {
     
     @Override
     public Collection<Rect2i> getGuiExtraAreas() {
-        return DestroyClient.EXTENDED_INVENTORY_CLIENT_HANDLER.getGuiExtraAreas();
+        return DestroyClient.EXTENDED_INVENTORY_HANDLER.getGuiExtraAreas();
     };
 };
