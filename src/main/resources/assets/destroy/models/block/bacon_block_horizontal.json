@@ -1,0 +1,7 @@
+{
+    "parent": "block/cube_column_horizontal",
+    "textures": {
+        "end": "destroy:block/porkchop_block",
+        "side": "destroy:block/bacon_block"
+    }
+}

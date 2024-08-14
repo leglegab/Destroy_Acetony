@@ -1,0 +1,12 @@
+{
+    "type": "minecraft:crafting_shapeless",
+    "ingredients": [
+      {
+        "item": "destroy:bacon_block"
+      }
+    ],
+    "result": {
+      "item": "destroy:raw_bacon",
+      "count": 4
+    }
+  }

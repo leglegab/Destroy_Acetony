@@ -1,0 +1,18 @@
+{
+    "type": "create:mixing",
+    "ingredients": [
+      {
+        "item": "destroy:raw_bacon"
+      }
+    ],
+    "results": [
+      {
+        "item": "destroy:animal_fat",
+        "count": 2
+      },
+      {
+        "item": "destroy:cooked_bacon"
+      }
+    ],
+    "heatRequirement": "heated"
+}

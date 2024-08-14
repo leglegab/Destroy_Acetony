@@ -10,8 +10,10 @@ public class DestroyGenericReactions {
     public static final AlcoholOxidation ALCOHOL_OXIDATION = new AlcoholOxidation();
     public static final AlcoholDehydration ALCOHOL_DEHYDRATION = new AlcoholDehydration();
     public static final AldehydeOxidation ALDEHYDE_OXIDATION = new AldehydeOxidation();
+    public static final AlkeneHydrochlorination ALKENE_HYDROCHLORINATION = new AlkeneHydrochlorination();
     public static final AlkeneHydrolysis ALKENE_HYDROLYSIS = new AlkeneHydrolysis();
     public static final AlkeneHydrogenation ALKENE_HYDROGENATION = new AlkeneHydrogenation();
+    public static final AlkeneRadicalHydrochlorination ALKENE_RADICAL_HYDROCHLORINATION = new AlkeneRadicalHydrochlorination();
     public static final AmideHydrolysis AMIDE_HYDROLYSIS = new AmideHydrolysis();
     public static final CarbonylReduction CARBONYL_REDUCTION = new CarbonylReduction();
     public static final CarboxylicAcidReduction CARBOXYLIC_ACID_REDUCTION = new CarboxylicAcidReduction();

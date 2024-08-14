@@ -47,7 +47,7 @@ public class DestroyReactions {
         .addSimpleItemTagCatalyst(AllTags.forgeItemTag("dusts/platinum"), 1f)
         .addProduct(DestroyMolecules.HYDROGEN_CYANIDE, 2)
         .addProduct(DestroyMolecules.WATER, 6)
-        .activationEnergy(1000) //TODO tweak to make Reaction require very high temperatures
+        .activationEnergy(100) //TODO tweak to make Reaction require very high temperatures
         .build(),
 
     ANTHRAQUINONE_PROCESS = builder()
@@ -95,6 +95,15 @@ public class DestroyReactions {
         .addReactant(DestroyMolecules.CARBON_MONOXIDE, 2)
         .addReactant(DestroyMolecules.WATER, 2, 1)
         .addProduct(DestroyMolecules.ADIPIC_ACID)
+        .build(),
+
+    CALCIUM_HYDROXIDE_SOAP_MAKING = builder()
+        .id("calcium_hydroxide_soap_making")
+        .addReactant(DestroyMolecules.CALCIUM_ION, 3)
+        .addReactant(DestroyMolecules.HYDROXIDE, 6)
+        .addSimpleItemReactant(DestroyItems.ANIMAL_FAT, 2f)
+        .addProduct(DestroyMolecules.GLYCEROL, 2)
+        .withResult(2f, PrecipitateReactionResult.of(DestroyItems.SOAP::asStack))
         .build(),
 
     CARBON_CAPTURE = builder()
@@ -415,6 +424,7 @@ public class DestroyReactions {
         .addProduct(DestroyMolecules.SALICYLIC_ACID)
         .build(),
 
+
     MERCURY_FULMINATION = builder()
         .id("mercury_fulmination")
         .addReactant(DestroyMolecules.MERCURY, 3, 1)
@@ -592,6 +602,15 @@ public class DestroyReactions {
         .withResult(3f, PrecipitateReactionResult.of(DestroyItems.POLYPROPENE::asStack))
         .preexponentialFactor(10f)
         .activationEnergy(10f)
+        .build(),
+
+    SODIUM_HYDROXIDE_SOAP_MAKING = builder()
+        .id("sodium_hydroxide_soap_making")
+        .addReactant(DestroyMolecules.SODIUM_ION, 3)
+        .addReactant(DestroyMolecules.HYDROXIDE, 3)
+        .addSimpleItemReactant(DestroyItems.ANIMAL_FAT, 1f)
+        .addProduct(DestroyMolecules.GLYCEROL, 1)
+        .withResult(1f, PrecipitateReactionResult.of(DestroyItems.SOAP::asStack))
         .build(),
 
     SODIUM_DISSOLUTION = builder()

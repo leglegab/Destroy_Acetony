@@ -315,7 +315,7 @@ public class DistillationTower {
                 temperature = 400;
                 break;
             case SEETHING:
-                temperature = 600;
+                temperature = 650;
                 break;
             default:
         };

@@ -25,5 +25,7 @@ public class DestroyFoods {
     BIFURICATED_CARROT = new FoodProperties.Builder().nutrition(6).saturationMod(1.2f).build(),
     BABY_BLUE_POWDER = new FoodProperties.Builder().nutrition(0).saturationMod(0.0F).effect(babyBlueHigh, 1.0f).build(),
     MOONSHINE = new FoodProperties.Builder().nutrition(1).saturationMod(0.1f).build(),
-    BANGERS_AND_MASH = new FoodProperties.Builder().nutrition(8).saturationMod(1.8f).build();
+    BANGERS_AND_MASH = new FoodProperties.Builder().nutrition(8).saturationMod(1.8f).build(),
+    RAW_BACON = new FoodProperties.Builder().nutrition(5).saturationMod(1.0f).build(),
+    COOKED_BACON = new FoodProperties.Builder().nutrition(8).saturationMod(1.5f).build();
 }

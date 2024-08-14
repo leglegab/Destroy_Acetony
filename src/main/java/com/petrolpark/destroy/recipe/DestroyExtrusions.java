@@ -15,5 +15,7 @@ public class DestroyExtrusions {
 
         // Destroy
         BlockExtrusion.register(DestroyBlocks.CORDITE_BLOCK.get(), (state, direction) -> DestroyBlocks.EXTRUDED_CORDITE_BLOCK.getDefaultState().setValue(BlockStateProperties.AXIS, direction.getAxis()));
+        BlockExtrusion.register(DestroyBlocks.PORKCHOP_BLOCK.get(), (state, direction) -> DestroyBlocks.BACON_BLOCK.getDefaultState().setValue(BlockStateProperties.AXIS, direction.getAxis()));
+
     };
 };
