@@ -1177,6 +1177,7 @@
     "item.destroy.seismometer.tooltip.condition1": "When There is a Nearby Explosion",
     "item.destroy.seismometer.tooltip.behaviour1": "Indicates the volume of _Crude Void Oil_ in the chunk.",
     "item.destroy.silica": "Silica",
+    "item.destroy.soap": "Soap",
     "item.destroy.spray_bottle": "Empty Plastic Spray Bottle",
     "item.destroy.sulfur": "Sulfur",
     "item.destroy.sunscreen_bottle": "Bottle of Sunscreen",
