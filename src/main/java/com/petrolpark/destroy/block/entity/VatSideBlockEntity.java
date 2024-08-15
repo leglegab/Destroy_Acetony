@@ -30,6 +30,7 @@ import com.simibubi.create.content.redstone.thresholdSwitch.ThresholdSwitchObser
 import com.simibubi.create.foundation.blockEntity.behaviour.BlockEntityBehaviour;
 import com.simibubi.create.foundation.blockEntity.behaviour.fluid.SmartFluidTankBehaviour;
 import com.simibubi.create.foundation.item.TooltipHelper;
+import com.simibubi.create.foundation.ponder.PonderWorld;
 import com.simibubi.create.foundation.utility.VecHelper;
 import com.simibubi.create.foundation.utility.animation.LerpedFloat;
 import com.simibubi.create.foundation.utility.animation.LerpedFloat.Chaser;
@@ -208,7 +209,7 @@ public class VatSideBlockEntity extends CopycatBlockEntity implements IHaveGoggl
         // Update connected pipes
         if (initializationTicks > 0) {
             initializationTicks--;
-            if (initializationTicks <= 0) getBlockState().updateNeighbourShapes(getLevel(), getBlockPos(), 3);
+            if (!getLevel().isClientSide() && initializationTicks <= 0) getBlockState().updateNeighbourShapes(getLevel(), getBlockPos(), 3);
         };
  
         // Animation
@@ -388,7 +389,7 @@ public class VatSideBlockEntity extends CopycatBlockEntity implements IHaveGoggl
 
         if (getLevel().isClientSide()) ventOpenness.chase(displayType == DisplayType.OPEN_VENT ? 1f : 0f, 0.3f, Chaser.EXP);
 
-        getBlockState().updateNeighbourShapes(getLevel(), getBlockPos(), 3);
+        if (!getLevel().isClientSide()) getBlockState().updateNeighbourShapes(getLevel(), getBlockPos(), 3);
         updateDisplayType(getBlockPos().relative(direction)); // Check for a Pipe
         sendData();
 
@@ -423,6 +424,7 @@ public class VatSideBlockEntity extends CopycatBlockEntity implements IHaveGoggl
     @SuppressWarnings("null")
     public void updateDisplayType(BlockPos neighborPos) {
         if (getController() == null) return;
+        if (getLevel() instanceof PonderWorld) return; // Don't automatically update in Ponder World - the type is forced
         FluidTransportBehaviour behaviour = BlockEntityBehaviour.get(getLevel(), neighborPos, FluidTransportBehaviour.TYPE);
         boolean nextToPipe = false;
         if (behaviour != null) {
@@ -431,7 +433,7 @@ public class VatSideBlockEntity extends CopycatBlockEntity implements IHaveGoggl
         };
         boolean nextToAir = getLevel().getBlockState(neighborPos).isAir(); // It thinks getLevel() might be null (it's not)
         
-        if (nextToPipe) {
+        if (nextToPipe) { 
             setDisplayType(DisplayType.PIPE);
         } else if (!nextToAir) {
             if (getDisplayType().showsPressure) {

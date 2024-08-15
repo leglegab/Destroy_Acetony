@@ -48,10 +48,10 @@ public class DestroyCreativeModeTabs {
 				n(), i(DestroyItems.STAINLESS_STEEL_INGOT), r(DestroyBlocks.STAINLESS_STEEL_BLOCK), e(), e(), i(DestroyItems.STAINLESS_STEEL_SHEET), i(DestroyItems.STAINLESS_STEEL_ROD), i(DestroyBlocks.STAINLESS_STEEL_RODS), i(DestroyItems.MOLTEN_STAINLESS_STEEL_BUCKET),
 				n(), d(Items.IRON_INGOT), d(Blocks.IRON_BLOCK), i(DestroyItems.IRON_POWDER), d(AllItems.CRUSHED_IRON), d(AllItems.IRON_SHEET),d(Items.RAW_IRON), d(Blocks.RAW_IRON_BLOCK), d(Blocks.IRON_ORE), d(Blocks.DEEPSLATE_IRON_ORE),
 				n(), i(DestroyItems.LEAD_INGOT), i(DestroyBlocks.LEAD_BLOCK), i(DestroyItems.LEAD_POWDER), d(AllItems.CRUSHED_LEAD), e(), i(DestroyItems.NETHER_CROCOITE), e(), i(DestroyBlocks.NETHER_CROCOITE_BLOCK),
-				n(), i(DestroyItems.NICKEL_INGOT), i(DestroyBlocks.NICKEL_BLOCK), i(DestroyItems.NICKEL_POWDER), d(AllItems.CRUSHED_NICKEL), e(), i(DestroyItems.RAW_NICKEL), d(DestroyBlocks.RAW_NICKEL_BLOCK), d(DestroyBlocks.NICKEL_ORE), d(DestroyBlocks.DEEPSLATE_NICKEL_ORE),
+				n(), i(DestroyItems.NICKEL_INGOT), i(DestroyBlocks.NICKEL_BLOCK), i(DestroyItems.NICKEL_POWDER), d(AllItems.CRUSHED_NICKEL), e(), i(DestroyItems.RAW_NICKEL), i(DestroyBlocks.RAW_NICKEL_BLOCK), d(DestroyBlocks.NICKEL_ORE), d(DestroyBlocks.DEEPSLATE_NICKEL_ORE),
 				n(), i(DestroyItems.PALLADIUM_INGOT), i(DestroyBlocks.PALLADIUM_BLOCK), i(DestroyItems.PALLADIUM_POWDER), i(DestroyItems.CRUSHED_RAW_PALLADIUM),
 				n(), i(DestroyItems.PLATINUM_INGOT), i(DestroyBlocks.PLATINUM_BLOCK), i(DestroyItems.PLATINUM_POWDER), d(AllItems.CRUSHED_PLATINUM),
-				n(), i(DestroyItems.RHODIUM_INGOT), i(DestroyBlocks.RHODIUM_BLOCK), i(DestroyItems.RHODIUM_POWDER), i(DestroyItems.CRUSHED_RAW_RHODIUM), 
+				n(), i(DestroyItems.RHODIUM_INGOT), i(DestroyBlocks.RHODIUM_BLOCK), i(DestroyItems.RHODIUM_POWDER), i(DestroyItems.CRUSHED_RAW_RHODIUM), e(), e(), i(DestroyBlocks.CHISELED_RHODIUM_BLOCK),
 				n(), i(DestroyItems.SODIUM_INGOT), e(), e(), e(), e(), i(DestroyItems.OXIDIZED_SODIUM_INGOT),
 				n(), d(AllItems.ZINC_INGOT), d(AllBlocks.ZINC_BLOCK), i(DestroyItems.ZINC_POWDER), d(AllItems.CRUSHED_ZINC), i(DestroyItems.ZINC_SHEET), d(AllItems.RAW_ZINC), d(AllBlocks.RAW_ZINC_BLOCK), d(AllBlocks.ZINC_ORE), d(AllBlocks.DEEPSLATE_ZINC_ORE), //107?
 				//TODO pure gold

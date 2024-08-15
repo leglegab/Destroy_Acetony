@@ -1,6 +1,9 @@
 package com.petrolpark.destroy.mixin;
 
+import javax.annotation.Nullable;
+
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.gen.Accessor;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -23,12 +26,17 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.client.gui.screens.inventory.CreativeModeInventoryScreen.ItemPickerMenu;
 import net.minecraft.core.NonNullList;
 import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.inventory.ClickType;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.CreativeModeTab;
+import net.minecraft.world.item.ItemStack;
 
 @MoveToPetrolparkLibrary
 @Mixin(CreativeModeInventoryScreen.class)
 public abstract class CreativeModeInventoryScreenMixin extends EffectRenderingInventoryScreen<ItemPickerMenu> {
+
+    @Shadow
+    private Slot destroyItemSlot;
     
     public CreativeModeInventoryScreenMixin(ItemPickerMenu pMenu, Inventory pPlayerInventory, Component pTitle) {
         super(pMenu, pPlayerInventory, pTitle);
@@ -68,6 +76,19 @@ public abstract class CreativeModeInventoryScreenMixin extends EffectRenderingIn
             if (slot.getSlotIndex() >= inv.getExtraInventoryStartSlotIndex()) extendedInventorySlots.put(slot.getSlotIndex(), slot);
         };
         DestroyClient.EXTENDED_INVENTORY_HANDLER.addSlotsToClientMenu(inv, menu.slots::add, (c, i, x, y) -> new CreativeModeInventoryScreen.SlotWrapper(extendedInventorySlots.get(i), i, x, y));
+    };
+
+    @Inject(
+        method = "Lnet/minecraft/client/gui/screens/inventory/CreativeModeInventoryScreen;slotClicked",
+        at = @At("HEAD")
+    )
+    protected void inSlotClicked(@Nullable Slot slot, int slotId, int mouseButton, ClickType type, CallbackInfo ci) {
+        if (slot == destroyItemSlot && type == ClickType.QUICK_MOVE) {
+            ExtendedInventory inv = ExtendedInventory.get(minecraft.player);
+            for (Slot inventorySlot : menu.slots) {
+                if (inventorySlot.getSlotIndex() >= inv.getExtraInventoryStartSlotIndex()) minecraft.gameMode.handleCreativeModeItemAdd(ItemStack.EMPTY, inventorySlot.index);
+            };
+        };
     };
 
     /**

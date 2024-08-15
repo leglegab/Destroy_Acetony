@@ -475,9 +475,9 @@ public class DestroyBlocks {
         .transform(TagGen.tagBlockAndItem("storage_blocks/carbon_fiber"))
         .tag(Tags.Items.STORAGE_BLOCKS)
         .build()
-        .register();
-
-    public static final BlockEntry<Block> FLUORITE_BLOCK = REGISTRATE.block("fluorite_block", Block::new)
+        .register(),
+        
+    FLUORITE_BLOCK = REGISTRATE.block("fluorite_block", Block::new)
         .initialProperties(() -> Blocks.IRON_BLOCK)
         .properties(p -> p
             .mapColor(MapColor.COLOR_PURPLE)
@@ -490,9 +490,9 @@ public class DestroyBlocks {
         .transform(TagGen.tagBlockAndItem("storage_blocks/fluorite"))
         .tag(Tags.Items.STORAGE_BLOCKS)
         .build()
-        .register();
-
-    public static final BlockEntry<Block> RAW_NICKEL_BLOCK = REGISTRATE.block("raw_nickel_block", Block::new)
+        .register(),
+        
+    RAW_NICKEL_BLOCK = REGISTRATE.block("raw_nickel_block", Block::new)
         .initialProperties(() -> Blocks.RAW_IRON_BLOCK)
         .properties(p -> p
             .mapColor(MapColor.SAND)
@@ -505,9 +505,9 @@ public class DestroyBlocks {
         .transform(TagGen.tagBlockAndItem("storage_blocks/raw_nickel"))
         .tag(Tags.Items.STORAGE_BLOCKS)
         .build()
-        .register();
-
-    public static final BlockEntry<Block> CHROMIUM_BLOCK = REGISTRATE.block("chromium_block", Block::new)
+        .register(),
+        
+    CHROMIUM_BLOCK = REGISTRATE.block("chromium_block", Block::new)
         .initialProperties(() -> Blocks.IRON_BLOCK)
         .properties(p -> p
             .requiresCorrectToolForDrops()
@@ -519,9 +519,9 @@ public class DestroyBlocks {
         .transform(TagGen.tagBlockAndItem("storage_blocks/chromium"))
         .tag(Tags.Items.STORAGE_BLOCKS)
         .build()
-        .register();
-
-    public static final BlockEntry<Block> IODINE_BLOCK = REGISTRATE.block("iodine_block", Block::new)
+        .register(),
+        
+    IODINE_BLOCK = REGISTRATE.block("iodine_block", Block::new)
         .initialProperties(() -> Blocks.RAW_IRON_BLOCK)
         .properties(p -> p
             .mapColor(MapColor.COLOR_GRAY)
@@ -532,9 +532,9 @@ public class DestroyBlocks {
         .transform(TagGen.tagBlockAndItem("storage_blocks/iodine"))
         .tag(Tags.Items.STORAGE_BLOCKS)
         .build()
-        .register();
-
-    public static final BlockEntry<Block> NICKEL_BLOCK = REGISTRATE.block("nickel_block", Block::new)
+        .register(),
+        
+    NICKEL_BLOCK = REGISTRATE.block("nickel_block", Block::new)
         .initialProperties(() -> Blocks.IRON_BLOCK)
         .properties(p -> p
             .mapColor(MapColor.SAND)
@@ -547,9 +547,9 @@ public class DestroyBlocks {
         .transform(TagGen.tagBlockAndItem("storage_blocks/nickel"))
         .tag(Tags.Items.STORAGE_BLOCKS)
         .build()
-        .register();
-
-    public static final BlockEntry<Block> PALLADIUM_BLOCK = REGISTRATE.block("palladium_block", Block::new)
+        .register(),
+        
+    PALLADIUM_BLOCK = REGISTRATE.block("palladium_block", Block::new)
         .initialProperties(() -> Blocks.NETHERITE_BLOCK)
         .properties(p -> p
             .mapColor(MapColor.DIRT)
@@ -563,9 +563,9 @@ public class DestroyBlocks {
         .transform(TagGen.tagBlockAndItem("storage_blocks/palladium"))
         .tag(Tags.Items.STORAGE_BLOCKS)
         .build()
-        .register();
-
-    public static final BlockEntry<Block> PLATINUM_BLOCK = REGISTRATE.block("platinum_block", Block::new)
+        .register(),
+        
+    PLATINUM_BLOCK = REGISTRATE.block("platinum_block", Block::new)
         .initialProperties(() -> Blocks.DIAMOND_BLOCK)
         .properties(p -> p
             .requiresCorrectToolForDrops()
@@ -578,9 +578,9 @@ public class DestroyBlocks {
         .transform(TagGen.tagBlockAndItem("storage_blocks/platinum"))
         .tag(Tags.Items.STORAGE_BLOCKS)
         .build()
-        .register();
-
-    public static final BlockEntry<Block> RHODIUM_BLOCK = REGISTRATE.block("rhodium_block", Block::new)
+        .register(),
+    
+    RHODIUM_BLOCK = REGISTRATE.block("rhodium_block", Block::new)
         .initialProperties(() -> Blocks.NETHERITE_BLOCK)
         .properties(p -> p
             .mapColor(MapColor.TERRACOTTA_LIGHT_BLUE)
@@ -594,9 +594,9 @@ public class DestroyBlocks {
         .transform(TagGen.tagBlockAndItem("storage_blocks/rhodium"))
         .tag(Tags.Items.STORAGE_BLOCKS)
         .build()
-        .register();
+        .register(),
 
-    public static final BlockEntry<Block> LEAD_BLOCK = REGISTRATE.block("lead_block", Block::new)
+    LEAD_BLOCK = REGISTRATE.block("lead_block", Block::new)
         .initialProperties(() -> Blocks.IRON_BLOCK)
         .properties(p -> p
             .instrument(NoteBlockInstrument.IRON_XYLOPHONE)
@@ -610,7 +610,7 @@ public class DestroyBlocks {
         .tag(Tags.Items.STORAGE_BLOCKS)
         .build()
         .register();
-
+        
     public static final BlockEntry<CasingBlock> STAINLESS_STEEL_BLOCK = REGISTRATE.block("stainless_steel_block", CasingBlock::new)
         .initialProperties(() -> Blocks.IRON_BLOCK)
         .properties(p -> p
@@ -622,6 +622,17 @@ public class DestroyBlocks {
         .tag(Tags.Blocks.STORAGE_BLOCKS)
         .tag(BlockTags.BEACON_BASE_BLOCKS)
         .transform(TagGen.tagBlockAndItem("storage_blocks/stainless_steel"))
+        .tag(Tags.Items.STORAGE_BLOCKS)
+        .build()
+        .register();
+
+    public static final BlockEntry<RotatedPillarBlock> CHISELED_RHODIUM_BLOCK = REGISTRATE.block("chiseled_rhodium_block", RotatedPillarBlock::new)
+        .initialProperties(RHODIUM_BLOCK)
+        .transform(TagGen.pickaxeOnly())
+        .tag(BlockTags.NEEDS_DIAMOND_TOOL)
+        .tag(Tags.Blocks.STORAGE_BLOCKS)
+        .tag(BlockTags.BEACON_BASE_BLOCKS)
+        .transform(TagGen.tagBlockAndItem("storage_blocks/rhodium"))
         .tag(Tags.Items.STORAGE_BLOCKS)
         .build()
         .register();

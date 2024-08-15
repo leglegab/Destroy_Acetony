@@ -133,6 +133,9 @@ public enum DestroyGuiTextures implements ScreenElement {
 	JEI_DISTILLATION_TOWER_BRANCH("jei/widgets", 20, 45, 20, 2),
 	JEI_EXPLOSION("jei/widgets", 169, 0, 18, 21),
 
+	// Ponder
+	THERMOMETER("ponder", 0, 0, 16, 32),
+
 	// Misc
 	NERD_EMOJI("jei/widgets", 115, 19, 16, 14),
 	INVENTORY_BACKGROUND("inventory", 0, 0, 9, 9, 64, 64),

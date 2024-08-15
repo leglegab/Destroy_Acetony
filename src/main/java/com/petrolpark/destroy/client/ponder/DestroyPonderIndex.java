@@ -37,11 +37,12 @@ public class DestroyPonderIndex {
 
         // Basin
         HELPER.forComponents(AllBlocks.BASIN)
-            .addStoryBoard("reactions", DestroyScenes::reactions, DestroyPonderTags.CHEMISTRY);
+            .addStoryBoard("reactions", ChemistryScenes::reactions, DestroyPonderTags.CHEMISTRY)
+            .addStoryBoard("pollution/basins_and_vats", PollutionScenes::basinsAndVats);
 
         // Blacklight
         HELPER.forComponents(DestroyBlocks.BLACKLIGHT)
-            .addStoryBoard("vat/uv", ChemistryScenes::uv);
+            .addStoryBoard("vat/uv", ChemistryScenes::vatUV);
 
         // Blaze Burner
         HELPER.forComponents(AllBlocks.BLAZE_BURNER)
@@ -84,7 +85,7 @@ public class DestroyPonderIndex {
         // Cooler
         HELPER.forComponents(DestroyBlocks.COOLER)
             .addStoryBoard("processing/cooler", ProcessingScenes::cooler)
-            .addStoryBoard("vat/interaction", DestroyScenes::vatInteraction, DestroyPonderTags.CHEMISTRY);
+            .addStoryBoard("vat/temperature", ChemistryScenes::vatTemperature, DestroyPonderTags.CHEMISTRY);
 
         // Custom Explosive Mix
         HELPER.forComponents(DestroyBlocks.CUSTOM_EXPLOSIVE_MIX)
@@ -188,17 +189,17 @@ public class DestroyPonderIndex {
         // Vat Controller
         HELPER.forComponents(DestroyBlocks.VAT_CONTROLLER)
             .addStoryBoard("vat/construction", ChemistryScenes::vatConstruction)
-            .addStoryBoard("vat/heating", ChemistryScenes::vatHeating)
-            .addStoryBoard("bunsen_burner", ChemistryScenes::bunsenBurner)
+            .addStoryBoard("vat/fluids", ChemistryScenes::vatFluids, AllPonderTags.FLUIDS)
+            .addStoryBoard("vat/items", ChemistryScenes::vatItems)
+            .addStoryBoard("reactions", ChemistryScenes::reactions, DestroyPonderTags.CHEMISTRY)
+            .addStoryBoard("vat/temperature", ChemistryScenes::vatTemperature)
+            //.addStoryBoard("bunsen_burner", ChemistryScenes::bunsenBurner)
             .addStoryBoard("pollution/room_temperature", ChemistryScenes::roomTemperature)
+            .addStoryBoard("vat/pressure", ChemistryScenes::vatPressure)
             .addStoryBoard("pollution/basins_and_vats", PollutionScenes::basinsAndVats)
-            .addStoryBoard("vat/monitoring", ChemistryScenes::vatMonitoring)
+            .addStoryBoard("vat/reading", ChemistryScenes::vatReading)
             .addStoryBoard("colorimeter", ChemistryScenes::colorimeter)
-            .addStoryBoard("vat/uv", ChemistryScenes::uv);
-            //.addStoryBoard("vat/construction", DestroyScenes::vatConstruction)
-            //.addStoryBoard("reactions", DestroyScenes::reactions)
-            //.addStoryBoard("vat/interaction", DestroyScenes::vatInteraction)
-            //.addStoryBoard("vat/uv", DestroyScenes::uv);
+            .addStoryBoard("vat/uv", ChemistryScenes::vatUV);
     };
 
     private static final ResourceLocation periodicTableSchematicLocation = Destroy.asResource("periodic_table");
