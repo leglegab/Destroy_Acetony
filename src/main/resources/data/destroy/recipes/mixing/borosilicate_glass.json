@@ -2,13 +2,16 @@
     "type": "create:mixing",
     "ingredients": [
       {
-        "tag": "minecraft:sand"
+        "tag": "forge:dusts/silica"
+      },
+      {
+        "tag": "forge:dusts/silica"
       },
       {
         "tag": "forge:dusts/silica"
       },
       {
-        "tag": "forge:dusts/silica"
+        "tag": "forge:dusts/lime"
       },
       {
         "tag": "forge:raw_materials/borax"

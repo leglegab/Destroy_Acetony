@@ -9,8 +9,8 @@
       },
       {
         "mixtureFluidWithSalt": "destroy:mixture",
-        "cation": "destroy:ammonium",
-        "anion": "destroy:nitrate",
+        "cation": "destroy:calcium",
+        "anion": "destroy:cyanamide_ion",
         "min_concentration": 3.0,
         "max_concentration": 5.0,
         "amount": 200

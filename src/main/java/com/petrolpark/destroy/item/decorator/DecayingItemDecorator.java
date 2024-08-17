@@ -24,8 +24,8 @@ public class DecayingItemDecorator implements IItemDecorator {
         float proportion = 1f + (float)(tag.getLong("CreationTime") - Destroy.DECAYING_ITEM_HANDLER.get().getGameTime()) / (float)item.getLifetime(stack);
         if (proportion <= 0f) return false;
         int color = Mth.hsvToRgb(proportion / 3f, 0.5f + proportion * 0.5f, 0.25f + proportion * 0.75f);
-        guiGraphics.fill(RenderType.guiOverlay(), xOffset + 2, yOffset + 13, xOffset + 14, yOffset + 15, 0xFF000000);
-        guiGraphics.fill(RenderType.guiOverlay(), xOffset + 2, yOffset + 13, xOffset + 2 + (int)(proportion * 12f), yOffset + 14, color | 0xFF000000);
+        guiGraphics.fill(RenderType.guiOverlay(), xOffset + 2, yOffset + 3, xOffset + 14, yOffset + 5, 0xFF000000);
+        guiGraphics.fill(RenderType.guiOverlay(), xOffset + 2, yOffset + 3, xOffset + 2 + (int)(proportion * 12f), yOffset + 4, color | 0xFF000000);
         return false;
     };
     

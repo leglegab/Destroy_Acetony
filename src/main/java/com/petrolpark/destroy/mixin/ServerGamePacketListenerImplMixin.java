@@ -56,7 +56,7 @@ public abstract class ServerGamePacketListenerImplMixin implements ServerGamePac
         locals = LocalCapture.CAPTURE_FAILSOFT,
         cancellable = true
     )
-    public void inHandleSetCreativeModeSlot(ServerboundSetCreativeModeSlotPacket packet, CallbackInfo ci, boolean flag, ItemStack itemstack, CompoundTag compoundtag, boolean flag1) {
+    public void inHandleSetCreativeModeSlot(ServerboundSetCreativeModeSlotPacket packet, CallbackInfo ci, boolean flag, ItemStack itemstack, CompoundTag compoundtag) {
         if (packet.getSlotNum() >= 1 && itemstack.isEmpty() || itemstack.getDamageValue() >= 0 && !itemstack.isEmpty()) {
             player.inventoryMenu.getSlot(packet.getSlotNum()).setByPlayer(itemstack);
             player.inventoryMenu.broadcastChanges();

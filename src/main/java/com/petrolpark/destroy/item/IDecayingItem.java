@@ -38,6 +38,7 @@ public interface IDecayingItem {
                 long timeDead = -getRemainingTime(item, stack, tag);
                 if (timeDead >= 0) {
                     ItemStack product = item.getDecayProduct(stack);
+                    product.setCount(stack.getCount());
                     startDecay(product, timeDead);
                     return checkDecay(product);
                 };

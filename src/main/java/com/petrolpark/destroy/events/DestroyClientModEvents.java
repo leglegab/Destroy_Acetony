@@ -49,12 +49,13 @@ public class DestroyClientModEvents {
 
     @SubscribeEvent
     public static void registerItemDecorations(RegisterItemDecorationsEvent event) {
-        event.register(DestroyItems.GAS_FILTER, new DecayingItemDecorator());
+        event.register(DestroyItems.SODIUM_INGOT, new DecayingItemDecorator());
+        event.register(DestroyItems.QUICKLIME, new DecayingItemDecorator());
     };
 
     @SubscribeEvent
     public static void changeItemColors(RegisterColorHandlersEvent.Item event) {
-        event.register(TankPeriodicTableBlockItemColor.INSTANCE, DestroyBlocks.HYDROGEN_PERIODIC_TABLE_BLOCK.asItem(), DestroyBlocks.NITROGEN_PERIODIC_TABLE_BLOCK.asItem(), DestroyBlocks.OXYGEN_PERIODIC_TABLE_BLOCK.asItem(), DestroyBlocks.FLUORINE_PERIODIC_TABLE_BLOCK.asItem(), DestroyBlocks.CHLORINE_PERIODIC_TABLE_BLOCK.asItem(), DestroyBlocks.MERCURY_PERIODIC_TABLE_BLOCK.asItem());
+        event.register(TankPeriodicTableBlockItemColor.INSTANCE, DestroyBlocks.HYDROGEN_PERIODIC_TABLE_BLOCK, DestroyBlocks.NITROGEN_PERIODIC_TABLE_BLOCK, DestroyBlocks.OXYGEN_PERIODIC_TABLE_BLOCK, DestroyBlocks.FLUORINE_PERIODIC_TABLE_BLOCK, DestroyBlocks.CHLORINE_PERIODIC_TABLE_BLOCK, DestroyBlocks.MERCURY_PERIODIC_TABLE_BLOCK);
         event.register(DyeableCustomExplosiveMixItemColor.INSTANCE, DestroyBlocks.CUSTOM_EXPLOSIVE_MIX);
     };
 

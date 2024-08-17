@@ -269,7 +269,7 @@ public class DestroyItems {
     // COMPOUNDS
     
     CHALK_DUST = REGISTRATE.item("chalk_dust", Item::new)
-        .tag(Tags.Items.DUSTS, DestroyItemTags.LIABLE_TO_CHANGE.tag)
+        .tag(Tags.Items.DUSTS, forgeItemTag("dusts/chalk"))
         .register(),
     BABY_BLUE_CRYSTAL = REGISTRATE.item("baby_blue_crystal", Item::new)
         .register(),
@@ -277,6 +277,12 @@ public class DestroyItems {
         .properties(p -> p
             .food(DestroyFoods.BABY_BLUE_POWDER)
         ).tag(Tags.Items.DUSTS)
+        .register();
+
+    public static final ItemEntry<CarboxylatingItem>
+
+    QUICKLIME = REGISTRATE.item("quicklime", p -> new CarboxylatingItem(p, CHALK_DUST::asStack, () -> DestroyAllConfigs.SERVER.substances.quicklimeBaseDecayTime))
+        .tag(Tags.Items.DUSTS, forgeItemTag("dusts/lime"))
         .register();
     
     public static final ItemEntry<IodineItem> IODINE = REGISTRATE.item("iodine", IodineItem::new)

@@ -2,18 +2,14 @@
     "type": "create:crushing",
     "ingredients": [
       {
-        "item": "create:polished_rose_quartz"
+        "tag": "forge:storage_blocks/amethyst"
       }
     ],
     "results": [
       {
         "item": "destroy:silica",
-        "count": 1
-      },
-      {
-        "item": "minecraft:redstone",
-        "count": 3,
-        "chance": 0.5
+        "count": 25,
+        "chance": 0.75
       }
     ],
     "processingTime": 100

@@ -9,8 +9,8 @@ import com.petrolpark.destroy.client.ponder.DestroyPonderTags;
 import com.petrolpark.destroy.client.sprites.DestroySpriteSource;
 import com.petrolpark.destroy.entity.player.ExtendedInventoryClientHandler;
 import com.petrolpark.destroy.item.DestroyItemProperties;
+import com.petrolpark.destroy.item.DecayingItemHandler.ClientDecayingItemHandler;
 
-import net.minecraft.client.Minecraft;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 
@@ -25,10 +25,7 @@ public class DestroyClient {
     public static void clientInit(final FMLClientSetupEvent event) {
         event.enqueueWork(() -> { // Work which must be done on main thread
             DestroyItemProperties.register();
-            Destroy.DECAYING_ITEM_HANDLER.set(() -> {
-                Minecraft mc = Minecraft.getInstance();
-                return mc.level.getGameTime();
-            });
+            Destroy.DECAYING_ITEM_HANDLER.set(new ClientDecayingItemHandler());
         });
         DestroyPonderTags.register();
         DestroyPonderIndex.register();

@@ -109,6 +109,15 @@ public class DestroyReactions {
         .addProduct(DestroyMolecules.ADIPIC_ACID)
         .build(),
 
+    CARBIDE_HYDROLYSIS = builder()
+        .id("carbide_hydrolysis")
+        .addReactant(DestroyMolecules.CARBIDE_ION)
+        .addReactant(DestroyMolecules.WATER)
+        .addProduct(DestroyMolecules.ACETYLENE)
+        .addProduct(DestroyMolecules.HYDROXIDE, 2)
+        .activationEnergy(1f)
+        .build(),
+
     CARBON_CAPTURE = builder()
         .id("carbon_capture")
         .addReactant(DestroyMolecules.CALCIUM_ION)
@@ -220,6 +229,14 @@ public class DestroyReactions {
         .addProduct(DestroyMolecules.ACETONE)
         .build(),
 
+    CYANAMIDE_ION_HYDROLYSIS = builder()
+        .id("cyanamide_ion_hydrolysis")
+        .addReactant(DestroyMolecules.CYANAMIDE_ION)
+        .addReactant(DestroyMolecules.WATER, 3, 1)
+        .addProduct(DestroyMolecules.CYANAMIDE)
+        .addProduct(DestroyMolecules.HYDROXIDE, 2)
+        .build(),
+
     CYCLOHEXENE_OXIDATIVE_CLEAVAGE = builder()
         .id("cyclohexene_oxidative_cleavage")
         .addReactant(DestroyMolecules.CYCLOHEXENE)
@@ -314,6 +331,16 @@ public class DestroyReactions {
         .addSimpleItemReactant(DestroyItems.FLUORITE::get, 5f)
         .addProduct(DestroyMolecules.CALCIUM_ION)
         .addProduct(DestroyMolecules.HYDROFLUORIC_ACID, 2)
+        .build(),
+
+    FRANK_CARO_PROCESS = builder()
+        .id("frank_caro_process")
+        .addReactant(DestroyMolecules.CARBIDE_ION)
+        .addReactant(DestroyMolecules.NITROGEN)
+        .addReactant(DestroyMolecules.OXYGEN)
+        .addProduct(DestroyMolecules.CYANAMIDE_ION)
+        .addProduct(DestroyMolecules.CARBON_DIOXIDE) // todo maybe make it make soot instead of including oxygen in the reactants
+        .activationEnergy(50f)
         .build(),
 
     GLYCEROL_NITRATION = builder()
@@ -454,6 +481,14 @@ public class DestroyReactions {
         .addProduct(DestroyMolecules.SALICYLIC_ACID)
         .build(),
 
+    LIME_SLAKING = builder()
+        .id("lime_slaking")
+        .addReactant(DestroyMolecules.WATER)
+        .addSimpleItemTagReactant(AllTags.forgeItemTag("dusts/quicklime"), 2f)
+        .addProduct(DestroyMolecules.CALCIUM_ION)
+        .addProduct(DestroyMolecules.HYDROXIDE, 2)
+        .build(),
+    
     MERCURY_FULMINATION = builder()
         .id("mercury_fulmination")
         .addReactant(DestroyMolecules.MERCURY, 3, 1)

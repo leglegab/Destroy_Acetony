@@ -76,6 +76,14 @@ public final class DestroyMolecules {
         .tag(Tags.SMOG)
         .build(),
 
+    ACETYLENE = builder()
+        .id("acetylene")
+        .structure(LegacyMolecularStructure.deserialize("destroy:linear:C#C"))
+        .boilingPoint(-75f)
+        .density(613f)
+        .molarHeatCapacity(44.036f)
+        .build(),
+
     ACRYLONITRILE = builder()
         .id("acrylonitrile")
         .structure(LegacyMolecularStructure.deserialize("destroy:linear:C=CC#N"))
@@ -181,6 +189,12 @@ public final class DestroyMolecules {
         .id("calcium_ion")
         .translationKey("calcium")
         .structure(LegacyMolecularStructure.atom(LegacyElement.CALCIUM, 2))
+        .build(),
+
+    CARBIDE_ION = builder()
+        .id("carbide_ion")
+        .translationKey("carbide")
+        .structure(LegacyMolecularStructure.deserialize("destroy:linear:C^-1#C^-1"))
         .build(),
 
     CARBON_DIOXIDE = builder()
@@ -329,6 +343,21 @@ public final class DestroyMolecules {
         .boilingPoint(457.4f)
         .density(2400f)
         .tag(Tags.SMOG)
+        .build(),
+
+    CYANAMIDE = builder()
+        .id("cyanamide")
+        .structure(LegacyMolecularStructure.deserialize("destroy:linear:N#CN"))
+        .boilingPoint(260f)
+        .density(1280f)
+        .molarHeatCapacity(78.2f)
+        .tag(Tags.SMOG)
+        .tag(Tags.CARCINOGEN)
+        .build(),
+
+    CYANAMIDE_ION = builder()
+        .id("cyanamide_ion")
+        .structure(LegacyMolecularStructure.deserialize("destroy:linear:N^-1=C=N^-1"))
         .build(),
 
     CYANIDE = builder()

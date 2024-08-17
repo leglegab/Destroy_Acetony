@@ -1,14 +1,15 @@
 {
-    "type": "create:crushing",
+    "type": "create:milling",
     "ingredients": [
       {
-        "tag": "create:stone_types/limestone"
+        "item": "minecraft:sniffer_egg"
       }
     ],
     "results": [
       {
         "item": "destroy:chalk_dust",
-        "count": 5
+        "count": 5,
+        "chance": 0.5
       }
     ],
     "processingTime": 150

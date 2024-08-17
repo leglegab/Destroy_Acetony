@@ -1,15 +1,15 @@
 {
-    "type": "create:crushing",
+    "type": "create:milling",
     "ingredients": [
       {
-        "tag": "create:stone_types/limestone"
+        "item": "minecraft:egg"
       }
     ],
     "results": [
       {
         "item": "destroy:chalk_dust",
-        "count": 5
+        "count": 1
       }
     ],
-    "processingTime": 150
+    "processingTime": 50
 }

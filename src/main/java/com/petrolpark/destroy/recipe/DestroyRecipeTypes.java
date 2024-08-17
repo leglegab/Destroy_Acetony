@@ -27,6 +27,7 @@ import net.minecraftforge.registries.RegistryObject;
 public enum DestroyRecipeTypes implements IRecipeTypeInfo {
     // Processing recipes
     AGING(AgingRecipe::new),
+    ARC_FURNACE_SMELTING(ArcFurnaceSmeltingRecipe::new),
     CENTRIFUGATION(CentrifugationRecipe::new),
     CHARGING(ChargingRecipe::new),
     CIRCUIT_DEPLOYING(CircuitDeployerApplicationRecipe::new, AllRecipeTypes.DEPLOYING::getType),
@@ -50,8 +51,10 @@ public enum DestroyRecipeTypes implements IRecipeTypeInfo {
     DURATION_4_FIREWORK_ROCKET_CRAFTING(() -> ExtendedDurationFireworkRocketRecipe.DURATION_4_FIREWORK_ROCKET, () -> RecipeType.CRAFTING),
     DURATION_5_FIREWORK_ROCKET_CRAFTING(() -> ExtendedDurationFireworkRocketRecipe.DURATION_5_FIREWORK_ROCKET, () -> RecipeType.CRAFTING),
     FILL_CUSTOM_EXPLOSIVE_MIX_ITEM(() -> FillCustomExplosiveMixItemRecipe.SERIALIZER, () -> RecipeType.CRAFTING),
-    BADGE_DUPLICATION(() -> BadgeDuplicationRecipe.BADGE_DUPLICATION, () -> RecipeType.CRAFTING);
+    BADGE_DUPLICATION(() -> BadgeDuplicationRecipe.BADGE_DUPLICATION, () -> RecipeType.CRAFTING),
 
+    // Advanced cooking recipies
+    DECAYING_ITEM_COOKING(DecayingItemCookingRecipe.Serializer::new);
     // This is alllllll copied from Create source code
     private final ResourceLocation id;
     private final RegistryObject<RecipeSerializer<?>> serializerObject;

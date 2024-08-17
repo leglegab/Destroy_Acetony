@@ -13,7 +13,8 @@ public class DestroySubstancesConfigs extends DestroyConfigBase {
     public final ConfigBool burnIodineForDragonsBreath = b(true, "burnIodineForDragonsBreath", "Whether burning Iodine will release Dragon's Breath");
 
     public final ConfigInt sodiumDecayTime = i(600, 1, Integer.MAX_VALUE, "sodiumDecayTime", "How many ticks it takes for Sodium to rust");
-    
+    public final ConfigInt quicklimeBaseDecayTime = i(12000, 1, Integer.MAX_VALUE, "quicklimeBaseDecayTime", "The base number of ticks it takes for Quicklime to turn into Calcium Carbonate");
+
     public final ConfigGroup babyBlue = group(0, "babyBlue", Comments.babyBlue);
     public final ConfigInt babyBlueMaxAddictionLevel = i(590, 0, "maxAddictionLevel", Comments.toDisable, Comments.maxAddictionLevel);
     public final ConfigFloat babyBlueMiningSpeedBonus = f(0.5f, Float.MIN_VALUE, "babyBlueMiningSpeedBonus", "The proportion by which mining speed is boosted for every level of Baby Blue High", "For example, 0.5 gives +50% per level");
