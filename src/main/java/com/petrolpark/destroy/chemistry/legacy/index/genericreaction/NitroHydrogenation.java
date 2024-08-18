@@ -4,6 +4,7 @@ import com.petrolpark.destroy.Destroy;
 import com.petrolpark.destroy.chemistry.legacy.LegacyElement;
 import com.petrolpark.destroy.chemistry.legacy.LegacyMolecularStructure;
 import com.petrolpark.destroy.chemistry.legacy.LegacyReaction;
+import com.petrolpark.destroy.chemistry.legacy.ReadOnlyMixture;
 import com.petrolpark.destroy.chemistry.legacy.genericreaction.GenericReactant;
 import com.petrolpark.destroy.chemistry.legacy.genericreaction.SingleGroupGenericReaction;
 import com.petrolpark.destroy.chemistry.legacy.index.DestroyGroupTypes;
@@ -15,6 +16,11 @@ public class NitroHydrogenation extends SingleGroupGenericReaction<NitroGroup> {
 
     public NitroHydrogenation() {
         super(Destroy.asResource("nitro_hydrogenation"), DestroyGroupTypes.NITRO);
+    };
+
+    @Override
+    public boolean isPossibleIn(ReadOnlyMixture mixture) {
+        return mixture.getConcentrationOf(DestroyMolecules.HYDROGEN) > 0f;
     };
 
     @Override

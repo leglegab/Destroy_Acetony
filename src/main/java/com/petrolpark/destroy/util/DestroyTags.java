@@ -25,6 +25,18 @@ public class DestroyTags {
 
         ALCOHOLIC_DRINKS,
         BEETROOT_ASHES,
+        BONEMEAL_BYPASSES_POLLUTION,
+        DESTROY_INGOTS,
+        EYES,
+        FERTILIZERS,
+        FLUXES,
+        HEFTY_BEETROOTS,
+        LIABLE_TO_CHANGE,
+        PAPER_PULPABLE,
+        SPRAY_BOTTLES,
+        SYRINGES,
+        TEST_TUBE_RACK_STORABLE,
+        YEAST,
 
         CHEMICAL_PROTECTION_EYES("chemical_protection/eyes"),
         CHEMICAL_PROTECTION_NOSE("chemical_protection/nose"),
@@ -34,13 +46,6 @@ public class DestroyTags {
         CHEMICAL_PROTECTION_LEGS("chemical_protection/legs"),
         CHEMICAL_PROTECTION_FEET("chemical_protection/feet"),
         CONTAMINABLE,
-
-        DESTROY_INGOTS,
-        FERTILIZERS,
-        HEFTY_BEETROOTS,
-        LIABLE_TO_CHANGE,
-        PAPER_PULPABLE,
-        BONEMEAL_BYPASSES_POLLUTION,
 
         PLASTICS,
         RIGID_PLASTICS("plastics/rigid"),
@@ -54,12 +59,6 @@ public class DestroyTags {
         SCHEMATICANNON_FUELS,
         SECONDARY_EXPLOSIVES("explosives/secondary"),
         OBLITERATION_EXPLOSIVES,  // This tag is only used to display the right Blocks in JEI.
-
-        SPRAY_BOTTLES,
-        SYRINGES,
-        TEST_TUBE_RACK_STORABLE,
-        YEAST,
-        EYES,
         ;
 
         public final TagKey<Item> tag;
@@ -86,6 +85,7 @@ public class DestroyTags {
     };
 
     public enum DestroyBlockTags {
+        ARC_FURNACE_TRANSFORMABLE,
         BEETROOTS,
         ACID_RAIN_DESTRUCTIBLE,
         ANFO_MINEABLE,

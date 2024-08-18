@@ -4,6 +4,7 @@ import com.petrolpark.destroy.Destroy;
 import com.petrolpark.destroy.chemistry.legacy.LegacyElement;
 import com.petrolpark.destroy.chemistry.legacy.LegacyMolecularStructure;
 import com.petrolpark.destroy.chemistry.legacy.LegacySpecies;
+import com.petrolpark.destroy.chemistry.legacy.ReadOnlyMixture;
 import com.petrolpark.destroy.chemistry.legacy.LegacyReaction;
 import com.petrolpark.destroy.chemistry.legacy.LegacyBond.BondType;
 import com.petrolpark.destroy.chemistry.legacy.genericreaction.GenericReactant;
@@ -16,6 +17,11 @@ public class CyanideNucleophilicAddition extends SingleGroupGenericReaction<Carb
 
     public CyanideNucleophilicAddition() {
         super(Destroy.asResource("cyanide_nucleophilic_addition"), DestroyGroupTypes.CARBONYL);
+    };
+
+    @Override
+    public boolean isPossibleIn(ReadOnlyMixture mixture) {
+        return mixture.getConcentrationOf(DestroyMolecules.CYANIDE) > 0f && mixture.getConcentrationOf(DestroyMolecules.PROTON) > 0f;
     };
 
     @Override

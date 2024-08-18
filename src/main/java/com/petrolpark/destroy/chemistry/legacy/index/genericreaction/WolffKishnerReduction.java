@@ -4,6 +4,7 @@ import com.petrolpark.destroy.Destroy;
 import com.petrolpark.destroy.chemistry.legacy.LegacyElement;
 import com.petrolpark.destroy.chemistry.legacy.LegacyMolecularStructure;
 import com.petrolpark.destroy.chemistry.legacy.LegacyReaction;
+import com.petrolpark.destroy.chemistry.legacy.ReadOnlyMixture;
 import com.petrolpark.destroy.chemistry.legacy.genericreaction.GenericReactant;
 import com.petrolpark.destroy.chemistry.legacy.genericreaction.SingleGroupGenericReaction;
 import com.petrolpark.destroy.chemistry.legacy.index.DestroyGroupTypes;
@@ -14,6 +15,11 @@ public class WolffKishnerReduction extends SingleGroupGenericReaction<CarbonylGr
 
     public WolffKishnerReduction() {
         super(Destroy.asResource("wolff_kishner_reduction"), DestroyGroupTypes.CARBONYL);
+    };
+
+    @Override
+    public boolean isPossibleIn(ReadOnlyMixture mixture) {
+        return mixture.getConcentrationOf(DestroyMolecules.HYDRAZINE)> 0f;
     };
 
     @Override

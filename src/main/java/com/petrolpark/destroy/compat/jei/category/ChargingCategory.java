@@ -16,7 +16,7 @@ import net.minecraft.client.gui.GuiGraphics;
 
 public class ChargingCategory extends DestroyRecipeCategory<ChargingRecipe> {
 
-    private final AnimatedDynamo dynamo = new AnimatedDynamo(false);
+    private final AnimatedDynamo dynamo = new AnimatedDynamo(false, false);
 
     public ChargingCategory(Info<ChargingRecipe> info, IJeiHelpers helpers) {
         super(info, helpers);

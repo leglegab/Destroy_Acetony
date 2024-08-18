@@ -30,7 +30,6 @@ import net.minecraft.client.renderer.Rect2i;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.AbstractContainerMenu;
-import net.minecraft.world.inventory.InventoryMenu;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.level.GameType;
@@ -347,12 +346,12 @@ public class ExtendedInventoryClientHandler {
             return;
         };
         AbstractContainerMenu menu = screen.getMenu();
+        Minecraft mc = Minecraft.getInstance();
 
-        if (!ExtendedInventory.supportsExtraInventory(menu) && !(menu instanceof InventoryMenu || screen instanceof CreativeModeInventoryScreen)) {
+        if (!ExtendedInventory.supportsExtraInventory(menu) && !(menu == mc.player.inventoryMenu || screen instanceof CreativeModeInventoryScreen)) {
             currentScreen = null;
             return;
         };
-        Minecraft mc = Minecraft.getInstance();
 
         ExtendedInventory inv = ExtendedInventory.get(mc.player);
 
@@ -361,7 +360,7 @@ public class ExtendedInventoryClientHandler {
             refreshExtraInventoryAreas(inv);
         };
         if (!(
-            menu instanceof InventoryMenu // Survival Inventory Menu slots are added in a Player mixin
+            menu == mc.player.inventoryMenu // Survival Inventory Menu slots are added in a Player mixin
             || screen instanceof CreativeModeInventoryScreen // Creative Inventory Menu slots are added in a CreativeModeInventoryScreen mixin
             || menu instanceof IExtendedInventoryMenu // Custom Extended Inventory Menu screens add the Slots themselves
         )) {

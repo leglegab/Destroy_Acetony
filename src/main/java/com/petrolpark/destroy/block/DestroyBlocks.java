@@ -235,6 +235,11 @@ public class DestroyBlocks {
         .transform(customItemModel())
         .register();
 
+    public static final BlockEntry<ArcFurnaceLidBlock> ARC_FURNACE_LID = REGISTRATE.block("arc_furnace_lid", ArcFurnaceLidBlock::new)
+        .initialProperties(AllBlocks.BASIN)
+        .transform(TagGen.pickaxeOnly())
+        .register();
+
     public static final BlockEntry<ExtrusionDieBlock> EXTRUSION_DIE = REGISTRATE.block("extrusion_die", ExtrusionDieBlock::new)
         .initialProperties(SharedProperties::softMetal)
         .properties(p -> p
@@ -472,6 +477,7 @@ public class DestroyBlocks {
         .properties(p -> p
             .strength(40f, 800f)
         ).transform(TagGen.pickaxeOnly())
+        .tag(DestroyBlockTags.ARC_FURNACE_TRANSFORMABLE.tag)
         .transform(TagGen.tagBlockAndItem("storage_blocks/carbon_fiber"))
         .tag(Tags.Items.STORAGE_BLOCKS)
         .build()

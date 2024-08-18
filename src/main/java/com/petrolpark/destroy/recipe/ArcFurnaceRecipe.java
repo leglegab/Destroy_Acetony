@@ -3,10 +3,10 @@ package com.petrolpark.destroy.recipe;
 import com.simibubi.create.content.processing.basin.BasinRecipe;
 import com.simibubi.create.content.processing.recipe.ProcessingRecipeBuilder.ProcessingRecipeParams;
 
-public class ArcFurnaceSmeltingRecipe extends BasinRecipe {
+public class ArcFurnaceRecipe extends BasinRecipe {
 
-    protected ArcFurnaceSmeltingRecipe(ProcessingRecipeParams params) {
-        super(DestroyRecipeTypes.ARC_FURNACE_SMELTING, params);
+    protected ArcFurnaceRecipe(ProcessingRecipeParams params) {
+        super(DestroyRecipeTypes.ARC_FURNACE, params);
     };
     
 };

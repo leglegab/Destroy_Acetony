@@ -23,6 +23,8 @@ public class DestroyBlocksConfigs extends DestroyConfigBase {
     
     public final ConfigGroup dynamo = group(0, "dynamo", "Dynamo");
     public final ConfigBool dynamoBulkCharging = b(true, "dynamoBulkCharging", "Whether Dynamos can charge multiple Item Stacks at once.");
+    public final ConfigBool arcFurnaceAllowsSmelting = b(false, "arcFurnaceAllowsSmelting", "Whether Arc Furnaces can do vanilla Smelting recipes");
+    public final ConfigBool arcFurnaceAllowsBlasting = b(true, "arcFurnaceAllowsBlasting", "Whether Arc Furnaces can do vanilla Blasting recipes");
 
     public final ConfigGroup pumpjack = group(0, "pumpjack", "Pumpjack");
     public final ConfigInt pumpjackCapacity = i(2000, 1, "pumpjackCapacity", "[in mB]", "Fluid capacity of Pumpjacks");

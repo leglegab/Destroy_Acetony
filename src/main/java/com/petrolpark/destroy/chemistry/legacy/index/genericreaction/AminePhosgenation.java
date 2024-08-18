@@ -5,6 +5,7 @@ import com.petrolpark.destroy.chemistry.legacy.LegacyAtom;
 import com.petrolpark.destroy.chemistry.legacy.LegacyElement;
 import com.petrolpark.destroy.chemistry.legacy.LegacyMolecularStructure;
 import com.petrolpark.destroy.chemistry.legacy.LegacyReaction;
+import com.petrolpark.destroy.chemistry.legacy.ReadOnlyMixture;
 import com.petrolpark.destroy.chemistry.legacy.LegacyBond.BondType;
 import com.petrolpark.destroy.chemistry.legacy.genericreaction.GenericReactant;
 import com.petrolpark.destroy.chemistry.legacy.genericreaction.SingleGroupGenericReaction;
@@ -16,6 +17,11 @@ public class AminePhosgenation extends SingleGroupGenericReaction<PrimaryAmineGr
 
     public AminePhosgenation() {
         super(Destroy.asResource("amine_phosgenation"), DestroyGroupTypes.PRIMARY_AMINE);
+    };
+
+    @Override
+    public boolean isPossibleIn(ReadOnlyMixture mixture) {
+        return mixture.getConcentrationOf(DestroyMolecules.PHOSGENE) > 0f;
     };
 
     @Override

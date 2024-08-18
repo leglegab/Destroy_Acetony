@@ -4,6 +4,7 @@ import com.petrolpark.destroy.Destroy;
 import com.petrolpark.destroy.chemistry.legacy.LegacyElement;
 import com.petrolpark.destroy.chemistry.legacy.LegacyMolecularStructure;
 import com.petrolpark.destroy.chemistry.legacy.LegacyReaction;
+import com.petrolpark.destroy.chemistry.legacy.ReadOnlyMixture;
 import com.petrolpark.destroy.chemistry.legacy.genericreaction.GenericReactant;
 import com.petrolpark.destroy.chemistry.legacy.genericreaction.SingleGroupGenericReaction;
 import com.petrolpark.destroy.chemistry.legacy.index.DestroyGroupTypes;
@@ -14,6 +15,11 @@ public class IsocyanateHydrolysis extends SingleGroupGenericReaction<IsocyanateG
 
     public IsocyanateHydrolysis() {
         super(Destroy.asResource("isocyanate_hydrolysis"), DestroyGroupTypes.ISOCYANATE);
+    };
+
+    @Override
+    public boolean isPossibleIn(ReadOnlyMixture mixture) {
+        return mixture.getConcentrationOf(DestroyMolecules.WATER) > 0f;
     };
 
     @Override

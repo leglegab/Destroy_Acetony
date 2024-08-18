@@ -17,10 +17,13 @@ import com.petrolpark.destroy.Destroy;
 import com.petrolpark.destroy.block.DestroyBlocks;
 import com.petrolpark.destroy.chemistry.legacy.LegacySpecies;
 import com.petrolpark.destroy.client.gui.screen.RedstoneProgrammerScreen;
+import com.petrolpark.destroy.compat.jei.animation.ArcFurnaceIcon;
 import com.petrolpark.destroy.compat.jei.category.AgingCategory;
+import com.petrolpark.destroy.compat.jei.category.ArcFurnaceCategory;
 import com.petrolpark.destroy.compat.jei.category.CartographyTableCategory;
 import com.petrolpark.destroy.compat.jei.category.CentrifugationCategory;
 import com.petrolpark.destroy.compat.jei.category.ChargingCategory;
+import com.petrolpark.destroy.compat.jei.category.DecayingItemCategory;
 import com.petrolpark.destroy.compat.jei.category.DestroyRecipeCategory;
 import com.petrolpark.destroy.compat.jei.category.DistillationCategory;
 import com.petrolpark.destroy.compat.jei.category.ElectrolysisCategory;
@@ -39,14 +42,17 @@ import com.petrolpark.destroy.compat.jei.category.TappingCategory;
 import com.petrolpark.destroy.compat.jei.category.VatMaterialCategory;
 import com.petrolpark.destroy.compat.jei.category.VatMaterialCategory.VatMaterialRecipe;
 import com.petrolpark.destroy.compat.jei.category.CartographyTableCategory.CartographyTableRecipe;
+import com.petrolpark.destroy.compat.jei.category.DecayingItemCategory.DecayingItemRecipe;
 import com.petrolpark.destroy.compat.jei.category.MixableExplosiveCategory.MixableExplosiveRecipe;
 import com.petrolpark.destroy.compat.tfmg.SharedDistillationRecipes;
+import com.petrolpark.destroy.config.DestroyAllConfigs;
 import com.petrolpark.destroy.effect.potion.PotionSeparationRecipes;
 import com.petrolpark.destroy.fluid.DestroyFluids;
 import com.petrolpark.destroy.item.CustomExplosiveMixBlockItem;
 import com.petrolpark.destroy.item.DestroyItems;
 import com.petrolpark.destroy.item.armorMaterial.DestroyArmorMaterials;
 import com.petrolpark.destroy.recipe.AgingRecipe;
+import com.petrolpark.destroy.recipe.ArcFurnaceRecipe;
 import com.petrolpark.destroy.recipe.CentrifugationRecipe;
 import com.petrolpark.destroy.recipe.ChargingRecipe;
 import com.petrolpark.destroy.recipe.DestroyRecipeTypes;
@@ -294,8 +300,41 @@ public class DestroyJEI implements IModPlugin {
             .reactionCatalysts()
             .itemIcon(DestroyBlocks.BLOWPIPE)
             .emptyBackground(125, 50)
-            .build("glassblowing", GlassblowingCategory::new);
-            
+            .build("glassblowing", GlassblowingCategory::new),
+
+        arc_furnace = builder(BasinRecipe.class)
+            .addTypedRecipes(DestroyRecipeTypes.ARC_FURNACE)
+            .acceptsMixtures(ArcFurnaceRecipe.class)
+            .catalyst(DestroyBlocks.DYNAMO::get)
+            .catalyst(DestroyBlocks.CARBON_FIBER_BLOCK::get)
+            .catalyst(AllBlocks.BASIN::get)
+            .arcFurnaceIcon(() -> ItemStack.EMPTY)
+            .emptyBackground(177, 85)
+            .build("arc_furnace", (info, helpers) -> new ArcFurnaceCategory(info)),
+
+        arc_furnace_blasting = builder(BasinRecipe.class)
+            .addTypedRecipesIf(() -> RecipeType.BLASTING, ArcFurnaceCategory::toBasinRecipe, r -> DestroyAllConfigs.SERVER.blocks.arcFurnaceAllowsBlasting.get())
+            .catalyst(DestroyBlocks.DYNAMO::get)
+            .catalyst(DestroyBlocks.CARBON_FIBER_BLOCK::get)
+            .catalyst(AllBlocks.BASIN::get)
+            .arcFurnaceIcon(() -> new ItemStack(Items.BLAST_FURNACE))
+            .emptyBackground(177, 85)
+            .build("arc_furnace_blasting", (info, helpers) -> new ArcFurnaceCategory(info)),
+
+        arc_furnace_smelting = builder(BasinRecipe.class)
+            .addTypedRecipesIf(() -> RecipeType.SMELTING, ArcFurnaceCategory::toBasinRecipe, r -> DestroyAllConfigs.SERVER.blocks.arcFurnaceAllowsSmelting.get())
+            .catalyst(DestroyBlocks.DYNAMO::get)
+            .catalyst(DestroyBlocks.CARBON_FIBER_BLOCK::get)
+            .catalyst(AllBlocks.BASIN::get)
+            .arcFurnaceIcon(() -> new ItemStack(Items.FURNACE))
+            .emptyBackground(177, 85)
+            .build("arc_furnace_smelting", (info, helpers) -> new ArcFurnaceCategory(info)),
+
+        item_decay = builder(DecayingItemRecipe.class)
+            .addRecipes(() -> DestroyJEISetup.DECAYING_ITEMS.stream().map(Supplier::get).map(DecayingItemRecipe::new).toList())
+            .itemIcon(Items.ROTTEN_FLESH)
+            .emptyBackground(125, 20)
+            .build("item_decay", DecayingItemCategory::new);
 
         DestroyJEI.MOLECULE_RECIPES_NEED_PROCESSING = false;
     };
@@ -422,6 +461,20 @@ public class DestroyJEI implements IModPlugin {
 		};
 
         /**
+         * Transforms all Recipes of a given Type to the correct Recipe amd then adds them to this Category.
+         * @param recipeType
+         * @param recipeTransformer Turns a Recipe into another
+         * @param pred Whether to transform and then add a Recipe
+         * @return This Category Builder
+         */
+        public <R extends Recipe<?>> CategoryBuilder<T> addTypedRecipesIf(Supplier<RecipeType<R>> recipeType, Function<R, ? extends T> recipeTransformer, Predicate<R> pred) {
+            recipeListConsumers.add(recipes -> CreateJEI.<R>consumeTypedRecipes(recipe -> {
+                if (pred.test(recipe)) recipes.add(recipeTransformer.apply(recipe));
+            }, recipeType.get()));
+            return this;
+        };
+
+        /**
          * Adds a given collection of Item Stacks as catalysts for all Recipes of this Category.
          * @param itemSupplier A collection of suppliers of catalyst Item Stacks
          * @return This Category Builder
@@ -493,6 +546,28 @@ public class DestroyJEI implements IModPlugin {
             this.icon = new DoubleItemIcon(bigItem, smallItem);
             return this;
         };
+
+        /**
+         * Set an Arc Furnace as the icon for this Category
+         * @param item Small Item rendered to the bottom right of the Arc Furnace
+         * @return This Category Builder
+         */
+        public CategoryBuilder<T> arcFurnaceIcon(Supplier<ItemStack> item) {
+            this.icon = new ArcFurnaceIcon(item);
+            return this;
+        };
+
+        // /**
+        //  * Sets the given triplet of Items as the icon for this Category.
+        //  * @param bigItem
+        //  * @param leftSmallItem
+        //  * @param rightSmallItem
+        //  * @return This Category Builder
+        //  */
+        // public CategoryBuilder<T> tripleItemIcon(Supplier<ItemStack> bigItem, Supplier<ItemStack> leftSmallItem, Supplier<ItemStack> rightSmallItem) {
+        //     this.icon = new TripleItemIcon(bigItem, rightSmallItem, leftSmallItem);
+        //     return this;
+        // };
 
         /**
          * Sets the size of the Background for this Category.

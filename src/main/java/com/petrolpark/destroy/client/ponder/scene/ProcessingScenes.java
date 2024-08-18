@@ -874,7 +874,7 @@ public class ProcessingScenes {
 		scene.idle(10);
 
         scene.world.modifyBlockEntity(dynamo, DynamoBlockEntity.class, be -> 
-            be.chargingBehaviour.start(ChargingBehaviour.Mode.BELT, util.vector.blockSurface(depot, Direction.UP))
+            be.chargingBehaviour.start(ChargingBehaviour.Mode.BELT, util.vector.blockSurface(depot, Direction.UP), 240)
         );
         scene.idle(60);
         //TODO make dynamo actually render in ponder

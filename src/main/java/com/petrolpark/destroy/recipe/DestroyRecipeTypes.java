@@ -7,6 +7,7 @@ import org.jetbrains.annotations.Nullable;
 
 import com.petrolpark.destroy.Destroy;
 import com.petrolpark.destroy.recipe.serializer.AdvancedProcessingRecipeSerializer;
+import com.petrolpark.destroy.recipe.serializer.DecayingItemCookingRecipeSerializer;
 import com.simibubi.create.AllRecipeTypes;
 import com.simibubi.create.content.processing.recipe.ProcessingRecipeBuilder;
 import com.simibubi.create.foundation.recipe.IRecipeTypeInfo;
@@ -27,7 +28,7 @@ import net.minecraftforge.registries.RegistryObject;
 public enum DestroyRecipeTypes implements IRecipeTypeInfo {
     // Processing recipes
     AGING(AgingRecipe::new),
-    ARC_FURNACE_SMELTING(ArcFurnaceSmeltingRecipe::new),
+    ARC_FURNACE(ArcFurnaceRecipe::new),
     CENTRIFUGATION(CentrifugationRecipe::new),
     CHARGING(ChargingRecipe::new),
     CIRCUIT_DEPLOYING(CircuitDeployerApplicationRecipe::new, AllRecipeTypes.DEPLOYING::getType),
@@ -54,7 +55,8 @@ public enum DestroyRecipeTypes implements IRecipeTypeInfo {
     BADGE_DUPLICATION(() -> BadgeDuplicationRecipe.BADGE_DUPLICATION, () -> RecipeType.CRAFTING),
 
     // Advanced cooking recipies
-    DECAYING_ITEM_COOKING(DecayingItemCookingRecipe.Serializer::new);
+    DECAYING_ITEM_COOKING(DecayingItemCookingRecipeSerializer::new);
+    
     // This is alllllll copied from Create source code
     private final ResourceLocation id;
     private final RegistryObject<RecipeSerializer<?>> serializerObject;

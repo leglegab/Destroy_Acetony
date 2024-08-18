@@ -942,6 +942,8 @@ public class LegacyMixture extends ReadOnlyMixture {
         for (LegacyFunctionalGroupType<?> groupType : groupIDsAndMolecules.keySet()) { // Only search for Generic Reactions of Groups present in this Molecule
             checkEachGenericReaction: for (GenericReaction genericReaction : LegacyFunctionalGroup.getReactionsOfGroupByID(groupType)) {
 
+                if (!genericReaction.isPossibleIn(this)) continue checkEachGenericReaction;
+
                 if (genericReaction.involvesSingleGroup()) { // Generic Reactions involving only one functional Group
                     newPossibleReactions.addAll(specifySingleGroupGenericReactions(genericReaction, groupIDsAndMolecules.get(groupType)));
                 

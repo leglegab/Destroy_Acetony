@@ -108,7 +108,7 @@ public class DestroyItems {
     // INGOTS ETC
 
     FLUORITE = REGISTRATE.item("fluorite", Item::new)
-        .tag(forgeItemTag("raw_materials/fluorite"), ItemTags.BEACON_PAYMENT_ITEMS, ItemTags.TRIM_MATERIALS)
+        .tag(forgeItemTag("raw_materials/fluorite"), ItemTags.BEACON_PAYMENT_ITEMS, ItemTags.TRIM_MATERIALS, DestroyItemTags.FLUXES.tag)
         .register(),
     NICKEL_INGOT = REGISTRATE.item("nickel_ingot", Item::new)
         .tag(DestroyItemTags.DESTROY_INGOTS.tag, forgeItemTag("ingots/nickel"), Tags.Items.INGOTS, ItemTags.TRIM_MATERIALS)
@@ -178,7 +178,7 @@ public class DestroyItems {
     NETHER_CROCOITE = REGISTRATE.item("nether_crocoite", Item::new)
         .register(),
     BORAX = REGISTRATE.item("borax", Item::new)
-        .tag(forgeItemTag("raw_materials/borax"))
+        .tag(forgeItemTag("raw_materials/borax"), DestroyItemTags.FLUXES.tag)
         .register(),
     SILICA = REGISTRATE.item("silica", Item::new)
         .tag(forgeItemTag("dusts/silica"), forgeItemTag("raw_materials/silica"))
@@ -269,7 +269,9 @@ public class DestroyItems {
     // COMPOUNDS
     
     CHALK_DUST = REGISTRATE.item("chalk_dust", Item::new)
-        .tag(Tags.Items.DUSTS, forgeItemTag("dusts/chalk"))
+        .tag(Tags.Items.DUSTS, forgeItemTag("dusts/chalk"), DestroyItemTags.FLUXES.tag)
+        .register(),
+    CALCIUM_CARBIDE = REGISTRATE.item("calcium_carbide", Item::new)
         .register(),
     BABY_BLUE_CRYSTAL = REGISTRATE.item("baby_blue_crystal", Item::new)
         .register(),
@@ -282,7 +284,7 @@ public class DestroyItems {
     public static final ItemEntry<CarboxylatingItem>
 
     QUICKLIME = REGISTRATE.item("quicklime", p -> new CarboxylatingItem(p, CHALK_DUST::asStack, () -> DestroyAllConfigs.SERVER.substances.quicklimeBaseDecayTime))
-        .tag(Tags.Items.DUSTS, forgeItemTag("dusts/lime"))
+        .tag(Tags.Items.DUSTS, forgeItemTag("dusts/lime"), DestroyItemTags.FLUXES.tag)
         .register();
     
     public static final ItemEntry<IodineItem> IODINE = REGISTRATE.item("iodine", IodineItem::new)

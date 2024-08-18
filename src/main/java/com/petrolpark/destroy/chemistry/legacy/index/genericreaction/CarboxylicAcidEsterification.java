@@ -3,6 +3,7 @@ package com.petrolpark.destroy.chemistry.legacy.index.genericreaction;
 import com.petrolpark.destroy.Destroy;
 import com.petrolpark.destroy.chemistry.legacy.LegacyMolecularStructure;
 import com.petrolpark.destroy.chemistry.legacy.LegacySpecies;
+import com.petrolpark.destroy.chemistry.legacy.ReadOnlyMixture;
 import com.petrolpark.destroy.chemistry.legacy.LegacyReaction;
 import com.petrolpark.destroy.chemistry.legacy.LegacyBond.BondType;
 import com.petrolpark.destroy.chemistry.legacy.genericreaction.DoubleGroupGenericReaction;
@@ -16,6 +17,11 @@ public class CarboxylicAcidEsterification extends DoubleGroupGenericReaction<Car
 
     public CarboxylicAcidEsterification() {
         super(Destroy.asResource("carboxylic_acid_esterification"), DestroyGroupTypes.CARBOXYLIC_ACID, DestroyGroupTypes.ALCOHOL);
+    };
+
+    @Override
+    public boolean isPossibleIn(ReadOnlyMixture mixture) {
+        return mixture.getConcentrationOf(DestroyMolecules.OLEUM) > 0f;
     };
 
     @Override

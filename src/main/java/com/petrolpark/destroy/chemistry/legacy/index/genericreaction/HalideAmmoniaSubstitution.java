@@ -3,6 +3,8 @@ package com.petrolpark.destroy.chemistry.legacy.index.genericreaction;
 import com.petrolpark.destroy.Destroy;
 import com.petrolpark.destroy.chemistry.legacy.LegacyElement;
 import com.petrolpark.destroy.chemistry.legacy.LegacyMolecularStructure;
+import com.petrolpark.destroy.chemistry.legacy.LegacySpecies;
+import com.petrolpark.destroy.chemistry.legacy.ReadOnlyMixture;
 import com.petrolpark.destroy.chemistry.legacy.LegacyReaction.ReactionBuilder;
 import com.petrolpark.destroy.chemistry.legacy.index.DestroyMolecules;
 import com.petrolpark.destroy.chemistry.legacy.index.group.HalideGroup;
@@ -14,10 +16,20 @@ public class HalideAmmoniaSubstitution extends HalideSubstitution {
     };
 
     @Override
+    public boolean isPossibleIn(ReadOnlyMixture mixture) {
+        return mixture.getConcentrationOf(DestroyMolecules.AMMONIA) > 0f;
+    }
+
+    @Override
     public LegacyMolecularStructure getSubstitutedGroup() {
         return LegacyMolecularStructure.atom(LegacyElement.NITROGEN)
             .addAtom(LegacyElement.HYDROGEN)
             .addAtom(LegacyElement.HYDROGEN);
+    };
+
+    @Override
+    public LegacySpecies getNucleophile() {
+        return null;
     };
 
     @Override

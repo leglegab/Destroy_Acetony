@@ -3,6 +3,7 @@ package com.petrolpark.destroy.chemistry.legacy.index.genericreaction;
 import com.petrolpark.destroy.Destroy;
 import com.petrolpark.destroy.chemistry.legacy.LegacyElement;
 import com.petrolpark.destroy.chemistry.legacy.LegacySpecies;
+import com.petrolpark.destroy.chemistry.legacy.ReadOnlyMixture;
 import com.petrolpark.destroy.chemistry.legacy.LegacyReaction;
 import com.petrolpark.destroy.chemistry.legacy.genericreaction.GenericReactant;
 import com.petrolpark.destroy.chemistry.legacy.genericreaction.SingleGroupGenericReaction;
@@ -14,6 +15,11 @@ public class AcylChlorideFormation extends SingleGroupGenericReaction<Carboxylic
 
     public AcylChlorideFormation() {
         super(Destroy.asResource("acyl_chloride_formation"), DestroyGroupTypes.CARBOXYLIC_ACID);
+    };
+
+    @Override
+    public boolean isPossibleIn(ReadOnlyMixture mixture) {
+        return mixture.getConcentrationOf(DestroyMolecules.PHOSGENE) > 0f;
     };
 
     @Override

@@ -35,15 +35,16 @@ description='''A destructive chemistry-based add-on to Create.'''
 	ordering="AFTER"
 	side="BOTH"
 
-[[dependencies.createindustry]]
-	modId="createindustry"
+[[dependencies.tfmg]]
+	modId="tfmg"
 	mandatory=false
 	ordering="AFTER"
 	side="BOTH"
 
 [[dependencies.createbigcannons]]
-    modId="createBigCannons"
+    modId="createbigcannons"
     mandatory=false
+    versionRange="[5.5.0,)"
     ordering="AFTER"
     side="BOTH"
 

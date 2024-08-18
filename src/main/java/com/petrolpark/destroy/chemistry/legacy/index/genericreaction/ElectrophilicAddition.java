@@ -2,6 +2,7 @@ package com.petrolpark.destroy.chemistry.legacy.index.genericreaction;
 
 import com.petrolpark.destroy.chemistry.legacy.LegacyMolecularStructure;
 import com.petrolpark.destroy.chemistry.legacy.LegacySpecies;
+import com.petrolpark.destroy.chemistry.legacy.ReadOnlyMixture;
 import com.petrolpark.destroy.chemistry.legacy.LegacyReaction;
 import com.petrolpark.destroy.chemistry.legacy.LegacyBond.BondType;
 import com.petrolpark.destroy.chemistry.legacy.LegacyReaction.ReactionBuilder;
@@ -22,6 +23,13 @@ public abstract class ElectrophilicAddition extends SingleGroupGenericReaction<S
     };
 
     @Override
+    public boolean isPossibleIn(ReadOnlyMixture mixture) {
+        LegacySpecies electrophile = getElectrophile();
+        if (electrophile != null) return mixture.getConcentrationOf(electrophile) > 0f;
+        return true;
+    };
+
+    @Override
     public LegacyReaction generateReaction(GenericReactant<SaturatedCarbonGroup> reactant) {
         SaturatedCarbonGroup group = reactant.getGroup();
         LegacySpecies substrate = reactant.getMolecule();
@@ -39,6 +47,8 @@ public abstract class ElectrophilicAddition extends SingleGroupGenericReaction<S
             .addReactant(substrate)
             .addProduct(product)
             .activationEnergy(isForAlkynes ? 10f : 25f);
+        LegacySpecies electrophile = getElectrophile();
+        if (electrophile != null) builder.addReactant(electrophile);
         transform(builder);
         return builder.build();
     };
@@ -54,9 +64,16 @@ public abstract class ElectrophilicAddition extends SingleGroupGenericReaction<S
     public abstract LegacyMolecularStructure getHighDegreeGroup();
 
     /**
-     * Add any other necessary products, reactants, catalysts and rate constants to the Reaction.
-     * @param builder The builder with the Alkene reactant and product already added
+     * The electrophile added to the saturated carbon group.
+     * @param builder
+     * @return {@code null} to not add a species to the generated Reaction or Reaction requirements
      */
-    public abstract void transform(ReactionBuilder builder);
+    public abstract LegacySpecies getElectrophile();
+
+    /**
+     * Add any other necessary products, reactants, catalysts and rate constants to the Reaction.
+     * @param builder The builder with the Alkene reactant, electrophile and product already added
+     */
+    public void transform(ReactionBuilder builder) {};
     
 };

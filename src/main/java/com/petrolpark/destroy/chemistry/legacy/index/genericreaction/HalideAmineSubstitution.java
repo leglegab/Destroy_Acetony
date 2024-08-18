@@ -4,6 +4,7 @@ import com.petrolpark.destroy.Destroy;
 import com.petrolpark.destroy.chemistry.legacy.LegacyAtom;
 import com.petrolpark.destroy.chemistry.legacy.LegacyMolecularStructure;
 import com.petrolpark.destroy.chemistry.legacy.LegacySpecies;
+import com.petrolpark.destroy.chemistry.legacy.ReadOnlyMixture;
 import com.petrolpark.destroy.chemistry.legacy.LegacyReaction;
 import com.petrolpark.destroy.chemistry.legacy.LegacyBond.BondType;
 import com.petrolpark.destroy.chemistry.legacy.genericreaction.DoubleGroupGenericReaction;
@@ -17,6 +18,11 @@ public class HalideAmineSubstitution extends DoubleGroupGenericReaction<HalideGr
 
     public HalideAmineSubstitution() {
         super(Destroy.asResource("halide_amine_substitution"), DestroyGroupTypes.HALIDE, DestroyGroupTypes.NON_TERTIARY_AMINE);
+    };
+
+    @Override
+    public boolean isPossibleIn(ReadOnlyMixture mixture) {
+        return true;
     };
 
     @Override

@@ -7,6 +7,7 @@ import com.petrolpark.destroy.chemistry.legacy.LegacyAtom;
 import com.petrolpark.destroy.chemistry.legacy.LegacyElement;
 import com.petrolpark.destroy.chemistry.legacy.LegacyMolecularStructure;
 import com.petrolpark.destroy.chemistry.legacy.LegacyReaction;
+import com.petrolpark.destroy.chemistry.legacy.ReadOnlyMixture;
 import com.petrolpark.destroy.chemistry.legacy.LegacyBond.BondType;
 import com.petrolpark.destroy.chemistry.legacy.LegacyReaction.ReactionBuilder;
 import com.petrolpark.destroy.chemistry.legacy.genericreaction.GenericReactant;
@@ -19,6 +20,11 @@ public class AlcoholDehydration extends SingleGroupGenericReaction<AlcoholGroup>
 
     public AlcoholDehydration() {
         super(Destroy.asResource("alcohol_dehydration"), DestroyGroupTypes.ALCOHOL);
+    };
+
+    @Override
+    public boolean isPossibleIn(ReadOnlyMixture mixture) {
+        return mixture.getConcentrationOf(DestroyMolecules.OLEUM) > 0f;
     };
 
     @Override

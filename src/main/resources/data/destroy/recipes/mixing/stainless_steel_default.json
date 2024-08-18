@@ -32,7 +32,7 @@
     "results": [
       {
         "fluid": "destroy:molten_stainless_steel",
-        "amount": 1000
+        "amount": 500
       }
     ],
     "heatRequirement": "heated"

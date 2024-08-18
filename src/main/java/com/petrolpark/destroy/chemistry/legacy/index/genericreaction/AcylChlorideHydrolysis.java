@@ -3,6 +3,7 @@ package com.petrolpark.destroy.chemistry.legacy.index.genericreaction;
 import com.petrolpark.destroy.Destroy;
 import com.petrolpark.destroy.chemistry.legacy.LegacyMolecularStructure;
 import com.petrolpark.destroy.chemistry.legacy.LegacyReaction;
+import com.petrolpark.destroy.chemistry.legacy.ReadOnlyMixture;
 import com.petrolpark.destroy.chemistry.legacy.genericreaction.GenericReactant;
 import com.petrolpark.destroy.chemistry.legacy.genericreaction.SingleGroupGenericReaction;
 import com.petrolpark.destroy.chemistry.legacy.index.DestroyGroupTypes;
@@ -13,6 +14,11 @@ public class AcylChlorideHydrolysis extends SingleGroupGenericReaction<AcylChlor
 
     public AcylChlorideHydrolysis() {
         super(Destroy.asResource("acyl_chloride_hydrolysis"), DestroyGroupTypes.ACYL_CHLORIDE);
+    };
+
+    @Override
+    public boolean isPossibleIn(ReadOnlyMixture mixture) {
+        return mixture.getConcentrationOf(DestroyMolecules.WATER) > 0f;
     };
 
     @Override

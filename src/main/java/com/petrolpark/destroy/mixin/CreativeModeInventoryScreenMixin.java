@@ -75,7 +75,7 @@ public abstract class CreativeModeInventoryScreenMixin extends EffectRenderingIn
         for (Slot slot : minecraft.player.inventoryMenu.slots) {
             if (slot.getSlotIndex() >= inv.getExtraInventoryStartSlotIndex()) extendedInventorySlots.put(slot.getSlotIndex(), slot);
         };
-        DestroyClient.EXTENDED_INVENTORY_HANDLER.addSlotsToClientMenu(inv, menu.slots::add, (c, i, x, y) -> new CreativeModeInventoryScreen.SlotWrapper(extendedInventorySlots.get(i), i, x, y));
+        DestroyClient.EXTENDED_INVENTORY_HANDLER.addSlotsToClientMenu(inv, menu::addSlot, (c, i, x, y) -> new CreativeModeInventoryScreen.SlotWrapper(extendedInventorySlots.get(i), i, x, y));
     };
 
     @Inject(

@@ -11,5 +11,10 @@ public class OxidizingItem extends ConfiguredDecayingItem {
     public OxidizingItem(Properties properties, Supplier<ItemStack> decayProduct, Supplier<ConfigInt> lifetime) {
         super(properties, decayProduct, lifetime);
     };
+
+    @Override
+    public String getDecayTimeTranslationKey(ItemStack stack) {
+        return "item.destroy.oxidizing_item.remaining";
+    };
     
 };

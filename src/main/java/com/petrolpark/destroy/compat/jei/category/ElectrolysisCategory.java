@@ -18,13 +18,13 @@ import net.minecraftforge.registries.ForgeRegistries;
 
 public class ElectrolysisCategory extends BasinCategory {
 
-    AnimatedDynamo dynamo;
+    private final AnimatedDynamo dynamo;
 
     protected final RecipeType<BasinRecipe> type;
 
     public ElectrolysisCategory(Info<BasinRecipe> info) {
         super(info, false);
-        dynamo = new AnimatedDynamo(true);
+        dynamo = new AnimatedDynamo(true, false);
         type = info.recipeType();
     };
 

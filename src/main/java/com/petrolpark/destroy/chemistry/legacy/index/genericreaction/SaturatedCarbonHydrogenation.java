@@ -4,6 +4,7 @@ import com.petrolpark.destroy.Destroy;
 import com.petrolpark.destroy.chemistry.legacy.LegacyElement;
 import com.petrolpark.destroy.chemistry.legacy.LegacyMolecularStructure;
 import com.petrolpark.destroy.chemistry.legacy.LegacyReaction.ReactionBuilder;
+import com.petrolpark.destroy.chemistry.legacy.LegacySpecies;
 import com.petrolpark.destroy.chemistry.legacy.index.DestroyMolecules;
 import com.simibubi.create.AllTags;
 
@@ -24,9 +25,13 @@ public class SaturatedCarbonHydrogenation extends ElectrophilicAddition {
     };
 
     @Override
+    public LegacySpecies getElectrophile() {
+        return DestroyMolecules.HYDROGEN;
+    };
+
+    @Override
     public void transform(ReactionBuilder builder) {
-        builder.addReactant(DestroyMolecules.HYDROGEN)
-            .addSimpleItemTagCatalyst(AllTags.forgeItemTag("dusts/nickel"), 1f);
+        builder.addSimpleItemTagCatalyst(AllTags.forgeItemTag("dusts/nickel"), 1f);
     };
     
 };

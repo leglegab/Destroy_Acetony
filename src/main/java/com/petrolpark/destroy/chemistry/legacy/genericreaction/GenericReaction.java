@@ -7,6 +7,7 @@ import org.jetbrains.annotations.NotNull;
 
 import com.petrolpark.destroy.chemistry.api.error.ChemistryException;
 import com.petrolpark.destroy.chemistry.legacy.LegacyReaction;
+import com.petrolpark.destroy.chemistry.legacy.ReadOnlyMixture;
 import com.petrolpark.destroy.chemistry.legacy.LegacySpecies.MoleculeBuilder;
 import com.petrolpark.destroy.chemistry.legacy.LegacyReaction.ReactionBuilder;
 
@@ -34,6 +35,13 @@ public abstract class GenericReaction {
     };
 
     public abstract boolean involvesSingleGroup();
+
+    /**
+     * Whether all necessary catalysts and non-generic Reactants are present. No need to check for presence of generic Reactants.
+     * @param mixture
+     * @return {@code true} to go on and calculate actual Reactions for generic Reactants in this Mixture
+     */
+    public abstract boolean isPossibleIn(ReadOnlyMixture mixture);
 
     public LegacyReaction getExampleReaction() {
         if (exampleReaction == null) exampleReaction = generateExampleReaction();

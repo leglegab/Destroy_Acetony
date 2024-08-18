@@ -7,6 +7,7 @@ import com.petrolpark.destroy.chemistry.legacy.LegacyAtom;
 import com.petrolpark.destroy.chemistry.legacy.LegacyElement;
 import com.petrolpark.destroy.chemistry.legacy.LegacyMolecularStructure;
 import com.petrolpark.destroy.chemistry.legacy.LegacySpecies;
+import com.petrolpark.destroy.chemistry.legacy.ReadOnlyMixture;
 import com.petrolpark.destroy.chemistry.legacy.LegacyReaction;
 import com.petrolpark.destroy.chemistry.legacy.LegacyBond.BondType;
 import com.petrolpark.destroy.chemistry.legacy.genericreaction.GenericReactant;
@@ -19,6 +20,11 @@ public class AlcoholOxidation extends SingleGroupGenericReaction<AlcoholGroup> {
 
     public AlcoholOxidation() {
         super(Destroy.asResource("alcohol_oxidation"), DestroyGroupTypes.ALCOHOL);
+    };
+
+    @Override
+    public boolean isPossibleIn(ReadOnlyMixture mixture) {
+        return true; // TODO check for actual oxidant once Magic Oxidant is removed
     };
 
     @Override

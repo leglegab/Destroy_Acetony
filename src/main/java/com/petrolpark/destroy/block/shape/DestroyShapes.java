@@ -36,12 +36,19 @@ public class DestroyShapes {
 
     DYNAMO = shape(0, 0, 0, 16, 16, 16)
         .erase(0, 2, 2, 16, 14, 14)
-        .erase(2, 0, 2, 14, 16, 14)
         .erase(2, 2, 0, 14, 14, 16)
-        .add(2, 2, 2, 14, 14, 14)
+        .add(0, 6, 0, 16, 10, 16)
+        .add(5, 0, 5, 11, 16, 11)
         .build(),
 
-    SAND_CASTLE = shape(3, 0, 3, 13, 14, 13)
+    DYNAMO_ARC_FURNACE = shape(0, 0, 0, 16, 16, 16)
+        .erase(0, 0, 2, 16, 14, 14)
+        .erase(2, 0, 0, 14, 14, 16)
+        .add(0, 6, 0, 16, 10, 16)
+        .add(5, 5, 5, 11, 16, 11)
+        .build(),
+
+    SAND_CASTLE = shape(1, 0, 1, 15, 14, 15)
         .build(),
         
     COOLER = shape(1, -2, 1, 15, 14, 15)
@@ -78,36 +85,45 @@ public class DestroyShapes {
     MECHANICAL_SIEVE_COLLISION = shape(0, 6, 0, 16, 7, 16)
         .build();
 
-    public static final VoxelShaper COAXIAL_GEAR = shape(2, 6, 2, 14, 10, 14)
-        .forAxis();
+    public static final VoxelShaper
 
-    public static final VoxelShaper PLANETARY_GEARSET = shape(0, 4.5, 0, 16, 11.5, 16)
+    ARC_FURNACE_LID = shape(0, 0, 0, 16, 16, 16)
+        .erase(0, 2, 2, 16, 16, 14)
+        .erase(2, 2, 0, 14, 16, 16)
+        .add(2, 2, 6, 6, 8, 10)
+        .add(10, 2, 6, 14, 8, 10)
+        .forHorizontalAxis(),
+    
+    COAXIAL_GEAR = shape(2, 6, 2, 14, 10, 14)
+        .forAxis(),
+
+    PLANETARY_GEARSET = shape(0, 4.5, 0, 16, 11.5, 16)
         .add(5, 0, 5, 11, 16, 11)
-        .forAxis();
+        .forAxis(),
 
-    public static final VoxelShaper EXTRUSION_DIE = shape(0, 0, 7, 16, 16, 9)
-        .forDirectional(Direction.SOUTH);
+    EXTRUSION_DIE = shape(0, 0, 7, 16, 16, 9)
+        .forDirectional(Direction.SOUTH),
 
-    public static final VoxelShaper POLLUTOMETER = shape(6, 0, 6, 10, 12, 10)
+    POLLUTOMETER = shape(6, 0, 6, 10, 12, 10)
         .add(5, 3, 3, 11, 9, 6)
-        .forDirectional(Direction.NORTH);
+        .forDirectional(Direction.NORTH),
 
-    public static final VoxelShaper AGING_BARREL_OPEN = shape(0, 0, 0, 16, 14, 16)
+    AGING_BARREL_OPEN = shape(0, 0, 0, 16, 14, 16)
         .erase(2, 2, 2, 14, 14, 14)
         .add(0, 14, 14, 16, 30, 16)
-        .forDirectional(Direction.NORTH);
+        .forDirectional(Direction.NORTH),
 
-    public static final VoxelShaper AGING_BARREL_OPEN_RAYTRACE = shape(0, 0, 0, 16, 14, 16)
+    AGING_BARREL_OPEN_RAYTRACE = shape(0, 0, 0, 16, 14, 16)
         .add(0, 14, 14, 16, 30, 16)
-        .forDirectional(Direction.NORTH);
+        .forDirectional(Direction.NORTH),
 
-    public static final VoxelShaper BLACKLIGHT = shape(0, 0, 5, 16, 4, 11)
-        .forDirectional(Direction.DOWN);
+    BLACKLIGHT = shape(0, 0, 5, 16, 4, 11)
+        .forDirectional(Direction.DOWN),
 
-    public static final VoxelShaper BLACKLIGHT_FLIPPED = shape(5, 0, 0, 11, 4, 16)
-        .forDirectional(Direction.DOWN);
+    BLACKLIGHT_FLIPPED = shape(5, 0, 0, 11, 4, 16)
+        .forDirectional(Direction.DOWN),
 
-    public static final VoxelShaper CATALYTIC_CONVERER = shape(3, 0, 3, 13, 2, 13)
+    CATALYTIC_CONVERER = shape(3, 0, 3, 13, 2, 13)
         .add(2, 2, 2, 14, 10, 14)
         .add(3, 10, 3, 13, 12, 13)
         .add(5, 12, 5, 11, 16, 11)

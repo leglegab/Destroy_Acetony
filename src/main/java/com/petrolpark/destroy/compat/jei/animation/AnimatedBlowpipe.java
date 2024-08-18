@@ -37,8 +37,9 @@ public class AnimatedBlowpipe extends AnimatedKinetics {
         TransformStack.cast(ms)
             .rotateY(180d)
             .translate(-0.5d, -0.5d, 0d);
+        ms.pushPose();
         BlowpipeRenderer.render(recipe, fluid, Math.min((AnimationTickHolder.getRenderTime() % 120f) / 100f, 1f), ms, graphics.bufferSource(), Brightness.FULL_BRIGHT.pack(), OverlayTexture.NO_OVERLAY);
-        //BlowpipeRenderer.render(recipe, fluid, 1f, ms, graphics.bufferSource(), 0xFFFFFF, OverlayTexture.NO_OVERLAY);
+        ms.popPose();
 
         ms.popPose();
         ms.popPose();

@@ -111,9 +111,10 @@ public class DestroyReactions {
 
     CARBIDE_HYDROLYSIS = builder()
         .id("carbide_hydrolysis")
-        .addReactant(DestroyMolecules.CARBIDE_ION)
+        .addSimpleItemReactant(DestroyItems.CALCIUM_CARBIDE, 2f)
         .addReactant(DestroyMolecules.WATER)
         .addProduct(DestroyMolecules.ACETYLENE)
+        .addProduct(DestroyMolecules.CALCIUM_ION)
         .addProduct(DestroyMolecules.HYDROXIDE, 2)
         .activationEnergy(1f)
         .build(),
@@ -335,9 +336,10 @@ public class DestroyReactions {
 
     FRANK_CARO_PROCESS = builder()
         .id("frank_caro_process")
-        .addReactant(DestroyMolecules.CARBIDE_ION)
+        .addSimpleItemReactant(DestroyItems.CALCIUM_CARBIDE, 2f)
         .addReactant(DestroyMolecules.NITROGEN)
         .addReactant(DestroyMolecules.OXYGEN)
+        .addProduct(DestroyMolecules.CALCIUM_ION)
         .addProduct(DestroyMolecules.CYANAMIDE_ION)
         .addProduct(DestroyMolecules.CARBON_DIOXIDE) // todo maybe make it make soot instead of including oxygen in the reactants
         .activationEnergy(50f)

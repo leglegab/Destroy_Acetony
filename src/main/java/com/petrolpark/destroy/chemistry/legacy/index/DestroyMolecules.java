@@ -191,12 +191,6 @@ public final class DestroyMolecules {
         .structure(LegacyMolecularStructure.atom(LegacyElement.CALCIUM, 2))
         .build(),
 
-    CARBIDE_ION = builder()
-        .id("carbide_ion")
-        .translationKey("carbide")
-        .structure(LegacyMolecularStructure.deserialize("destroy:linear:C^-1#C^-1"))
-        .build(),
-
     CARBON_DIOXIDE = builder()
         .id("carbon_dioxide")
         .structure(LegacyMolecularStructure.deserialize("destroy:linear:O=C=O"))
