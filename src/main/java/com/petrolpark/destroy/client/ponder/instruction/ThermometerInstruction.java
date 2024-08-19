@@ -22,12 +22,12 @@ import net.minecraft.util.Mth;
 import net.minecraft.world.phys.Vec2;
 import net.minecraft.world.phys.Vec3;
 
-public class ShowThermometerInstruction extends FadeInOutInstruction {
+public class ThermometerInstruction extends FadeInOutInstruction {
 
     protected final ThermometerElement element;
     protected final float initialTemperature;
 
-    protected ShowThermometerInstruction(Vec3 sceneSpace, int ticks, float initialTemperature) {
+    protected ThermometerInstruction(Vec3 sceneSpace, int ticks, float initialTemperature) {
         super(ticks);
         this.element = new ThermometerElement(sceneSpace);
         this.initialTemperature = Mth.clamp(initialTemperature, 0f, 1f);
@@ -35,9 +35,21 @@ public class ShowThermometerInstruction extends FadeInOutInstruction {
     };
 
     public static ThermometerElement add(SceneBuilder scene, Vec3 pointingAt, int ticks, float initialTemperature) {
-        ShowThermometerInstruction instruction = new ShowThermometerInstruction(pointingAt, ticks, initialTemperature);
+        ThermometerInstruction instruction = new ThermometerInstruction(pointingAt, ticks, initialTemperature);
         scene.addInstruction(instruction);
         return instruction.element;
+    };
+
+    public static Consumer<PonderScene> show(ThermometerElement element) {
+        return s -> element.setVisible(true);
+    };
+
+    public static Consumer<PonderScene> hide(ThermometerElement element) {
+        return s -> element.setVisible(false);
+    };
+
+    public static Consumer<PonderScene> chase(ThermometerElement thermometer, float temperature, float speed) {
+        return s -> thermometer.chaseTemperature(temperature, speed);
     };
 
     @Override
@@ -66,10 +78,6 @@ public class ShowThermometerInstruction extends FadeInOutInstruction {
     public void tick(PonderScene scene) {
         super.tick(scene);
         element.tick(scene);
-    };
-
-    public static Consumer<PonderScene> chaseTemperature(ThermometerElement thermometer, float temperature, float speed) {
-        return s -> thermometer.chaseTemperature(temperature, speed);
     };
 
     public static class ThermometerElement extends AnimatedOverlayElement {

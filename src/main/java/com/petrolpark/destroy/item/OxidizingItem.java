@@ -17,4 +17,6 @@ public class OxidizingItem extends ConfiguredDecayingItem {
         return "item.destroy.oxidizing_item.remaining";
     };
     
+    //TODO reaction with water
+    
 };

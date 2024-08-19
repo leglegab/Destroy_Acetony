@@ -67,18 +67,18 @@ public class Vat {
     };
 
     @SuppressWarnings("deprecation")
-    public static Optional<Vat> read(CompoundTag tag) {
+    public static Optional<Vat> read(CompoundTag tag, BlockPos controllerPos) {
         if (!tag.contains("LowerCorner", Tag.TAG_COMPOUND) || !tag.contains("UpperCorner", Tag.TAG_COMPOUND)) return Optional.empty();
-        Vat vat = new Vat(NbtUtils.readBlockPos(tag.getCompound("LowerCorner")), NbtUtils.readBlockPos(tag.getCompound("UpperCorner")));
+        Vat vat = new Vat(NbtUtils.readBlockPos(tag.getCompound("LowerCorner")).offset(controllerPos), NbtUtils.readBlockPos(tag.getCompound("UpperCorner")).offset(controllerPos));
         vat.conductance = tag.getFloat("Conductance");
         vat.weakestBlockState = NbtUtils.readBlockState(BuiltInRegistries.BLOCK.asLookup(), tag.getCompound("WeakestBlock"));
         vat.maximumPressure = VatMaterial.getMaterial(vat.weakestBlockState).map(VatMaterial::maxPressure).orElseGet(() -> 0f);
         return Optional.of(vat);
     };
 
-    public void write(CompoundTag tag) {
-        tag.put("LowerCorner", NbtUtils.writeBlockPos(lowerCorner));
-        tag.put("UpperCorner", NbtUtils.writeBlockPos(upperCorner));
+    public void write(CompoundTag tag, BlockPos controllerPos) {
+        tag.put("LowerCorner", NbtUtils.writeBlockPos(lowerCorner.subtract(controllerPos)));
+        tag.put("UpperCorner", NbtUtils.writeBlockPos(upperCorner.subtract(controllerPos)));
         tag.putFloat("Conductance", conductance);
         tag.put("WeakestBlock", NbtUtils.writeBlockState(weakestBlockState));
     };

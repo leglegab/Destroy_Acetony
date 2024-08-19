@@ -10,9 +10,7 @@ import com.petrolpark.destroy.block.entity.AgingBarrelBlockEntity;
 import com.petrolpark.destroy.block.entity.BlowpipeBlockEntity;
 import com.petrolpark.destroy.block.entity.BubbleCapBlockEntity;
 import com.petrolpark.destroy.block.entity.CentrifugeBlockEntity;
-import com.petrolpark.destroy.block.entity.DynamoBlockEntity;
 import com.petrolpark.destroy.block.entity.TreeTapBlockEntity;
-import com.petrolpark.destroy.block.entity.behaviour.ChargingBehaviour;
 import com.petrolpark.destroy.chemistry.legacy.LegacyMixture;
 import com.petrolpark.destroy.chemistry.legacy.ReadOnlyMixture;
 import com.petrolpark.destroy.chemistry.legacy.index.DestroyMolecules;
@@ -34,7 +32,6 @@ import com.simibubi.create.content.fluids.spout.SpoutBlockEntity;
 import com.simibubi.create.content.fluids.tank.FluidTankBlockEntity;
 import com.simibubi.create.content.kinetics.deployer.DeployerBlockEntity;
 import com.simibubi.create.content.processing.basin.BasinBlockEntity;
-import com.simibubi.create.content.redstone.nixieTube.NixieTubeBlockEntity;
 import com.simibubi.create.foundation.ponder.ElementLink;
 import com.simibubi.create.foundation.ponder.PonderPalette;
 import com.simibubi.create.foundation.ponder.SceneBuilder;
@@ -807,114 +804,6 @@ public class ProcessingScenes {
             .attachKeyFrame();
         scene.idle(120);
 
-        scene.markAsFinished();
-    };
-
-   public static void dynamoRedstone(SceneBuilder scene, SceneBuildingUtil util) {
-        scene.title("dynamo_redstone", "This text is defined in a language file.");
-        scene.configureBasePlate(0, 0, 5);
-        scene.showBasePlate();
-
-        BlockPos dynamo = util.grid.at(2, 2, 3);
-        BlockPos redStoneDust = util.grid.at(2, 1, 3);
-
-        scene.world.showSection(util.select.fromTo(0, 1, 0, 4, 2, 5).add(util.select.position(2, 0, 5)), Direction.UP);
-        scene.overlay.showText(100)
-            .text("This text is defined in a language file.")
-            .pointAt(util.vector.blockSurface(dynamo, Direction.WEST));
-        scene.idle(120);
-        scene.world.setKineticSpeed(util.select.everywhere(), 256);
-        scene.world.setKineticSpeed(util.select.position(2, 4, 2), -256); // Set the one cog which should be going the other way to the correct speed
-        scene.effects.indicateRedstone(redStoneDust);
-        scene.world.modifyBlock(redStoneDust, state -> state.setValue(BlockStateProperties.POWER, 7), false);
-        scene.world.modifyBlockEntityNBT(util.select.position(2, 1, 1), NixieTubeBlockEntity.class, nbt -> nbt.putInt("RedstoneStrength", 7));
-        scene.overlay.showText(100)
-            .text("This text is defined in a language file.")
-            .pointAt(util.vector.blockSurface(dynamo, Direction.WEST))
-            .attachKeyFrame();
-        scene.idle(120);
-        scene.markAsFinished();
-    };
-
-    public static void dynamoCharging(SceneBuilder scene, SceneBuildingUtil util) {
-        scene.title("dynamo_charging", "This text is defined in a language file.");
-		scene.configureBasePlate(0, 0, 5);
-		scene.world.showSection(util.select.layer(0), Direction.UP);
-		scene.idle(5);
-
-        BlockPos dynamo = util.grid.at(2, 3, 2);
-        BlockPos depot = util.grid.at(2, 1, 1);
-        Selection kinetics = util.select.fromTo(2, 3, 3, 2, 3, 5).add(util.select.fromTo(2, 0, 5, 2, 2, 5));
-
-		ElementLink<WorldSectionElement> depotElement = scene.world.showIndependentSection(util.select.position(depot), Direction.DOWN);
-		scene.world.moveSection(depotElement, util.vector.of(0, 0, 1), 0);
-		scene.idle(10);
-
-        scene.world.showSection(util.select.position(dynamo), Direction.DOWN);
-        scene.idle(5);
-        scene.world.showSection(kinetics, Direction.NORTH);
-        scene.idle(10);
-
-        Vec3 dynamoSide = util.vector.blockSurface(dynamo, Direction.WEST);
-		scene.overlay.showText(60)
-			.pointAt(dynamoSide)
-			.placeNearTarget()
-			.attachKeyFrame()
-			.text("This text is defined in a language file.");
-		scene.idle(70);
-		scene.overlay.showText(60)
-			.pointAt(dynamoSide.subtract(0, 2, 0))
-			.placeNearTarget()
-			.text("This text is defined in a language file.");
-		scene.idle(50);
-		ItemStack cell = DestroyItems.DISCHARGED_VOLTAIC_PILE.asStack();
-		scene.world.createItemOnBeltLike(depot, Direction.NORTH, cell);
-		Vec3 depotCenter = util.vector.centerOf(depot.south());
-		scene.overlay.showControls(new InputWindowElement(depotCenter, Pointing.UP).withItem(cell), 30);
-		scene.idle(10);
-
-        scene.world.modifyBlockEntity(dynamo, DynamoBlockEntity.class, be -> 
-            be.chargingBehaviour.start(ChargingBehaviour.Mode.BELT, util.vector.blockSurface(depot, Direction.UP), 240)
-        );
-        scene.idle(60);
-        //TODO make dynamo actually render in ponder
-
-        scene.world.modifyBlockEntity(dynamo, DynamoBlockEntity.class, be -> 
-            be.chargingBehaviour.running = false
-        );
-        ItemStack chargedCell = DestroyItems.VOLTAIC_PILE.asStack();
-        scene.world.removeItemsFromBelt(depot);
-		scene.world.createItemOnBeltLike(depot, Direction.UP, chargedCell);
-		scene.idle(10);
-		scene.overlay.showControls(new InputWindowElement(depotCenter, Pointing.UP).withItem(chargedCell), 50);
-		scene.idle(60);
-
-        scene.markAsFinished();
-    };
-
-    public static void dynamoElectrolysis(SceneBuilder scene, SceneBuildingUtil util) {
-        scene.title("dynamo_electrolysis", "This text is defined in a language file.");
-        scene.configureBasePlate(0, 0, 3);
-        scene.showBasePlate();
-        
-        BlockPos basin = util.grid.at(1, 1, 1);
-        BlockPos dynamo = util.grid.at(1, 3, 1);
-
-        scene.idle(5);
-        scene.world.showSection(util.select.position(basin), Direction.DOWN);
-        scene.idle(5);
-        scene.world.showSection(util.select.fromTo(1, 0, 3, 1, 3, 3), Direction.NORTH);
-        scene.idle(5);
-        scene.world.showSection(util.select.position(1, 3, 2), Direction.DOWN);
-        scene.idle(5);
-        scene.world.showSection(util.select.position(dynamo), Direction.DOWN);
-        scene.idle(5);
-
-        scene.overlay.showText(80)
-            .text("This text is defined in a language file.")
-            .pointAt(util.vector.blockSurface(dynamo, Direction.WEST));
-        scene.idle(100);
-        
         scene.markAsFinished();
     };
 

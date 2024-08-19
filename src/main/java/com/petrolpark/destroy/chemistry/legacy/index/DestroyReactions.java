@@ -458,13 +458,13 @@ public class DestroyReactions {
         .addProduct(DestroyMolecules.IRON_III, 2)
         .build(),
 
-    IRON_III_REDUCTION = builder()
-        .id("iron_iii_reduction")
-        .addReactant(DestroyMolecules.IRON_III)
-        .addProduct(DestroyMolecules.IRON_II)
-        .standardHalfCellPotential(0.771f)
-        .reverseReaction(r -> {})
-        .build(),
+    // IRON_III_REDUCTION = builder()
+    //     .id("iron_iii_reduction")
+    //     .addReactant(DestroyMolecules.IRON_III)
+    //     .addProduct(DestroyMolecules.IRON_II)
+    //     .standardHalfCellPotential(0.771f)
+    //     .reverseReaction(r -> {})
+    //     .build(),
 
     KELP_DISSOLUTION = builder()
         .id("kelp_dissolution")

@@ -25,7 +25,7 @@ import net.minecraft.world.entity.player.Player;
 
 public class BadgeHandler {
 
-    public static final String VERSION_UUID = "6c922047-75ea-4e39-b452-dc41964ad98e";
+    public static final String VERSION_UUID = "534319cb-3ba5-4c9f-befa-edb5e9562ba8";
 
     public static final String GET_BADGES_URL = "https://us-central1.gcp.data.mongodb-api.com/app/destroybadges-qojlw/endpoint/GetBadges";
 

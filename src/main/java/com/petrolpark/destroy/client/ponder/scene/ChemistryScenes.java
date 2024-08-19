@@ -10,8 +10,8 @@ import com.petrolpark.destroy.client.ponder.DestroyPonderTags;
 import com.petrolpark.destroy.client.ponder.instruction.DrainVatInstruction;
 import com.petrolpark.destroy.client.ponder.instruction.HighlightTagInstruction;
 import com.petrolpark.destroy.client.ponder.instruction.SetVatSideTypeInstruction;
-import com.petrolpark.destroy.client.ponder.instruction.ShowThermometerInstruction;
-import com.petrolpark.destroy.client.ponder.instruction.ShowThermometerInstruction.ThermometerElement;
+import com.petrolpark.destroy.client.ponder.instruction.ThermometerInstruction;
+import com.petrolpark.destroy.client.ponder.instruction.ThermometerInstruction.ThermometerElement;
 import com.simibubi.create.foundation.ponder.ElementLink;
 import com.simibubi.create.foundation.ponder.PonderPalette;
 import com.simibubi.create.foundation.ponder.SceneBuilder;
@@ -194,17 +194,16 @@ public class ChemistryScenes {
         Selection lavaPipe = util.select.fromTo(5, 3, 0, 5, 3, 3);
         Selection tank = util.select.fromTo(0, 4, 1, 2, 6, 3);
         BlockPos basin = util.grid.at(1, 1, 6);
+        BlockPos smartPipe = util.grid.at(4, 2, 2);
 
         scene.addInstruction(new SetVatSideTypeInstruction(pipeConnection1, VatSideBlockEntity.DisplayType.NORMAL));
         scene.addInstruction(new SetVatSideTypeInstruction(pipeConnection2, VatSideBlockEntity.DisplayType.NORMAL));
 
-        ThermometerElement element = ShowThermometerInstruction.add(scene, util.vector.topOf(0, 0, 0), 100, 1f);
         scene.idle(10);
         scene.world.showSection(vat1, Direction.DOWN);
         scene.idle(10);
         scene.world.showSection(vat2, Direction.DOWN);
         scene.idle(10);
-        scene.addInstruction(ShowThermometerInstruction.chaseTemperature(element, 0f, 0.02f));
         scene.world.showSection(util.select.position(9, 0, 1), Direction.WEST);
         scene.idle(5);
         scene.world.showSection(util.select.position(9, 1, 2), Direction.WEST);
@@ -291,10 +290,28 @@ public class ChemistryScenes {
         scene.overlay.showText(100)
             .text("This text is defined in a language file.")
             .pointAt(util.vector.blockSurface(util.grid.at(4, 3, 6), Direction.WEST));
-        scene.idle(20);
-        scene.addInstruction(new DrainVatInstruction(util.grid.at(5, 2, 4), 3500));
         scene.idle(40);
+        scene.addInstruction(new DrainVatInstruction(util.grid.at(5, 2, 4), 3500));
+        scene.idle(20);
         scene.world.propagatePipeChange(pump1);
+        scene.idle(40);
+
+        scene.world.setBlock(smartPipe, Blocks.AIR.defaultBlockState(), true);
+        scene.idle(10);
+        ElementLink<WorldSectionElement> smartPipeLink = scene.world.showIndependentSection(util.select.position(4, 2, 1), Direction.SOUTH);
+        scene.world.moveSection(smartPipeLink, util.vector.of(0d, 0d, 1d), 0);
+        scene.world.propagatePipeChange(pump1);
+        scene.idle(10);
+
+        scene.overlay.showOutline(PonderPalette.RED, "smart pipe", util.select.position(smartPipe), 80);
+        scene.overlay.showText(80)
+            .text("This text is defined in a language file.")
+            .colored(PonderPalette.RED)
+            .pointAt(util.vector.blockSurface(smartPipe, Direction.UP))
+            .attachKeyFrame();
+        scene.idle(100);
+
+        scene.markAsFinished();
         
     };
 
@@ -308,6 +325,119 @@ public class ChemistryScenes {
     
     public static final void vatTemperature(SceneBuilder scene, SceneBuildingUtil util) {
         scene.title("vat.temperature", "This text is defined in a language file.");
+        scene.configureBasePlate(0, 1, 5);
+        scene.showBasePlate();
+        scene.scaleSceneView(0.6f);
+
+        Selection vatFace = util.select.fromTo(1, 4, 3, 1, 6, 4);
+        Selection vat = util.select.fromTo(1, 3, 1, 4, 7, 5).substract(vatFace);
+        Vec3 vatThermoLoc = util.vector.of(3.5d, 4d, 1.875d);
+
+        scene.idle(10);
+        ElementLink<WorldSectionElement> vatLink = scene.world.showIndependentSection(vat, Direction.DOWN);
+        ElementLink<WorldSectionElement> vatFaceLink= scene.world.showIndependentSection(vatFace, Direction.DOWN);
+        scene.world.moveSection(vatLink, util.vector.of(0d, -2d, 0d), 0);
+        scene.world.moveSection(vatFaceLink, util.vector.of(0d, -2d, 0d), 0);
+        scene.idle(10);
+
+        BlockPos wrenchedSideApparent = util.grid.at(3, 3, 2);
+
+        scene.overlay.showText(100)
+            .text("This text is defined in a language file.")
+            .pointAt(util.vector.blockSurface(wrenchedSideApparent, Direction.NORTH));
+        scene.idle(40);
+        scene.overlay.showControls(new InputWindowElement(util.vector.blockSurface(wrenchedSideApparent, Direction.NORTH), Pointing.RIGHT).withWrench(), 40);
+        scene.idle(20);
+        scene.addInstruction(new SetVatSideTypeInstruction(util.grid.at(3, 5, 2), VatSideBlockEntity.DisplayType.THERMOMETER));
+        scene.idle(20);
+        ThermometerElement vatThermo = ThermometerInstruction.add(scene, vatThermoLoc, 200, 0.75f);
+        scene.idle(40);
+
+        ThermometerInstruction.add(scene, util.vector.topOf(0, 0, 1), 840, 0.25f);
+        scene.idle(20);
+        scene.overlay.showText(120)
+            .text("This text is defined in a language file.")
+            .attachKeyFrame()
+            .independent();
+        scene.idle(20);
+        scene.addInstruction(ThermometerInstruction.chase(vatThermo, 0.25f, 0.0025f));
+        scene.idle(160);
+
+        scene.overlay.showText(100)
+            .text("This text is defined in a language file.")
+            .attachKeyFrame()
+            .independent();
+        vatThermo = ThermometerInstruction.add(scene, vatThermoLoc, 100, 0.75f);
+        scene.idle(20);
+        scene.world.hideIndependentSection(vatFaceLink, Direction.WEST);
+        scene.idle(20);
+        ElementLink<WorldSectionElement> copperLink = scene.world.showIndependentSection(util.select.fromTo(0, 4, 3, 0, 6, 4), Direction.EAST);
+        scene.world.moveSection(copperLink, util.vector.of(1d, -2d, 0d), 0);
+        scene.idle(20);
+        scene.addInstruction(ThermometerInstruction.chase(vatThermo, 0.25f, 0.1f));
+        scene.idle(60);
+
+        scene.world.hideIndependentSection(copperLink, Direction.WEST);
+        scene.idle(20);
+        vatFaceLink = scene.world.showIndependentSection(vatFace, Direction.EAST);
+        scene.world.moveSection(vatFaceLink, util.vector.of(0d, -2d, 0d), 0);
+        scene.idle(20);
+
+        scene.world.moveSection(vatLink, util.vector.of(0d, 1d, 0d), 15);
+        scene.world.moveSection(vatFaceLink, util.vector.of(0d, 1d, 0d), 15);
+        scene.idle(15);
+        vatThermo = ThermometerInstruction.add(scene, vatThermoLoc.add(0d, 1d, 0d), 315, 0.25f);
+        scene.idle(15);
+        BlockPos burner1 = util.grid.at(2, 1, 1);
+        ElementLink<WorldSectionElement> burnerLink = scene.world.showIndependentSection(util.select.position(burner1), Direction.DOWN);
+        scene.idle(20);
+
+        scene.overlay.showText(100)
+            .text("This text is defined in a language file.")
+            .attachKeyFrame()
+            .pointAt(util.vector.blockSurface(burner1, Direction.WEST));
+        scene.idle(20);
+        scene.world.moveSection(burnerLink, util.vector.of(0d, 0d, 2d), 20);
+        scene.idle(40);
+        scene.addInstruction(ThermometerInstruction.chase(vatThermo, 0.5f, 0.01f));
+        scene.idle(60);
+        
+        scene.world.moveSection(burnerLink, util.vector.of(0d, 0d, -2d), 20);
+        scene.addInstruction(ThermometerInstruction.chase(vatThermo, 0.25f, 0.0025f));
+        scene.idle(20);
+        scene.overlay.showText(100)
+            .text("This text is defined in a language file.")
+            .independent()
+            .attachKeyFrame();
+        scene.idle(20);
+        scene.world.showSectionAndMerge(util.select.fromTo(2, 1, 0, 3, 1, 1).substract(util.select.position(burner1)), Direction.DOWN, burnerLink);
+        scene.idle(20);
+        scene.world.moveSection(burnerLink, util.vector.of(0d, 0d, 3d), 20);
+        scene.idle(20);
+        scene.addInstruction(ThermometerInstruction.chase(vatThermo, 1f, 0.01f));
+        scene.idle(60);
+
+        scene.world.hideIndependentSection(burnerLink, Direction.NORTH);
+        scene.idle(20);
+        scene.world.moveSection(vatLink, util.vector.of(0d, 1d, 0d), 15);
+        scene.world.moveSection(vatFaceLink, util.vector.of(0d, 1d, 0d), 15);
+        scene.idle(15);
+        vatThermo = ThermometerInstruction.add(scene, vatThermoLoc.add(0d, 2d, 0d), 135, 0.5f);
+        scene.idle(15);
+        scene.overlay.showText(120)
+            .text("This text is defined in a language file.")
+            .independent()
+            .attachKeyFrame();
+        scene.idle(20);
+        ElementLink<WorldSectionElement> coolerLink = scene.world.showIndependentSection(util.select.fromTo(2, 1, 3, 5, 2, 3).add(util.select.position(5, 0, 3)), Direction.WEST);
+        scene.world.moveSection(coolerLink, util.vector.of(0d, 0d, -2d), 0);
+        scene.idle(20);
+        scene.world.moveSection(coolerLink, util.vector.of(0d, 0d, 2d), 20);
+        scene.idle(30);
+        scene.addInstruction(ThermometerInstruction.chase(vatThermo, 0f, 0.01f));
+        scene.idle(70);
+
+        scene.markAsFinished();
     };
 
     public static final void vatPressure(SceneBuilder scene, SceneBuildingUtil util) {

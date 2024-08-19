@@ -7,6 +7,7 @@ import com.petrolpark.destroy.block.DestroyBlocks;
 import com.petrolpark.destroy.block.PeriodicTableBlock;
 import com.petrolpark.destroy.client.ponder.scene.ChemistryScenes;
 import com.petrolpark.destroy.client.ponder.scene.DestroyScenes;
+import com.petrolpark.destroy.client.ponder.scene.DynamoScenes;
 import com.petrolpark.destroy.client.ponder.scene.ExplosivesScenes;
 import com.petrolpark.destroy.client.ponder.scene.KineticsScenes;
 import com.petrolpark.destroy.client.ponder.scene.OilScenes;
@@ -104,9 +105,10 @@ public class DestroyPonderIndex {
         
         // Dynamo
         HELPER.forComponents(DestroyBlocks.DYNAMO)
-            .addStoryBoard("processing/dynamo/redstone", ProcessingScenes::dynamoRedstone)
-            .addStoryBoard("processing/dynamo/charging", ProcessingScenes::dynamoCharging, AllPonderTags.KINETIC_APPLIANCES)
-            .addStoryBoard("processing/dynamo/electrolysis", ProcessingScenes::dynamoElectrolysis);
+            .addStoryBoard("processing/dynamo/redstone", DynamoScenes::dynamoRedstone)
+            .addStoryBoard("processing/dynamo/charging", DynamoScenes::dynamoCharging, AllPonderTags.KINETIC_APPLIANCES)
+            .addStoryBoard("processing/dynamo/electrolysis", DynamoScenes::dynamoElectrolysis)
+            .addStoryBoard("processing/dynamo/arc_furnace", DynamoScenes::arcFurnace);
 
         // Extrusion Die
         HELPER.forComponents(DestroyBlocks.EXTRUSION_DIE)

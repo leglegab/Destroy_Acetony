@@ -290,7 +290,7 @@ public class VatControllerBlockEntity extends SmartBlockEntity implements IHaveG
 
         // Vat
         if (tag.contains("Vat", Tag.TAG_COMPOUND)) {
-            vat = Vat.read(tag.getCompound("Vat"));
+            vat = Vat.read(tag.getCompound("Vat"), getBlockPos());
             finalizeVatConstruction();
         } else {
             vat = Optional.empty();
@@ -324,7 +324,7 @@ public class VatControllerBlockEntity extends SmartBlockEntity implements IHaveG
         // Vat
         if (vat.isPresent()) {
             CompoundTag vatTag = new CompoundTag();
-            vat.get().write(vatTag);
+            vat.get().write(vatTag, getBlockPos());
             tag.put("Vat", vatTag);
         };
         tag.putBoolean("UnderDeconstruction", underDeconstruction);
