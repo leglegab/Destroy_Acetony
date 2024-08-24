@@ -9,8 +9,8 @@ public class DestroyClientConfigs extends DestroyConfigBase {
     
     public final ConfigGroup extraInventory = group(0, "extraInventory");
     public final ConfigBool extraInventoryLeft = b(true, "extraHotbarLeft", "Whether the extra slots render to the left rather than right of containers");
-    public final ConfigInt extraInventoryWidth = i(4, 1, Integer.MAX_VALUE, "extraInventoryWidth", "Maximum width of extra inventory space");
-    public final ConfigEnum<ExtraHotbarSlotLocation> extraHotbarSlotLocation = e(ExtraHotbarSlotLocation.START_LEFT, "extraHotbarSlotLocation", "Where the additional hotbar slots go", "ALL_X - All slots on X", "START_X - Alternate sides, starting on X", "PRIORITIZE_X - Up to extraHotbarPrioritySlotCount on X, the rest on the other side");
+    public final ConfigInt extraInventoryWidth = i(3, 1, Integer.MAX_VALUE, "extraInventoryWidth", "Maximum width of extra inventory space");
+    public final ConfigEnum<ExtraHotbarSlotLocation> extraHotbarSlotLocation = e(ExtraHotbarSlotLocation.ALL_LEFT, "extraHotbarSlotLocation", "Where the additional hotbar slots go", "ALL_X - All slots on X", "START_X - Alternate sides, starting on X", "PRIORITIZE_X - Up to extraHotbarPrioritySlotCount on X, the rest on the other side");
     public final ConfigInt extraHotbarPrioritySlotCount = i(3, 0, Integer.MAX_VALUE, "extraHotbarPrioritySlotCount");
 
     public static enum ExtraHotbarSlotLocation {

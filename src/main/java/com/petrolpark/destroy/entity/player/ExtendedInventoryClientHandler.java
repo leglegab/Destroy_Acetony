@@ -107,6 +107,15 @@ public class ExtendedInventoryClientHandler {
         Rect2i rightHotbar  = getRightHotbarLocation(inv, screenArea, 142);
         Rect2i combinedInventoryHotbar = getCombinedInventoryHotbarLocation(inv, screenArea, 142);
         Rect2i inventory = combinedInventoryHotbar == null ? getInventoryLocation(inv, screenArea, 142) : combinedInventoryHotbar;
+        int invX;
+        int invY;
+        if (inventory == null) {
+            invX = 0;
+            invY = 0;
+        } else {
+            invX = inventory.getX();
+            invY = inventory.getY();
+        };
         int leftX;
         int leftY;
         if (leftHotbar != null) {
@@ -125,7 +134,7 @@ public class ExtendedInventoryClientHandler {
             rightX = 0;
             rightY = 0;
         };
-        ExtendedInventory.refreshPlayerInventoryMenu(inv.player, DestroyAllConfigs.CLIENT.extraInventoryWidth.get(), inventory.getX() + INVENTORY_PADDING, inventory.getY() + INVENTORY_PADDING, DestroyClientConfigs.getLeftSlots(inv.getExtraHotbarSlots()), leftX, leftY, rightX, rightY);
+        ExtendedInventory.refreshPlayerInventoryMenu(inv.player, DestroyAllConfigs.CLIENT.extraInventoryWidth.get(), invX + INVENTORY_PADDING, invY + INVENTORY_PADDING, DestroyClientConfigs.getLeftSlots(inv.getExtraHotbarSlots()), leftX, leftY, rightX, rightY);
     };
 
     /**
@@ -319,6 +328,15 @@ public class ExtendedInventoryClientHandler {
 
     public void addSlotsToClientMenu(ExtendedInventory inv, Consumer<Slot> slotAdder, SlotFactory slotFactory) {
         Rect2i inventoryRect = combinedInventoryHotbar == null ? inventory : combinedInventoryHotbar;
+        int invX;
+        int invY;
+        if (inventoryRect == null) {
+            invX = 0;
+            invY = 0;
+        } else {
+            invX = inventoryRect.getX();
+            invY = inventoryRect.getY();
+        };
         int leftX;
         int leftY;
         if (leftHotbar != null) {
@@ -337,7 +355,7 @@ public class ExtendedInventoryClientHandler {
             rightX = 0;
             rightY = 0;
         };
-        inv.addExtraInventorySlotsToMenu(slotAdder, slotFactory, DestroyAllConfigs.CLIENT.extraInventoryWidth.get(), inventoryRect.getX() + INVENTORY_PADDING, inventoryRect.getY() + INVENTORY_PADDING, DestroyClientConfigs.getLeftSlots(inv.getExtraHotbarSlots()), leftX, leftY, rightX, rightY);
+        inv.addExtraInventorySlotsToMenu(slotAdder, slotFactory, DestroyAllConfigs.CLIENT.extraInventoryWidth.get(), invX + INVENTORY_PADDING, invY + INVENTORY_PADDING, DestroyClientConfigs.getLeftSlots(inv.getExtraHotbarSlots()), leftX, leftY, rightX, rightY);
     };
 
     public void onOpenContainerScreen(ScreenEvent.Init.Post event) {

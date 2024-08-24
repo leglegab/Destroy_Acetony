@@ -290,6 +290,12 @@ public class DestroyItems {
     public static final ItemEntry<IodineItem> IODINE = REGISTRATE.item("iodine", IodineItem::new)
         .register();
 
+    public static final ItemEntry<CreatineItem> CREATINE = REGISTRATE.item("creatine", CreatineItem::new)
+        .properties(p -> p
+            .food(DestroyFoods.CREATINE)
+        ).tag(Tags.Items.DUSTS)
+        .register();
+
     // TOOLS AND ARMOR
 
     public static final ItemEntry<SwissArmyKnifeItem>

@@ -11,6 +11,7 @@ import com.petrolpark.destroy.network.packet.CircuitPatternsS2CPacket;
 import com.petrolpark.destroy.network.packet.ConfigureColorimeterC2SPacket;
 import com.petrolpark.destroy.network.packet.CryingS2CPacket;
 import com.petrolpark.destroy.network.packet.EvaporatingFluidS2CPacket;
+import com.petrolpark.destroy.network.packet.ExtraInventorySizeChangeS2CPacket;
 import com.petrolpark.destroy.network.packet.LevelPollutionS2CPacket;
 import com.petrolpark.destroy.network.packet.MarkSeismographC2SPacket;
 import com.petrolpark.destroy.network.packet.NameKeypunchC2SPacket;
@@ -69,6 +70,7 @@ public class DestroyMessages {
         addS2CPacket(net, SyncVatMaterialsS2CPacket.class, SyncVatMaterialsS2CPacket::new);
         addS2CPacket(net, RedstoneProgrammerPowerChangedS2CPacket.class, RedstoneProgrammerPowerChangedS2CPacket::new);
         addS2CPacket(net, SyncChunkPollutionS2CPacket.class, SyncChunkPollutionS2CPacket::new);
+        addS2CPacket(net, ExtraInventorySizeChangeS2CPacket.class, ExtraInventorySizeChangeS2CPacket::new);
 
         addC2SPacket(net, SwissArmyKnifeToolC2SPacket.class, SwissArmyKnifeToolC2SPacket::new);
         addC2SPacket(net, ChainCogwheelsC2SPacket.class, ChainCogwheelsC2SPacket::new);

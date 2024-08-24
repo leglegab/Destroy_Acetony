@@ -37,10 +37,12 @@ import com.petrolpark.destroy.commands.RegenerateCircuitPatternCommand.CircuitPa
 import com.petrolpark.destroy.config.DestroyAllConfigs;
 import com.petrolpark.destroy.config.DestroySubstancesConfigs;
 import com.petrolpark.destroy.effect.DestroyMobEffects;
+import com.petrolpark.destroy.entity.attribute.DestroyAttributes;
 import com.petrolpark.destroy.entity.player.ExtendedInventory;
 import com.petrolpark.destroy.fluid.DestroyFluids;
 import com.petrolpark.destroy.item.BlowpipeItem;
 import com.petrolpark.destroy.item.CircuitPatternItem;
+import com.petrolpark.destroy.item.CreatineItem;
 import com.petrolpark.destroy.item.DestroyItems;
 import com.petrolpark.destroy.item.DiscStamperItem;
 import com.petrolpark.destroy.item.IMixtureStorageItem;
@@ -138,6 +140,7 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.item.MapItem;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.item.crafting.Recipe;
+import net.minecraft.world.level.GameRules;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.block.Blocks;
@@ -159,6 +162,7 @@ import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.event.PlayLevelSoundEvent;
 import net.minecraftforge.event.RegisterCommandsEvent;
 import net.minecraftforge.event.TickEvent;
+import net.minecraftforge.event.entity.EntityAttributeModificationEvent;
 import net.minecraftforge.event.entity.EntityJoinLevelEvent;
 import net.minecraftforge.event.entity.EntityTravelToDimensionEvent;
 import net.minecraftforge.event.entity.living.BabyEntitySpawnEvent;
@@ -313,16 +317,14 @@ public class DestroyCommonEvents {
     @SubscribeEvent
     @MoveToPetrolparkLibrary
     public static void onPlayerCloned(PlayerEvent.Clone event) {
+        boolean keepInv = event.getEntity().level().getGameRules().getBoolean(GameRules.RULE_KEEPINVENTORY);
         if (event.isWasDeath()) {
             // Copy Baby Blue Addiction Data
-            if (DestroyAllConfigs.SERVER.substances.keepBabyBlueAddictionOnDeath.get()) event.getOriginal().getCapability(PlayerBabyBlueAddictionProvider.PLAYER_BABY_BLUE_ADDICTION).ifPresent(oldStore -> {
+            if (DestroyAllConfigs.SERVER.substances.keepBabyBlueAddictionOnDeath.get() || keepInv) event.getOriginal().getCapability(PlayerBabyBlueAddictionProvider.PLAYER_BABY_BLUE_ADDICTION).ifPresent(oldStore -> {
                 event.getEntity().getCapability(PlayerBabyBlueAddictionProvider.PLAYER_BABY_BLUE_ADDICTION).ifPresent(newStore -> {
                     newStore.copyFrom(oldStore);
                 });
             });
-
-            // Copy Inventory
-            ExtendedInventory.copyOverDeath(event.getOriginal(), event.getEntity());
 
             // Copy Badge data
             event.getOriginal().getCapability(PlayerBadges.Provider.PLAYER_BADGES).ifPresent(oldStore -> {
@@ -342,6 +344,12 @@ public class DestroyCommonEvents {
                     newStore.copyFrom(oldStore);
                 });
             });
+        } else if (!event.isWasDeath() || DestroyAllConfigs.SERVER.substances.keepCreatineExtraInventorySizeOnDeath.get() || keepInv) {
+            // Copy Extra Inventory due to Creatine
+            event.getEntity().getAttribute(DestroyAttributes.EXTRA_INVENTORY_SIZE.get()).addPermanentModifier(event.getOriginal().getAttribute(DestroyAttributes.EXTRA_INVENTORY_SIZE.get()).getModifier(CreatineItem.EXTRA_INVENTORY_ATTRIBUTE_MODIFIER));
+            event.getEntity().getAttribute(DestroyAttributes.EXTRA_HOTBAR_SLOTS.get()).addPermanentModifier(event.getOriginal().getAttribute(DestroyAttributes.EXTRA_HOTBAR_SLOTS.get()).getModifier(CreatineItem.EXTRA_HOTBAR_ATTRIBUTE_MODIFIER));
+            ExtendedInventory.get(event.getEntity()).updateSize();
+            if (keepInv) event.getEntity().getInventory().replaceWith(event.getOriginal().getInventory()); // Do this again as this Event is fired after it occurs
         };
     };
 
@@ -505,13 +513,13 @@ public class DestroyCommonEvents {
     public static void disableEating(PlayerInteractEvent.RightClickItem event) {
         ItemStack stack = event.getItemStack();
         Player player = event.getEntity();
-        if (stack.getItem().isEdible()) {
+        if (stack.isEdible()) {
             if (ChemistryDamageHelper.Protection.MOUTH_COVERED.isProtected(player)) {
                 player.displayClientMessage(DestroyLang.translate("tooltip.eating_prevented.mouth_protected").component(), true);
                 event.setCanceled(true);
                 return;
             };
-            if (DestroySubstancesConfigs.babyBlueEnabled() && stack.getItem() != DestroyItems.BABY_BLUE_POWDER.get() && player.hasEffect(DestroyMobEffects.BABY_BLUE_WITHDRAWAL.get())) {
+            if (DestroySubstancesConfigs.babyBlueEnabled() && stack.getItem() != DestroyItems.BABY_BLUE_POWDER.get() && player.hasEffect(DestroyMobEffects.BABY_BLUE_WITHDRAWAL.get()) && !stack.getFoodProperties(player).canAlwaysEat()) {
                 player.displayClientMessage(DestroyLang.translate("tooltip.eating_prevented.baby_blue").component(), true);
                 event.setCanceled(true);
             };
@@ -982,6 +990,12 @@ public class DestroyCommonEvents {
 
     @EventBusSubscriber(bus = EventBusSubscriber.Bus.MOD)
 	public static class ModBusEvents {
+
+        @SubscribeEvent
+        public static void onCreateAttributes(EntityAttributeModificationEvent event) {
+            event.add(EntityType.PLAYER, DestroyAttributes.EXTRA_INVENTORY_SIZE.get());
+            event.add(EntityType.PLAYER, DestroyAttributes.EXTRA_HOTBAR_SLOTS.get());
+        };
 
         /**
          * Copied from the {@link com.simibubi.create.events.CommonEvents.ModBusEvents#addPackFinders Create source code}.

@@ -10,14 +10,11 @@ import com.mojang.authlib.GameProfile;
 import com.petrolpark.destroy.entity.player.ExtendedInventory;
 
 import net.minecraft.core.BlockPos;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.inventory.AbstractContainerMenu;
-import net.minecraft.world.inventory.InventoryMenu;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 
@@ -31,10 +28,6 @@ public abstract class PlayerMixin extends LivingEntity {
 
     @Shadow
     private Inventory inventory;
-    @Shadow
-    public InventoryMenu inventoryMenu;
-    @Shadow
-    public AbstractContainerMenu containerMenu;
      
     @Inject(
         method = "<init>",
@@ -44,7 +37,6 @@ public abstract class PlayerMixin extends LivingEntity {
         ExtendedInventory extendedInv = new ExtendedInventory((Player)(Object)this);
         inventory = extendedInv;
         ExtendedInventory.refreshPlayerInventoryMenu((Player)(Object)this);
-        containerMenu = inventoryMenu;
     };
 
     @Inject(
@@ -61,21 +53,5 @@ public abstract class PlayerMixin extends LivingEntity {
             onEquipItem(slot, oldStack, stack);
             ci.cancel();
         };
-    };
-
-    @Inject(
-        method = "readAdditionalSaveData",
-        at = @At("HEAD")
-    )
-    public void inReadAdditionalSaveData(CompoundTag tag, CallbackInfo ci) {
-        ((ExtendedInventory)inventory).readExtraInventoryData(tag.getCompound("ExtraInventory"));
-    };
-
-    @Inject(
-        method = "addAdditionalSaveData",
-        at = @At("HEAD")
-    )
-    public void inAddAdditionalSaveData(CompoundTag tag, CallbackInfo ci) {
-        tag.put("ExtraInventory", ((ExtendedInventory)inventory).writeExtraInventoryData());
     };
 };

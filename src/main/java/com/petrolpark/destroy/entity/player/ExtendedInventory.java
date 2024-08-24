@@ -7,6 +7,9 @@ import java.util.stream.Stream;
 import com.petrolpark.destroy.Destroy;
 import com.petrolpark.destroy.client.gui.menu.IExtendedInventoryMenu;
 import com.petrolpark.destroy.config.DestroyAllConfigs;
+import com.petrolpark.destroy.entity.attribute.DestroyAttributes;
+import com.petrolpark.destroy.network.DestroyMessages;
+import com.petrolpark.destroy.network.packet.ExtraInventorySizeChangeS2CPacket;
 import com.petrolpark.destroy.util.DestroyTags.DestroyMenuTypeTags;
 
 import net.minecraft.CrashReport;
@@ -16,6 +19,7 @@ import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.Container;
 import net.minecraft.world.ContainerHelper;
@@ -30,6 +34,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.event.entity.player.PlayerContainerEvent;
+import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
 
@@ -41,10 +46,7 @@ public class ExtendedInventory extends Inventory {
 
     public ExtendedInventory(Player player) {
         super(player);
-
-        // Temporary
-        extraHotbarSlots = 3;
-        setExtraInventorySize(12);
+        updateSize();
     };
 
     /**
@@ -55,23 +57,30 @@ public class ExtendedInventory extends Inventory {
         return (ExtendedInventory)player.getInventory();
     };
 
+    public void updateSize() {
+        int sizeBefore = extraItems.size();
+        int hotbarBefore = extraHotbarSlots;
+        if (player.getAttributes().hasAttribute(DestroyAttributes.EXTRA_HOTBAR_SLOTS.get())) setExtraHotbarSlots((int)player.getAttributeValue(DestroyAttributes.EXTRA_HOTBAR_SLOTS.get()));
+        if (player.getAttributes().hasAttribute(DestroyAttributes.EXTRA_INVENTORY_SIZE.get())) setExtraInventorySize((int)player.getAttributeValue(DestroyAttributes.EXTRA_INVENTORY_SIZE.get()));
+        if ((sizeBefore != extraItems.size() || hotbarBefore != extraHotbarSlots) && !player.level().isClientSide() && player instanceof ServerPlayer sp && sp.connection != null) {
+            DestroyMessages.sendToClient(new ExtraInventorySizeChangeS2CPacket(extraItems.size(), extraHotbarSlots, false), sp);
+        };
+    };
+
     public static void refreshPlayerInventoryMenu(Player player, int columns, int invX, int invY, int leftHotbarSlots, int leftHotbarX, int leftHotbarY, int rightHotbarX, int rightHotbarY) {
         player.inventoryMenu = new InventoryMenu(player.getInventory(), !player.level().isClientSide(), player); // Usually this field would be final; don't tell anybody I did this
         get(player).addExtraInventorySlotsToMenu(player.inventoryMenu, columns, invX, invY, leftHotbarSlots, leftHotbarX, leftHotbarY, rightHotbarX, rightHotbarY);
+        player.containerMenu = player.inventoryMenu;
+        if (player instanceof ServerPlayer sp && sp.containerSynchronizer != null && sp.containerListener != null) sp.initInventoryMenu();
     };
 
     public static void refreshPlayerInventoryMenu(Player player) {
         refreshPlayerInventoryMenu(player, 5, 0, 0, 0, 0, 0, 0, 0);
     };
 
-    public static void copyOverDeath(Player deadPlayer, Player newPlayer) {
-        ExtendedInventory deadInv = get(deadPlayer);
-        ExtendedInventory newInv = get(newPlayer);
-        newInv.setExtraInventorySize(deadInv.extraItems.size());
-        newInv.extraHotbarSlots = deadInv.extraHotbarSlots;
-    };
-
     public void setExtraInventorySize(int size) {
+        size = Math.max(size, 0);
+        if (size == extraItems.size()) return;
         if (size < extraItems.size()) {
             for (int stack = size; stack < extraItems.size(); stack++) {
                 player.drop(extraItems.get(stack), false);
@@ -80,6 +89,14 @@ public class ExtendedInventory extends Inventory {
         NonNullList<ItemStack> newExtraItems = NonNullList.withSize(size, ItemStack.EMPTY);
         for (int i = 0; i < size && i < extraItems.size(); i++) newExtraItems.set(i, extraItems.get(i));
         extraItems = newExtraItems;
+        setChanged();
+    };
+
+    public void setExtraHotbarSlots(int extraSlots) {
+        extraSlots = Math.max(extraSlots, 0);
+        if (extraSlots == extraHotbarSlots) return;
+        extraHotbarSlots = extraSlots;
+        setChanged();
     };
 
     public int getExtraHotbarSlots() {
@@ -115,6 +132,15 @@ public class ExtendedInventory extends Inventory {
     protected int getSelectedHotbarIndex() {
         if (isHotbarSlot(selected)) return selected;
         return selected - getExtraInventoryStartSlotIndex() + getSelectionSize();
+    };
+
+    @SubscribeEvent
+    public static void onPlayerJoinsWorld(PlayerEvent.PlayerLoggedInEvent event) {
+        refreshPlayerInventoryMenu(event.getEntity());
+        ExtendedInventory inv = get(event.getEntity());
+        if (event.getEntity() instanceof ServerPlayer player) {
+            DestroyMessages.sendToClient(new ExtraInventorySizeChangeS2CPacket(inv.extraItems.size(), inv.extraHotbarSlots, true), player);
+        };
     };
 
     @SubscribeEvent
@@ -295,6 +321,7 @@ public class ExtendedInventory extends Inventory {
 
     @Override
     public void tick() {
+        updateSize();
         super.tick();
         for (int i = 0; i < extraItems.size(); i++) {
             int slot = getExtraInventoryStartSlotIndex() + i;
@@ -409,18 +436,6 @@ public class ExtendedInventory extends Inventory {
         return getItem(selected).getDestroySpeed(state);
     };
 
-    public CompoundTag writeExtraInventoryData() {
-        CompoundTag tag = new CompoundTag();
-        tag.putInt("Size", extraItems.size());
-        tag.putInt("HotbarSlots", extraHotbarSlots);
-        return tag;
-    };
-
-    public void readExtraInventoryData(CompoundTag tag) {
-        setExtraInventorySize(tag.getInt("Size"));
-        extraHotbarSlots = tag.getInt("HotbarSlots");
-    };
-
     @Override
     public ListTag save(ListTag listTag) {
         listTag = super.save(listTag);
@@ -441,8 +456,8 @@ public class ExtendedInventory extends Inventory {
 
     @Override
     public void load(ListTag listTag) {
+        updateSize();
         super.load(listTag);
-
         int extraInventoryStart = getExtraInventoryStartSlotIndex();
         for (int i = 0; i < listTag.size(); i++) {
             CompoundTag tag = listTag.getCompound(i);
@@ -495,6 +510,15 @@ public class ExtendedInventory extends Inventory {
     @Override
     public boolean contains(TagKey<Item> tag) {
         return findSlot(s -> s.is(tag)) != -1;
+    };
+
+    @Override
+    public void replaceWith(Inventory playerInventory) {
+        if (playerInventory instanceof ExtendedInventory extendedInv) {
+            setExtraHotbarSlots(extendedInv.extraHotbarSlots);
+            setExtraInventorySize(extendedInv.extraItems.size());
+        };
+        super.replaceWith(playerInventory);
     };
 
     @Override

@@ -25,6 +25,7 @@ import com.petrolpark.destroy.config.DestroyAllConfigs;
 import com.petrolpark.destroy.effect.DestroyMobEffects;
 import com.petrolpark.destroy.effect.potion.DestroyPotions;
 import com.petrolpark.destroy.entity.DestroyEntityTypes;
+import com.petrolpark.destroy.entity.attribute.DestroyAttributes;
 import com.petrolpark.destroy.fluid.DestroyFluids;
 import com.petrolpark.destroy.fluid.pipeEffectHandler.DestroyOpenEndedPipeEffects;
 import com.petrolpark.destroy.item.CoaxialGearBlockItem.GearOnShaftPlacementHelper;
@@ -145,6 +146,7 @@ public class Destroy {
         DestroyDamageTypes.register();
         DestroyStats.register(modEventBus);
         DestroyItemAttributes.register();
+        DestroyAttributes.register(modEventBus);
 
         // Events
         MinecraftForge.EVENT_BUS.register(this);

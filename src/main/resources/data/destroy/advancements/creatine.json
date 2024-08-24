@@ -1,0 +1,32 @@
+{
+    "parent": "destroy:fill_seismograph",
+    "criteria": {
+      "eat": {
+        "trigger": "minecraft:consume_item",
+        "conditions": {
+            "item": {
+            "items": [
+                "destroy:creatine"
+            ]
+        }
+        }
+      }
+    },
+    "display": {
+      "description": {
+        "color": "#DBA213",
+        "translate": "advancement.destroy.creatine.description"
+      },
+      "icon": {
+        "item": "destroy:seismograph"
+      },
+      "title": {
+        "translate": "advancement.destroy.creatine"
+      }
+    },
+    "requirements": [
+      [
+        "eat"
+      ]
+    ]
+  }

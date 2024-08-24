@@ -69,7 +69,7 @@ public class DestroyCreativeModeTabs {
 				n(), i(DestroyBlocks.CUSTOM_EXPLOSIVE_MIX), i(DestroyBlocks.DYNAMITE_BLOCK), i(DestroyBlocks.CORDITE_BLOCK), i(DestroyBlocks.EXTRUDED_CORDITE_BLOCK),
 				
 				s("pharmaceuticals"),
-				i(DestroyItems.SYRINGE), i(DestroyItems.ASPIRIN_SYRINGE), i(DestroyItems.CISPLATIN_SYRINGE), c(DestroyItems.BABY_BLUE_SYRINGE, DestroySubstancesConfigs::babyBlueEnabled), c(DestroyItems.BABY_BLUE_CRYSTAL, DestroySubstancesConfigs::babyBlueEnabled), c(DestroyItems.BABY_BLUE_POWDER, DestroySubstancesConfigs::babyBlueEnabled), i(DestroyItems.SPRAY_BOTTLE), i(DestroyItems.PERFUME_BOTTLE), i(DestroyItems.SUNSCREEN_BOTTLE),
+				i(DestroyItems.SYRINGE), i(DestroyItems.ASPIRIN_SYRINGE), i(DestroyItems.CISPLATIN_SYRINGE), c(DestroyItems.BABY_BLUE_SYRINGE, DestroySubstancesConfigs::babyBlueEnabled), c(DestroyItems.BABY_BLUE_CRYSTAL, DestroySubstancesConfigs::babyBlueEnabled), c(DestroyItems.BABY_BLUE_POWDER, DestroySubstancesConfigs::babyBlueEnabled), i(DestroyItems.SPRAY_BOTTLE), i(DestroyItems.PERFUME_BOTTLE), i(DestroyItems.SUNSCREEN_BOTTLE), i(DestroyItems.CREATINE),
 				
 				s("food"),
 				i(DestroyItems.NAPALM_SUNDAE), i(DestroyItems.THERMITE_BROWNIE), i(DestroyItems.BOMB_BON), i(DestroyItems.EMPTY_BOMB_BON),
