@@ -1,0 +1,8 @@
+{
+  "type": "minecraft:blasting",
+  "ingredient": {
+    "item": "destroy:gold_powder"
+  },
+  "result": "minecraft:gold_nugget",
+  "cookingtime": 100
+}

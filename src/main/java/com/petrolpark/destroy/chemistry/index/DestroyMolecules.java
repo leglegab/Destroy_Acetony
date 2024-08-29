@@ -167,6 +167,19 @@ public final class DestroyMolecules {
         .tag(Tags.SMOG)
         .build(),
 
+    BISULFITE = builder()
+        .id("bisulfite")
+        .structure(Formula.atom(Element.SULFUR)
+            .addAtom(Element.OXYGEN, BondType.DOUBLE)
+            .addAtom(Element.OXYGEN)
+            .addGroup(Formula.atom(Element.OXYGEN)
+                .addAtom(Element.HYDROGEN)
+            )
+        )
+        .charge(-1)
+        .tag(Tags.ACID_RAIN)
+        .build(),
+
     BUTADIENE = builder()
         .id("butadiene")
         .structure(Formula.deserialize("destroy:linear:C=CC=C"))

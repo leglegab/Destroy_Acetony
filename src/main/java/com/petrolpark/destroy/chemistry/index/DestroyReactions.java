@@ -12,6 +12,7 @@ import com.petrolpark.destroy.item.DestroyItems;
 import com.simibubi.create.AllItems;
 import com.simibubi.create.AllTags;
 
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 
 public class DestroyReactions {
@@ -312,7 +313,30 @@ public class DestroyReactions {
         .addProduct(DestroyMolecules.NITROGEN_DIOXIDE, 3)
         .build(),
 
-    //TODO iodine dissolution and precipitation
+    GOLD_ORE_DISSOLUTION = builder() //TODO replace with redox
+            .id("gold_ore_dissolution")
+            .addSimpleItemReactant(AllItems.CRUSHED_GOLD::get, 1f)
+            .addReactant(DestroyMolecules.NITRIC_ACID)
+            .addReactant(DestroyMolecules.HYDROCHLORIC_ACID, 4, 1)
+            .addProduct(DestroyMolecules.CHLOROAURATE, 3)
+            .addProduct(DestroyMolecules.PROTON)
+            .addProduct(DestroyMolecules.WATER, 3)
+            .addProduct(DestroyMolecules.NITROGEN_DIOXIDE, 3)
+            .build(),
+
+    GOLD_PRECIPITATION = builder()
+        .id("gold_precipitation")
+        .addReactant(DestroyMolecules.PROTON, 1, 1)
+        .addReactant(DestroyMolecules.CHLOROAURATE, 1, 1)
+        .addReactant(DestroyMolecules.SODIUM_ION, 3, 1)
+        .addReactant(DestroyMolecules.BISULFITE, 3, 1)
+        .addReactant(DestroyMolecules.WATER,3,1)
+        .addProduct(DestroyMolecules.HYDROCHLORIC_ACID,4)
+        .addProduct(DestroyMolecules.SODIUM_ION,3)
+        .addProduct(DestroyMolecules.HYDROGENSULFATE,3)
+        .withResult(0.125f, PrecipitateReactionResult.of(DestroyItems.GOLD_POWDER::asStack))
+        .build(),
+
 
     HABER_PROCESS = builder()
         .id("haber_process")
@@ -620,6 +644,15 @@ public class DestroyReactions {
         .addProduct(DestroyMolecules.SODIUM_ION, 2)
         .addProduct(DestroyMolecules.HYDROXIDE, 2)
         .addProduct(DestroyMolecules.HYDROGEN)
+        .build(),
+
+    SODIUM_BISULFITE_SYNTHESIS = builder()
+        .id("sodium_bisulfite_synthesis")
+        .addReactant(DestroyMolecules.SULFUR_DIOXIDE,1,1)
+        .addReactant(DestroyMolecules.SODIUM_ION, 1, 1)
+        .addReactant(DestroyMolecules.HYDROXIDE, 1, 1)
+        .addProduct(DestroyMolecules.SODIUM_ION,1)
+        .addProduct(DestroyMolecules.BISULFITE,1) // Technically sodium metabisulfite is an intermediary here, but since this all happens in solution I skipped that step
         .build(),
 
     STEAM_REFORMATION = builder()

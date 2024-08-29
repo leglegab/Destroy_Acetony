@@ -1,0 +1,15 @@
+{
+  "type": "create:crushing",
+  "ingredients": [
+    {
+      "item": "minecraft:gold_ingot"
+    }
+  ],
+  "results": [
+    {
+      "item": "destroy:gold_powder",
+      "count": 9
+    }
+  ],
+  "processingTime": 100
+}
