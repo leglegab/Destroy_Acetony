@@ -4,7 +4,6 @@ import java.util.function.Function;
 
 import com.petrolpark.destroy.Destroy;
 import com.petrolpark.destroy.network.packet.C2SPacket;
-import com.petrolpark.destroy.network.packet.ChainCogwheelsC2SPacket;
 import com.petrolpark.destroy.network.packet.ChangeKeypunchPositionC2SPacket;
 import com.petrolpark.destroy.network.packet.ChemicalPoisonS2CPacket;
 import com.petrolpark.destroy.network.packet.CircuitPatternsS2CPacket;
@@ -73,7 +72,6 @@ public class DestroyMessages {
         addS2CPacket(net, ExtraInventorySizeChangeS2CPacket.class, ExtraInventorySizeChangeS2CPacket::new);
 
         addC2SPacket(net, SwissArmyKnifeToolC2SPacket.class, SwissArmyKnifeToolC2SPacket::new);
-        addC2SPacket(net, ChainCogwheelsC2SPacket.class, ChainCogwheelsC2SPacket::new);
         addC2SPacket(net, RedstoneProgramSyncC2SPacket.class, RedstoneProgramSyncC2SPacket::new);
         addC2SPacket(net, NameKeypunchC2SPacket.class, NameKeypunchC2SPacket::new);
         addC2SPacket(net, ChangeKeypunchPositionC2SPacket.class, ChangeKeypunchPositionC2SPacket::new);

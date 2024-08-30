@@ -2,11 +2,12 @@ package com.petrolpark.destroy.item.creativeModeTab;
 
 import java.util.function.Supplier;
 
+import com.petrolpark.client.creativemodetab.CustomTab;
+import com.petrolpark.client.creativemodetab.CustomTab.ITabEntry;
 import com.petrolpark.destroy.Destroy;
 import com.petrolpark.destroy.block.DestroyBlocks;
 import com.petrolpark.destroy.config.DestroySubstancesConfigs;
 import com.petrolpark.destroy.item.DestroyItems;
-import com.petrolpark.destroy.item.creativeModeTab.CustomTab.ITabEntry;
 import com.simibubi.create.AllBlocks;
 import com.simibubi.create.AllCreativeModeTabs;
 import com.simibubi.create.AllItems;
@@ -38,9 +39,6 @@ public class DestroyCreativeModeTabs {
 
 				s("processing"),
 				i(DestroyBlocks.AGING_BARREL), i(DestroyBlocks.MECHANICAL_SIEVE), i(DestroyBlocks.EXTRUSION_DIE), i(DestroyBlocks.KEYPUNCH), i(DestroyBlocks.PUMPJACK), i(DestroyBlocks.TREE_TAP), i(DestroyBlocks.BLOWPIPE), i(DestroyItems.SEISMOMETER), i(DestroyBlocks.REDSTONE_PROGRAMMER), i(DestroyBlocks.POLLUTOMETER),
-
-				s("kinetics"),
-				i(DestroyBlocks.COAXIAL_GEAR), i(DestroyBlocks.LARGE_COAXIAL_GEAR), i(DestroyBlocks.COLOSSAL_COGWHEEL), i(DestroyBlocks.DIFFERENTIAL), i(DestroyBlocks.DOUBLE_CARDAN_SHAFT), i(DestroyBlocks.PLANETARY_GEARSET),
 
 				s("metals"),
 				n(), i(DestroyItems.CHROMIUM_INGOT), i(DestroyBlocks.CHROMIUM_BLOCK), i(DestroyItems.CHROMIUM_POWDER), i(DestroyItems.CRUSHED_RAW_CHROMIUM), d(DestroyItems.CHROMIUM_NUGGET),

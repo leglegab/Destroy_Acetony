@@ -4,7 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.petrolpark.destroy.client.gui.DestroyGuiTextures;
+import com.petrolpark.client.rendering.PetrolparkGuiTexture;
+import com.petrolpark.compat.jei.category.PetrolparkRecipeCategory;
 import com.petrolpark.destroy.recipe.ObliterationRecipe;
 import com.petrolpark.destroy.util.DestroyTags.DestroyItemTags;
 import com.simibubi.create.content.processing.recipe.ProcessingOutput;
@@ -19,7 +20,7 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.registries.ForgeRegistries;
 
-public class ObliterationCategory extends DestroyRecipeCategory<ObliterationRecipe> {
+public class ObliterationCategory extends PetrolparkRecipeCategory<ObliterationRecipe> {
 
     public ObliterationCategory(Info<ObliterationRecipe> info, IJeiHelpers helpers) {
         super(info, helpers);
@@ -50,7 +51,7 @@ public class ObliterationCategory extends DestroyRecipeCategory<ObliterationReci
     public void draw(ObliterationRecipe recipe, IRecipeSlotsView recipeSlotsView, GuiGraphics graphics, double mouseX, double mouseY) {
         super.draw(recipe, recipeSlotsView, graphics, mouseX, mouseY);
 
-        DestroyGuiTextures.JEI_EXPLOSION.render(graphics, 76, 4);
+        PetrolparkGuiTexture.JEI_EXPLOSION.render(graphics, 76, 4);
 		AllGuiTextures.JEI_LONG_ARROW.render(graphics, 52, 54);
         PoseStack ms = graphics.pose();
         ms.pushPose();

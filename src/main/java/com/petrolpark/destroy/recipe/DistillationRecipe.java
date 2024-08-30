@@ -4,6 +4,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import com.google.common.collect.ImmutableSet;
+import com.petrolpark.recipe.advancedprocessing.IBiomeSpecificProcessingRecipe;
 import com.simibubi.create.content.processing.recipe.ProcessingRecipeBuilder.ProcessingRecipeParams;
 
 public class DistillationRecipe extends SingleFluidRecipe implements IBiomeSpecificProcessingRecipe {

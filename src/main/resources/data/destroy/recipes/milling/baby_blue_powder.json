@@ -2,7 +2,7 @@
     "type": "create:milling",
     "conditions": [
       {
-        "type": "destroy:config_boolean",
+        "type": "petrolpark:config_boolean",
         "mod": "destroy",
         "value": "enableBabyBlue"
       }

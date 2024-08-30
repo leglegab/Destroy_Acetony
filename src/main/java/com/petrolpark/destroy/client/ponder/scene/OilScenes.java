@@ -1,7 +1,7 @@
 package com.petrolpark.destroy.client.ponder.scene;
 
+import com.petrolpark.client.ponder.PonderPlayer;
 import com.petrolpark.destroy.block.entity.PumpjackBlockEntity;
-import com.petrolpark.destroy.client.ponder.PonderPlayer;
 import com.petrolpark.destroy.client.ponder.instruction.ShowSeismographInstruction;
 import com.petrolpark.destroy.client.ponder.instruction.ShowSeismographInstruction.SeismographElement;
 import com.petrolpark.destroy.fluid.DestroyFluids;

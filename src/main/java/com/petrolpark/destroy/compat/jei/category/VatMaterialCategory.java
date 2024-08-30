@@ -3,13 +3,14 @@ package com.petrolpark.destroy.compat.jei.category;
 import java.util.List;
 import java.util.Collections;
 
+import com.petrolpark.client.rendering.PetrolparkGuiTexture;
+import com.petrolpark.compat.jei.category.PetrolparkRecipeCategory;
 import com.petrolpark.destroy.Destroy;
 import com.petrolpark.destroy.block.DestroyBlocks;
-import com.petrolpark.destroy.client.gui.DestroyGuiTextures;
 import com.petrolpark.destroy.config.DestroyAllConfigs;
-import com.petrolpark.destroy.recipe.ingredient.BlockIngredient;
 import com.petrolpark.destroy.util.DestroyLang;
 import com.petrolpark.destroy.util.vat.VatMaterial;
+import com.petrolpark.recipe.ingredient.BlockIngredient;
 import com.simibubi.create.foundation.item.TooltipHelper;
 import com.simibubi.create.foundation.item.TooltipHelper.Palette;
 
@@ -27,7 +28,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.CraftingBookCategory;
 import net.minecraft.world.item.crafting.ShapelessRecipe;
 
-public class VatMaterialCategory extends DestroyRecipeCategory<VatMaterialCategory.VatMaterialRecipe> {
+public class VatMaterialCategory extends PetrolparkRecipeCategory<VatMaterialCategory.VatMaterialRecipe> {
 
     public static final Palette DARK_GRAY = Palette.ofColors(ChatFormatting.DARK_GRAY, ChatFormatting.DARK_GRAY);
 
@@ -66,7 +67,7 @@ public class VatMaterialCategory extends DestroyRecipeCategory<VatMaterialCatego
     @Override
     public void draw(VatMaterialRecipe recipe, IRecipeSlotsView recipeSlotsView, GuiGraphics guiGraphics, double mouseX, double mouseY) {
         guiGraphics.drawString(mc.font,recipeSlotsView.getSlotViews(RecipeIngredientRole.INPUT).get(0).getDisplayedItemStack().get().getHoverName(), 24, 7, 0xFFFFFF);
-        DestroyGuiTextures.JEI_LINE.render(guiGraphics, 2, 22);
+        PetrolparkGuiTexture.JEI_LINE.render(guiGraphics, 2, 22);
         VatMaterial material = recipe.material;
         guiGraphics.drawString(mc.font, DestroyLang.vatMaterialMaxPressure(material, Palette.GRAY_AND_WHITE), textX, textY, 0xFFFFFF);
         guiGraphics.drawString(mc.font, DestroyLang.vatMaterialConductivity(material, Palette.GRAY_AND_WHITE), textX, textY + textSeparation * 2, 0xFFFFFF);

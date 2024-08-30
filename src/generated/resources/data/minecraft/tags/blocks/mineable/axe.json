@@ -1,11 +1,7 @@
 {
   "values": [
     "destroy:aging_barrel",
-    "destroy:coaxial_gear",
-    "destroy:large_coaxial_gear",
-    "destroy:differential",
     "destroy:mechanical_sieve",
-    "destroy:planetary_gearset",
     "destroy:test_tube_rack",
     "destroy:vat_side",
     "destroy:stainless_steel_block",

@@ -138,6 +138,10 @@ repositories {
             includeGroup "maven.modrinth"
         }
     }
+
+    flatDir {
+        dirs '../petrolpark_local_maven/petrolpark/petrolpark-1.20.1/1.0.3'
+    }
 }
 
 configurations {
@@ -171,6 +175,9 @@ dependencies {
 
     // Registrate
     implementation fg.deobf("com.tterrag.registrate:Registrate:${registrate_version}")
+
+    // Petrolpark library
+    implementation "com.petrolpark:petrolpark:1.20.1-1.0.3"
 
     // OpenBabel
     implementation fileTree(dir: 'libs', include: '*.jar')

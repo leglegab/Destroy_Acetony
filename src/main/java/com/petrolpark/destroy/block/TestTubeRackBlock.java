@@ -6,7 +6,7 @@ import com.petrolpark.destroy.block.entity.DestroyBlockEntityTypes;
 import com.petrolpark.destroy.block.entity.TestTubeRackBlockEntity;
 import com.petrolpark.destroy.block.shape.DestroyShapes;
 import com.petrolpark.destroy.item.IMixtureStorageItem;
-import com.petrolpark.destroy.util.MathsHelper;
+import com.petrolpark.util.MathsHelper;
 import com.simibubi.create.content.equipment.wrench.IWrenchable;
 import com.simibubi.create.foundation.block.IBE;
 import com.simibubi.create.foundation.item.ItemHelper;

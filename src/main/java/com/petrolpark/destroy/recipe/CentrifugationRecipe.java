@@ -4,6 +4,7 @@ import java.util.Set;
 import java.util.HashSet;
 
 import com.ibm.icu.impl.locale.XCldrStub.ImmutableSet;
+import com.petrolpark.recipe.advancedprocessing.IBiomeSpecificProcessingRecipe;
 import com.simibubi.create.content.processing.recipe.ProcessingRecipeBuilder.ProcessingRecipeParams;
 
 import net.minecraftforge.fluids.FluidStack;

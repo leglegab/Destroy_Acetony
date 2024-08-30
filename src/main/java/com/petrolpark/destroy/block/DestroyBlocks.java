@@ -15,8 +15,6 @@ import com.petrolpark.destroy.block.spriteshifts.DestroySpriteShifts;
 import com.petrolpark.destroy.config.DestroyAllConfigs;
 import com.petrolpark.destroy.entity.PrimedBomb;
 import com.petrolpark.destroy.item.BlowpipeItem;
-import com.petrolpark.destroy.item.CoaxialGearBlockItem;
-import com.petrolpark.destroy.item.ColossalCogwheelBlockItem;
 import com.petrolpark.destroy.item.CombustibleBlockItem;
 import com.petrolpark.destroy.item.CustomExplosiveMixBlockItem;
 import com.petrolpark.destroy.item.DestroyItems;
@@ -35,8 +33,6 @@ import com.simibubi.create.AllTags.AllBlockTags;
 import com.simibubi.create.content.decoration.encasing.CasingBlock;
 import com.simibubi.create.content.decoration.encasing.EncasedCTBehaviour;
 import com.simibubi.create.content.kinetics.BlockStressDefaults;
-import com.simibubi.create.content.kinetics.simpleRelays.BracketedKineticBlockModel;
-import com.simibubi.create.content.kinetics.simpleRelays.CogwheelBlockItem;
 import com.simibubi.create.content.processing.AssemblyOperatorBlockItem;
 import com.simibubi.create.content.redstone.displayLink.AllDisplayBehaviours;
 import com.simibubi.create.foundation.block.connected.SimpleCTBehaviour;
@@ -116,26 +112,6 @@ public class DestroyBlocks {
         .build()
         .register();
 
-    public static final BlockEntry<CoaxialGearBlock> COAXIAL_GEAR = REGISTRATE.block("coaxial_gear", CoaxialGearBlock::small)
-        .initialProperties(AllBlocks.COGWHEEL)
-        .properties(p -> p
-            .sound(SoundType.WOOD)
-		    .mapColor(MapColor.DIRT)
-            .noOcclusion()
-        ).onRegister(CreateRegistrate.blockModel(() -> BracketedKineticBlockModel::new))
-        .transform(TagGen.axeOrPickaxe())
-        .item(CoaxialGearBlockItem::new)
-        .build()
-        .register();
-
-    public static final BlockEntry<CoaxialGearBlock> LARGE_COAXIAL_GEAR = REGISTRATE.block("large_coaxial_gear", CoaxialGearBlock::large)
-        .initialProperties(COAXIAL_GEAR)
-        .onRegister(CreateRegistrate.blockModel(() -> BracketedKineticBlockModel::new))
-        .transform(TagGen.axeOrPickaxe())
-        .item(CoaxialGearBlockItem::new)
-        .build()
-        .register();
-
     public static final BlockEntry<CentrifugeBlock> CENTRIFUGE = REGISTRATE.block("centrifuge", CentrifugeBlock::new)
         .initialProperties(SharedProperties::copperMetal)
         .properties(p -> p
@@ -151,31 +127,11 @@ public class DestroyBlocks {
         .transform(customItemModel())
         .register();
 
-    public static final BlockEntry<ChainedCogwheelBlock> CHAINED_COGWHEEL = REGISTRATE.block("chained_cogwheel", ChainedCogwheelBlock::small)
-        .initialProperties(AllBlocks.COGWHEEL)
-        .properties(p -> p
-            .noOcclusion()
-        ).register();
-
-    public static final BlockEntry<ChainedCogwheelBlock> CHAINED_LARGE_COGWHEEL = REGISTRATE.block("chained_large_cogwheel", ChainedCogwheelBlock::large)
-        .initialProperties(CHAINED_COGWHEEL)
-        .properties(p -> p
-            .noOcclusion()
-        ).register();
-
     public static final BlockEntry<ColorimeterBlock> COLORIMETER = REGISTRATE.block("colorimeter", ColorimeterBlock::new)
         .initialProperties(() -> Blocks.OBSERVER)
         .onRegister(AllDisplayBehaviours.assignDataBehaviour(new ColorimeterBlockEntity.ColorimeterDisplaySource()))
         .item()
         .build()
-        .register();
-
-    public static final BlockEntry<ColossalCogwheelBlock> COLOSSAL_COGWHEEL = REGISTRATE.block("colossal_cogwheel", ColossalCogwheelBlock::new)
-        .initialProperties(AllBlocks.LARGE_WATER_WHEEL)
-        .properties(p -> p
-            .noOcclusion()
-        ).item(ColossalCogwheelBlockItem::new)
-        .transform(customItemModel())
         .register();
 
     public static final BlockEntry<CoolerBlock> COOLER = REGISTRATE.block("cooler", CoolerBlock::new)
@@ -196,31 +152,6 @@ public class DestroyBlocks {
         ).item(CustomExplosiveMixBlockItem::new)
         .onRegister(registerPrimeableBombDispenserBehaviour())
         .build()
-        .register();
-
-    public static final BlockEntry<DoubleCardanShaftBlock> DOUBLE_CARDAN_SHAFT = REGISTRATE.block("double_cardan_shaft", DoubleCardanShaftBlock::new)
-        .initialProperties(AllBlocks.SHAFT)
-        .properties(p -> p
-            .mapColor(MapColor.METAL)
-            .noOcclusion()
-        ).transform(TagGen.pickaxeOnly())
-        .item()
-        .transform(customItemModel())
-        .register();
-
-    public static final BlockEntry<DifferentialBlock> DIFFERENTIAL = REGISTRATE.block("differential", DifferentialBlock::new)
-        .initialProperties(AllBlocks.LARGE_COGWHEEL)
-        .properties(p -> p
-            .noOcclusion()
-            .sound(SoundType.WOOD)
-		    .mapColor(MapColor.DIRT)
-        ).transform(TagGen.axeOrPickaxe())
-        .item(CogwheelBlockItem::new)
-        .transform(customItemModel())
-        .register();
-
-    public static final BlockEntry<DummyDifferentialBlock> DUMMY_DIFFERENTIAL = REGISTRATE.block("dummy_differential", DummyDifferentialBlock::new)
-        .initialProperties(DIFFERENTIAL)
         .register();
 
     public static final BlockEntry<DynamoBlock> DYNAMO = REGISTRATE.block("dynamo", DynamoBlock::new)
@@ -256,11 +187,6 @@ public class DestroyBlocks {
         .transform(customItemModel())
         .register();
 
-    public static final BlockEntry<LongShaftBlock> LONG_SHAFT = REGISTRATE.block("long_shaft", LongShaftBlock::new)
-        .initialProperties(AllBlocks.SHAFT)
-        .onRegister(CreateRegistrate.blockModel(() -> BracketedKineticBlockModel::new))
-        .register();
-
     public static final BlockEntry<MeasuringCylinderBlock> MEASURING_CYLINDER = REGISTRATE.block("measuring_cylinder", MeasuringCylinderBlock::new)
         .item(MeasuringCylinderBlockItem::new)
         .properties(p -> p
@@ -277,18 +203,7 @@ public class DestroyBlocks {
         .item()
         .transform(customItemModel())
         .register();
-
-    public static final BlockEntry<PlanetaryGearsetBlock> PLANETARY_GEARSET = REGISTRATE.block("planetary_gearset", PlanetaryGearsetBlock::new)
-        .initialProperties(AllBlocks.LARGE_COGWHEEL)
-        .properties(p -> p
-            .noOcclusion()
-            .sound(SoundType.WOOD)
-		    .mapColor(MapColor.DIRT)
-        ).transform(TagGen.axeOrPickaxe())
-        .item(CogwheelBlockItem::new)
-        .transform(customItemModel())
-        .register();
-
+        
     public static final BlockEntry<PollutometerBlock> POLLUTOMETER = REGISTRATE.block("pollutometer", PollutometerBlock::new)
         .initialProperties(SharedProperties::stone)
         .properties(p -> p

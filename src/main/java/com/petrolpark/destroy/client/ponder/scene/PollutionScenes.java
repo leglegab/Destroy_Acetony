@@ -1,5 +1,9 @@
 package com.petrolpark.destroy.client.ponder.scene;
 
+import com.petrolpark.client.ponder.PonderPlayer;
+import com.petrolpark.client.ponder.instruction.AdvanceTimeOfDayInstruction;
+import com.petrolpark.client.ponder.instruction.CreateFishingHookInstruction;
+import com.petrolpark.client.ponder.particle.PetrolparkEmitters;
 import com.petrolpark.destroy.block.entity.VatControllerBlockEntity;
 import com.petrolpark.destroy.block.entity.VatSideBlockEntity;
 import com.petrolpark.destroy.block.entity.VatSideBlockEntity.DisplayType;
@@ -7,12 +11,9 @@ import com.petrolpark.destroy.capability.Pollution.PollutionType;
 import com.petrolpark.destroy.chemistry.legacy.LegacyMixture;
 import com.petrolpark.destroy.chemistry.legacy.index.DestroyMolecules;
 import com.petrolpark.destroy.client.particle.DestroyParticleTypes;
+import com.petrolpark.destroy.client.particle.RainParticle;
 import com.petrolpark.destroy.client.particle.data.GasParticleData;
-import com.petrolpark.destroy.client.ponder.PonderPlayer;
-import com.petrolpark.destroy.client.ponder.instruction.AdvanceTimeOfDayInstruction;
-import com.petrolpark.destroy.client.ponder.instruction.CreateFishingHookInstruction;
 import com.petrolpark.destroy.client.ponder.instruction.SmogInstruction;
-import com.petrolpark.destroy.client.ponder.particle.DestroyEmitters;
 import com.petrolpark.destroy.fluid.MixtureFluid;
 import com.petrolpark.destroy.item.DestroyItems;
 import com.petrolpark.destroy.util.PollutionHelper;
@@ -464,10 +465,10 @@ public class PollutionScenes {
             .independent();
         for (int i = 0; i < 10; i++) {
             Color color = new Color(Color.mixColors(0xFF3E5EB8, 0xFF00FF00, (float)i / 10f));
-            scene.effects.emitParticles(Vec3.ZERO, DestroyEmitters.rain(new AABB(0d, 11d, 0d, 5d, 12d, 5d), color.getRedAsFloat(), color.getGreenAsFloat(), color.getBlueAsFloat()), 100f, 20);
+            scene.effects.emitParticles(Vec3.ZERO, PetrolparkEmitters.inAABB(new RainParticle.Data(), new AABB(0d, 11d, 0d, 5d, 12d, 5d), util.vector.of(color.getRedAsFloat(), color.getGreenAsFloat(), color.getBlueAsFloat())), 100f, 20);
             scene.idle(20);
         };
-        scene.effects.emitParticles(Vec3.ZERO, DestroyEmitters.rain(new AABB(0d, 11d, 0d, 5d, 12d, 5d), 0d, 1d, 0d), 100f, 240);
+        scene.effects.emitParticles(Vec3.ZERO, PetrolparkEmitters.inAABB(new RainParticle.Data(), new AABB(0d, 11d, 0d, 5d, 12d, 5d), util.vector.of(0d, 1d, 0d)), 100f, 240);
         scene.idle(20);
         scene.overlay.showText(200)
             .text("This text is defined in a language file.")
@@ -512,10 +513,10 @@ public class PollutionScenes {
         for (int i = 200; i >= 100; i--) {
             scene.addInstruction(new SmogInstruction(i * PollutionType.SMOG.max / 200));
             Color color = new Color(Color.mixColors(0xFF3E5EB8,0xFF00FF00,  (float)i / 200f));
-            scene.effects.emitParticles(Vec3.ZERO, DestroyEmitters.rain(new AABB(0d, 11d, 0d, 5d, 12d, 5d), color.getRedAsFloat(), color.getGreenAsFloat(), color.getBlueAsFloat()), 100f, 1);
+            scene.effects.emitParticles(Vec3.ZERO, PetrolparkEmitters.inAABB(new RainParticle.Data(), new AABB(0d, 11d, 0d, 5d, 12d, 5d), util.vector.of(color.getRedAsFloat(), color.getGreenAsFloat(), color.getBlueAsFloat())), 100f, 1);
             scene.idle(1);
         };
-        scene.effects.emitParticles(Vec3.ZERO, DestroyEmitters.rain(new AABB(0d, 11d, 0d, 5d, 12d, 5d), 31 / 256f, 174 / 256f, 92 / 256f), 100f, 50);
+        scene.effects.emitParticles(Vec3.ZERO, PetrolparkEmitters.inAABB(new RainParticle.Data(), new AABB(0d, 11d, 0d, 5d, 12d, 5d), util.vector.of(31 / 256f, 174 / 256f, 92 / 256f)), 100f, 50);
         scene.idle(20);
         scene.overlay.showText(140)
             .text("This text is defined in a language file.")
@@ -536,7 +537,7 @@ public class PollutionScenes {
         for (int i = 100; i >= 0; i--) {
             scene.addInstruction(new SmogInstruction(i * PollutionType.SMOG.max / 200));
             Color color = new Color(Color.mixColors(0xFF3E5EB8,0xFF00FF00,  (float)i / 200f));
-            scene.effects.emitParticles(Vec3.ZERO, DestroyEmitters.rain(new AABB(0d, 11d, 0d, 5d, 12d, 5d), color.getRedAsFloat(), color.getGreenAsFloat(), color.getBlueAsFloat()), 100f, 1);
+            scene.effects.emitParticles(Vec3.ZERO, PetrolparkEmitters.inAABB(new RainParticle.Data(), new AABB(0d, 11d, 0d, 5d, 12d, 5d), util.vector.of(color.getRedAsFloat(), color.getGreenAsFloat(), color.getBlueAsFloat())), 100f, 1);
             scene.idle(1);
         };
         scene.markAsFinished();
@@ -547,7 +548,7 @@ public class PollutionScenes {
         scene.configureBasePlate(0, 0, 3);
         scene.showBasePlate();
 
-        scene.effects.emitParticles(Vec3.ZERO, DestroyEmitters.rain(new AABB(0d, 10d, 0d, 3d, 11d, 3d), 0f, 0f, 1f), 20, 120);
+        scene.effects.emitParticles(Vec3.ZERO, PetrolparkEmitters.inAABB(new RainParticle.Data(), new AABB(0d, 10d, 0d, 3d, 11d, 3d), util.vector.of(0f, 0f, 1f)), 20, 120);
 
         scene.idle(20);
         scene.overlay.showText(100)

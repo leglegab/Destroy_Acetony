@@ -2,6 +2,7 @@ package com.petrolpark.destroy.fluid;
 
 import com.petrolpark.destroy.block.DestroyBlocks;
 import com.petrolpark.destroy.item.DestroyItems;
+import com.petrolpark.fluid.ICustomBlockStateFluid;
 import com.simibubi.create.content.fluids.VirtualFluid;
 
 import net.minecraft.world.item.Item;

@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Map.Entry;
 import java.util.stream.Stream;
 
+import com.petrolpark.client.rendering.item.decorator.DecayingItemDecorator;
 import com.petrolpark.destroy.Destroy;
 import com.petrolpark.destroy.block.DestroyBlocks;
 import com.petrolpark.destroy.block.color.DyeableCustomExplosiveMixBlockColor;
@@ -17,7 +18,6 @@ import com.petrolpark.destroy.item.DestroyItems;
 import com.petrolpark.destroy.item.MoleculeDisplayItem.MoleculeTooltip;
 import com.petrolpark.destroy.item.color.DyeableCustomExplosiveMixItemColor;
 import com.petrolpark.destroy.item.color.TankPeriodicTableBlockItemColor;
-import com.petrolpark.destroy.item.decorator.DecayingItemDecorator;
 import com.petrolpark.destroy.item.tooltip.CircuitPatternTooltip;
 import com.petrolpark.destroy.item.tooltip.ExplosivePropertiesTooltip;
 import com.petrolpark.destroy.util.NameLists;

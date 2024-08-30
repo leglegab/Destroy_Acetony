@@ -6,9 +6,10 @@ import java.util.List;
 import org.apache.commons.lang3.mutable.MutableInt;
 
 import com.mojang.blaze3d.vertex.PoseStack;
+import com.petrolpark.client.rendering.PetrolparkGuiTexture;
+import com.petrolpark.compat.jei.category.PetrolparkRecipeCategory;
 import com.petrolpark.destroy.block.AgingBarrelBlock;
 import com.petrolpark.destroy.block.DestroyBlocks;
-import com.petrolpark.destroy.client.gui.DestroyGuiTextures;
 import com.petrolpark.destroy.compat.jei.animation.GUIBlockRenderer;
 import com.petrolpark.destroy.recipe.AgingRecipe;
 import com.petrolpark.destroy.util.DestroyLang;
@@ -31,7 +32,7 @@ import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraftforge.fluids.FluidStack;
 
-public class AgingCategory extends DestroyRecipeCategory<AgingRecipe> {
+public class AgingCategory extends PetrolparkRecipeCategory<AgingRecipe> {
 
     private static final GUIBlockRenderer blockRenderer = new GUIBlockRenderer();
 
@@ -100,7 +101,7 @@ public class AgingCategory extends DestroyRecipeCategory<AgingRecipe> {
         stack.popPose();
 
         // Render duration text
-        DestroyGuiTextures.JEI_TEXT_BOX_LONG.render(graphics, 4, 63);
+        PetrolparkGuiTexture.JEI_TEXT_BOX_LONG.render(graphics, 4, 63);
         int seconds = (recipe.getProcessingDuration() % 1200) / 20;
         graphics.drawString(Minecraft.getInstance().font, DestroyLang.translate("tooltip.aging_barrel.aging_time", ""+ recipe.getProcessingDuration() / 1200 + ":" + (seconds < 10 ? "0" : "") + seconds).string(), 9,
 				69, 0xFFFFFF, false);

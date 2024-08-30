@@ -3,6 +3,7 @@ package com.petrolpark.destroy.block.entity.behaviour;
 import java.util.Set;
 import java.util.function.Supplier;
 
+import com.petrolpark.block.entity.behaviour.AbstractRememberPlacerBehaviour;
 import com.petrolpark.destroy.advancement.DestroyAdvancementTrigger;
 import com.simibubi.create.foundation.blockEntity.SmartBlockEntity;
 import com.simibubi.create.foundation.blockEntity.behaviour.BehaviourType;

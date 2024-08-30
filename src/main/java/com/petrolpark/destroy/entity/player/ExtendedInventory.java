@@ -4,13 +4,13 @@ import java.util.function.Consumer;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
 
+import com.petrolpark.PetrolparkTags.PetrolparkMenuTypeTags;
 import com.petrolpark.destroy.Destroy;
 import com.petrolpark.destroy.client.gui.menu.IExtendedInventoryMenu;
 import com.petrolpark.destroy.config.DestroyAllConfigs;
 import com.petrolpark.destroy.entity.attribute.DestroyAttributes;
 import com.petrolpark.destroy.network.DestroyMessages;
 import com.petrolpark.destroy.network.packet.ExtraInventorySizeChangeS2CPacket;
-import com.petrolpark.destroy.util.DestroyTags.DestroyMenuTypeTags;
 
 import net.minecraft.CrashReport;
 import net.minecraft.CrashReportCategory;
@@ -155,9 +155,9 @@ public class ExtendedInventory extends Inventory {
         try {
             MenuType<?> menuType = menu.getType();
             if (DestroyAllConfigs.SERVER.extendedInventorySafeMode.get()) {
-                return DestroyMenuTypeTags.ALWAYS_SHOWS_EXTENDED_INVENTORY.matches(menuType);
+                return PetrolparkMenuTypeTags.ALWAYS_SHOWS_EXTENDED_INVENTORY.matches(menuType);
             } else {
-                return !DestroyMenuTypeTags.NEVER_SHOWS_EXTENDED_INVENTORY.matches(menuType);
+                return !PetrolparkMenuTypeTags.NEVER_SHOWS_EXTENDED_INVENTORY.matches(menuType);
             }
         } catch (UnsupportedOperationException e) {
             return false;

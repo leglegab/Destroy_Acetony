@@ -7,10 +7,10 @@ import java.util.Optional;
 
 import com.petrolpark.destroy.advancement.DestroyAdvancementTrigger;
 import com.petrolpark.destroy.block.entity.behaviour.DestroyAdvancementBehaviour;
-import com.petrolpark.destroy.block.entity.behaviour.FirstTimeLuckyRecipesBehaviour;
 import com.petrolpark.destroy.recipe.DestroyRecipeTypes;
-import com.petrolpark.destroy.recipe.RecipeHelper;
 import com.petrolpark.destroy.recipe.SievingRecipe;
+import com.petrolpark.recipe.RecipeHelper;
+import com.petrolpark.recipe.advancedprocessing.firsttimelucky.FirstTimeLuckyRecipesBehaviour;
 import com.simibubi.create.content.kinetics.base.KineticBlockEntity;
 import com.simibubi.create.content.kinetics.belt.behaviour.DirectBeltInputBehaviour;
 import com.simibubi.create.foundation.blockEntity.behaviour.BlockEntityBehaviour;

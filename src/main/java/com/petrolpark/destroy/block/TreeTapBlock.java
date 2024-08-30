@@ -1,8 +1,8 @@
 package com.petrolpark.destroy.block;
 
+import com.petrolpark.block.entity.behaviour.AbstractRememberPlacerBehaviour;
 import com.petrolpark.destroy.block.entity.DestroyBlockEntityTypes;
 import com.petrolpark.destroy.block.entity.TreeTapBlockEntity;
-import com.petrolpark.destroy.block.entity.behaviour.AbstractRememberPlacerBehaviour;
 import com.petrolpark.destroy.block.shape.DestroyShapes;
 import com.simibubi.create.content.kinetics.base.HorizontalKineticBlock;
 import com.simibubi.create.foundation.block.IBE;

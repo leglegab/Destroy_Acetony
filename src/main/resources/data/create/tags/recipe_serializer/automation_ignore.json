@@ -1,7 +1,6 @@
 {
     "replace": false,
     "values": [
-        "destroy:manual_only_crafting_shaped",
         "destroy:circuit_board_manual_crafting"
     ]
 }

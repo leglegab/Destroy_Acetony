@@ -3,6 +3,7 @@ package com.petrolpark.destroy.compat.jei.category;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.petrolpark.compat.jei.category.PetrolparkRecipeCategory;
 import com.petrolpark.destroy.compat.jei.animation.AnimatedTreeTap;
 import com.petrolpark.destroy.recipe.TappingRecipe;
 import com.petrolpark.destroy.util.BlockTapping;
@@ -17,7 +18,7 @@ import mezz.jei.api.recipe.RecipeIngredientRole;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraftforge.fluids.FluidStack;
 
-public class TappingCategory extends DestroyRecipeCategory<TappingRecipe> {
+public class TappingCategory extends PetrolparkRecipeCategory<TappingRecipe> {
 
     public static final List<TappingRecipe> RECIPES = new ArrayList<>(BlockTapping.ALL_TAPPINGS.size());
 

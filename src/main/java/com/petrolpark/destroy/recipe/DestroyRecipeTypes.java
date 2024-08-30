@@ -6,8 +6,7 @@ import java.util.function.Supplier;
 import org.jetbrains.annotations.Nullable;
 
 import com.petrolpark.destroy.Destroy;
-import com.petrolpark.destroy.recipe.serializer.AdvancedProcessingRecipeSerializer;
-import com.petrolpark.destroy.recipe.serializer.DecayingItemCookingRecipeSerializer;
+import com.petrolpark.recipe.advancedprocessing.AdvancedProcessingRecipeSerializer;
 import com.simibubi.create.AllRecipeTypes;
 import com.simibubi.create.content.processing.recipe.ProcessingRecipeBuilder;
 import com.simibubi.create.foundation.recipe.IRecipeTypeInfo;
@@ -36,7 +35,6 @@ public enum DestroyRecipeTypes implements IRecipeTypeInfo {
     DISTILLATION(DistillationRecipe::new),
     ELECTROLYSIS(ElectrolysisRecipe::new),
     EXTRUSION(ExtrusionRecipe::new),
-    FIRST_TIME_LUCKY_MILLING(FirstTimeLuckyMillingRecipe::new, AllRecipeTypes.MILLING::getType),
     GLASSBLOWING(GlassblowingRecipe::new),
     MIXTURE_CONVERSION(MixtureConversionRecipe::new),
     MUTATION(MutationRecipe::new),
@@ -47,15 +45,10 @@ public enum DestroyRecipeTypes implements IRecipeTypeInfo {
     CIRCUIT_SEQUENCED_ASSEMBLY(CircuitSequencedAssemblyRecipe.Serializer::new, AllRecipeTypes.SEQUENCED_ASSEMBLY::getType),
 
     // Advanced Crafting Table recipes
-    MANUAL_ONLY_CRAFTING_SHAPED(ManualOnlyShapedRecipe.Serializer::new, () -> RecipeType.CRAFTING),
     CIRCUIT_BOARD_MANUAL_CRAFTING(ManualCircuitBoardRecipe.Serializer::new, () -> RecipeType.CRAFTING),
     DURATION_4_FIREWORK_ROCKET_CRAFTING(() -> ExtendedDurationFireworkRocketRecipe.DURATION_4_FIREWORK_ROCKET, () -> RecipeType.CRAFTING),
     DURATION_5_FIREWORK_ROCKET_CRAFTING(() -> ExtendedDurationFireworkRocketRecipe.DURATION_5_FIREWORK_ROCKET, () -> RecipeType.CRAFTING),
-    FILL_CUSTOM_EXPLOSIVE_MIX_ITEM(() -> FillCustomExplosiveMixItemRecipe.SERIALIZER, () -> RecipeType.CRAFTING),
-    BADGE_DUPLICATION(() -> BadgeDuplicationRecipe.BADGE_DUPLICATION, () -> RecipeType.CRAFTING),
-
-    // Advanced cooking recipies
-    DECAYING_ITEM_COOKING(DecayingItemCookingRecipeSerializer::new);
+    FILL_CUSTOM_EXPLOSIVE_MIX_ITEM(() -> FillCustomExplosiveMixItemRecipe.SERIALIZER, () -> RecipeType.CRAFTING);
     
     // This is alllllll copied from Create source code
     private final ResourceLocation id;

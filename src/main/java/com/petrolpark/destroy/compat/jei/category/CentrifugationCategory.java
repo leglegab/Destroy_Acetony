@@ -1,6 +1,7 @@
 package com.petrolpark.destroy.compat.jei.category;
 
-import com.petrolpark.destroy.client.gui.DestroyGuiTextures;
+import com.petrolpark.client.rendering.PetrolparkGuiTexture;
+import com.petrolpark.compat.jei.category.PetrolparkRecipeCategory;
 import com.petrolpark.destroy.compat.jei.animation.AnimatedCentrifuge;
 import com.petrolpark.destroy.recipe.CentrifugationRecipe;
 import com.simibubi.create.foundation.fluid.FluidIngredient;
@@ -15,7 +16,7 @@ import mezz.jei.api.recipe.RecipeIngredientRole;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraftforge.fluids.FluidStack;
 
-public class CentrifugationCategory extends DestroyRecipeCategory<CentrifugationRecipe> {
+public class CentrifugationCategory extends PetrolparkRecipeCategory<CentrifugationRecipe> {
 
     private static final AnimatedCentrifuge centrifuge = new AnimatedCentrifuge();
 
@@ -63,8 +64,8 @@ public class CentrifugationCategory extends DestroyRecipeCategory<Centrifugation
         centrifuge.draw(graphics, CENTRIFUGE_X, CENTRIFUGE_Y);
 
         AllGuiTextures.JEI_DOWN_ARROW.render(graphics, 29, 9);
-        DestroyGuiTextures.JEI_SHORT_DOWN_ARROW.render(graphics, 33, 70);
-        DestroyGuiTextures.JEI_SHORT_RIGHT_ARROW.render(graphics, 72, 38);
+        PetrolparkGuiTexture.JEI_SHORT_DOWN_ARROW.render(graphics, 33, 70);
+        PetrolparkGuiTexture.JEI_SHORT_RIGHT_ARROW.render(graphics, 72, 38);
     };
     
 }

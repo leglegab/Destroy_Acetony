@@ -21,7 +21,7 @@ import com.petrolpark.destroy.chemistry.legacy.LegacyMolecularStructure.Topology
 import com.petrolpark.destroy.chemistry.serializer.Branch;
 import com.petrolpark.destroy.chemistry.serializer.Edge;
 import com.petrolpark.destroy.chemistry.serializer.Node;
-import com.petrolpark.destroy.util.MathsHelper;
+import com.petrolpark.util.MathsHelper;
 import com.simibubi.create.foundation.gui.ILightingSettings;
 import com.simibubi.create.foundation.gui.element.GuiGameElement;
 import com.simibubi.create.foundation.utility.Pair;

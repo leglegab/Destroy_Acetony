@@ -2,9 +2,9 @@ package com.petrolpark.destroy.block;
 
 import javax.annotation.Nullable;
 
+import com.petrolpark.block.entity.behaviour.AbstractRememberPlacerBehaviour;
 import com.petrolpark.destroy.block.entity.DestroyBlockEntityTypes;
 import com.petrolpark.destroy.block.entity.VatControllerBlockEntity;
-import com.petrolpark.destroy.block.entity.behaviour.AbstractRememberPlacerBehaviour;
 import com.petrolpark.destroy.client.gui.screen.VatScreen;
 import com.petrolpark.destroy.item.IMixtureStorageItem;
 import com.simibubi.create.AllSoundEvents;

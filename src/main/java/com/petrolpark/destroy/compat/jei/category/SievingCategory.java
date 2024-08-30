@@ -1,5 +1,6 @@
 package com.petrolpark.destroy.compat.jei.category;
 
+import com.petrolpark.compat.jei.category.PetrolparkRecipeCategory;
 import com.petrolpark.destroy.compat.jei.animation.AnimatedSieve;
 import com.petrolpark.destroy.recipe.SievingRecipe;
 import com.simibubi.create.content.processing.recipe.ProcessingOutput;
@@ -12,7 +13,7 @@ import mezz.jei.api.recipe.IFocusGroup;
 import mezz.jei.api.recipe.RecipeIngredientRole;
 import net.minecraft.client.gui.GuiGraphics;
 
-public class SievingCategory extends DestroyRecipeCategory<SievingRecipe> {
+public class SievingCategory extends PetrolparkRecipeCategory<SievingRecipe> {
 
     private static final AnimatedSieve sieve = new AnimatedSieve();
 

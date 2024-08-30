@@ -3,12 +3,12 @@ package com.petrolpark.destroy.client.ponder.scene;
 import java.util.HashSet;
 import java.util.Set;
 
+import com.petrolpark.client.ponder.instruction.HighlightTagInstruction;
 import com.petrolpark.destroy.block.PeriodicTableBlock;
 import com.petrolpark.destroy.block.PeriodicTableBlock.PeriodicTableEntry;
 import com.petrolpark.destroy.block.entity.VatSideBlockEntity;
 import com.petrolpark.destroy.client.ponder.DestroyPonderTags;
 import com.petrolpark.destroy.client.ponder.instruction.DrainVatInstruction;
-import com.petrolpark.destroy.client.ponder.instruction.HighlightTagInstruction;
 import com.petrolpark.destroy.client.ponder.instruction.SetVatSideTypeInstruction;
 import com.petrolpark.destroy.client.ponder.instruction.ThermometerInstruction;
 import com.petrolpark.destroy.client.ponder.instruction.ThermometerInstruction.ThermometerElement;

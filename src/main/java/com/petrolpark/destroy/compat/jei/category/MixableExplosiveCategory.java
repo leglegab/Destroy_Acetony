@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Map.Entry;
 
 import com.mojang.blaze3d.vertex.PoseStack;
+import com.petrolpark.compat.jei.category.PetrolparkRecipeCategory;
 import com.petrolpark.destroy.Destroy;
 import com.petrolpark.destroy.client.gui.DestroyGuiTextures;
 import com.petrolpark.destroy.item.tooltip.ExplosivePropertiesTooltip;
@@ -23,7 +24,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.CraftingBookCategory;
 import net.minecraft.world.item.crafting.ShapelessRecipe;
 
-public class MixableExplosiveCategory extends DestroyRecipeCategory<MixableExplosiveCategory.MixableExplosiveRecipe> {
+public class MixableExplosiveCategory extends PetrolparkRecipeCategory<MixableExplosiveCategory.MixableExplosiveRecipe> {
     
     public MixableExplosiveCategory(Info<MixableExplosiveRecipe> info, IJeiHelpers helpers) {
         super(info, helpers);

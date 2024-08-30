@@ -9,14 +9,12 @@ import com.petrolpark.destroy.client.ponder.scene.ChemistryScenes;
 import com.petrolpark.destroy.client.ponder.scene.DestroyScenes;
 import com.petrolpark.destroy.client.ponder.scene.DynamoScenes;
 import com.petrolpark.destroy.client.ponder.scene.ExplosivesScenes;
-import com.petrolpark.destroy.client.ponder.scene.KineticsScenes;
 import com.petrolpark.destroy.client.ponder.scene.OilScenes;
 import com.petrolpark.destroy.client.ponder.scene.PollutionScenes;
 import com.petrolpark.destroy.client.ponder.scene.ProcessingScenes;
 import com.petrolpark.destroy.client.ponder.scene.TrypolithographyScenes;
 import com.petrolpark.destroy.item.DestroyItems;
 import com.simibubi.create.AllBlocks;
-import com.simibubi.create.Create;
 import com.simibubi.create.foundation.ponder.PonderRegistrationHelper;
 import com.simibubi.create.foundation.ponder.PonderRegistry;
 import com.simibubi.create.foundation.ponder.PonderStoryBoardEntry;
@@ -28,7 +26,6 @@ import net.minecraft.resources.ResourceLocation;
 public class DestroyPonderIndex {
 
     public static final PonderRegistrationHelper HELPER = new PonderRegistrationHelper(Destroy.MOD_ID);
-    private static final PonderRegistrationHelper CREATE_HELPER = new PonderRegistrationHelper(Create.ID);
 
     public static void register() {
 
@@ -69,19 +66,10 @@ public class DestroyPonderIndex {
             .addStoryBoard("processing/centrifuge/generic", ProcessingScenes::centrifugeGeneric)
             .addStoryBoard("processing/centrifuge/mixture", ProcessingScenes::centrifugeMixture, DestroyPonderTags.CHEMISTRY);
 
-        // Coaxial Gear
-        CREATE_HELPER.forComponents(DestroyBlocks.COAXIAL_GEAR)
-            .addStoryBoard("cog/small", com.simibubi.create.infrastructure.ponder.scenes.KineticsScenes::cogAsRelay);
-        HELPER.forComponents(DestroyBlocks.COAXIAL_GEAR)
-            .addStoryBoard("kinetics/coaxial_gear/shaftless", KineticsScenes::coaxialGearShaftless, DestroyPonderTags.DESTROY)
-            .addStoryBoard("kinetics/coaxial_gear/through", KineticsScenes::coaxialGearThrough);
-
+        
+        // Colorimeter
         HELPER.forComponents(DestroyBlocks.COLORIMETER)
             .addStoryBoard("colorimeter", ChemistryScenes::colorimeter);
-
-        // Colossal Cogwheel
-        HELPER.forComponents(DestroyBlocks.COLOSSAL_COGWHEEL)
-            .addStoryBoard("kinetics/colossal_cogwheel", KineticsScenes::colossalCogwheel);
 
         // Cooler
         HELPER.forComponents(DestroyBlocks.COOLER)
@@ -94,14 +82,6 @@ public class DestroyPonderIndex {
             .addStoryBoard("explosives/custom_explosive_mix_explosion", ExplosivesScenes::exploding)
             .addStoryBoard("explosives/custom_explosive_mix", (s, u) -> ExplosivesScenes.dyeing(s, u, DestroyBlocks.CUSTOM_EXPLOSIVE_MIX::asStack))
             .addStoryBoard("explosives/custom_explosive_mix", ExplosivesScenes::naming);
-
-        // Differential
-        HELPER.forComponents(DestroyBlocks.DIFFERENTIAL)
-            .addStoryBoard("kinetics/differential", KineticsScenes::differential);
-
-        // Double Cardan Shaft
-        HELPER.forComponents(DestroyBlocks.DOUBLE_CARDAN_SHAFT)
-            .addStoryBoard("kinetics/double_cardan_shaft", KineticsScenes::doubleCardanShaft);
         
         // Dynamo
         HELPER.forComponents(DestroyBlocks.DYNAMO)
@@ -124,14 +104,6 @@ public class DestroyPonderIndex {
             .addStoryBoard("trypolithography/intro", TrypolithographyScenes::intro)
             .addStoryBoard("trypolithography/rotating", TrypolithographyScenes::rotating)
             .addStoryBoard("trypolithography/flipping", TrypolithographyScenes::flipping);
-
-        // Large Coaxial Cogwheel
-        CREATE_HELPER.forComponents(DestroyBlocks.LARGE_COAXIAL_GEAR)
-            .addStoryBoard("cog/speedup", com.simibubi.create.infrastructure.ponder.scenes.KineticsScenes::cogsSpeedUp)
-            .addStoryBoard("cog/large", com.simibubi.create.infrastructure.ponder.scenes.KineticsScenes::largeCogAsRelay, AllPonderTags.KINETIC_RELAYS);
-        HELPER.forComponents(DestroyBlocks.LARGE_COAXIAL_GEAR)
-            .addStoryBoard("kinetics/coaxial_gear/shaftless", KineticsScenes::coaxialGearShaftless, DestroyPonderTags.DESTROY)
-            .addStoryBoard("kinetics/coaxial_gear/through", KineticsScenes::coaxialGearThrough);
 
         // Mechanical Mixer
         HELPER.forComponents(AllBlocks.MECHANICAL_MIXER)
@@ -157,13 +129,6 @@ public class DestroyPonderIndex {
             .addStoryBoard("pollution/reduction", PollutionScenes::reduction)
             .addStoryBoard("blank_3x3", PollutionScenes::lightning)
             .addStoryBoard("pollution/catalytic_converter", PollutionScenes::catalyticConverter);
-
-        // Planetary Gearset
-        CREATE_HELPER.forComponents(DestroyBlocks.PLANETARY_GEARSET)
-            .addStoryBoard("cog/speedup", com.simibubi.create.infrastructure.ponder.scenes.KineticsScenes::cogsSpeedUp)
-            .addStoryBoard("cog/large", com.simibubi.create.infrastructure.ponder.scenes.KineticsScenes::largeCogAsRelay);
-        HELPER.forComponents(DestroyBlocks.PLANETARY_GEARSET)
-            .addStoryBoard("kinetics/planetary_gearset", KineticsScenes::planetaryGearset, DestroyPonderTags.DESTROY);
 
         // Pumpjack
         HELPER.forComponents(DestroyBlocks.PUMPJACK)

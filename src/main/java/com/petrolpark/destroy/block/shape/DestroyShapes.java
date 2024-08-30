@@ -93,13 +93,6 @@ public class DestroyShapes {
         .add(2, 2, 6, 6, 8, 10)
         .add(10, 2, 6, 14, 8, 10)
         .forHorizontalAxis(),
-    
-    COAXIAL_GEAR = shape(2, 6, 2, 14, 10, 14)
-        .forAxis(),
-
-    PLANETARY_GEARSET = shape(0, 4.5, 0, 16, 11.5, 16)
-        .add(5, 0, 5, 11, 16, 11)
-        .forAxis(),
 
     EXTRUSION_DIE = shape(0, 0, 7, 16, 16, 9)
         .forDirectional(Direction.SOUTH),

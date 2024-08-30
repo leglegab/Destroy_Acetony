@@ -5,34 +5,25 @@ import static com.petrolpark.destroy.Destroy.REGISTRATE;
 import com.petrolpark.destroy.block.DestroyBlocks;
 import com.petrolpark.destroy.block.entity.SimpleMixtureTankBlockEntity.SimplePlaceableMixtureTankBlockEntity;
 import com.petrolpark.destroy.block.instance.CentrifugeCogInstance;
-import com.petrolpark.destroy.block.instance.DoubleCardanShaftInstance;
 import com.petrolpark.destroy.block.instance.DynamoCogInstance;
 import com.petrolpark.destroy.block.instance.HorizontalShaftlessCogwheelInstance;
-import com.petrolpark.destroy.block.instance.PlanetaryGearsetInstance;
 import com.petrolpark.destroy.block.renderer.AgingBarrelRenderer;
 import com.petrolpark.destroy.block.renderer.BlowpipeRenderer;
 import com.petrolpark.destroy.block.renderer.BubbleCapRenderer;
 import com.petrolpark.destroy.block.renderer.CentrifugeRenderer;
-import com.petrolpark.destroy.block.renderer.ChainedCogwheelRenderer;
-import com.petrolpark.destroy.block.renderer.ColossalCogwheelRenderer;
 import com.petrolpark.destroy.block.renderer.CoolerRenderer;
 import com.petrolpark.destroy.block.renderer.CustomExplosiveMixRenderer;
-import com.petrolpark.destroy.block.renderer.DifferentialRenderer;
-import com.petrolpark.destroy.block.renderer.DoubleCardanShaftRenderer;
 import com.petrolpark.destroy.block.renderer.DynamoRenderer;
 import com.petrolpark.destroy.block.renderer.KeypunchRenderer;
 import com.petrolpark.destroy.block.renderer.MechanicalSieveRenderer;
-import com.petrolpark.destroy.block.renderer.SimpleMixtureTankRenderer;
-import com.petrolpark.destroy.block.renderer.PlanetaryGearsetRenderer;
 import com.petrolpark.destroy.block.renderer.PollutometerRenderer;
 import com.petrolpark.destroy.block.renderer.PumpjackRenderer;
 import com.petrolpark.destroy.block.renderer.RedstoneProgrammerRenderer;
+import com.petrolpark.destroy.block.renderer.SimpleMixtureTankRenderer;
 import com.petrolpark.destroy.block.renderer.TestTubeRackRenderer;
 import com.petrolpark.destroy.block.renderer.TreeTapRenderer;
 import com.petrolpark.destroy.block.renderer.VatRenderer;
 import com.petrolpark.destroy.block.renderer.VatSideRenderer;
-import com.simibubi.create.content.kinetics.simpleRelays.BracketedKineticBlockEntityInstance;
-import com.simibubi.create.content.kinetics.simpleRelays.BracketedKineticBlockEntityRenderer;
 import com.tterrag.registrate.util.entry.BlockEntityEntry;
 
 public class DestroyBlockEntityTypes {
@@ -73,28 +64,9 @@ public class DestroyBlockEntityTypes {
         .renderer(() -> CentrifugeRenderer::new)
         .register();
 
-    public static final BlockEntityEntry<ChainedCogwheelBlockEntity> CHAINED_COGWHEEL = REGISTRATE
-        .blockEntity("chained_cogwheel", ChainedCogwheelBlockEntity::new)
-        .validBlocks(DestroyBlocks.CHAINED_COGWHEEL, DestroyBlocks.CHAINED_LARGE_COGWHEEL)
-        .renderer(() -> ChainedCogwheelRenderer::new)
-        .register();
-
-    public static final BlockEntityEntry<CoaxialGearBlockEntity> COAXIAL_GEAR = REGISTRATE
-		.blockEntity("coaxial_gear", CoaxialGearBlockEntity::new)
-		.instance(() -> BracketedKineticBlockEntityInstance::new, false)
-		.validBlocks(DestroyBlocks.COAXIAL_GEAR, DestroyBlocks.LARGE_COAXIAL_GEAR)
-		.renderer(() -> BracketedKineticBlockEntityRenderer::new)
-		.register();
-
     public static final BlockEntityEntry<ColorimeterBlockEntity> COLORIMETER = REGISTRATE
         .blockEntity("colorimeter", ColorimeterBlockEntity::new)
         .validBlocks(DestroyBlocks.COLORIMETER)
-        .register();
-
-    public static final BlockEntityEntry<ColossalCogwheelBlockEntity> COLOSSAL_COGWHEEL = REGISTRATE
-        .blockEntity("colossal_cogwheel", ColossalCogwheelBlockEntity::new)
-        .validBlocks(DestroyBlocks.COLOSSAL_COGWHEEL)
-        .renderer(() -> ColossalCogwheelRenderer::new)
         .register();
 
     public static final BlockEntityEntry<CoolerBlockEntity> COOLER = REGISTRATE
@@ -107,25 +79,6 @@ public class DestroyBlockEntityTypes {
         .blockEntity("custom_explosive_mix", CustomExplosiveMixBlockEntity::new)
         .validBlocks(DestroyBlocks.CUSTOM_EXPLOSIVE_MIX)
         .renderer(() -> CustomExplosiveMixRenderer::new)
-        .register();
-
-    public static final BlockEntityEntry<DoubleCardanShaftBlockEntity> DOUBLE_CARDAN_SHAFT = REGISTRATE
-        .blockEntity("double_cardan_shaft", DoubleCardanShaftBlockEntity::new)
-        .instance(() -> DoubleCardanShaftInstance::new)
-        .validBlock(DestroyBlocks.DOUBLE_CARDAN_SHAFT)
-        .renderer(() -> DoubleCardanShaftRenderer::new)
-        .register();
-
-    public static final BlockEntityEntry<DifferentialBlockEntity> DIFFERENTIAL = REGISTRATE
-        .blockEntity("differential", DifferentialBlockEntity::new)
-        //TODO instance
-        .validBlock(DestroyBlocks.DIFFERENTIAL)
-        .renderer(() -> DifferentialRenderer::new)
-        .register();
-
-    public static final BlockEntityEntry<DummyDifferentialBlockEntity> DUMMY_DIFFERENTIAL = REGISTRATE
-        .blockEntity("dummy_differential", DummyDifferentialBlockEntity::new)
-        .validBlock(DestroyBlocks.DUMMY_DIFFERENTIAL)
         .register();
 
     public static final BlockEntityEntry<DynamiteBlockEntity> DYNAMITE = REGISTRATE
@@ -152,13 +105,6 @@ public class DestroyBlockEntityTypes {
         .renderer(() -> KeypunchRenderer::new)
         .register();
 
-    public static final BlockEntityEntry<LongShaftBlockEntity> LONG_SHAFT = REGISTRATE
-        .blockEntity("long_shaft", LongShaftBlockEntity::new)
-        .instance(() -> BracketedKineticBlockEntityInstance::new, false)
-        .validBlocks(DestroyBlocks.LONG_SHAFT)
-        .renderer(() -> BracketedKineticBlockEntityRenderer::new)
-        .register();
-
     public static final BlockEntityEntry<MeasuringCylinderBlockEntity> MEASURING_CYLINDER = REGISTRATE
         .blockEntity("measuring_cylinder", MeasuringCylinderBlockEntity::new)
         .validBlock(DestroyBlocks.MEASURING_CYLINDER)
@@ -169,13 +115,6 @@ public class DestroyBlockEntityTypes {
         .blockEntity("mechanical_sieve", MechanicalSieveBlockEntity::new)
         .validBlock(DestroyBlocks.MECHANICAL_SIEVE)
         .renderer(() -> MechanicalSieveRenderer::new)
-        .register();
-
-    public static final BlockEntityEntry<PlanetaryGearsetBlockEntity> PLANETARY_GEARSET = REGISTRATE
-        .blockEntity("planetary_gearset", PlanetaryGearsetBlockEntity::new)
-        .instance(() -> PlanetaryGearsetInstance::new, false)
-        .validBlocks(DestroyBlocks.PLANETARY_GEARSET)
-        .renderer(() -> PlanetaryGearsetRenderer::new)
         .register();
 
     public static final BlockEntityEntry<PollutometerBlockEntity> POLLUTOMETER = REGISTRATE

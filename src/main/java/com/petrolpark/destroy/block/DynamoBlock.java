@@ -2,13 +2,13 @@ package com.petrolpark.destroy.block;
 
 import javax.annotation.Nullable;
 
+import com.petrolpark.block.entity.behaviour.AbstractRememberPlacerBehaviour;
 import com.petrolpark.destroy.block.entity.DestroyBlockEntityTypes;
 import com.petrolpark.destroy.block.entity.DynamoBlockEntity;
-import com.petrolpark.destroy.block.entity.behaviour.AbstractRememberPlacerBehaviour;
 import com.petrolpark.destroy.block.shape.DestroyShapes;
-import com.petrolpark.destroy.recipe.ingredient.BlockIngredient;
-import com.petrolpark.destroy.recipe.ingredient.BlockIngredient.BlockTagIngredient;
 import com.petrolpark.destroy.util.DestroyTags.DestroyBlockTags;
+import com.petrolpark.recipe.ingredient.BlockIngredient;
+import com.petrolpark.recipe.ingredient.BlockIngredient.BlockTagIngredient;
 import com.simibubi.create.content.kinetics.base.KineticBlock;
 import com.simibubi.create.foundation.block.IBE;
 

@@ -6,24 +6,19 @@ import java.util.Map;
 import java.util.Optional;
 
 import com.petrolpark.destroy.Destroy;
-import com.petrolpark.destroy.MoveToPetrolparkLibrary;
 import com.petrolpark.destroy.advancement.DestroyAdvancementTrigger;
-import com.petrolpark.destroy.badge.BadgeHandler;
 import com.petrolpark.destroy.block.DestroyBlocks;
 import com.petrolpark.destroy.block.IPickUpPutDownBlock;
 import com.petrolpark.destroy.block.MeasuringCylinderBlock;
 import com.petrolpark.destroy.block.PeriodicTableBlock;
 import com.petrolpark.destroy.block.PeriodicTableBlock.PeriodicTableEntry;
-import com.petrolpark.destroy.block.entity.behaviour.AbstractRememberPlacerBehaviour;
 import com.petrolpark.destroy.block.entity.behaviour.ExtendedBasinBehaviour;
 import com.petrolpark.destroy.block.entity.behaviour.PollutingBehaviour;
 import com.petrolpark.destroy.capability.Pollution;
 import com.petrolpark.destroy.capability.Pollution.PollutionType;
 import com.petrolpark.destroy.capability.chunk.ChunkCrudeOil;
 import com.petrolpark.destroy.capability.entity.EntityChemicalPoison;
-import com.petrolpark.destroy.capability.player.PlayerBadges;
 import com.petrolpark.destroy.capability.player.PlayerCrouching;
-import com.petrolpark.destroy.capability.player.PlayerLuckyFirstRecipes;
 import com.petrolpark.destroy.capability.player.PlayerNovelCompoundsSynthesized;
 import com.petrolpark.destroy.capability.player.babyblue.PlayerBabyBlueAddiction;
 import com.petrolpark.destroy.capability.player.babyblue.PlayerBabyBlueAddictionProvider;
@@ -49,7 +44,6 @@ import com.petrolpark.destroy.item.IMixtureStorageItem;
 import com.petrolpark.destroy.item.MeasuringCylinderBlockItem;
 import com.petrolpark.destroy.item.RedstoneProgrammerBlockItem;
 import com.petrolpark.destroy.item.SeismographItem;
-import com.petrolpark.destroy.item.DecayingItemHandler.ServerDecayingItemHandler;
 import com.petrolpark.destroy.item.SeismographItem.Seismograph;
 import com.petrolpark.destroy.network.DestroyMessages;
 import com.petrolpark.destroy.network.packet.CircuitPatternsS2CPacket;
@@ -61,8 +55,6 @@ import com.petrolpark.destroy.network.packet.SyncVatMaterialsS2CPacket;
 import com.petrolpark.destroy.recipe.CircuitDeployerApplicationRecipe;
 import com.petrolpark.destroy.recipe.DestroyRecipeTypes;
 import com.petrolpark.destroy.recipe.DiscStampingRecipe;
-import com.petrolpark.destroy.recipe.condition.ConfigBooleanCondition;
-import com.petrolpark.destroy.recipe.ingredient.BlockIngredient;
 import com.petrolpark.destroy.recipe.ingredient.CircuitPatternIngredient;
 import com.petrolpark.destroy.sound.DestroySoundEvents;
 import com.petrolpark.destroy.util.ChemistryDamageHelper;
@@ -78,6 +70,7 @@ import com.petrolpark.destroy.world.explosion.ExplosiveProperties;
 import com.petrolpark.destroy.world.village.DestroyTrades;
 import com.petrolpark.destroy.world.village.DestroyVillageAddition;
 import com.petrolpark.destroy.world.village.DestroyVillagers;
+import com.petrolpark.recipe.ingredient.BlockIngredient;
 import com.simibubi.create.AllBlocks;
 import com.simibubi.create.AllItems;
 import com.simibubi.create.api.event.BlockEntityBehaviourEvent;
@@ -224,17 +217,9 @@ public class DestroyCommonEvents {
             if (!player.getCapability(PlayerCrouching.Provider.PLAYER_CROUCHING).isPresent()) {
                 event.addCapability(Destroy.asResource("crouching"), new PlayerCrouching.Provider());
             };
-            // Add Badge Capability
-            if (!player.getCapability(PlayerBadges.Provider.PLAYER_BADGES).isPresent()) {
-                event.addCapability(Destroy.asResource("badges"), new PlayerBadges.Provider());
-            };
             // Add Novel compound Capability
             if (!player.getCapability(PlayerNovelCompoundsSynthesized.Provider.PLAYER_NOVEL_COMPOUNDS_SYNTHESIZED).isPresent()) {
                 event.addCapability(Destroy.asResource("novel_compounds_synthesized"), new PlayerNovelCompoundsSynthesized.Provider());
-            };
-            // Add Lucky first recipe Capability
-            if (!player.getCapability(PlayerLuckyFirstRecipes.Provider.PLAYER_LUCKY_FIRST_RECIPES).isPresent()) {
-                event.addCapability(Destroy.asResource("lucky_first_recipes"), new PlayerLuckyFirstRecipes.Provider());
             };
         };
     };
@@ -263,9 +248,6 @@ public class DestroyCommonEvents {
         level.getCapability(Pollution.CAPABILITY).ifPresent(levelPollution -> {
             DestroyMessages.sendToClient(new LevelPollutionS2CPacket(levelPollution), serverPlayer);
         });
-
-        // Collect the Player's badges
-        BadgeHandler.fetchAndAddBadgesIncludingEarlyBird(serverPlayer);
 
         // Update the Ponders for periodic table blocks
         DestroyMessages.sendToClient(new RefreshPeriodicTablePonderSceneS2CPacket(), serverPlayer);
@@ -312,10 +294,9 @@ public class DestroyCommonEvents {
     };
 
     /**
-     * Conserve Baby Blue addiction, Badges etc. across death.
+     * Conserve Baby Blue addiction etc. across death.
      */
     @SubscribeEvent
-    @MoveToPetrolparkLibrary
     public static void onPlayerCloned(PlayerEvent.Clone event) {
         boolean keepInv = event.getEntity().level().getGameRules().getBoolean(GameRules.RULE_KEEPINVENTORY);
         if (event.isWasDeath()) {
@@ -326,21 +307,9 @@ public class DestroyCommonEvents {
                 });
             });
 
-            // Copy Badge data
-            event.getOriginal().getCapability(PlayerBadges.Provider.PLAYER_BADGES).ifPresent(oldStore -> {
-                event.getEntity().getCapability(PlayerBadges.Provider.PLAYER_BADGES).ifPresent(newStore -> {
-                    newStore.setBadges(oldStore.getBadges());
-                });
-            });
             // Copy Novel Compound Data
             event.getOriginal().getCapability(PlayerNovelCompoundsSynthesized.Provider.PLAYER_NOVEL_COMPOUNDS_SYNTHESIZED).ifPresent(oldStore -> {
                 event.getEntity().getCapability(PlayerNovelCompoundsSynthesized.Provider.PLAYER_NOVEL_COMPOUNDS_SYNTHESIZED).ifPresent(newStore -> {
-                    newStore.copyFrom(oldStore);
-                });
-            });
-            // Copy Lucky First Recipe data
-            event.getOriginal().getCapability(PlayerLuckyFirstRecipes.Provider.PLAYER_LUCKY_FIRST_RECIPES).ifPresent(oldStore -> {
-                event.getEntity().getCapability(PlayerLuckyFirstRecipes.Provider.PLAYER_LUCKY_FIRST_RECIPES).ifPresent(newStore -> {
                     newStore.copyFrom(oldStore);
                 });
             });
@@ -369,7 +338,6 @@ public class DestroyCommonEvents {
         event.register(PlayerPreviousPositions.class);
         event.register(PlayerCrouching.class);
         event.register(EntityChemicalPoison.class);
-        event.register(PlayerBadges.class);
     };
 
     @SubscribeEvent
@@ -903,8 +871,6 @@ public class DestroyCommonEvents {
             if (PollutionHelper.pollutionEnabled() && !pollutionType.local && level.random.nextFloat() <= DestroyAllConfigs.SERVER.pollution.pollutionDecreaseRates.get(pollutionType).getF()) PollutionHelper.changePollutionGlobal(event.level, pollutionType, -1);
         };
 
-        // Decaying Items
-        if (event.phase == TickEvent.Phase.END && !event.level.isClientSide() && event.level.getServer().overworld() == event.level) ((ServerDecayingItemHandler)Destroy.DECAYING_ITEM_HANDLER.get()).gameTime++;
     };
 
     @SubscribeEvent
@@ -954,9 +920,6 @@ public class DestroyCommonEvents {
                     };
                 };
             };
-
-            // Remember-placer behaviours for non-Destroy block entities - as the adding of this behaviour is deferred, simply placing the block won't do.
-            AbstractRememberPlacerBehaviour.setPlacedBy(level, event.getPos(), serverPlayer);
         };
 
     };
@@ -975,11 +938,6 @@ public class DestroyCommonEvents {
         LevelAccessor level = event.getLevel();
 		Destroy.CIRCUIT_PUNCHER_HANDLER.onLoadWorld(level);
         Destroy.CIRCUIT_PATTERN_HANDLER.onLevelLoaded(level);
-        if (!level.isClientSide() && level.getServer().overworld() == level && level instanceof ServerLevel serverLevel) {
-            ServerDecayingItemHandler decayHandler = new ServerDecayingItemHandler();
-            decayHandler.gameTime = serverLevel.getGameTime();
-            Destroy.DECAYING_ITEM_HANDLER.set(decayHandler);  
-        };
 	};
 
 	@SubscribeEvent
@@ -1028,8 +986,6 @@ public class DestroyCommonEvents {
         @SubscribeEvent
         public static void registerIngredientTypes(RegisterEvent event) {
             if (event.getRegistryKey().equals(ForgeRegistries.Keys.RECIPE_SERIALIZERS)) {
-                // Conditions
-                CraftingHelper.register(ConfigBooleanCondition.SERIALIZER);
                 // Ingredient types
                 CraftingHelper.register(Destroy.asResource("circuit_pattern_item"), CircuitPatternIngredient.SERIALIZER);
             };

@@ -8,6 +8,8 @@ import java.util.Map;
 
 import org.joml.Vector2i;
 
+import com.petrolpark.client.rendering.PetrolparkGuiTexture;
+import com.petrolpark.compat.jei.JEITextureDrawable;
 import com.petrolpark.destroy.Destroy;
 import com.petrolpark.destroy.chemistry.legacy.IItemReactant;
 import com.petrolpark.destroy.chemistry.legacy.LegacySpecies;
@@ -15,11 +17,9 @@ import com.petrolpark.destroy.chemistry.legacy.LegacyReaction;
 import com.petrolpark.destroy.chemistry.legacy.ReactionResult;
 import com.petrolpark.destroy.chemistry.legacy.reactionresult.CombinedReactionResult;
 import com.petrolpark.destroy.chemistry.legacy.reactionresult.PrecipitateReactionResult;
-import com.petrolpark.destroy.client.gui.DestroyGuiTextures;
 import com.petrolpark.destroy.client.gui.stackedtextbox.AbstractStackedTextBox;
 import com.petrolpark.destroy.client.gui.stackedtextbox.AbstractStackedTextBox.LinesAndActivationAreas;
 import com.petrolpark.destroy.compat.jei.MoleculeJEIIngredient;
-import com.petrolpark.destroy.compat.jei.animation.DestroyGuiTextureDrawable;
 import com.petrolpark.destroy.compat.jei.tooltip.ReactionTooltipHelper;
 import com.petrolpark.destroy.config.DestroyAllConfigs;
 import com.petrolpark.destroy.item.DestroyItems;
@@ -207,7 +207,7 @@ public class ReactionCategory<T extends ReactionRecipe> extends HoverableTextCat
 
         if (DestroyAllConfigs.CLIENT.chemistry.nerdMode.get()) {
             builder.addSlot(RecipeIngredientRole.RENDER_ONLY, 163, 68)
-                .setOverlay(DestroyGuiTextureDrawable.of(DestroyGuiTextures.NERD_EMOJI), 0, 1)
+                .setOverlay(JEITextureDrawable.of(PetrolparkGuiTexture.JEI_NERD_EMOJI), 0, 1)
                 .addItemStack(DestroyItems.ABS.asStack()) // Dummy item so we actually get something generated
                 .addTooltipCallback(ReactionTooltipHelper.nerdModeTooltip(reaction));
         };
@@ -259,9 +259,9 @@ public class ReactionCategory<T extends ReactionRecipe> extends HoverableTextCat
     @Override
     public void draw(T recipe, IRecipeSlotsView recipeSlotsView, GuiGraphics graphics, double mouseX, double mouseY) {
         super.draw(recipe, recipeSlotsView, graphics, mouseX, mouseY);
-        DestroyGuiTextures.JEI_LINE.render(graphics, 2, 12);
-        DestroyGuiTextures.JEI_LINE.render(graphics, 2, 85);
-        (recipe.getReaction().displayAsReversible() ? DestroyGuiTextures.JEI_EQUILIBRIUM_ARROW : AllGuiTextures.JEI_ARROW).render(graphics, yOffset + 37, 46);
+        PetrolparkGuiTexture.JEI_LINE.render(graphics, 2, 12);
+        PetrolparkGuiTexture.JEI_LINE.render(graphics, 2, 85);
+        (recipe.getReaction().displayAsReversible() ? PetrolparkGuiTexture.JEI_EQUILIBRIUM_ARROW : AllGuiTextures.JEI_ARROW).render(graphics, yOffset + 37, 46);
     };
     
 };

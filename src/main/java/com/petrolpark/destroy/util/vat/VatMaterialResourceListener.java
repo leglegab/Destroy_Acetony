@@ -10,9 +10,9 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonSyntaxException;
 import com.petrolpark.destroy.network.DestroyMessages;
 import com.petrolpark.destroy.network.packet.SyncVatMaterialsS2CPacket;
-import com.petrolpark.destroy.recipe.ingredient.BlockIngredient;
-import com.petrolpark.destroy.recipe.ingredient.BlockIngredient.BlockTagIngredient;
-import com.petrolpark.destroy.recipe.ingredient.BlockIngredient.SingleBlockIngredient;
+import com.petrolpark.recipe.ingredient.BlockIngredient;
+import com.petrolpark.recipe.ingredient.BlockIngredient.BlockTagIngredient;
+import com.petrolpark.recipe.ingredient.BlockIngredient.SingleBlockIngredient;
 
 import net.minecraft.core.Holder;
 import net.minecraft.core.registries.BuiltInRegistries;

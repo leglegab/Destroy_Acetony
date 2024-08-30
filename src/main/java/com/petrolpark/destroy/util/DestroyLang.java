@@ -6,7 +6,6 @@ import java.util.List;
 import java.util.function.UnaryOperator;
 
 import com.petrolpark.destroy.Destroy;
-import com.petrolpark.destroy.MoveToPetrolparkLibrary;
 import com.petrolpark.destroy.block.DestroyBlocks;
 import com.petrolpark.destroy.chemistry.legacy.LegacyReaction;
 import com.petrolpark.destroy.config.DestroyAllConfigs;
@@ -31,7 +30,6 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.templates.FluidTank;
 
-@MoveToPetrolparkLibrary
 public class DestroyLang {
 
     public static final Palette WHITE_AND_WHITE = Palette.ofColors(ChatFormatting.WHITE, ChatFormatting.WHITE);

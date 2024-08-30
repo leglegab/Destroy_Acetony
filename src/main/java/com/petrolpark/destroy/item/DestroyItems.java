@@ -3,8 +3,8 @@ package com.petrolpark.destroy.item;
 import static com.petrolpark.destroy.Destroy.REGISTRATE;
 import static com.simibubi.create.AllTags.forgeItemTag;
 
+import com.petrolpark.compat.curios.CuriosSetup;
 import com.petrolpark.destroy.block.DestroyBlocks;
-import com.petrolpark.destroy.compat.curios.CuriosSetup;
 import com.petrolpark.destroy.config.DestroyAllConfigs;
 import com.petrolpark.destroy.effect.DestroyMobEffects;
 import com.petrolpark.destroy.item.food.DestroyFoods;
@@ -24,6 +24,7 @@ import com.tterrag.registrate.util.entry.ItemEntry;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.item.ArmorItem.Type;
 import net.minecraft.world.item.BowlFoodItem;
 import net.minecraft.world.item.CreativeModeTabs;
 import net.minecraft.world.item.Item;
@@ -34,7 +35,6 @@ import net.minecraft.world.item.RecordItem;
 import net.minecraft.world.item.SimpleFoiledItem;
 import net.minecraft.world.item.SolidBucketItem;
 import net.minecraft.world.item.Tiers;
-import net.minecraft.world.item.ArmorItem.Type;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraftforge.common.Tags;
 

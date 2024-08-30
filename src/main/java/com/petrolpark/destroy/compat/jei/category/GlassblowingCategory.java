@@ -1,6 +1,7 @@
 package com.petrolpark.destroy.compat.jei.category;
 
 import com.mojang.blaze3d.vertex.PoseStack;
+import com.petrolpark.compat.jei.category.PetrolparkRecipeCategory;
 import com.petrolpark.destroy.compat.jei.animation.AnimatedBlowpipe;
 import com.petrolpark.destroy.recipe.GlassblowingRecipe;
 import com.simibubi.create.foundation.gui.AllGuiTextures;
@@ -13,7 +14,7 @@ import mezz.jei.api.recipe.IFocusGroup;
 import mezz.jei.api.recipe.RecipeIngredientRole;
 import net.minecraft.client.gui.GuiGraphics;
 
-public class GlassblowingCategory extends DestroyRecipeCategory<GlassblowingRecipe> {
+public class GlassblowingCategory extends PetrolparkRecipeCategory<GlassblowingRecipe> {
 
     private final AnimatedBlowpipe blowpipe;
 

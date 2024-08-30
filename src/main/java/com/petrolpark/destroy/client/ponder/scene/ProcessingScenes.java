@@ -2,6 +2,9 @@ package com.petrolpark.destroy.client.ponder.scene;
 
 import java.util.List;
 
+import com.petrolpark.client.ponder.PonderPlayer;
+import com.petrolpark.client.ponder.instruction.LivingEntitySwingInstruction;
+import com.petrolpark.client.ponder.instruction.OutlineAABBInstruction;
 import com.petrolpark.destroy.Destroy;
 import com.petrolpark.destroy.block.AgingBarrelBlock;
 import com.petrolpark.destroy.block.BubbleCapBlock;
@@ -16,9 +19,6 @@ import com.petrolpark.destroy.chemistry.legacy.ReadOnlyMixture;
 import com.petrolpark.destroy.chemistry.legacy.index.DestroyMolecules;
 import com.petrolpark.destroy.client.particle.DestroyParticleTypes;
 import com.petrolpark.destroy.client.particle.data.GasParticleData;
-import com.petrolpark.destroy.client.ponder.PonderPlayer;
-import com.petrolpark.destroy.client.ponder.instruction.LivingEntitySwingInstruction;
-import com.petrolpark.destroy.client.ponder.instruction.OutlineAABBInstruction;
 import com.petrolpark.destroy.fluid.DestroyFluids;
 import com.petrolpark.destroy.fluid.MixtureFluid;
 import com.petrolpark.destroy.item.DestroyItems;

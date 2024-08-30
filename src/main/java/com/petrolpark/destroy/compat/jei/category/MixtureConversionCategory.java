@@ -3,6 +3,7 @@ package com.petrolpark.destroy.compat.jei.category;
 import java.util.List;
 import java.util.Collections;
 
+import com.petrolpark.compat.jei.category.PetrolparkRecipeCategory;
 import com.petrolpark.destroy.recipe.MixtureConversionRecipe;
 import com.petrolpark.destroy.util.DestroyLang;
 import com.simibubi.create.foundation.gui.AllGuiTextures;
@@ -19,7 +20,7 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
 import net.minecraftforge.fluids.FluidStack;
 
-public class MixtureConversionCategory extends DestroyRecipeCategory<MixtureConversionRecipe> {
+public class MixtureConversionCategory extends PetrolparkRecipeCategory<MixtureConversionRecipe> {
 
     public MixtureConversionCategory(Info<MixtureConversionRecipe> info, IJeiHelpers helpers) {
         super(info, helpers);

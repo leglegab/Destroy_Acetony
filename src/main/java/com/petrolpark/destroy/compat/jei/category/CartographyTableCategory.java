@@ -2,6 +2,7 @@ package com.petrolpark.destroy.compat.jei.category;
 
 import java.util.List;
 
+import com.petrolpark.compat.jei.category.PetrolparkRecipeCategory;
 import com.petrolpark.destroy.Destroy;
 import com.petrolpark.destroy.item.DestroyItems;
 import com.petrolpark.destroy.util.DestroyLang;
@@ -26,7 +27,7 @@ import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.ShapelessRecipe;
 import net.minecraft.world.level.ItemLike;
 
-public class CartographyTableCategory extends DestroyRecipeCategory<CartographyTableCategory.CartographyTableRecipe> {
+public class CartographyTableCategory extends PetrolparkRecipeCategory<CartographyTableCategory.CartographyTableRecipe> {
 
     private final Minecraft mc;
 

@@ -5,8 +5,8 @@ import java.util.Map;
 import java.util.function.Supplier;
 
 import com.petrolpark.destroy.client.ponder.DestroyPonderTags;
-import com.petrolpark.destroy.recipe.ingredient.BlockIngredient;
 import com.petrolpark.destroy.util.vat.VatMaterial;
+import com.petrolpark.recipe.ingredient.BlockIngredient;
 
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraftforge.network.NetworkEvent.Context;

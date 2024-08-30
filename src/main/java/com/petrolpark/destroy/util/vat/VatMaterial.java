@@ -7,8 +7,7 @@ import java.util.Optional;
 import java.util.Iterator;
 
 import com.petrolpark.destroy.block.DestroyBlocks;
-import com.petrolpark.destroy.recipe.ingredient.BlockIngredient;
-import com.petrolpark.destroy.recipe.ingredient.BlockIngredient.SingleBlockIngredient;
+import com.petrolpark.recipe.ingredient.BlockIngredient;
 
 import net.minecraft.world.level.block.state.BlockState;
 
@@ -44,6 +43,6 @@ public record VatMaterial(float maxPressure, float thermalConductivity, boolean 
     };
 
     public static void registerDestroyVatMaterials() {
-        BLOCK_MATERIALS.put(new SingleBlockIngredient(DestroyBlocks.VAT_CONTROLLER.get()), UNBREAKABLE);
+        BLOCK_MATERIALS.put(new BlockIngredient.SingleBlockIngredient(DestroyBlocks.VAT_CONTROLLER.get()), UNBREAKABLE);
     };
 };

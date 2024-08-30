@@ -9,9 +9,9 @@ import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexFormat;
 import com.mojang.blaze3d.vertex.Tesselator;
+import com.petrolpark.client.rendering.IGuiTexture;
 import com.petrolpark.destroy.Destroy;
 import com.simibubi.create.foundation.gui.UIRenderHelper;
-import com.simibubi.create.foundation.gui.element.ScreenElement;
 import com.simibubi.create.foundation.utility.Color;
 
 import net.minecraft.client.gui.GuiGraphics;
@@ -21,7 +21,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
-public enum DestroyGuiTextures implements ScreenElement {
+public enum DestroyGuiTextures implements IGuiTexture {
 
 	// Circuits
 	CIRCUIT_BOARD_BORDER("circuit", 48, 48),
@@ -116,33 +116,15 @@ public enum DestroyGuiTextures implements ScreenElement {
 	BLOWPIPE_SCROLL("blowpipe", 95, 0, 12, 15),
 	BLOWPIPE_SCROLL_LOCKED("blowpipe", 95 + 12, 0, 12, 15),
 
-	// Creative Mode Tab
-	CREATIVE_MODE_TAB_BLANK_ROW("creative_inventory", 0, 0, 162, 18),
-
-    // JEI
-	JEI_POINTING_HAND("jei/widgets", 40, 40, 18, 14),
-    JEI_SHORT_DOWN_ARROW("jei/widgets", 0, 64, 18, 18),
-    JEI_SHORT_RIGHT_ARROW("jei/widgets", 0, 82, 18, 16),
-	JEI_EQUILIBRIUM_ARROW("jei/widgets", 0, 96, 42, 11),
-	JEI_LINE("jei/widgets", 40, 38, 177, 2),
-	JEI_TEXT_BOX_LONG("jei/widgets",169, 19),
-	JEI_TEXT_BOX_SHORT("jei/widgets", 0, 19, 115, 19),
-	JEI_DISTILLATION_TOWER_BOTTOM("jei/widgets", 0, 52, 12, 12),
-	JEI_DISTILLATION_TOWER_MIDDLE("jei/widgets", 0, 40, 20, 12),
-	JEI_DISTILLATION_TOWER_TOP("jei/widgets", 0, 38, 12, 2),
-	JEI_DISTILLATION_TOWER_BRANCH("jei/widgets", 20, 45, 20, 2),
-	JEI_EXPLOSION("jei/widgets", 169, 0, 18, 21),
-
 	// Ponder
 	THERMOMETER("ponder", 0, 0, 16, 32),
 
 	// Misc
-	NERD_EMOJI("jei/widgets", 115, 19, 16, 14),
 	INVENTORY_BACKGROUND("inventory", 0, 0, 9, 9, 64, 64),
 	INVENTORY_SLOT("inventory", 0, 22, 18, 18, 64, 64),
 	HOTBAR_BACKGROUND("inventory", 9, 0, 22, 22, 64, 64),
 	HOTBAR_SLOT("inventory", 31, 0, 20, 20, 64, 64),
-	GLOBE("jei/widgets", 115 + 16, 19, 16, 14);
+	;
 
     public final ResourceLocation location;
 	public final int width, height, startX, startY, textureWidth, textureHeight;
@@ -174,6 +156,41 @@ public enum DestroyGuiTextures implements ScreenElement {
 
 	public RenderType asTextRenderType() {
 		return RenderType.text(location);
+	};
+
+	@Override
+	public ResourceLocation getLocation() {
+		return location;
+	};
+
+	@Override
+	public int getStartX() {
+		return startX;
+	};
+
+	@Override
+	public int getStartY() {
+		return startY;
+	};
+
+	@Override
+	public int getWidth() {
+		return width;
+	};
+
+	@Override
+	public int getHeight() {
+		return height;
+	};
+
+	@Override
+	public int getTextureWidth() {
+		return textureWidth;
+	};
+
+	@Override
+	public int getTextureHeight() {
+		return textureHeight;
 	};
 
     @OnlyIn(Dist.CLIENT)

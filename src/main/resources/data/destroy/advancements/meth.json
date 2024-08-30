@@ -2,7 +2,7 @@
     "parent": "destroy:baby_blue",
     "conditions": [
       {
-        "type": "destroy:config_boolean",
+        "type": "petrolpark:config_boolean",
         "mod": "destroy",
         "value": "enableBabyBlue"
       }

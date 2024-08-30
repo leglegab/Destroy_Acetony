@@ -6,8 +6,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.petrolpark.compat.CompatMods;
 import com.petrolpark.destroy.Destroy;
-import com.petrolpark.destroy.compat.CompatMods;
 import com.petrolpark.destroy.config.DestroyAllConfigs;
 import com.petrolpark.destroy.recipe.DestroyRecipeTypes;
 import com.petrolpark.destroy.recipe.DistillationRecipe;

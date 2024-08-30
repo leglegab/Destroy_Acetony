@@ -2,11 +2,11 @@ package com.petrolpark.destroy.client.ponder.scene;
 
 import java.util.function.Supplier;
 
+import com.petrolpark.client.ponder.particle.PetrolparkEmitters;
+import com.petrolpark.compat.CompatMods;
 import com.petrolpark.destroy.block.DestroyBlocks;
 import com.petrolpark.destroy.block.entity.CustomExplosiveMixBlockEntity;
 import com.petrolpark.destroy.block.entity.IDyeableCustomExplosiveMixBlockEntity;
-import com.petrolpark.destroy.client.ponder.particle.DestroyEmitters;
-import com.petrolpark.destroy.compat.CompatMods;
 import com.petrolpark.destroy.item.DestroyItems;
 import com.simibubi.create.AllBlocks;
 import com.simibubi.create.foundation.ponder.ElementLink;
@@ -128,7 +128,7 @@ public class ExplosivesScenes {
             .text("This text is defined in a language file.")
             .independent();
         scene.idle(60);
-        scene.effects.emitParticles(util.vector.centerOf(second), DestroyEmitters.fireworkBall(0.25f, 4, new int[]{0xFF41CD34}, new int[0], false, false), 1f, 1);
+        scene.effects.emitParticles(util.vector.centerOf(second), PetrolparkEmitters.fireworkBall(0.25f, 4, new int[]{0xFF41CD34}, new int[0], false, false), 1f, 1);
         scene.world.hideIndependentSectionImmediately(bomb);
         scene.idle(5);
         scene.world.destroyBlock(util.grid.at(2, 1, 2));
@@ -148,7 +148,7 @@ public class ExplosivesScenes {
             .attachKeyFrame()
             .pointAt(util.vector.blockSurface(first, Direction.WEST));
         scene.idle(40);
-        scene.effects.emitParticles(util.vector.centerOf(second), DestroyEmitters.fireworkBall(0.25f, 4, new int[]{0xFF41CD34}, new int[0], false, false), 1f, 1);
+        scene.effects.emitParticles(util.vector.centerOf(second), PetrolparkEmitters.fireworkBall(0.25f, 4, new int[]{0xFF41CD34}, new int[0], false, false), 1f, 1);
         scene.world.hideIndependentSectionImmediately(bomb);
         scene.idle(5);
         scene.world.modifyEntities(ItemEntity.class, Entity::kill);

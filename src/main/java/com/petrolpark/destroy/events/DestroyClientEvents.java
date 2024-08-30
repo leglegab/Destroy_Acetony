@@ -17,7 +17,6 @@ import com.petrolpark.destroy.item.SwissArmyKnifeItem;
 import com.petrolpark.destroy.item.renderer.SeismometerItemRenderer;
 import com.petrolpark.destroy.item.tooltip.ExplosivePropertiesTooltip;
 import com.petrolpark.destroy.mixin.accessor.MenuRowsAccessor;
-import com.petrolpark.destroy.util.CogwheelChainingHandler;
 import com.petrolpark.destroy.util.DestroyLang;
 import com.petrolpark.destroy.util.PollutionHelper;
 import com.petrolpark.destroy.world.explosion.ExplosiveProperties;
@@ -62,7 +61,6 @@ public class DestroyClientEvents {
     @SubscribeEvent
     public static void onTick(TickEvent.ClientTickEvent event) {
         if (event.phase == TickEvent.Phase.START) {
-            CogwheelChainingHandler.tick();
             SeismometerItemRenderer.tick();
             SwissArmyKnifeItem.clientPlayerTick();
             DestroyClient.FOG_HANDLER.tick();
