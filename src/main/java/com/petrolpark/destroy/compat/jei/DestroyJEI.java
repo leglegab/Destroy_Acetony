@@ -433,6 +433,6 @@ public class DestroyJEI implements IModPlugin {
         halfDurability.setDamageValue(halfDurability.getMaxDamage() / 2);
         ItemStack threeQuarterDurability = input.copy();
         threeQuarterDurability.setDamageValue(threeQuarterDurability.getMaxDamage() * 3 / 4);
-        return new AnvilRecipe(Collections.singletonList(halfDurability), Arrays.asList(repairItem.getItems()), Collections.singletonList(threeQuarterDurability));
+        return new AnvilRecipe(Collections.singletonList(halfDurability), Arrays.asList(repairItem.getItems()), Collections.singletonList(threeQuarterDurability), null);
     };
 };

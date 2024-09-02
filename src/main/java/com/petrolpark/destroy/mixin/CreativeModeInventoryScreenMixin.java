@@ -58,7 +58,7 @@ public abstract class CreativeModeInventoryScreenMixin extends EffectRenderingIn
         method = "Lnet/minecraft/client/gui/screens/inventory/CreativeModeInventoryScreen;selectTab(Lnet/minecraft/world/item/CreativeModeTab;)V",
         at = @At(
             value = "FIELD",
-            target = "destroyItemSlot",
+            target = "Lnet/minecraft/client/gui/screens/inventory/CreativeModeInventoryScreen;destroyItemSlot:Lnet/minecraft/world/inventory/Slot;",
             ordinal = 0
         )
     )

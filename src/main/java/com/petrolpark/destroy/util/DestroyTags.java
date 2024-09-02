@@ -3,15 +3,19 @@ package com.petrolpark.destroy.util;
 import com.petrolpark.destroy.Destroy;
 import com.simibubi.create.foundation.utility.Lang;
 
+import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.FluidTags;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.tags.TagKey;
+import net.minecraft.world.effect.MobEffect;
+import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.material.Fluid;
+import net.minecraftforge.registries.ForgeRegistries;
 
 public class DestroyTags {
 
@@ -121,6 +125,24 @@ public class DestroyTags {
         @SuppressWarnings("deprecation") // Create does it therefore so can I
         public boolean matches(Fluid fluid) {
             return fluid.builtInRegistryHolder().is(tag);
+        };
+    };
+
+    public enum DestroyMobEffectTags {
+        CAUSES_INFERTILITY;
+
+        public final TagKey<MobEffect> tag;
+
+        DestroyMobEffectTags() {
+            tag = TagKey.create(Registries.MOB_EFFECT, Destroy.asResource(Lang.asId(name())));
+        };
+
+        public boolean matches(MobEffectInstance effect) {
+            return matches(effect.getEffect());
+        };
+
+        public boolean matches(MobEffect effect) {
+            return ForgeRegistries.MOB_EFFECTS.getHolder(effect).orElseThrow().is(tag);
         };
     };
 

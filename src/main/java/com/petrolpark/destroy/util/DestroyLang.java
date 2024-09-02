@@ -326,7 +326,10 @@ public class DestroyLang {
         String translationKey = useMoles ? "tooltip.mixture_contents.moles" : "tooltip.mixture_contents.concentration";
         double smallestVisibleQuantity = Math.pow(10, -concentrationFormatter.getMaximumFractionDigits());
         if (quantity != 0f) {
-            if (Math.abs(quantity) <= smallestVisibleQuantity / 1000f) {
+            if (Math.abs(quantity) >= 1000f) {
+                quantity /= 1000f;
+                translationKey += ".kilo";
+            } else if (Math.abs(quantity) <= smallestVisibleQuantity / 1000f) {
                 quantity *= 1000000f;
                 translationKey += ".micro";
             } else if (Math.abs(quantity) <= smallestVisibleQuantity) {

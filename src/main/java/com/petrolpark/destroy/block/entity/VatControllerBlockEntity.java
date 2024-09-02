@@ -19,6 +19,7 @@ import com.petrolpark.destroy.block.entity.behaviour.DestroyAdvancementBehaviour
 import com.petrolpark.destroy.block.entity.behaviour.fluidTankBehaviour.VatFluidTankBehaviour;
 import com.petrolpark.destroy.block.entity.behaviour.fluidTankBehaviour.VatFluidTankBehaviour.VatTankSegment.VatFluidTank;
 import com.petrolpark.destroy.capability.Pollution;
+import com.petrolpark.destroy.chemistry.api.util.Constants;
 import com.petrolpark.destroy.chemistry.legacy.LegacyMixture;
 import com.petrolpark.destroy.chemistry.legacy.LegacyReaction;
 import com.petrolpark.destroy.chemistry.legacy.ReadOnlyMixture;
@@ -193,7 +194,7 @@ public class VatControllerBlockEntity extends SmartBlockEntity implements IHaveG
             boolean shouldUpdateFluidMixture = false;
             Vat vat = getVatOptional().get();
             if (tankBehaviour.isEmpty()) return;
-            double fluidAmount = getCapacity() / 1000; // 1000 converts getFluidAmount() in mB to Buckets
+            double fluidAmount = getCapacity() / Constants.MILLIBUCKETS_PER_LITER; // Converts getFluidAmount() in mB to Buckets
 
             int cyclesPerTick = getSimulationLevel();
 
@@ -754,24 +755,28 @@ public class VatControllerBlockEntity extends SmartBlockEntity implements IHaveG
         };
 
         protected FluidStack drainLiquidTank(FluidStack resource, FluidAction action) {
+            if (vatControllerGetter.get() == null) return FluidStack.EMPTY;
             FluidStack stack = vatControllerGetter.get().getLiquidTank().drain(resource, action);
             updateVatGasVolume(stack, action);
             return stack;
         };
 
         protected FluidStack drainLiquidTank(int amount, FluidAction action) {
+            if (vatControllerGetter.get() == null) return FluidStack.EMPTY;
             FluidStack stack = vatControllerGetter.get().getLiquidTank().drain(amount, action);
             updateVatGasVolume(stack, action);
             return stack;
         };
 
         protected FluidStack drainGasTank(FluidStack resource, FluidAction action) {
+            if (vatControllerGetter.get() == null) return FluidStack.EMPTY;
             FluidStack stack = vatControllerGetter.get().getGasTank().drain(resource, action);
             updateVatGasVolume(stack, action);
             return stack;
         };
 
         protected FluidStack drainGasTank(int amount, FluidAction action) {
+            if (vatControllerGetter.get() == null) return FluidStack.EMPTY;
             FluidStack stack = vatControllerGetter.get().getGasTank().drain(amount, action);
             updateVatGasVolume(stack, action);
             return stack;
@@ -783,7 +788,7 @@ public class VatControllerBlockEntity extends SmartBlockEntity implements IHaveG
          * The amount of Fluid lost from the tank and the amount of Fluid extracted will not necessarily be the same.
          */
         protected FluidStack drainGasTankWithMolarDensity(int amount, double molarDensity, FluidAction action) {
-            if (vatControllerGetter.get().getGasTankContents().isEmpty()) return FluidStack.EMPTY;
+            if (vatControllerGetter.get() == null || vatControllerGetter.get().getGasTankContents().isEmpty()) return FluidStack.EMPTY;
             LegacyMixture mixture = LegacyMixture.readNBT(vatControllerGetter.get().getGasTankContents().getOrCreateChildTag("Mixture"));
             double scaleFactor = mixture.getTotalConcentration() / molarDensity;
             FluidStack lostFluid = drainGasTank((int)(0.5d + scaleFactor * amount), action); // Round up

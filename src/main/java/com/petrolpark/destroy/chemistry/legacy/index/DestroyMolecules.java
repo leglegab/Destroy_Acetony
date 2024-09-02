@@ -195,7 +195,7 @@ public final class DestroyMolecules {
         .id("carbon_dioxide")
         .structure(LegacyMolecularStructure.deserialize("destroy:linear:O=C=O"))
         .boilingPoint(-78.4645f) // Sublimes, doesn't "boil"
-        .density(1.977f) // Gas density
+        .density(827.3f)
         .molarHeatCapacity(37.135f)
         .tag(Tags.GREENHOUSE)
         .build(),
@@ -233,7 +233,7 @@ public final class DestroyMolecules {
         .structure(LegacyMolecularStructure.deserialize("destroy:linear:ClCl"))
         .color(0x20F9FCC2)
         .boilingPoint(-34.04f)
-        .density(3.2f) // Gas density
+        .density(1562.5f) 
         .molarHeatCapacity(33.949f)
         .tag(Tags.ACUTELY_TOXIC)
         .tag(Tags.OZONE_DEPLETER)
@@ -250,7 +250,7 @@ public final class DestroyMolecules {
         .id("chlorodifluoromethane")
         .structure(LegacyMolecularStructure.deserialize("destroy:linear:ClC(F)F"))
         .boilingPoint(-40.7f)
-        .density(3.66f) // Gas density
+        .density(1186.8f)
         .molarHeatCapacity(112.6f)
         .tag(Tags.OZONE_DEPLETER)
         .tag(Tags.REFRIGERANT)
@@ -263,6 +263,15 @@ public final class DestroyMolecules {
         .density(889.8f)
         .molarHeatCapacity(40.7f)
         .tag(Tags.OZONE_DEPLETER)
+        .tag(Tags.CARCINOGEN)
+        .build(),
+
+    CHLOROETHENE = builder()
+        .id("chloroethene")
+        .structure(LegacyMolecularStructure.deserialize("destroy:linear:C=CCl"))
+        .boilingPoint(-13.4f)
+        .density(911f)
+        .molarHeatCapacity(85.92f)
         .tag(Tags.CARCINOGEN)
         .build(),
 
@@ -620,7 +629,7 @@ public final class DestroyMolecules {
     HYDROFLUORIC_ACID = builder()
         .id("hydrofluoric_acid")
         .structure(LegacyMolecularStructure.deserialize("destroy:linear:FH"))
-        .density(1.15f)
+        .density(990f)
         .boilingPoint(19.5f)
         // Heat capacity unknown
         .tag(Tags.ACUTELY_TOXIC)
@@ -733,6 +742,11 @@ public final class DestroyMolecules {
         .id("iron_iii")
         .structure(LegacyMolecularStructure.atom(LegacyElement.IRON, 3))
         .color(0x80F94939)
+        .build(),
+
+    LEAD_II = builder()
+        .id("lead_ii")
+        .structure(LegacyMolecularStructure.atom(LegacyElement.LEAD, 2))
         .build(),
 
     MERCURY = builder()

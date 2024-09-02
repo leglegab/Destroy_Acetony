@@ -3,14 +3,14 @@
     "ingredients": [
       {
         "mixtureFluidWithIon": "destroy:mixture",
-        "molecule": "destroy:copper_ii",
+        "molecule": "destroy:chromium_iii",
         "concentration": 0.4,
         "amount": 25
       }
     ],
     "results": [
       {
-        "item": "destroy:copper_powder"
+        "item": "destroy:chromium_powder"
       }
     ]
   }

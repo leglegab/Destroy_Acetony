@@ -4,8 +4,8 @@
       {
         "mixtureFluidWithIon": "destroy:mixture",
         "molecule": "destroy:nickel_ion",
-        "concentration": 4,
-        "amount": 250
+        "concentration": 0.4,
+        "amount": 25
       }
     ],
     "results": [

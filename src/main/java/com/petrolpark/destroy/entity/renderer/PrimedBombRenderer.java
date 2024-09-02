@@ -28,10 +28,9 @@ public class PrimedBombRenderer<T extends PrimedBomb> extends EntityRenderer<T> 
      */
     @Override
     public void render(T entity, float entityYaw, float partialTicks, PoseStack ms, MultiBufferSource buffer, int packedLight) {
-        if (!(entity instanceof PrimedBomb bombEntity)) return;
         ms.pushPose();
         ms.translate(0.0F, 0.5F, 0.0F);
-        int i = bombEntity.getFuse();
+        int i = entity.getFuse();
         if ((float)i - partialTicks < 9f) {
             float f = 1f + (float)Math.pow(Mth.clamp(1f - ((float)i - partialTicks + 1f) / 10f, 0.0f, 1f), 3) * 0.3f; // Grow the Entity as it is about to explode
             ms.scale(f, f, f);

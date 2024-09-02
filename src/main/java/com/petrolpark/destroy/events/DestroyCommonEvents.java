@@ -60,6 +60,7 @@ import com.petrolpark.destroy.sound.DestroySoundEvents;
 import com.petrolpark.destroy.util.ChemistryDamageHelper;
 import com.petrolpark.destroy.util.DestroyLang;
 import com.petrolpark.destroy.util.DestroyTags.DestroyItemTags;
+import com.petrolpark.destroy.util.DestroyTags.DestroyMobEffectTags;
 import com.petrolpark.destroy.util.PollutionHelper;
 import com.petrolpark.destroy.util.RedstoneProgrammerItemHandler;
 import com.petrolpark.destroy.util.vat.VatMaterial;
@@ -616,7 +617,7 @@ public class DestroyCommonEvents {
         ItemStack stack = event.getItemStack();
 
         // Filling placed Measuring Cylinders
-        if (state.getBlock() instanceof MeasuringCylinderBlock cylinderBlock) {
+        if (state.getBlock() instanceof MeasuringCylinderBlock) {
             InteractionResult result = MeasuringCylinderBlockItem.tryOpenTransferScreen(world, pos, state, event.getFace(), player, event.getHand(), stack, true);
             if (result != InteractionResult.PASS) {
                 event.setCancellationResult(result);
@@ -772,16 +773,31 @@ public class DestroyCommonEvents {
     };
 
     /**
-     * Add a chance for birth failures depending on the level of smog in the world.
+     * Add a chance for birth failures depending on the level of smog in the world and whether either parent is infertile.
      */
     @SubscribeEvent
     public static void onBabyBirthed(BabyEntitySpawnEvent event) {
-        if (!PollutionHelper.pollutionEnabled() || !DestroyAllConfigs.SERVER.pollution.breedingAffected.get()) return;
         Level level = event.getParentA().level();
         RandomSource random = event.getParentA().getRandom();
-        if (event.getParentA().getRandom().nextInt(PollutionType.SMOG.max) <= PollutionHelper.getPollution(level, event.getParentA().getOnPos(), PollutionType.SMOG)) { // 0% chance of failure for 0 smog, 100% chance for full smog
+        List<Mob> parents = List.of(event.getParentA(), event.getParentB());
+        boolean failure = false;
+
+        // Failure due to infertility
+        for (Mob parent : parents) {
+            if (parent.getActiveEffects().stream().anyMatch(DestroyMobEffectTags.CAUSES_INFERTILITY::matches)) {
+                failure = true;
+                break;
+            };
+        };
+
+        // Failure due to smog
+        if (!failure && PollutionHelper.pollutionEnabled() && DestroyAllConfigs.SERVER.pollution.breedingAffected.get() && event.getParentA().getRandom().nextInt(PollutionType.SMOG.max) <= PollutionHelper.getPollution(level, event.getParentA().getOnPos(), PollutionType.SMOG)) { // 0% chance of failure for 0 smog, 100% chance for full smog
+            failure = true;
+        };
+
+        if (failure) { 
             if (level instanceof ServerLevel serverLevel) {
-                for (Mob parent : List.of(event.getParentA(), event.getParentB())) {
+                for (Mob parent : parents) {
                     for(int i = 0; i < 7; ++i) {
                         serverLevel.sendParticles(ParticleTypes.ANGRY_VILLAGER, parent.getRandomX(1d), parent.getRandomY() + 0.5d, parent.getRandomZ(1d), 1, random.nextGaussian() * 0.5d, random.nextGaussian() * 0.5d, random.nextGaussian() * 0.5d, 0.02d);
                     };

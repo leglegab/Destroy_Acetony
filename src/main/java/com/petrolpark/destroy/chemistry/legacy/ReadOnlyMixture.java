@@ -13,6 +13,7 @@ import java.util.function.Supplier;
 import javax.annotation.Nullable;
 
 import com.petrolpark.destroy.Destroy;
+import com.petrolpark.destroy.chemistry.api.util.Constants;
 import com.petrolpark.destroy.chemistry.legacy.index.DestroyMolecules;
 import com.petrolpark.destroy.util.DestroyLang;
 import com.simibubi.create.foundation.utility.NBTHelper;
@@ -308,7 +309,7 @@ public class ReadOnlyMixture {
         
         int quantityLabelLength = DestroyLang.quantity(0f, useMoles, concentrationFormatter).string().length() + 2;
         for (LegacySpecies molecule : molecules) {
-            float quantity = contents.get(molecule) * (useMoles ? amount / 1000f: 1);
+            float quantity = contents.get(molecule) * (useMoles ? amount / Constants.MILLIBUCKETS_PER_LITER: 1);
             tooltip.add(i, DestroyLang.builder()
                 .space().space()
                 .add(Component.literal(monospace ? String.format("%1$"+quantityLabelLength+"s", DestroyLang.quantity(quantity, useMoles, concentrationFormatter).string()) : DestroyLang.quantity(quantity, useMoles, concentrationFormatter).string())) // Show concentration

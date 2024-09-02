@@ -2,6 +2,12 @@ package com.petrolpark.destroy.config;
 
 public class DestroyBlocksConfigs extends DestroyConfigBase {
 
+    public final ConfigInt customExplosiveMixSize = i(5, 0, 16, "customExplosiveMixSize", "Inventory size of Mixed Explosives");
+    
+    public final ConfigInt beakerCapacity = i(500, "beakerCapacity", "The capacity (in mB) of Beakers");
+    public final ConfigInt roundBottomedFlaskCapacity = i(500, "roundBottomedFlaskCapacity", "The capacity (in mB) of Round-Bottomed Flasks");
+    public final ConfigInt measuringCylinderCapacity = i(300, "measuringCylinderCapacity", "The capacity (in mB) of Beakers");
+
     public final ConfigGroup bubbleCap = group(0, "bubbleCap", "Bubble Cap");
     public final ConfigInt bubbleCapCapacity = i(1000, 1, "bubbleCapCapacity", "[in mB]", "Fluid capacity of Bubble Caps", "[setting this too low may make some recpies impossible]");
     public final ConfigInt bubbleCapRecipeFrequency = i(100, 1, "bubbleCapRecipeFrequency", "[in ticks]", "How often distillation towers try and distill");
@@ -44,12 +50,6 @@ public class DestroyBlocksConfigs extends DestroyConfigBase {
     public final ConfigFloat blazeBurnerHeatingPower = f(15000f, Float.MIN_VALUE, Float.MAX_VALUE, "blazeBurnerHeatingPower", "The power supplied by kindled Blaze Burners to Vats and Basins");
     public final ConfigFloat blazeBurnerSuperHeatingPower = f(50000f, Float.MIN_VALUE, Float.MAX_VALUE, "blazeBurnerSuperHeatingPower", "The power supplied by superheating Blaze Burners to Vats and Basins");
     public final ConfigFloat coolerHeatingPower = f(-30000f, Float.MIN_VALUE, Float.MAX_VALUE, "coolerHeatingPower", "The power supplied by cooling Refrigerstraytors to Vats and Basins");
-    
-    public final ConfigInt customExplosiveMixSize = i(5, 0, 16, "customExplosiveMixSize", "Inventory size of Mixed Explosives");
-    
-    public final ConfigInt beakerCapacity = i(500, "beakerCapacity", "The capacity (in mB) of Beakers");
-    public final ConfigInt roundBottomedFlaskCapacity = i(500, "roundBottomedFlaskCapacity", "The capacity (in mB) of Round-Bottomed Flasks");
-    public final ConfigInt measuringCylinderCapacity = i(300, "measuringCylinderCapacity", "The capacity (in mB) of Beakers");
 
     @Override
     public String getName() {

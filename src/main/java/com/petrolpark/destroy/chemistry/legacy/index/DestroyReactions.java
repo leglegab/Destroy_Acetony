@@ -185,12 +185,46 @@ public class DestroyReactions {
         .addProduct(DestroyMolecules.TETRAFLUOROETHENE)
         .build(),
 
+    CHLOROETHENE_POLYMERIZATION = builder()
+        .id("chloroethene_polymerization")
+        .addReactant(DestroyMolecules.CHLOROETHENE)
+        .addCatalyst(DestroyMolecules.AIBN, 0)
+        .withResult(3f, PrecipitateReactionResult.of(DestroyItems.POLYVINYL_CHLORIDE::asStack))
+        .preexponentialFactor(10f)
+        .activationEnergy(10f)
+        .build(),
+
     CHLOROFORM_FLUORINATION = builder()
         .id("chloroform_fluorination")
         .addReactant(DestroyMolecules.CHLOROFORM)
         .addReactant(DestroyMolecules.HYDROFLUORIC_ACID, 2)
         .addProduct(DestroyMolecules.CHLORODIFLUOROMETHANE)
         .addProduct(DestroyMolecules.HYDROCHLORIC_ACID, 2)
+        .build(),
+
+    CHROMIUM_DISSOLUTION = builder() //TODO replace with redox
+        .id("chromium_dissolution")
+        .addReactant(DestroyMolecules.PROTON, 6, 1)
+        .addSimpleItemTagReactant(AllTags.forgeItemTag("dusts/chromium"), 4.5f)
+        .addProduct(DestroyMolecules.HYDROGEN, 3)
+        .addProduct(DestroyMolecules.CHROMIUM_III, 2)
+        .build(),
+
+    CHROMIUM_ORE_DISSOLUTION = builder() //TODO replace with redox
+        .id("iron_ore_dissolution")
+        .addReactant(DestroyMolecules.PROTON, 6, 1)
+        .addSimpleItemReactant(DestroyItems.CRUSHED_RAW_CHROMIUM::get, 7.5f)
+        .addProduct(DestroyMolecules.HYDROGEN, 3)
+        .addProduct(DestroyMolecules.CHROMIUM_III, 2)
+        .build(),
+
+    CHROMIUM_III_OXIDATION = builder() // TODO replace with redox
+        .id("chromium_iii_oxidation")
+        .addReactant(DestroyMolecules.CHROMIUM_III, 2, 1)
+        .addReactant(DestroyMolecules.HYDROGEN_PEROXIDE, 3, 1)
+        .addReactant(DestroyMolecules.HYDROXIDE, 10, 1)
+        .addProduct(DestroyMolecules.CHROMATE, 2)
+        .addProduct(DestroyMolecules.WATER, 8)
         .build(),
 
     CISPLATIN_SYNTHESIS = builder()
@@ -216,6 +250,14 @@ public class DestroyReactions {
         .addReactant(DestroyMolecules.NITROGLYCERINE)
         .addSimpleItemReactant(DestroyItems.NITROCELLULOSE::get, 1f)
         .withResult(2.99f, PrecipitateReactionResult.of(DestroyBlocks.CORDITE_BLOCK::asStack))
+        .build(),
+
+    CROCOITE_DISSOLUTION = builder()
+        .id("crocoite_dissolution")
+        .addReactant(DestroyMolecules.NITRATE, 0, 1)
+        .addSimpleItemReactant(DestroyItems.NETHER_CROCOITE, 15f)
+        .addProduct(DestroyMolecules.LEAD_II)
+        .addProduct(DestroyMolecules.CHROMATE)
         .build(),
 
     CUMENE_PROCESS = builder()
@@ -268,7 +310,7 @@ public class DestroyReactions {
     COPPER_DISSOLUTION = builder() //TODO replace with redox
         .id("copper_dissolution")
         .addReactant(DestroyMolecules.PROTON, 2, 1)
-        .addSimpleItemTagReactant(AllTags.forgeItemTag("dusts/copper"), 0.9f)
+        .addSimpleItemTagReactant(AllTags.forgeItemTag("dusts/copper"), 9f)
         .addProduct(DestroyMolecules.HYDROGEN)
         .addProduct(DestroyMolecules.COPPER_II)
         .build(),
@@ -276,7 +318,7 @@ public class DestroyReactions {
     COPPER_ORE_DISSOLUTION = builder() //TODO replace with redox
         .id("copper_ore_dissolution")
         .addReactant(DestroyMolecules.PROTON, 2, 1)
-        .addSimpleItemReactant(AllItems.CRUSHED_COPPER::get, 1.5f)
+        .addSimpleItemReactant(AllItems.CRUSHED_COPPER::get, 15f)
         .addProduct(DestroyMolecules.HYDROGEN)
         .addProduct(DestroyMolecules.COPPER_II)
         .build(),
@@ -355,7 +397,7 @@ public class DestroyReactions {
 
     GOLD_DISSOLUTION = builder()
         .id("gold_dissolution")
-        .addSimpleItemReactant(() -> Items.GOLDEN_CARROT, 1f)
+        .addSimpleItemReactant(() -> Items.GOLDEN_CARROT, 10f)
         .addReactant(DestroyMolecules.NITRIC_ACID)
         .addReactant(DestroyMolecules.HYDROCHLORIC_ACID, 4, 1)
         .addProduct(DestroyMolecules.CHLOROAURATE)
@@ -445,7 +487,7 @@ public class DestroyReactions {
     IRON_DISSOLUTION = builder() //TODO replace with redox
         .id("iron_dissolution")
         .addReactant(DestroyMolecules.PROTON, 6, 1)
-        .addSimpleItemTagReactant(AllTags.forgeItemTag("dusts/iron"), 0.45f)
+        .addSimpleItemTagReactant(AllTags.forgeItemTag("dusts/iron"), 4.5f)
         .addProduct(DestroyMolecules.HYDROGEN, 3)
         .addProduct(DestroyMolecules.IRON_III, 2)
         .build(),
@@ -453,7 +495,7 @@ public class DestroyReactions {
     IRON_ORE_DISSOLUTION = builder() //TODO replace with redox
         .id("iron_ore_dissolution")
         .addReactant(DestroyMolecules.PROTON, 6, 1)
-        .addSimpleItemReactant(AllItems.CRUSHED_IRON::get, 0.75f)
+        .addSimpleItemReactant(AllItems.CRUSHED_IRON::get, 7.5f)
         .addProduct(DestroyMolecules.HYDROGEN, 3)
         .addProduct(DestroyMolecules.IRON_III, 2)
         .build(),
@@ -481,6 +523,22 @@ public class DestroyReactions {
         .addCatalyst(DestroyMolecules.SODIUM_ION, 1) //TODO actually add sodium phenoxide intermediate
         .addCatalyst(DestroyMolecules.PROTON, 1)
         .addProduct(DestroyMolecules.SALICYLIC_ACID)
+        .build(),
+
+    LEAD_DISSOLUTION = builder() //TODO replace with redox
+        .id("lead_dissolution")
+        .addReactant(DestroyMolecules.PROTON, 2, 1)
+        .addSimpleItemTagReactant(AllTags.forgeItemTag("dusts/lead"), 9f)
+        .addProduct(DestroyMolecules.HYDROGEN)
+        .addProduct(DestroyMolecules.LEAD_II)
+        .build(),
+
+    LEAD_ORE_DISSOLUTION = builder() //TODO replace with redox
+        .id("lead_ore_dissolution")
+        .addReactant(DestroyMolecules.PROTON, 2, 1)
+        .addSimpleItemReactant(AllItems.CRUSHED_LEAD::get, 15f)
+        .addProduct(DestroyMolecules.HYDROGEN)
+        .addProduct(DestroyMolecules.LEAD_II)
         .build(),
 
     LIME_SLAKING = builder()
@@ -549,7 +607,7 @@ public class DestroyReactions {
     NICKEL_DISSOLUTION = builder() //TODO replace with redox
         .id("nickel_dissolution")
         .addReactant(DestroyMolecules.PROTON, 2, 1)
-        .addSimpleItemTagReactant(AllTags.forgeItemTag("dusts/nickel"), 0.9f)
+        .addSimpleItemTagReactant(AllTags.forgeItemTag("dusts/nickel"), 9f)
         .addProduct(DestroyMolecules.HYDROGEN)
         .addProduct(DestroyMolecules.NICKEL_ION)
         .build(),
@@ -557,7 +615,7 @@ public class DestroyReactions {
     NICKEL_ORE_DISSOLUTION = builder() //TODO replace with redox
         .id("nickel_ore_dissolution")
         .addReactant(DestroyMolecules.PROTON, 2, 1)
-        .addSimpleItemReactant(AllItems.CRUSHED_NICKEL::get, 1.5f)
+        .addSimpleItemReactant(AllItems.CRUSHED_NICKEL::get, 15f)
         .addProduct(DestroyMolecules.HYDROGEN)
         .addProduct(DestroyMolecules.NICKEL_ION)
         .build(),
@@ -670,6 +728,18 @@ public class DestroyReactions {
         .activationEnergy(10f)
         .build(),
 
+    SODIUM_AMALGAMIZATION = builder()
+        .id("sodium_amalgamization")
+        .addReactant(DestroyMolecules.MERCURY, 0, 1)
+        .addSimpleItemTagReactant(AllTags.forgeItemTag("ingots/sodium"), 9.9f) // One sodium ingot = 10 moles of sodium atoms
+        .addProduct(DestroyMolecules.SODIUM_METAL)
+        .activationEnergy(1f) // Very fast as long as Mercury is present
+        .reverseReaction(r -> r
+            .addCatalyst(DestroyMolecules.MERCURY, -1)
+            .withResult(10f, PrecipitateReactionResult.of(DestroyItems.SODIUM_INGOT::asStack))
+        )
+        .build(),
+
     SODIUM_DISSOLUTION = builder()
         .id("sodium_dissolution")
         .addReactant(DestroyMolecules.SODIUM_METAL, 2, 1)
@@ -736,6 +806,17 @@ public class DestroyReactions {
         .withResult(3f, PrecipitateReactionResult.of(DestroyItems.ACETONE_PEROXIDE::asStack))
         .build(),
 
+    TETRAETHYLLEAD_SYNTHESIS = builder()
+        .id("tetraethyllead_synthesis")
+        .addReactant(DestroyMolecules.SODIUM_METAL, 4)
+        .addReactant(DestroyMolecules.CHLOROETHANE, 4)
+        .addSimpleItemTagReactant(AllTags.forgeItemTag("dusts/lead"), 2.5f)
+        .addProduct(DestroyMolecules.TETRAETHYLLEAD)
+        .addProduct(DestroyMolecules.SODIUM_ION, 4)
+        .addProduct(DestroyMolecules.CHLORIDE, 4)
+        .build(),
+
+
     TETRAFLUOROETHENE_POLYMERIZATION = builder()
         .id("tetrafluoroethene_polymerization")
         .addReactant(DestroyMolecules.TETRAFLUOROETHENE)
@@ -798,7 +879,7 @@ public class DestroyReactions {
     ZINC_DISSOLUTION = builder() //TODO replace with redox
         .id("zinc_dissolution")
         .addReactant(DestroyMolecules.PROTON, 2, 1)
-        .addSimpleItemTagReactant(AllTags.forgeItemTag("dusts/zinc"), 0.9f)
+        .addSimpleItemTagReactant(AllTags.forgeItemTag("dusts/zinc"), 9f)
         .addProduct(DestroyMolecules.HYDROGEN)
         .addProduct(DestroyMolecules.ZINC_ION)
         .build(),
@@ -806,7 +887,7 @@ public class DestroyReactions {
     ZINC_ORE_DISSOLUTION = builder() //TODO replace with redox
         .id("zinc_ore_dissolution")
         .addReactant(DestroyMolecules.PROTON, 2, 1)
-        .addSimpleItemReactant(AllItems.CRUSHED_ZINC::get, 1.5f)
+        .addSimpleItemReactant(AllItems.CRUSHED_ZINC::get, 15f)
         .addProduct(DestroyMolecules.HYDROGEN)
         .addProduct(DestroyMolecules.ZINC_ION)
         .build();

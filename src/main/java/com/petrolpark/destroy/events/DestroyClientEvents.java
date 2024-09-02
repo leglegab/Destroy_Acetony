@@ -161,7 +161,7 @@ public class DestroyClientEvents {
         
         // Remove the "Dyed" annotation if needed
         if (
-            item instanceof DyeableCustomExplosiveMixBlockItem dyedExplosiveItem
+            item instanceof DyeableCustomExplosiveMixBlockItem
             && stack.hasTag()
             && stack.getTag().contains("display", Tag.TAG_COMPOUND)
             && stack.getOrCreateTagElement("display").contains("color", Tag.TAG_ANY_NUMERIC)

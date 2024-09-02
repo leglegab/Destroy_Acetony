@@ -9,13 +9,13 @@ import com.petrolpark.destroy.util.DestroyLang;
 import com.simibubi.create.foundation.item.TooltipHelper;
 import com.simibubi.create.foundation.item.TooltipHelper.Palette;
 
-import mezz.jei.api.gui.ingredient.IRecipeSlotTooltipCallback;
+import mezz.jei.api.gui.ingredient.IRecipeSlotRichTooltipCallback;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 
 public class ReactionTooltipHelper {
 
-    public static IRecipeSlotTooltipCallback reactantTooltip(LegacyReaction reaction, LegacySpecies reactant) {
+    public static IRecipeSlotRichTooltipCallback reactantTooltip(LegacyReaction reaction, LegacySpecies reactant) {
         boolean nerdMode = DestroyAllConfigs.CLIENT.chemistry.nerdMode.get();
         int ratio = reaction.getReactantMolarRatio(reactant);
         return (view, tooltip) -> {
@@ -23,27 +23,25 @@ public class ReactionTooltipHelper {
             if (ratio == 1) {
                 tooltip.addAll(TooltipHelper.cutTextComponent(DestroyLang.translate("tooltip.reaction.reactant_ratio.single").component(), Palette.GRAY_AND_WHITE));
             } else {
-                tooltip.set(0, Component.literal(ratio + " ").append(tooltip.get(0)));
                 tooltip.addAll(TooltipHelper.cutTextComponent(DestroyLang.translate("tooltip.reaction.reactant_ratio.plural", ratio).component(), Palette.GRAY_AND_WHITE));
             };
             if (nerdMode) tooltip.addAll(TooltipHelper.cutTextComponent(DestroyLang.translate("tooltip.reaction.order", reaction.getOrders().get(reactant)).component(), Palette.GRAY_AND_WHITE));
         };
     };
 
-    public static IRecipeSlotTooltipCallback productTooltip(LegacyReaction reaction, LegacySpecies product) {
+    public static IRecipeSlotRichTooltipCallback productTooltip(LegacyReaction reaction, LegacySpecies product) {
         int ratio = reaction.getProductMolarRatio(product);
         return (view, tooltip) -> {
             tooltip.add(Component.literal(" "));
             if (ratio == 1) {
                 tooltip.addAll(TooltipHelper.cutTextComponent(DestroyLang.translate("tooltip.reaction.product_ratio.single").component(), Palette.GRAY_AND_WHITE));
             } else {
-                tooltip.set(0, Component.literal(ratio + " ").append(tooltip.get(0)));
                 tooltip.addAll(TooltipHelper.cutTextComponent(DestroyLang.translate("tooltip.reaction.product_ratio.plural", ratio).component(), Palette.GRAY_AND_WHITE));
             };
         };
     };
 
-    public static IRecipeSlotTooltipCallback catalystTooltip(LegacyReaction reaction, LegacySpecies catalyst) {
+    public static IRecipeSlotRichTooltipCallback catalystTooltip(LegacyReaction reaction, LegacySpecies catalyst) {
         boolean nerdMode = DestroyAllConfigs.CLIENT.chemistry.nerdMode.get();
         return (view, tooltip) -> {
             if (nerdMode) {
@@ -53,7 +51,7 @@ public class ReactionTooltipHelper {
         };
     };
 
-    public static IRecipeSlotTooltipCallback itemReactantTooltip(LegacyReaction reaction, IItemReactant itemReactant) {
+    public static IRecipeSlotRichTooltipCallback itemReactantTooltip(LegacyReaction reaction, IItemReactant itemReactant) {
         return (view, tooltip) -> {
             if (!itemReactant.isCatalyst()) {
                 tooltip.add(Component.literal(" "));
@@ -62,16 +60,15 @@ public class ReactionTooltipHelper {
         };
     };
 
-    public static IRecipeSlotTooltipCallback precipitateTooltip(LegacyReaction reaction, PrecipitateReactionResult precipitate) {
+    public static IRecipeSlotRichTooltipCallback precipitateTooltip(LegacyReaction reaction, PrecipitateReactionResult precipitate) {
         return (view, tooltip) -> {
             tooltip.add(Component.literal(" "));
             tooltip.addAll(TooltipHelper.cutTextComponent(DestroyLang.translate("tooltip.reaction.precipitate", precipitate.getRequiredMoles()).component(), Palette.GRAY_AND_WHITE));
         };
     };
 
-    public static IRecipeSlotTooltipCallback nerdModeTooltip(LegacyReaction reaction) {
+    public static IRecipeSlotRichTooltipCallback nerdModeTooltip(LegacyReaction reaction) {
         return (view, tooltip) -> {
-            tooltip.clear();
             boolean reversible = reaction.getReverseReactionForDisplay().isPresent();
             tooltip.add(DestroyLang.translate("tooltip.reaction.kinetics_information").component());
             if (reaction.isHalfReaction()) tooltip.add(DestroyLang.translate("tooltip.reaction.standard_half_cell_potential", reaction.getStandardHalfCellPotential()).style(ChatFormatting.GRAY).component());

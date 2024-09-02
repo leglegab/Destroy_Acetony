@@ -11,6 +11,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.petrolpark.destroy.block.DestroyBlocks;
 import com.petrolpark.destroy.block.VatControllerBlock;
 import com.petrolpark.destroy.block.entity.VatControllerBlockEntity;
+import com.petrolpark.destroy.chemistry.api.util.Constants;
 import com.petrolpark.destroy.chemistry.legacy.ClientMixture;
 import com.petrolpark.destroy.chemistry.legacy.LegacySpecies;
 import com.petrolpark.destroy.chemistry.legacy.ReadOnlyMixture;
@@ -197,7 +198,7 @@ public class VatScreen extends AbstractSimiScreen {
                 || molecule.getName(true).getString().toUpperCase().indexOf(search) > -1 // Check IUPAC name against filter
                 || molecule.getSerlializedMolecularFormula(false).toUpperCase().indexOf(search) > -1 // Check formula against filter
             ) {
-                orderedMolecules.add(Pair.of(molecule, mixture.getConcentrationOf(molecule) * amount / 1000f));
+                orderedMolecules.add(Pair.of(molecule, mixture.getConcentrationOf(molecule) * amount / Constants.MILLIBUCKETS_PER_LITER));
             };
         };
         Collections.sort(orderedMolecules, (p1, p2) -> Float.compare(p2.getSecond(), p1.getSecond()));

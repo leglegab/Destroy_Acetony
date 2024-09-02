@@ -24,17 +24,20 @@ import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.client.resources.model.Material;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.packs.resources.ResourceManager;
+import net.minecraft.server.packs.resources.ResourceManagerReloadListener;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.client.event.ModelEvent;
+import net.minecraftforge.client.event.RegisterClientReloadListenersEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
 
-@EventBusSubscriber(modid = Destroy.MOD_ID, value = Dist.CLIENT, bus = Mod.EventBusSubscriber.Bus.MOD)
+@EventBusSubscriber(value = Dist.CLIENT, modid = Destroy.MOD_ID, bus = EventBusSubscriber.Bus.MOD)
 public class CircuitPatternItemRenderer extends CustomRenderedItemModelRenderer {
+
+    public static final ReloadListener RELOAD_LISTENER = new ReloadListener();
 
     protected final ResourceLocation fragmentTextureResourceLocation;
 
@@ -43,11 +46,15 @@ public class CircuitPatternItemRenderer extends CustomRenderedItemModelRenderer 
     };
 
     @OnlyIn(Dist.CLIENT)
-    public BakedModel[] models = null;
+    protected int reloads = 0;
+    protected BakedModel[] models = null;
 
     @Override
     protected void render(ItemStack stack, CustomRenderedItemModel model, PartialItemModelRenderer renderer, ItemDisplayContext transformType, PoseStack ms, MultiBufferSource buffer, int light, int overlay) {
-        if (models == null) generateModels(model.getOriginalModel());
+        if (models == null || reloads != RELOAD_LISTENER.reloads) {
+            generateModels(model.getOriginalModel());
+            reloads = RELOAD_LISTENER.reloads;
+        };
         ms.pushPose();
         Minecraft mc = Minecraft.getInstance();
 
@@ -57,7 +64,7 @@ public class CircuitPatternItemRenderer extends CustomRenderedItemModelRenderer 
 
         ItemRenderer itemRenderer = mc.getItemRenderer();
         itemRenderer.render(stack, ItemDisplayContext.NONE, false, ms, buffer, light, overlay, model.getOriginalModel()); // Render the Item normally
-        int pattern = (stack.getItem() instanceof CircuitPatternItem item ? CircuitPatternItem.getPattern(stack): 0);
+        int pattern = CircuitPatternItem.getPattern(stack);
         for (int i = 0; i < 16; i++) {
             if (CircuitMaskItem.isPunched(pattern, i)) continue;
             itemRenderer.render(stack, ItemDisplayContext.NONE, false, ms, buffer, light, overlay, models[i]);
@@ -94,8 +101,19 @@ public class CircuitPatternItemRenderer extends CustomRenderedItemModelRenderer 
     };
 
     @SubscribeEvent
-    public void onBakingCompleted(ModelEvent.BakingCompleted event) {
-        models = null; // Refresh models if the resource pack is reloaded
+    public static void onRegisterReloadListeners(RegisterClientReloadListenersEvent event) {
+        //event.registerReloadListener(RELOAD_LISTENER);
+    };
+
+    protected static class ReloadListener implements ResourceManagerReloadListener {
+
+        protected int reloads = 0;
+
+        @Override
+        public void onResourceManagerReload(ResourceManager resourceManager) {
+            reloads++;
+        };
+
     };
     
 };

@@ -336,7 +336,7 @@ public class DestroyBlocks {
 
     // EXPLOSIVES
 
-    public static final BlockEntry<PrimeableBombBlock<PrimedBomb>> ANFO_BLOCK = REGISTRATE.block("anfo_block", p -> new PrimeableBombBlock<>(p, PrimedBomb.Anfo::new))
+    public static final BlockEntry<PrimeableBombBlock<PrimedBomb.Anfo>> ANFO_BLOCK = REGISTRATE.block("anfo_block", p -> new PrimeableBombBlock<PrimedBomb.Anfo>(p, PrimedBomb.Anfo::new))
         .initialProperties(() -> Blocks.TNT)
         .properties(p -> p
             .mapColor(MapColor.COLOR_PINK)
@@ -346,7 +346,7 @@ public class DestroyBlocks {
         .build()
         .register();
 
-    public static final BlockEntry<PrimeableBombBlock<PrimedBomb>> CORDITE = REGISTRATE.block("cordite", p -> new PrimeableBombBlock<>(p, PrimedBomb.Cordite::new))
+    public static final BlockEntry<PrimeableBombBlock<PrimedBomb.Cordite>> CORDITE = REGISTRATE.block("cordite", p -> new PrimeableBombBlock<PrimedBomb.Cordite>(p, PrimedBomb.Cordite::new))
         .initialProperties(() -> Blocks.TNT)
         .properties(p -> p
             .mapColor(MapColor.COLOR_ORANGE)
@@ -364,7 +364,7 @@ public class DestroyBlocks {
         .build()
         .register();
 
-    public static final BlockEntry<PrimeableBombBlock<PrimedBomb>> NITROCELLULOSE_BLOCK = REGISTRATE.block("nitrocellulose_block", p -> new PrimeableBombBlock<>(p, PrimedBomb.Nitrocellulose::new))
+    public static final BlockEntry<PrimeableBombBlock<PrimedBomb.Nitrocellulose>> NITROCELLULOSE_BLOCK = REGISTRATE.block("nitrocellulose_block", p -> new PrimeableBombBlock<PrimedBomb.Nitrocellulose>(p, PrimedBomb.Nitrocellulose::new))
         .initialProperties(() -> Blocks.TNT)
         .properties(p -> p
             .mapColor(MapColor.COLOR_LIGHT_GREEN)
@@ -375,7 +375,7 @@ public class DestroyBlocks {
         .build()
         .register();
 
-    public static final BlockEntry<PrimeableBombBlock<PrimedBomb>> PICRIC_ACID_BLOCK = REGISTRATE.block("picric_acid_block", (p) -> new PrimeableBombBlock<>(p, PrimedBomb.PicricAcid::new))
+    public static final BlockEntry<PrimeableBombBlock<PrimedBomb.PicricAcid>> PICRIC_ACID_BLOCK = REGISTRATE.block("picric_acid_block", (p) -> new PrimeableBombBlock<PrimedBomb.PicricAcid>(p, PrimedBomb.PicricAcid::new))
         .initialProperties(() -> Blocks.TNT)
         .properties(p -> p
             .mapColor(MapColor.COLOR_YELLOW)

@@ -35,6 +35,13 @@ description='''A destructive chemistry-based add-on to Create.'''
 	ordering="AFTER"
 	side="BOTH"
 
+[[dependencies.destroy]]
+	modId="petrolpark"
+	mandatory=true
+	versionRange="[1.0.3,)"
+	ordering="AFTER"
+	side="BOTH"
+
 [[dependencies.tfmg]]
 	modId="tfmg"
 	mandatory=false
@@ -58,7 +65,7 @@ description='''A destructive chemistry-based add-on to Create.'''
 [[dependencies.jei]]
     modId="jei"
     mandatory=false
-    versionRange="[15.0.8,)"
+    versionRange="[15.12.3.55,)"
     ordering="AFTER"
     side="CLIENT"
 

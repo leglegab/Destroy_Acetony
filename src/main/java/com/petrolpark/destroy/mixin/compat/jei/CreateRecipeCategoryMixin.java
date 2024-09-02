@@ -86,6 +86,7 @@ public abstract class CreateRecipeCategoryMixin<T extends Recipe<?>> {
      * Modifies the tooltip for Fluid Stacks which are {@link com.petrolpark.destroy.chemistry.legacy.LegacyMixture Mixtures}.
      */
     @Overwrite(remap = false)
+    @SuppressWarnings("removal")
     public static IRecipeSlotTooltipCallback addFluidTooltip(int mbAmount) {
         return (view, tooltip) -> {
             Optional<FluidStack> displayed = view.getDisplayedIngredient(ForgeTypes.FLUID_STACK);

@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.function.Predicate;
 
 import com.petrolpark.destroy.capability.entity.EntityChemicalPoison;
+import com.petrolpark.destroy.chemistry.legacy.LegacyElement;
 import com.petrolpark.destroy.chemistry.legacy.LegacySpecies;
 import com.petrolpark.destroy.chemistry.legacy.ReadOnlyMixture;
 import com.petrolpark.destroy.chemistry.legacy.index.DestroyMolecules;
@@ -41,6 +42,7 @@ public class ChemistryDamageHelper {
         boolean smelly = false;
         boolean carcinogen = false;
         boolean lacrimator = false;
+        boolean lead = false;
         LegacySpecies toxicMolecule = null;
 
         for (LegacySpecies molecule : mixture.getContents(true)) {
@@ -48,7 +50,8 @@ public class ChemistryDamageHelper {
             if (molecule.hasTag(DestroyMolecules.Tags.SMELLY)) smelly = true;
             if (molecule.hasTag(DestroyMolecules.Tags.CARCINOGEN)) carcinogen = true;
             if (molecule.hasTag(DestroyMolecules.Tags.LACRIMATOR)) lacrimator = true;
-            if (toxicMolecule != null && smelly && carcinogen && lacrimator) break;
+            if (molecule.getMolecularFormula().get(LegacyElement.LEAD) != 1) lead = true;
+            if (toxicMolecule != null && smelly && carcinogen && lacrimator && lead) break;
         };
 
         boolean noseProtected = Protection.NOSE.isProtected(entity);
@@ -76,6 +79,11 @@ public class ChemistryDamageHelper {
         // Carcinogens
         if (carcinogen && (!noseProtected || !mouthProtected)) {
             if (entity.getRandom().nextInt(2400) == 0) entity.addEffect(DestroyMobEffects.cancerInstance());
+        };
+
+        // Lead poisoning
+        if (lead && (!noseProtected || !mouthProtected)) {
+            if (entity.getRandom().nextInt(2400) == 0) DestroyMobEffects.increaseEffectLevel(entity, DestroyMobEffects.LEAD_POISONING.get(), 1, -1);
         };
 
         // Acid/base burns

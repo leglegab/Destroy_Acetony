@@ -6,6 +6,7 @@ import java.util.function.Consumer;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import com.petrolpark.destroy.advancement.DestroyAdvancementTrigger;
 import com.petrolpark.destroy.block.BlowpipeBlock;
 import com.petrolpark.destroy.block.IPickUpPutDownBlock;
 import com.petrolpark.destroy.block.entity.BlowpipeBlockEntity;
@@ -232,7 +233,7 @@ public class BlowpipeItem extends BlockItem implements CustomArmPoseItem {
             tag.putInt("LastProgress", 0);
             tag.put("Tank", new FluidTank(BlowpipeBlockEntity.TANK_CAPACITY).writeToNBT(new CompoundTag())); // Empty the Tank
             if (livingEntity instanceof Player player) {
-                
+                DestroyAdvancementTrigger.BLOWPIPE.award(level, player);
             };
         };
         return stack;

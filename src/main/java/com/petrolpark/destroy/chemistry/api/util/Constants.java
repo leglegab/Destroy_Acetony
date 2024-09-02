@@ -16,4 +16,9 @@ public class Constants {
      * The Ideal Gas Constant, in joules per kelvin per mole.
      */
     public static final double GAS_CONSTANT = AVAGADRO_CONSTANT * BOLTZMAN_CONSTANT;
+
+    /**
+     * The number of Minecraft millibuckets (mB) equal to one liter.
+     */
+    public static final float MILLIBUCKETS_PER_LITER = 1f;
 };

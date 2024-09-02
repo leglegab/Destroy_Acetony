@@ -4,6 +4,9 @@
             "destroy:chloride": "destroy.chemical.sal_ammoniac"
         }
     },
+    "destroy:chromium_iii": {
+        "generic": "destroy.chemical.chromic"
+    },
     "destroy:copper_i": {
         "generic": "destroy.chemical.cuprous"
     },
@@ -16,6 +19,9 @@
     "destroy:iron_iii": {
         "generic": "destroy.chemical.ferric"
     },
+    "destroy:lead_ii": {
+        "generic": "destroy.chemical.plumbous"
+    },
     "destroy:potassium_ion": {
         "specifics": {
             "destroy:nitrate": "destroy.chemical.saltpeter"
@@ -26,7 +32,9 @@
             "destroy:acetate": "destroy.chemical.acetic_acid",
             "destroy:chloride": "destroy.chemical.hydrochloric_acid",
             "destroy:chloroaurate": "destroy.chemical.chloroauric_acid",
+            "destroy:chromate": "destroy.chemical.chromic_acid",
             "destroy:cyanide": "destroy.chemical.hydrogen_cyanide",
+            "destroy:dichromate": "destroy.chemical.dichromic_acid",
             "destroy:fluoride": "destroy.chemical.hydrofluoric_acid",
             "destroy:hydrogensulfate": "destroy.chemical.sulfuric_acid",
             "destroy:hypochlorite": "destroy.chemical.hydrochlorous_acid",

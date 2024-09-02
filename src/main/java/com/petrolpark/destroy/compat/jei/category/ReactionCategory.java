@@ -119,7 +119,7 @@ public class ReactionCategory<T extends ReactionRecipe> extends HoverableTextCat
             Vector2i pos = getReactantRenderPosition(i, numberOfReactants);
             builder.addSlot(RecipeIngredientRole.INPUT, pos.x, pos.y)
                 .addIngredient(MoleculeJEIIngredient.TYPE, reactant)
-                .addTooltipCallback(ReactionTooltipHelper.reactantTooltip(reaction, reactant))
+                .addRichTooltipCallback(ReactionTooltipHelper.reactantTooltip(reaction, reactant))
                 .setBackground(getRenderedSlot(), -1, -1);
             i++;
         };
@@ -130,7 +130,7 @@ public class ReactionCategory<T extends ReactionRecipe> extends HoverableTextCat
                 Vector2i pos = getReactantRenderPosition(i, numberOfReactants);
                 builder.addSlot(RecipeIngredientRole.INPUT, pos.x, pos.y)
                     .addItemStacks(itemReactant.getDisplayedItemStacks())
-                    .addTooltipCallback(ReactionTooltipHelper.itemReactantTooltip(reaction, itemReactant))
+                    .addRichTooltipCallback(ReactionTooltipHelper.itemReactantTooltip(reaction, itemReactant))
                     .setBackground(getRenderedSlot(), -1, -1);
                 i++;
             };
@@ -167,7 +167,7 @@ public class ReactionCategory<T extends ReactionRecipe> extends HoverableTextCat
             if (j >= 6) continue;
             builder.addSlot(RecipeIngredientRole.OUTPUT, productsXOffset + (19 * (j % l)), productYOffset + (j / l) * 19)
                 .addIngredient(MoleculeJEIIngredient.TYPE, product)
-                .addTooltipCallback(ReactionTooltipHelper.productTooltip(reaction, product))
+                .addRichTooltipCallback(ReactionTooltipHelper.productTooltip(reaction, product))
                 .setBackground(getRenderedSlot(), -1, -1);
             j++;
         };
@@ -176,7 +176,7 @@ public class ReactionCategory<T extends ReactionRecipe> extends HoverableTextCat
             if (j >= 6) continue;
             builder.addSlot(RecipeIngredientRole.OUTPUT, productsXOffset + (19 * (j % l)), productYOffset+ (j / l) * 19)
                 .addItemStack(precipitate.getPrecipitate())
-                .addTooltipCallback(ReactionTooltipHelper.precipitateTooltip(reaction, precipitate))
+                .addRichTooltipCallback(ReactionTooltipHelper.precipitateTooltip(reaction, precipitate))
                 .setBackground(getRenderedSlot(), -1, -1);
             j++;
         };
@@ -190,7 +190,7 @@ public class ReactionCategory<T extends ReactionRecipe> extends HoverableTextCat
             Vector2i pos = getCatalystRenderPosition(m, numberOfCatalysts);
             builder.addSlot(RecipeIngredientRole.CATALYST, pos.x, pos.y)
                 .addIngredient(MoleculeJEIIngredient.TYPE, catalyst)
-                .addTooltipCallback(ReactionTooltipHelper.catalystTooltip(reaction, catalyst))
+                .addRichTooltipCallback(ReactionTooltipHelper.catalystTooltip(reaction, catalyst))
                 .setBackground(getRenderedSlot(), -1, -1);
             m++;
         };
@@ -200,7 +200,7 @@ public class ReactionCategory<T extends ReactionRecipe> extends HoverableTextCat
             Vector2i pos = getCatalystRenderPosition(m, numberOfCatalysts);
             builder.addSlot(RecipeIngredientRole.CATALYST, pos.x, pos.y)
                 .addItemStacks(itemReactant.getDisplayedItemStacks())
-                .addTooltipCallback(ReactionTooltipHelper.itemReactantTooltip(reaction, itemReactant))
+                .addRichTooltipCallback(ReactionTooltipHelper.itemReactantTooltip(reaction, itemReactant))
                 .setBackground(getRenderedSlot(), -1, -1);
             m++;
         };
@@ -209,7 +209,7 @@ public class ReactionCategory<T extends ReactionRecipe> extends HoverableTextCat
             builder.addSlot(RecipeIngredientRole.RENDER_ONLY, 163, 68)
                 .setOverlay(JEITextureDrawable.of(PetrolparkGuiTexture.JEI_NERD_EMOJI), 0, 1)
                 .addItemStack(DestroyItems.ABS.asStack()) // Dummy item so we actually get something generated
-                .addTooltipCallback(ReactionTooltipHelper.nerdModeTooltip(reaction));
+                .addRichTooltipCallback(ReactionTooltipHelper.nerdModeTooltip(reaction));
         };
     };
 

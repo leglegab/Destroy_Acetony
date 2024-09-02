@@ -11,7 +11,6 @@ buildscript {
         classpath "net.minecraftforge.gradle:ForgeGradle:${forgegradle_version}" // Forge
         classpath "org.spongepowered:mixingradle:${mixingradle_version}" // Mixins
         classpath "org.parchmentmc:librarian:${librarian_version}" // Parchment
-        classpath files("libs/openbabel.jar") // OpenBabel
     }
 }
 
@@ -57,6 +56,7 @@ minecraft {
         client {
             workingDirectory project.file('run')
             arg '-mixin.config=create.mixins.json'
+            arg '-mixin.config=petrolpark.mixins.json'
             arg '-mixin.config=destroy.mixins.json'
             arg '-mixin.config=flywheel.mixins.json'
             property 'forge.logging.console.level', 'info'
@@ -70,6 +70,7 @@ minecraft {
         server {
             workingDirectory project.file('run/server')
             arg '-mixin.config=create.mixins.json'
+            arg '-mixin.config=petrolpark.mixins.json'
             arg '-mixin.config=destroy.mixins.json'
             property 'forge.logging.console.level', 'info'
             mods {
@@ -106,6 +107,24 @@ repositories {
         name = 'tterag maven'
         url = 'https://www.cursemaven.com'
     }
+
+    exclusiveContent {
+        forRepository {
+            maven {
+                name = "Modrinth"
+                url = "https://api.modrinth.com/maven"
+            }
+        }
+        forRepositories(fg.repository)
+        filter {
+            includeGroup "maven.modrinth"
+        }
+    }
+
+    flatDir {
+        dirs '../petrolpark_local_maven/petrolpark/petrolpark-1.20.1/1.0.3'
+    }
+
     maven {
         // Curios
         url = "https://maven.theillusivec4.top/"
@@ -124,23 +143,6 @@ repositories {
     }
     maven { // Blueprint
         url = "https://maven.jaackson.me"
-    }
-
-    exclusiveContent {
-        forRepository {
-            maven {
-                name = "Modrinth"
-                url = "https://api.modrinth.com/maven"
-            }
-        }
-        forRepositories(fg.repository)
-        filter {
-            includeGroup "maven.modrinth"
-        }
-    }
-
-    flatDir {
-        dirs '../petrolpark_local_maven/petrolpark/petrolpark-1.20.1/1.0.3'
     }
 }
 
@@ -176,11 +178,8 @@ dependencies {
     // Registrate
     implementation fg.deobf("com.tterrag.registrate:Registrate:${registrate_version}")
 
-    // Petrolpark library
+    // Petrolpark Library (temporary)
     implementation "com.petrolpark:petrolpark:1.20.1-1.0.3"
-
-    // OpenBabel
-    implementation fileTree(dir: 'libs', include: '*.jar')
 
     // OPTIONAL DEPENDENCIES
 
@@ -192,23 +191,17 @@ dependencies {
     // Farmer's Delight
     compileOnly fg.deobf("curse.maven:farmers-delight-398521:${farmersdelight_version}")
 
-    // Blueprint
-    compileOnly fg.deobf("com.teamabnormals:blueprint:${minecraft_version}-${blueprint_version}")
-
     // Curios
     compileOnly fg.deobf("top.theillusivec4.curios:curios-forge:${curios_version}+${minecraft_version}:api")
     runtimeOnly fg.deobf("top.theillusivec4.curios:curios-forge:${curios_version}+${minecraft_version}")
-
-    // Spark
-    compileOnly fg.deobf("curse.maven:spark-361579:${spark_version}")
-
+    
     // TFMG
     compileOnly fg.deobf("curse.maven:create-industry-693815:5558101")
 
     // CBC
     implementation fg.deobf("com.rbasamoyai:ritchiesprojectilelib:1.0.0-369e88d+1.20.1-forge")
     implementation fg.deobf("com.rbasamoyai:createbigcannons-forge-${minecraft_version}:${cbc_version}")
-
+    
     // ANNOTATION PROCESSORS
 
     annotationProcessor "org.spongepowered:mixin:${mixin_version}:processor"

@@ -1,6 +1,5 @@
 package com.petrolpark.destroy.compat.jei;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.annotation.Nullable;
@@ -15,6 +14,7 @@ import com.petrolpark.destroy.item.DestroyItems;
 import com.petrolpark.destroy.item.MoleculeDisplayItem;
 import com.petrolpark.destroy.item.TestTubeItem;
 
+import mezz.jei.api.gui.builder.ITooltipBuilder;
 import mezz.jei.api.ingredients.IIngredientHelper;
 import mezz.jei.api.ingredients.IIngredientRenderer;
 import mezz.jei.api.ingredients.IIngredientType;
@@ -25,6 +25,10 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.TooltipFlag;
+
+import com.petrolpark.destroy.item.MoleculeDisplayItem.MoleculeTooltip;
+
+import java.util.Collections;
 
 public class MoleculeJEIIngredient {
 
@@ -97,11 +101,16 @@ public class MoleculeJEIIngredient {
         };
 
         @Override
+        public void getTooltip(ITooltipBuilder tooltip, LegacySpecies ingredient, TooltipFlag tooltipFlag) {
+            tooltip.add(ingredient.getName(DestroyAllConfigs.CLIENT.chemistry.iupacNames.get()));
+            tooltip.add(new MoleculeTooltip(ingredient));
+            tooltip.addAll(MoleculeDisplayItem.getLore(ingredient));
+        }
+
+        @Override
+        @Deprecated
         public List<Component> getTooltip(LegacySpecies ingredient, TooltipFlag tooltipFlag) {
-            List<Component> tooltips = new ArrayList<>();
-            tooltips.add(ingredient.getName(DestroyAllConfigs.CLIENT.chemistry.iupacNames.get()));
-            tooltips.addAll(MoleculeDisplayItem.getLore(ingredient));
-            return tooltips;
+            return Collections.emptyList();
         };
 
     };

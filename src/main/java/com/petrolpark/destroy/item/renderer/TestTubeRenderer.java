@@ -22,9 +22,18 @@ import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.client.resources.model.Material;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.packs.resources.ResourceManager;
+import net.minecraft.server.packs.resources.ResourceManagerReloadListener;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.client.event.RegisterClientReloadListenersEvent;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
 
+@OnlyIn(Dist.CLIENT)
+@EventBusSubscriber(value = Dist.CLIENT, modid = Destroy.MOD_ID, bus = EventBusSubscriber.Bus.MOD)
 public class TestTubeRenderer extends CustomRenderedItemModelRenderer {
 
     private static final ResourceLocation defaultItemModelRl = new ResourceLocation("generated");
@@ -34,14 +43,14 @@ public class TestTubeRenderer extends CustomRenderedItemModelRenderer {
     @SuppressWarnings("deprecation")
     private static BakedModel getModel() {
         if (overlayModel == null) {
-            Material trimTexture = new Material(TextureAtlas.LOCATION_BLOCKS, Destroy.asResource("item/test_tube_overlay"));
+            Material texture = new Material(TextureAtlas.LOCATION_BLOCKS, Destroy.asResource("item/test_tube_overlay"));
             overlayModel = DummyBaker.bake(
             ITEM_MODEL_GENERATOR.generateBlockModel(
                 Material::sprite, // Tell the Item Model Generator how to fetch the sprite
                 new BlockModel(
                     defaultItemModelRl,
                     new ArrayList<>(), // No elements - these get added by the Item Model Generator
-                    Map.of("layer0", Either.left(trimTexture)),
+                    Map.of("layer0", Either.left(texture)),
                     null,
                     null,
                     ItemTransforms.NO_TRANSFORMS, // These aren't needed as the model will be composited - the Item Model Generator sets them anyway
@@ -59,6 +68,20 @@ public class TestTubeRenderer extends CustomRenderedItemModelRenderer {
         Minecraft mc = Minecraft.getInstance();
         mc.getItemRenderer().render(stack, ItemDisplayContext.NONE, false, ms, buffer, light, overlay, model.getOriginalModel());
         TransparentItemRenderer.transformAndRenderModel(getModel(), transformType, DestroyItems.TEST_TUBE.get().getColor(stack), light, overlay, ms, buffer);
+    };
+
+    @SubscribeEvent
+    public static void registerReloadListener(RegisterClientReloadListenersEvent event) {
+        event.registerReloadListener(new ReloadListener());
+    };
+
+    protected static class ReloadListener implements ResourceManagerReloadListener {
+
+        @Override
+        public void onResourceManagerReload(ResourceManager resourceManager) {
+            overlayModel = null;
+        };
+
     };
     
 };

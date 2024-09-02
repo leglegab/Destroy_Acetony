@@ -45,7 +45,7 @@ public abstract class GuiMixin {
         method = "renderHotbar",
         at = @At(
             value = "INVOKE",
-            target = "renderSlot"
+            target = "Lnet/minecraft/client/gui/Gui;renderSlot(Lnet/minecraft/client/gui/GuiGraphics;IIFLnet/minecraft/world/entity/player/Player;Lnet/minecraft/world/item/ItemStack;I)V"
         )
     )
     private void renderOffhandItemOffset(Gui gui, GuiGraphics pGuiGraphics, int pX, int pY, float pPartialTick, Player pPlayer, ItemStack pStack, int pSeed) {
@@ -67,7 +67,7 @@ public abstract class GuiMixin {
         method = "renderHotbar",
         at = @At(
             value = "INVOKE",
-            target = "blit"
+            target = "Lnet/minecraft/client/gui/GuiGraphics;blit(Lnet/minecraft/resources/ResourceLocation;IIIIII)V"
         )
     )
     private void renderOffhandBackgroundOffset(GuiGraphics pGuiGraphics, ResourceLocation pAtlasLocation, int pX, int pY, int pUOffset, int pVOffset, int pUWidth, int pVHeight) {

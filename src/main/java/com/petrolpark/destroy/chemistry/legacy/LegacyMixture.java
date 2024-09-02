@@ -14,6 +14,7 @@ import java.util.Set;
 import com.google.common.collect.ImmutableList;
 import com.petrolpark.destroy.Destroy;
 import com.petrolpark.destroy.chemistry.api.error.ChemistryException;
+import com.petrolpark.destroy.chemistry.api.util.Constants;
 import com.petrolpark.destroy.chemistry.legacy.genericreaction.DoubleGroupGenericReaction;
 import com.petrolpark.destroy.chemistry.legacy.genericreaction.GenericReactant;
 import com.petrolpark.destroy.chemistry.legacy.genericreaction.GenericReaction;
@@ -234,7 +235,7 @@ public class LegacyMixture extends ReadOnlyMixture {
 
     /**
      * Creates a new Mixture by mixing together existing ones. This does not give the volume of the new Mixture.
-     * @param mixtures A Map of all Mixtures to their volumes (in Buckets)
+     * @param mixtures A Map of all Mixtures to their volumes (in any consistent units)
      * @return A new Mixture instance
      */
     public static LegacyMixture mix(Map<LegacyMixture, Double> mixtures) {
@@ -477,7 +478,7 @@ public class LegacyMixture extends ReadOnlyMixture {
      * Enact all {@link Reactions} that {@link LegacyReaction#getItemReactants involve Item Stacks}. This does not just
      * include dissolutions, but Item-catalyzed Reactions too.
      * @param availableStacks The Item Stacks available to this Mixture. This Stacks in this List will be modified
-     * @param volume The amount of this Mixture there is, in buckets
+     * @param volume The amount of this Mixture there is, in liters
      * @return The resultant Item Stacks after dissolution has occured
      */
     public List<ItemStack> dissolveItems(ReactionContext context, double volume) {
@@ -669,20 +670,20 @@ public class LegacyMixture extends ReadOnlyMixture {
     /**
      * Increase the number of moles of Reaction which have occured, add all products, and remove all reactants.
      * @param reaction
-     * @param molesPerBucket Moles (per Bucket) of Reaction
+     * @param molesPerLiter Moles (per liter) of Reaction
      * @return Whether the possible Reactions for this Mixture should be updated
      */
-    protected boolean doReaction(LegacyReaction reaction, float molesPerBucket) {
+    protected boolean doReaction(LegacyReaction reaction, float molesPerLiter) {
 
         boolean shouldRefreshPossibleReactions = false;
 
         for (LegacySpecies reactant : reaction.getReactants()) {
-            changeConcentrationOf(reactant, - (molesPerBucket * reaction.getReactantMolarRatio(reactant)), false); // Use up the right amount of all the reagents
+            changeConcentrationOf(reactant, - (molesPerLiter * reaction.getReactantMolarRatio(reactant)), false); // Use up the right amount of all the reagents
         };
 
         addEachProduct: for (LegacySpecies product : reaction.getProducts()) {
             if (product.isNovel() && getConcentrationOf(product) == 0f) { // If we have a novel Molecule that we don't think currently exists in the Mixture...
-                if (internalAddMolecule(product, molesPerBucket * reaction.getProductMolarRatio(product), false)) { // ...add it with this method, as this automatically checks for pre-existing novel Molecules, and if it was actually a brand new Molecule...
+                if (internalAddMolecule(product, molesPerLiter * reaction.getProductMolarRatio(product), false)) { // ...add it with this method, as this automatically checks for pre-existing novel Molecules, and if it was actually a brand new Molecule...
                     shouldRefreshPossibleReactions = true; // ...flag this
                 }; 
                 continue addEachProduct;
@@ -691,11 +692,11 @@ public class LegacyMixture extends ReadOnlyMixture {
             if (!contents.containsKey(product)) { // If we are adding a new product, the possible Reactions will change
                 shouldRefreshPossibleReactions = true;
             };
-            changeConcentrationOf(product, molesPerBucket * reaction.getProductMolarRatio(product), false); // Increase the concentration of the product
+            changeConcentrationOf(product, molesPerLiter * reaction.getProductMolarRatio(product), false); // Increase the concentration of the product
         };
 
-        heat(-reaction.getEnthalpyChange() * 1000 * molesPerBucket);
-        incrementReactionResults(reaction, molesPerBucket);
+        heat(-reaction.getEnthalpyChange() * 1000 * molesPerLiter);
+        incrementReactionResults(reaction, molesPerLiter);
 
         return shouldRefreshPossibleReactions;
     };
@@ -721,11 +722,11 @@ public class LegacyMixture extends ReadOnlyMixture {
      * @param outsideTemperature The {@link com.petrolpark.destroy.capability.Pollution#getLocalTemperature temperature} outside the Basin.
      */
     public ReactionInBasinResult reactInBasin(int volume, List<ItemStack> availableStacks, float heatingPower, float outsideTemperature) {
-        float volumeInBuckets = (float)volume / 1000f;
+        float volumeInLiters = (float)volume / Constants.MILLIBUCKETS_PER_LITER;
         int ticks = 0;
 
         ReactionContext context = new ReactionContext(availableStacks, 0f, false); 
-        dissolveItems(context, volumeInBuckets); // Dissolve all Items
+        dissolveItems(context, volumeInLiters); // Dissolve all Items
         while (!equilibrium && ticks < 600) { // React the Mixture
             float energyChange = heatingPower / TICKS_PER_SECOND;
             energyChange += (outsideTemperature - temperature) * 100f / TICKS_PER_SECOND; // Fourier's Law (sort of), the Basin has a fixed conductance of 100 andthe divide by 20 is for 20 ticks per second
@@ -740,16 +741,16 @@ public class LegacyMixture extends ReadOnlyMixture {
 
         int amount = recalculateVolume(volume);
 
-        return new ReactionInBasinResult(ticks, getCompletedResults(volumeInBuckets), amount);
+        return new ReactionInBasinResult(ticks, getCompletedResults(volumeInLiters), amount);
     };
 
     /**
      * If any {@link LegacyMixture#reactionResults results} have had enough moles to have occured, remove them from the Mixture and return them here.
      * This is mutative.
-     * @param volumeInBuckets The amount of Mixture
+     * @param volumeInLiters The amount of Mixture
      * @return A Set of Reaction Results mapped to the number of times that Reaction result occurs
      */
-    public Map<ReactionResult, Integer> getCompletedResults(double volumeInBuckets) {
+    public Map<ReactionResult, Integer> getCompletedResults(double volumeInLiters) {
         Map<ReactionResult, Integer> results = new HashMap<>();
         if (reactionResults.isEmpty()) return results;
         for (ReactionResult result : reactionResults.keySet()) {
@@ -760,11 +761,11 @@ public class LegacyMixture extends ReadOnlyMixture {
             };
 
             float molesPerBucketOfReaction = reactionResults.get(result);
-            int numberOfResult = (int) (volumeInBuckets * molesPerBucketOfReaction / result.getRequiredMoles());
+            int numberOfResult = (int) (volumeInLiters * molesPerBucketOfReaction / result.getRequiredMoles());
             if (numberOfResult == 0) continue;
 
             // Decrease the amount of Reaction that has happened
-            reactionResults.replace(result, molesPerBucketOfReaction - numberOfResult * result.getRequiredMoles() / (float)volumeInBuckets);
+            reactionResults.replace(result, molesPerBucketOfReaction - numberOfResult * result.getRequiredMoles() / (float)volumeInLiters);
 
             results.put(result, numberOfResult);
         };
