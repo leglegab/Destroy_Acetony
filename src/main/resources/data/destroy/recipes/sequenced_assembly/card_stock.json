@@ -46,7 +46,7 @@
             "item": "destroy:unfinished_card_stock"
           },
           {
-            "item": "destroy:polystyrene_butadiene"
+            "item": "minecraft:paper"
           }
         ],
         "results": [

@@ -137,6 +137,9 @@ public class DestroyItems {
     IRON_POWDER = REGISTRATE.item("iron_powder", Item::new)
         .tag(forgeItemTag("dusts/iron"), Tags.Items.DUSTS)
         .register(),
+    GOLD_POWDER = REGISTRATE.item("gold_powder", Item::new)
+        .tag(Tags.Items.DUSTS)
+        .register(),
     NICKEL_POWDER = REGISTRATE.item("nickel_powder", Item::new)
         .tag(forgeItemTag("dusts/nickel"), Tags.Items.DUSTS)
         .register(),
