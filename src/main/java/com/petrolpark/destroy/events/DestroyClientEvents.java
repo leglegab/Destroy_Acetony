@@ -166,7 +166,7 @@ public class DestroyClientEvents {
             && stack.getTag().contains("display", Tag.TAG_COMPOUND)
             && stack.getOrCreateTagElement("display").contains("color", Tag.TAG_ANY_NUMERIC)
         )
-            event.getToolTip().remove(1);
+            event.getToolTip().remove(2);
     };
 
     @SubscribeEvent
@@ -175,8 +175,7 @@ public class DestroyClientEvents {
         ExplosiveProperties properties = null;
         if (event.getItemStack().getItem() instanceof ICustomExplosiveMixItem mixItem) {
             properties = mixItem.getExplosiveInventory(event.getItemStack()).getExplosiveProperties().withConditions(mixItem.getApplicableExplosionConditions());
-        };
-        if (mc.screen instanceof CustomExplosiveScreen) {
+        } else if (mc.screen instanceof CustomExplosiveScreen) {
             properties = ExplosiveProperties.ITEM_EXPLOSIVE_PROPERTIES.get(event.getItemStack().getItem());
         };
         if (properties != null) event.getTooltipElements().add(Either.right(new ExplosivePropertiesTooltip(properties)));

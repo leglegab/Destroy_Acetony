@@ -1307,6 +1307,7 @@
     "destroy.tooltip.vat_material.transparent": "Transparent:",
     "destroy.tooltip.vat_material.transparent.description": "Transparent blocks can transmit _ultraviolet light_, which is needed for some reactions, and allow for the use of _Colorimeters_.",
     "destroy.tooltip.vat_material.vat_controller": "A _single_ Vat Controller is needed to make a Vat. They can withstand _any pressure_ difference, do _not conduct_ heat, and are _opaque_.",
+    "destroy.tooltip.view_mixable_explosives": "View all explosives",
 
     "destroy.trim_material.andesite_alloy": "Andesite Alloy Material",
     "destroy.trim_material.brass": "Brass Material",

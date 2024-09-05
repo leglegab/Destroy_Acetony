@@ -1,5 +1,6 @@
 package com.petrolpark.destroy.compat.jei.category;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Map.Entry;
 
@@ -7,6 +8,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.petrolpark.compat.jei.category.PetrolparkRecipeCategory;
 import com.petrolpark.destroy.Destroy;
 import com.petrolpark.destroy.client.gui.DestroyGuiTextures;
+import com.petrolpark.destroy.compat.jei.DestroyJEI;
 import com.petrolpark.destroy.item.tooltip.ExplosivePropertiesTooltip;
 import com.petrolpark.destroy.world.explosion.ExplosiveProperties;
 
@@ -15,6 +17,7 @@ import mezz.jei.api.gui.ingredient.IRecipeSlotsView;
 import mezz.jei.api.helpers.IJeiHelpers;
 import mezz.jei.api.recipe.IFocusGroup;
 import mezz.jei.api.recipe.RecipeIngredientRole;
+import mezz.jei.api.recipe.RecipeType;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.core.NonNullList;
@@ -26,8 +29,15 @@ import net.minecraft.world.item.crafting.ShapelessRecipe;
 
 public class MixableExplosiveCategory extends PetrolparkRecipeCategory<MixableExplosiveCategory.MixableExplosiveRecipe> {
     
+    public static RecipeType<MixableExplosiveRecipe> TYPE;
+    
     public MixableExplosiveCategory(Info<MixableExplosiveRecipe> info, IJeiHelpers helpers) {
         super(info, helpers);
+        TYPE = info.recipeType();
+    };
+
+    public static void openCategoryView() {
+        DestroyJEI.jeiRuntime.get().getRecipesGui().showTypes(Collections.singletonList(TYPE));
     };
 
     @Override

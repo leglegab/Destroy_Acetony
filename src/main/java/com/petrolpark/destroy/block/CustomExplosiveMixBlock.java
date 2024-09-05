@@ -26,8 +26,10 @@ import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityTicker;
 import net.minecraft.world.level.block.entity.BlockEntityType;
@@ -58,8 +60,23 @@ public class CustomExplosiveMixBlock extends PrimeableBombBlock<CustomExplosiveM
             ExplosiveProperties properties = inv.getExplosiveProperties();
             if (properties.fulfils(ExplosiveProperties.NO_FUSE)) {
                 if (level instanceof ServerLevel serverLevel) ExplosionHelper.explode(serverLevel, CustomExplosiveMixExplosion.create(level, inv, igniter, Vec3.atCenterOf(pos)));
-            } else if (properties.fulfils(ExplosiveProperties.CAN_EXPLODE)) super.onCaughtFire(state, level, pos, face, igniter);
+            } else if (properties.fulfils(ExplosiveProperties.CAN_EXPLODE)) {
+                super.onCaughtFire(state, level, pos, face, igniter);
+                level.removeBlock(pos, false);
+            };
         });
+    };
+
+    @Override
+    public void onPlace(BlockState pState, Level pLevel, BlockPos pPos, BlockState pOldState, boolean pIsMoving) {
+        if (!pOldState.is(pState.getBlock()) && pLevel.hasNeighborSignal(pPos)) onCaughtFire(pOldState, pLevel, pPos, null, null);
+    };
+
+    @Override
+    public void neighborChanged(BlockState pState, Level pLevel, BlockPos pPos, Block pBlock, BlockPos pFromPos, boolean pIsMoving) {
+        if (pLevel.hasNeighborSignal(pPos)) {
+           onCaughtFire(pState, pLevel, pPos, null, null);
+        };
     };
 
     @Override
@@ -82,9 +99,14 @@ public class CustomExplosiveMixBlock extends PrimeableBombBlock<CustomExplosiveM
 
     @Override
     public InteractionResult use(BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult pHit) {
-        InteractionResult dyeingResult = onBlockEntityUse(level, pos, be -> be.tryDye(player.getItemInHand(hand), pHit, level, pos, player));
-        if (dyeingResult != InteractionResult.PASS) return dyeingResult;
-        if (!level.isClientSide() && player instanceof ServerPlayer serverPlayer) {
+        ItemStack stack = player.getItemInHand(hand);
+        boolean lighter = stack.is(Items.FLINT_AND_STEEL) || stack.is(Items.FIRE_CHARGE);
+        InteractionResult result = onBlockEntityUse(level, pos, be -> {
+            if (lighter && be.getExplosiveInventory().getExplosiveProperties().fulfils(ExplosiveProperties.CAN_EXPLODE)) return super.use(state, level, pos, player, hand, pHit);
+            return be.tryDye(stack, pHit, level, pos, player);
+        });
+        if (result != InteractionResult.PASS) return result;
+        if (!lighter && !level.isClientSide() && player instanceof ServerPlayer serverPlayer) {
             withBlockEntityDo(level, pos, be -> NetworkHooks.openScreen(serverPlayer, be, be::writeToBuffer));
             return InteractionResult.SUCCESS;
         };

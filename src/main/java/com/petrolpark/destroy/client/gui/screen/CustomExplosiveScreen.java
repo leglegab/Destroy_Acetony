@@ -3,10 +3,14 @@ package com.petrolpark.destroy.client.gui.screen;
 import java.util.List;
 
 import com.mojang.blaze3d.vertex.PoseStack;
+import com.petrolpark.compat.CompatMods;
 import com.petrolpark.destroy.block.entity.ICustomExplosiveMixBlockEntity;
 import com.petrolpark.destroy.client.gui.DestroyGuiTextures;
+import com.petrolpark.destroy.client.gui.DestroyIcons;
 import com.petrolpark.destroy.client.gui.menu.CustomExplosiveMenu;
+import com.petrolpark.destroy.compat.jei.category.MixableExplosiveCategory;
 import com.petrolpark.destroy.item.tooltip.ExplosivePropertiesTooltip;
+import com.petrolpark.destroy.util.DestroyLang;
 import com.petrolpark.destroy.world.explosion.ExplosiveProperties;
 import com.simibubi.create.foundation.gui.AllIcons;
 import com.simibubi.create.foundation.gui.menu.AbstractSimiContainerScreen;
@@ -26,7 +30,7 @@ public class CustomExplosiveScreen extends AbstractSimiContainerScreen<CustomExp
     private final ICustomExplosiveMixBlockEntity be;
     private ExplosiveProperties explosiveProperties = null;
 
-    private IconButton confirmButton;
+    protected IconButton viewJeiButton, confirmButton;
 
     public CustomExplosiveScreen(CustomExplosiveMenu container, Inventory inv, Component title) {
         super(container, inv, title);
@@ -44,6 +48,13 @@ public class CustomExplosiveScreen extends AbstractSimiContainerScreen<CustomExp
         confirmButton = new IconButton(getGuiLeft() + background.width - 36, getGuiTop() + background.height - 24, AllIcons.I_CONFIRM);
 		confirmButton.withCallback(() -> {if (minecraft != null && minecraft.player != null) minecraft.player.closeContainer();}); // It thinks minecraft and player might be null
 		addRenderableWidget(confirmButton);
+
+        if (CompatMods.JEI.isLoaded()) {
+            viewJeiButton = new IconButton(getGuiLeft() + 8, getGuiTop() + background.height - 24, DestroyIcons.QUESTION_MARK)
+                .withCallback(() -> CompatMods.JEI.executeIfInstalled(() -> MixableExplosiveCategory::openCategoryView));
+            viewJeiButton.setToolTip(DestroyLang.translate("tooltip.view_mixable_explosives").component());
+            addRenderableWidget(viewJeiButton);
+        };
     };
 
     @Override
