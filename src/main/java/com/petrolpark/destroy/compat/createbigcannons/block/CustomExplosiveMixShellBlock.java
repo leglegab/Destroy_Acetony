@@ -13,6 +13,7 @@ import com.petrolpark.destroy.compat.createbigcannons.item.CustomExplosiveMixShe
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.EntityType;
@@ -30,10 +31,11 @@ import net.minecraft.world.level.storage.loot.LootParams;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
+import net.minecraftforge.network.NetworkHooks;
+import rbasamoyai.createbigcannons.index.CBCMunitionPropertiesHandlers;
 import rbasamoyai.createbigcannons.munitions.big_cannon.FuzedProjectileBlock;
-import rbasamoyai.createbigcannons.munitions.config.PropertiesMunitionEntity;
 
-public class CustomExplosiveMixShellBlock extends FuzedProjectileBlock<CustomExplosiveMixShellBlockEntity, CustomExplosiveMixShellProperties> {
+public class CustomExplosiveMixShellBlock extends FuzedProjectileBlock<CustomExplosiveMixShellBlockEntity, CustomExplosiveMixShellProjectile> {
 
     protected CustomExplosiveMixShellBlock(Properties properties) {
         super(properties);
@@ -52,11 +54,14 @@ public class CustomExplosiveMixShellBlock extends FuzedProjectileBlock<CustomExp
     };
 
     @Override
-    public InteractionResult use(BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
-        InteractionResult dyeingResult = onBlockEntityUse(level, pos, be -> be.tryDye(player.getItemInHand(hand), hit, level, pos, player));
+    public InteractionResult use(BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult pHit) {
+        InteractionResult dyeingResult = onBlockEntityUse(level, pos, be -> be.tryDye(player.getItemInHand(hand), pHit, level, pos, player));
         if (dyeingResult != InteractionResult.PASS) return dyeingResult;
-        //TODO gui
-        return super.use(state, level, pos, player, hand, hit);
+        if (!level.isClientSide() && player instanceof ServerPlayer serverPlayer) {
+            withBlockEntityDo(level, pos, be -> NetworkHooks.openScreen(serverPlayer, be, be::writeToBuffer));
+            return InteractionResult.SUCCESS;
+        };
+        return InteractionResult.PASS;
     };
 
     @Override
@@ -126,12 +131,17 @@ public class CustomExplosiveMixShellBlock extends FuzedProjectileBlock<CustomExp
 		return projectile;
     };
 
-    @Override
-    public EntityType<? extends PropertiesMunitionEntity<? extends CustomExplosiveMixShellProperties>> getAssociatedEntityType() {
-        return CreateBigCannonsEntityTypes.CUSTOM_EXPLOSIVE_MIX_SHELL.get();
-    };
-
     public static CustomExplosiveMixShellBlockItem getItem() {
         return ((CustomExplosiveMixShellBlockItem)CreateBigCannonsBlocks.CUSTOM_EXPLOSIVE_MIX_SHELL.asItem());
+    }
+
+    @Override
+    public boolean isBaseFuze() {
+        return CBCMunitionPropertiesHandlers.COMMON_SHELL_BIG_CANNON_PROJECTILE.getPropertiesOf(getAssociatedEntityType()).fuze().baseFuze();
+    };
+
+    @Override
+    public EntityType<? extends CustomExplosiveMixShellProjectile> getAssociatedEntityType() {
+        return CreateBigCannonsEntityTypes.CUSTOM_EXPLOSIVE_MIX_SHELL.get();
     };
 };

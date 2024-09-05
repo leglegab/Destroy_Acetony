@@ -6,6 +6,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import com.petrolpark.destroy.item.inventory.CustomExplosiveMixInventory;
+import com.petrolpark.destroy.world.explosion.ExplosiveProperties;
 import com.simibubi.create.foundation.blockEntity.SmartBlockEntity;
 import com.simibubi.create.foundation.blockEntity.behaviour.BlockEntityBehaviour;
 
@@ -14,10 +15,18 @@ import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.tags.GameEventTags;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.gameevent.BlockPositionSource;
+import net.minecraft.world.level.gameevent.GameEvent;
+import net.minecraft.world.level.gameevent.GameEvent.Context;
+import net.minecraft.world.level.gameevent.GameEventListener;
+import net.minecraft.world.level.gameevent.PositionSource;
+import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
@@ -25,7 +34,7 @@ import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.items.IItemHandler;
 
-public abstract class SimpleDyeableNameableCustomExplosiveMixBlockEntity extends SmartBlockEntity implements IDyeableCustomExplosiveMixBlockEntity {
+public abstract class SimpleDyeableNameableCustomExplosiveMixBlockEntity extends SmartBlockEntity implements IDyeableCustomExplosiveMixBlockEntity, GameEventListener.Holder<SimpleDyeableNameableCustomExplosiveMixBlockEntity.SoundActivatedExplosiveGameEventListener> {
 
     public LazyOptional<IItemHandler> itemCapability;
 
@@ -33,14 +42,19 @@ public abstract class SimpleDyeableNameableCustomExplosiveMixBlockEntity extends
     protected int color;
     protected Component name;
 
+    public SoundActivatedExplosiveGameEventListener gameEventListener;
+
     public SimpleDyeableNameableCustomExplosiveMixBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState state) {
         super(type, pos, state);
         color = 0xFFFFFF;
         inv = createInv();
         refreshCapability();
+        gameEventListener = new SoundActivatedExplosiveGameEventListener();
     };
 
     public abstract CustomExplosiveMixInventory createInv();
+
+    public abstract void explode(@Nullable Player cause);
 
     public void refreshCapability() {
         itemCapability = LazyOptional.of(() -> inv);
@@ -133,6 +147,42 @@ public abstract class SimpleDyeableNameableCustomExplosiveMixBlockEntity extends
             return true;
         };
         return success;
+    };
+
+    @Override
+    public SoundActivatedExplosiveGameEventListener getListener() {
+        return gameEventListener;
+    };
+
+    public class SoundActivatedExplosiveGameEventListener implements GameEventListener {
+
+        public final PositionSource position = new BlockPositionSource(getBlockPos());
+
+        @Override
+        public PositionSource getListenerSource() {
+            return position;
+        };
+
+        @Override
+        public int getListenerRadius() {
+            return 8;
+        };
+
+        @Override
+        public boolean handleGameEvent(ServerLevel level, GameEvent gameEvent, Context context, Vec3 pos) {
+            Player player = context.sourceEntity() instanceof Player p ? p : null;
+            if (gameEvent.is(GameEventTags.VIBRATIONS) && !(gameEvent.is(GameEventTags.IGNORE_VIBRATIONS_SNEAKING) && player != null && player.isCrouching()) && inv.getExplosiveProperties().fulfils(ExplosiveProperties.SOUND_ACTIVATED)) {
+                explode(player);
+                return true;
+            };
+            return false;
+        };
+
+        @Override
+        public DeliveryMode getDeliveryMode() {
+            return GameEventListener.DeliveryMode.BY_DISTANCE;
+        };
+
     };
     
 };

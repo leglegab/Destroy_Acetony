@@ -12,16 +12,22 @@ import java.util.Map.Entry;
 
 import javax.annotation.Nullable;
 
+import com.petrolpark.destroy.Destroy;
 import com.petrolpark.destroy.advancement.DestroyAdvancementTrigger;
 import com.petrolpark.destroy.world.loot.DestroyLootContextParams;
 
+import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.protocol.game.ClientboundExplodePacket;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.ExperienceOrb;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Player;
@@ -41,9 +47,33 @@ import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.Vec3;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.event.ForgeEventFactory;
+import net.minecraftforge.event.entity.living.LivingDropsEvent;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
 
+@EventBusSubscriber
 public class SmartExplosion extends Explosion {
+
+    private static final Map<ResourceLocation, SmartExplosion.Serializer<?>> SERIALIZERS = new HashMap<>();
+    
+    public static void register(SmartExplosion.Serializer<?> type) {
+        SERIALIZERS.put(type.id, type);
+    };
+
+    @SuppressWarnings("unchecked")
+    public static <E extends SmartExplosion> SmartExplosion.Serializer<E> getType(ResourceLocation typeId) {
+        return (SmartExplosion.Serializer<E>)SERIALIZERS.get(typeId);
+    };
+    
+    public static final SmartExplosion.Serializer<SmartExplosion> DEFAULT_SERIALIZER = new SmartExplosion.Serializer<>(Destroy.asResource("default"));
+
+    static {
+        register(DEFAULT_SERIALIZER);
+        register(CustomExplosiveMixExplosion.SERIALIZER);
+    };
 
     /**
      * The center (global co-ordinates) of this Explosion.
@@ -57,7 +87,7 @@ public class SmartExplosion extends Explosion {
      * How spherical this Explosion isn't: {@code 0} is perfectly spherical (for Blocks of uniform blast resistance) and {@code 1} is very irregular.
      * Default vanailla explosions have smoothness {@code 0.6}.
      */
-    protected final float smoothness;
+    public final float irregularity;
 
     /**
      * Create a more flexible Explosion.
@@ -67,12 +97,12 @@ public class SmartExplosion extends Explosion {
      * @param damageCalculator The class to calculate the damage done to Blocks (defaults to that of vanilla TNT)
      * @param position The center (global co-ordinates) of this Explosion
      * @param radius How large this Explosion should be
-     * @param smoothness How uniform this explosion is ({@code 1f} is spherical)
+     * @param irregularity How uniform this explosion is ({@code 1f} is spherical)
      */
-    public SmartExplosion(Level level, @Nullable Entity source, @Nullable DamageSource damageSource, @Nullable ExplosionDamageCalculator damageCalculator, Vec3 position, float radius, float smoothness) {
+    public SmartExplosion(Level level, @Nullable Entity source, @Nullable DamageSource damageSource, @Nullable ExplosionDamageCalculator damageCalculator, Vec3 position, float radius, float irregularity) {
         super(level, source, damageSource, damageCalculator, position.x, position.y, position.z, radius, false, Explosion.BlockInteraction.KEEP);
         this.position = position;
-        this.smoothness = smoothness > 1f ? 1f : smoothness;
+        this.irregularity = irregularity > 1f ? 1f : irregularity;
         stacksToCreate = new HashMap<>();
     };
 
@@ -95,7 +125,7 @@ public class SmartExplosion extends Explosion {
     };
 
     @Override
-    public void finalizeExplosion(boolean spawnParticles) {
+    public void finalizeExplosion(boolean clientSide) {
 
         boolean createExperience = getDirectSourceEntity() instanceof Player || shouldAlwaysDropExperience();
 
@@ -123,7 +153,7 @@ public class SmartExplosion extends Explosion {
         if (getIndirectSourceEntity() instanceof Player player) DestroyAdvancementTrigger.DETONATE.award(level, player);
         
         // Do effects
-        effects(spawnParticles);
+        effects(clientSide);
     };
 
     /**
@@ -136,7 +166,7 @@ public class SmartExplosion extends Explosion {
 
         int resolution = 8;
 
-        float maxMomentum = radius * (1f + smoothness / 2f); // The maximum momentum any Block or Entity could experience from this Explosion
+        float maxMomentum = radius * (1f + irregularity / 2f); // The maximum momentum any Block or Entity could experience from this Explosion
 
         // Imagine a cube around the center of the explosion with a (2 * resolution) by (2 * resolution) grid on each face.
         // For each grid square on each face...
@@ -149,7 +179,7 @@ public class SmartExplosion extends Explosion {
 
                         // We pick a (slightly randomised) 'momentum' in this direction, based on the radius and smoothness of this Explosion
                         // Every time the line of this direction vector runs into a Block or Entity, the momentum will decrease slightly.
-                        float momentum = radius * ((1f - smoothness / 2f) + random.nextFloat() * smoothness);
+                        float momentum = radius * ((1f - irregularity / 2f) + random.nextFloat() * irregularity);
 
                         // We start at the center of the explosion
                         Vec3 positionToExplode = new Vec3(x, y, z);
@@ -263,17 +293,17 @@ public class SmartExplosion extends Explosion {
     /**
      * Create sounds and particle effects. This is called on both server and client side.
      * Default implementation is copied from the {@link net.minecraft.world.level.Explosion#finalizeExplosion Minecraft source code}.
-     * @param spawnParticles Whether particles should be shown.
+     * @param clientSide Whether particles should be shown.
      */
-    public void effects(boolean spawnParticles) {
+    public void effects(boolean clientSide) {
         // Sounds
         if (level.isClientSide()) {
             level.playLocalSound(position.x, position.y, position.z, SoundEvents.GENERIC_EXPLODE, SoundSource.BLOCKS, 4.0f, (1.0f + (random.nextFloat() * 0.4f)) * 0.7f, false);
         };
 
         // Particles
-        if (spawnParticles) {
-            if (radius > 2.0f) {
+        if (clientSide) {
+            if (radius > 2f) {
                level.addParticle(ParticleTypes.EXPLOSION_EMITTER, position.x, position.y, position.z, 1d, 0d, 0d);
             } else {
                level.addParticle(ParticleTypes.EXPLOSION, position.x, position.y, position.z, 1d, 0d, 0d);
@@ -284,7 +314,7 @@ public class SmartExplosion extends Explosion {
     /**
      * Whether this Explosion creates 'obliteration' drops.
     */
-    public boolean shouldDoSpecialDrops() {
+    public boolean shouldDoObliterationDrops() {
         return false;
     };
 
@@ -296,6 +326,19 @@ public class SmartExplosion extends Explosion {
         return false;
     };
 
+    /**
+     * Whether this Explosion should always cause Mobs to drop experience.
+     */
+    public boolean shouldAlwaysDropExperienceFromMobs() {
+        return false;
+    };
+
+    @SubscribeEvent
+    public static void onMobDrops(LivingDropsEvent event) {
+        if (event.getEntity().wasExperienceConsumed() || !(event.getEntity().level() instanceof ServerLevel)) return;
+        ExperienceOrb.award((ServerLevel) event.getEntity().level(), event.getEntity().position(), ForgeEventFactory.getExperienceDrop(event.getEntity(), null, event.getEntity().getExperienceReward()));
+    };
+
     public float getRadius() {
         return radius;
     };
@@ -305,6 +348,35 @@ public class SmartExplosion extends Explosion {
             existingStacks.addAll(newStacks);
             return existingStacks;
         });
+    };
+
+    public SmartExplosion.Serializer<?> getDefaultSerializer() {
+        return DEFAULT_SERIALIZER;
+    };
+
+    public void write(FriendlyByteBuf buffer) {
+        new ClientboundExplodePacket(getPosition().x(), getPosition().y(), getPosition().z(), getRadius(), getToBlow(), null).write(buffer);
+        buffer.writeFloat(irregularity);
+    };
+
+    public static class Serializer<E extends SmartExplosion> {
+
+        public final ResourceLocation id;
+
+        public Serializer(ResourceLocation id) {
+            this.id = id;
+        };
+
+        @OnlyIn(Dist.CLIENT)
+        public SmartExplosion read(FriendlyByteBuf buffer) {
+            Minecraft mc = Minecraft.getInstance();
+            ClientboundExplodePacket packet = new ClientboundExplodePacket(buffer);
+            float smoothness = buffer.readFloat();
+            SmartExplosion explosion = new SmartExplosion(mc.level, null, null, null, new Vec3(packet.getX(), packet.getY(), packet.getZ()), packet.getPower(), smoothness);
+            explosion.toBlow.addAll(packet.getToBlow());
+            return explosion;
+        };
+
     };
 
     /**

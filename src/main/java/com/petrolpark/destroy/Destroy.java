@@ -39,6 +39,7 @@ import com.petrolpark.destroy.recipe.DestroyExtrusions;
 import com.petrolpark.destroy.recipe.DestroyRecipeTypes;
 import com.petrolpark.destroy.sound.DestroySoundEvents;
 import com.petrolpark.destroy.stats.DestroyStats;
+import com.petrolpark.destroy.util.DestroyTagDatagen;
 import com.petrolpark.destroy.util.DestroyTags;
 import com.petrolpark.destroy.util.circuit.CircuitPatternHandler;
 import com.petrolpark.destroy.util.circuit.CircuitPuncherHandler;
@@ -173,6 +174,8 @@ public class Destroy {
         GogglesItem.addIsWearingPredicate(player -> player.isCreative() && DestroyAllConfigs.SERVER.automaticGoggles.get());
     };
 
+    // Datagen
     public static void gatherData(GatherDataEvent event) {
+        DestroyTagDatagen.addGenerators();
     };
-}
+};

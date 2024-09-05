@@ -1,11 +1,14 @@
 package com.petrolpark.destroy.item.inventory;
 
+import java.util.List;
+
 import org.jetbrains.annotations.NotNull;
 
 import com.petrolpark.destroy.world.explosion.ExplosiveProperties;
 import com.petrolpark.destroy.world.explosion.ExplosiveProperties.ExplosiveProperty;
 
 import net.minecraft.util.Mth;
+import net.minecraft.world.item.FireworkStarItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.items.ItemStackHandler;
 
@@ -31,6 +34,14 @@ public class CustomExplosiveMixInventory extends ItemStackHandler {
         };
         properties.forEach((ep, e) -> e.value = Mth.clamp(e.value, -10f, 10f));
         return properties;
+    };
+
+    /**
+     * Items which have special behaviour when exploded
+     * @return
+     */
+    public List<ItemStack> getSpecialItems() {
+        return stacks.stream().filter(s -> s.getItem() instanceof FireworkStarItem).toList();
     };
 
     @Override

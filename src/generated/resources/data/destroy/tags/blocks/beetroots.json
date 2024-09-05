@@ -11,6 +11,7 @@
     "destroy:lapis_infused_beetroot",
     "destroy:nickel_infused_beetroot",
     "destroy:redstone_infused_beetroot",
-    "destroy:zinc_infused_beetroot"
+    "destroy:zinc_infused_beetroot",
+    "minecraft:beetroots"
   ]
 }

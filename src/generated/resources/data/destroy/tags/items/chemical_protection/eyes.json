@@ -2,6 +2,7 @@
   "values": [
     "destroy:laboratory_goggles",
     "destroy:gold_laboratory_goggles",
-    "destroy:gas_mask"
+    "destroy:gas_mask",
+    "create:goggles"
   ]
 }

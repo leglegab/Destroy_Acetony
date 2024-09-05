@@ -7,13 +7,18 @@ import javax.annotation.Nullable;
 import java.util.Collections;
 
 import com.petrolpark.destroy.block.entity.SimpleDyeableNameableCustomExplosiveMixBlockEntity;
+import com.petrolpark.destroy.compat.createbigcannons.DestroyMunitionPropertiesHandlers;
 import com.petrolpark.destroy.compat.createbigcannons.block.entity.CreateBigCannonBlockEntityTypes;
 import com.petrolpark.destroy.compat.createbigcannons.item.CustomExplosiveMixChargeBlockItem;
+import com.petrolpark.destroy.config.DestroyAllConfigs;
+import com.petrolpark.destroy.item.inventory.CustomExplosiveMixInventory;
 import com.petrolpark.destroy.world.explosion.ExplosiveProperties;
+import com.petrolpark.destroy.world.explosion.ExplosiveProperties.ExplosiveProperty;
 import com.simibubi.create.foundation.block.IBE;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -33,8 +38,8 @@ import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraftforge.network.NetworkHooks;
-import rbasamoyai.createbigcannons.munitions.big_cannon.propellant.BigCannonPropellantProperties;
 import rbasamoyai.createbigcannons.munitions.big_cannon.propellant.PowderChargeBlock;
+import rbasamoyai.createbigcannons.munitions.big_cannon.propellant.config.BigCannonPropellantPropertiesComponent;
 
 public class CustomExplosiveMixChargeBlock extends PowderChargeBlock implements IBE<SimpleDyeableNameableCustomExplosiveMixBlockEntity> {
 
@@ -47,11 +52,6 @@ public class CustomExplosiveMixChargeBlock extends PowderChargeBlock implements 
 	public <S extends BlockEntity> BlockEntityTicker<S> getTicker(Level pLevel, BlockState pState, BlockEntityType<S> pBlockEntityType) {
 		return null; // This type of block does not need to tick
 	};
-
-    @Override
-    public BigCannonPropellantProperties getProperties() {
-        return new CustomExplosiveMixPropellantProperties(new ExplosiveProperties()); // Ideally should never be called this way
-    };
 
     @Override
     public void setPlacedBy(Level level, BlockPos pos, BlockState state, LivingEntity pPlacer, ItemStack stack) {
@@ -106,32 +106,32 @@ public class CustomExplosiveMixChargeBlock extends PowderChargeBlock implements 
 
     @Override
     public float getChargePower(StructureBlockInfo data) {
-		return new CustomExplosiveMixPropellantProperties(data).strength();
+		return getPropellantProperties(data).strength();
 	};
 
 	@Override
     public float getChargePower(ItemStack stack) {
-		return new CustomExplosiveMixPropellantProperties(stack).strength();
+		return getPropellantProperties(stack).strength();
 	};
 
 	@Override
     public float getStressOnCannon(StructureBlockInfo data) {
-		return new CustomExplosiveMixPropellantProperties(data).addedStress();
+		return getPropellantProperties(data).addedStress();
 	};
 
 	@Override
     public float getStressOnCannon(ItemStack stack) {
-		return new CustomExplosiveMixPropellantProperties(stack).addedStress();
+		return getPropellantProperties(stack).addedStress();
 	};
 
 	@Override
     public float getSpread(StructureBlockInfo data) {
-		return new CustomExplosiveMixPropellantProperties(data).addedSpread();
+		return getPropellantProperties(data).addedSpread();
 	};
 
 	@Override
     public float getRecoil(StructureBlockInfo data) {
-		return new CustomExplosiveMixPropellantProperties(data).addedRecoil();
+		return getPropellantProperties(data).addedRecoil();
 	};
 
     @Override
@@ -144,25 +144,35 @@ public class CustomExplosiveMixChargeBlock extends PowderChargeBlock implements 
         return CreateBigCannonBlockEntityTypes.CUSTOM_EXPLOSIVE_MIX_CHARGE.get();
     };
 
-    public static CustomExplosiveMixChargeBlockItem getItem() {
+    public CustomExplosiveMixChargeBlockItem getItem() {
         return ((CustomExplosiveMixChargeBlockItem)CreateBigCannonsBlocks.CUSTOM_EXPLOSIVE_MIX_CHARGE.asItem());
     };
 
-    public static class CustomExplosiveMixPropellantProperties extends BigCannonPropellantProperties {
+    public BigCannonPropellantPropertiesComponent getPropellantProperties(ItemStack stack) {
+        return getPropellantProperties(stack.getOrCreateTag());
+    };
 
-        public CustomExplosiveMixPropellantProperties(StructureBlockInfo info) {
-            this(getItem().fromStructureInfo(info));
+    public BigCannonPropellantPropertiesComponent getPropellantProperties(StructureBlockInfo data) {
+        return getPropellantProperties(data.nbt());
+    };
+
+    public BigCannonPropellantPropertiesComponent getPropellantProperties(CompoundTag nbt) {
+        CustomExplosiveMixInventory inv = new CustomExplosiveMixInventory(DestroyAllConfigs.SERVER.compat.customExplosiveMixChargeSize.get());
+        inv.deserializeNBT(nbt.getCompound("ExplosiveMix"));
+        CustomExplosiveMixChargeProperties chargeProperties = DestroyMunitionPropertiesHandlers.CUSTOM_EXPLOSIVE_MIX_CHARGE.getPropertiesOf(this);
+        ExplosiveProperties explosiveProperties = inv.getExplosiveProperties();
+        if (!explosiveProperties.fulfils(ExplosiveProperties.CAN_EXPLODE)) return BigCannonPropellantPropertiesComponent.DEFAULT;
+        float strength = chargeProperties.basePropellantProperties().strength();
+        float stress = chargeProperties.basePropellantProperties().addedStress();
+        float recoil = chargeProperties.basePropellantProperties().addedRecoil();
+        float spread = chargeProperties.basePropellantProperties().addedStress();
+        for (ExplosiveProperty property : ExplosiveProperty.values()) {
+            strength += explosiveProperties.get(property).value * chargeProperties.propellantPropertyModifiers().get(property).strength();
+            stress += explosiveProperties.get(property).value * chargeProperties.propellantPropertyModifiers().get(property).addedStress();
+            recoil += explosiveProperties.get(property).value * chargeProperties.propellantPropertyModifiers().get(property).addedRecoil();
+            spread += explosiveProperties.get(property).value * chargeProperties.propellantPropertyModifiers().get(property).addedSpread();
         };
-
-        public CustomExplosiveMixPropellantProperties(ItemStack stack) {
-            this(getItem().getExplosiveInventory(stack).getExplosiveProperties());
-        };
-
-        public CustomExplosiveMixPropellantProperties(ExplosiveProperties explosiveProperties) {
-            //TODO determine propellant properties from explosive properties
-            super(1f, 1f, 1f, 1f);
-        };
-
+        return new BigCannonPropellantPropertiesComponent(strength, stress, recoil, spread);
     };
     
 };

@@ -1,5 +1,8 @@
 {
   "values": [
-    "destroy:yeast"
+    "destroy:yeast",
+    "minecraft:rotten_flesh",
+    "minecraft:rooted_dirt",
+    "minecraft:bone_meal"
   ]
 }

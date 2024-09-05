@@ -10,10 +10,17 @@ import com.petrolpark.destroy.block.entity.DestroyBlockEntityTypes;
 import com.petrolpark.destroy.block.entity.SimpleDyeableNameableCustomExplosiveMixBlockEntity;
 import com.petrolpark.destroy.entity.CustomExplosiveMixEntity;
 import com.petrolpark.destroy.entity.DestroyEntityTypes;
+import com.petrolpark.destroy.item.inventory.CustomExplosiveMixInventory;
+import com.petrolpark.destroy.util.ExplosionHelper;
+import com.petrolpark.destroy.world.explosion.CustomExplosiveMixExplosion;
+import com.petrolpark.destroy.world.explosion.ExplosiveProperties;
 import com.simibubi.create.foundation.block.IBE;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.LivingEntity;
@@ -29,6 +36,7 @@ import net.minecraft.world.level.storage.loot.LootParams;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
+import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.network.NetworkHooks;
 
 public class CustomExplosiveMixBlock extends PrimeableBombBlock<CustomExplosiveMixEntity> implements IBE<CustomExplosiveMixBlockEntity> {
@@ -42,6 +50,29 @@ public class CustomExplosiveMixBlock extends PrimeableBombBlock<CustomExplosiveM
 	public <S extends BlockEntity> BlockEntityTicker<S> getTicker(Level pLevel, BlockState pState, BlockEntityType<S> pBlockEntityType) {
 		return null; // This type of block does not need to tick
 	};
+
+    @Override
+    public void onCaughtFire(BlockState state, Level level, BlockPos pos, Direction face, LivingEntity igniter) {
+        withBlockEntityDo(level, pos, be -> {
+            CustomExplosiveMixInventory inv = be.getExplosiveInventory();
+            ExplosiveProperties properties = inv.getExplosiveProperties();
+            if (properties.fulfils(ExplosiveProperties.NO_FUSE)) {
+                if (level instanceof ServerLevel serverLevel) ExplosionHelper.explode(serverLevel, CustomExplosiveMixExplosion.create(level, inv, igniter, Vec3.atCenterOf(pos)));
+            } else if (properties.fulfils(ExplosiveProperties.CAN_EXPLODE)) super.onCaughtFire(state, level, pos, face, igniter);
+        });
+    };
+
+    @Override
+    public boolean isRandomlyTicking(BlockState state) {
+        return true;
+    };
+
+    @Override
+    public void randomTick(BlockState pState, ServerLevel pLevel, BlockPos pPos, RandomSource pRandom) {
+        withBlockEntityDo(pLevel, pPos, be -> {
+            if (be.getExplosiveInventory().getExplosiveProperties().fulfils(ExplosiveProperties.EXPLODES_RANDOMLY)) onCaughtFire(pState, pLevel, pPos, null, null);
+        });
+    };
 
     @Override
     public void setPlacedBy(Level level, BlockPos pos, BlockState state, LivingEntity pPlacer, ItemStack stack) {

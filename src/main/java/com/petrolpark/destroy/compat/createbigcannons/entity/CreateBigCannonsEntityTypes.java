@@ -2,11 +2,11 @@ package com.petrolpark.destroy.compat.createbigcannons.entity;
 
 import static com.petrolpark.destroy.Destroy.REGISTRATE;
 
-import com.petrolpark.destroy.compat.createbigcannons.block.CustomExplosiveMixShellProperties;
 import com.petrolpark.destroy.compat.createbigcannons.entity.renderer.CustomExplosiveMixShellProjectileRenderer;
 import com.tterrag.registrate.util.entry.EntityEntry;
 
 import net.minecraft.world.entity.MobCategory;
+import rbasamoyai.createbigcannons.index.CBCMunitionPropertiesHandlers;
 import rbasamoyai.createbigcannons.multiloader.EntityTypeConfigurator;
 import rbasamoyai.createbigcannons.munitions.config.MunitionPropertiesHandler;
 
@@ -21,7 +21,7 @@ public class CreateBigCannonsEntityTypes {
             .updateVelocity(false)
             .trackingRange(16)
         ).renderer(() -> CustomExplosiveMixShellProjectileRenderer::new)
-        .onRegister(type -> MunitionPropertiesHandler.registerPropertiesSerializer(type, new CustomExplosiveMixShellProperties.Serializer()))
+        .onRegister(type -> MunitionPropertiesHandler.registerProjectileHandler(type, CBCMunitionPropertiesHandlers.COMMON_SHELL_BIG_CANNON_PROJECTILE))
         .register();
 
     public static final void register() {};

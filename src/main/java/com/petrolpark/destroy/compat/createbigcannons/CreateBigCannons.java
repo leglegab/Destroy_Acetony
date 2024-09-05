@@ -15,6 +15,7 @@ import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 public class CreateBigCannons {
     
     public static void init(IEventBus modEventBus, IEventBus forgeEventBus) {
+        DestroyMunitionPropertiesHandlers.init();
         CreateBigCannonsBlocks.register();
         CreateBigCannonBlockEntityTypes.register();
         CreateBigCannonsEntityTypes.register();

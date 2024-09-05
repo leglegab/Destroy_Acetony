@@ -8,6 +8,7 @@
     "destroy:platinum_block",
     "destroy:rhodium_block",
     "destroy:lead_block",
-    "destroy:stainless_steel_block"
+    "destroy:stainless_steel_block",
+    "destroy:chiseled_rhodium_block"
   ]
 }

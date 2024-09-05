@@ -88,7 +88,7 @@ public class DestroyTags {
         ARC_FURNACE_TRANSFORMABLE,
         BEETROOTS,
         ACID_RAIN_DESTRUCTIBLE,
-        ANFO_MINEABLE,
+        GANGUE,
         ACID_RAIN_DIRT_REPLACEABLE;
 
         public final TagKey<Block> tag;

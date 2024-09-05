@@ -1,5 +1,6 @@
 {
   "values": [
-    "destroy:test_tube"
+    "destroy:test_tube",
+    "#destroy:syringes"
   ]
 }

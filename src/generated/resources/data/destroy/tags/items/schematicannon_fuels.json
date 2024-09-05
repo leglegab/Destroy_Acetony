@@ -1,7 +1,11 @@
 {
   "values": [
+    "minecraft:gunpowder",
+    {
+      "id": "createbigcannons:packed_gunpowder",
+      "required": false
+    },
     "#destroy:explosives/primary",
-    "#destroy:explosives/secondary",
-    "minecraft:gunpowder"
+    "#destroy:explosives/secondary"
   ]
 }

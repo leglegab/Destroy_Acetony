@@ -10,6 +10,7 @@ import javax.annotation.Nullable;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.mojang.datafixers.util.Either;
+import com.petrolpark.destroy.MoveToPetrolparkLibrary;
 import com.petrolpark.destroy.client.model.DummyBaker;
 import com.petrolpark.destroy.client.sprites.DestroySpriteSource;
 
@@ -32,6 +33,7 @@ import net.minecraft.world.item.armortrim.ArmorTrim;
 import net.minecraft.world.item.armortrim.TrimMaterial;
 import net.minecraftforge.client.model.CompositeModel;
 
+@MoveToPetrolparkLibrary
 public class UniversalArmorTrimItemOverrides extends ItemOverrides {
 
     public static final ItemModelGenerator ITEM_MODEL_GENERATOR = new ItemModelGenerator();

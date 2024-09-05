@@ -3,7 +3,7 @@ package com.petrolpark.destroy.entity;
 import com.petrolpark.destroy.block.DestroyBlocks;
 import com.petrolpark.destroy.config.DestroyAllConfigs;
 import com.petrolpark.destroy.item.inventory.CustomExplosiveMixInventory;
-import com.petrolpark.destroy.world.explosion.DelicateExplosion;
+import com.petrolpark.destroy.world.explosion.CustomExplosiveMixExplosion;
 import com.petrolpark.destroy.world.explosion.SmartExplosion;
 
 import net.minecraft.core.BlockPos;
@@ -46,7 +46,7 @@ public class CustomExplosiveMixEntity extends PrimedBomb implements IEntityAddit
 
     @Override
     public SmartExplosion getExplosion(Level level, Vec3 position, Entity source) {
-        return new DelicateExplosion(level, source, null, null, position, 3, 0.8f);
+        return CustomExplosiveMixExplosion.create(level, inv, source, position);
     };
 
     @Override

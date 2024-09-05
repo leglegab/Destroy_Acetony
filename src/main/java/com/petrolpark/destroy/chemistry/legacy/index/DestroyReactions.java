@@ -750,6 +750,14 @@ public class DestroyReactions {
         .activationEnergy(1f)
         .build(),
 
+    SODIUM_OXIDE_DISSOLUTION = builder()
+        .id("sodium_oxide_dissolution")
+        .addReactant(DestroyMolecules.WATER)
+        .addSimpleItemReactant(DestroyItems.OXIDIZED_SODIUM_INGOT, 4.9f)
+        .addProduct(DestroyMolecules.SODIUM_ION, 2)
+        .addProduct(DestroyMolecules.HYDROXIDE, 2)
+        .build(),
+
     STEAM_REFORMATION = builder()
         .id("steam_reformation")
         .addReactant(DestroyMolecules.WATER)

@@ -24,6 +24,7 @@ import net.minecraft.core.Holder;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
@@ -39,10 +40,16 @@ public class ExplosiveProperties extends EnumMap<ExplosiveProperties.ExplosivePr
     public static final ExplosivePropertyCondition
 
     CAN_EXPLODE = register(new ExplosivePropertyCondition(ExplosiveProperty.SENSITIVITY, 0f, Destroy.asResource("can_explode"))),
+    DROPS_EXPERIENCE = register(new ExplosivePropertyCondition(ExplosiveProperty.TEMPERATURE, -4f, Destroy.asResource("drops_experience"))),
+    ENTITIES_PUSHED = register(new ExplosivePropertyCondition(ExplosiveProperty.ENERGY, 7f, Destroy.asResource("entities_pushed"))),
     EXPLODES_RANDOMLY = register(new ExplosivePropertyCondition(ExplosiveProperty.SENSITIVITY, 10f, Destroy.asResource("explodes_randomly"))),
+    ITEMS_DESTROYED = register(new ExplosivePropertyCondition(ExplosiveProperty.BRISANCE, 8f, Destroy.asResource("items_destroyed"))),
     EVAPORATES_FLUIDS = register(new ExplosivePropertyCondition(ExplosiveProperty.TEMPERATURE, 5f, Destroy.asResource("evaporates_fluids"))),
     OBLITERATES = register(new ExplosivePropertyCondition(ExplosiveProperty.BRISANCE, 5f, Destroy.asResource("obliterates"))),
-    SILK_TOUCH = register(new ExplosivePropertyCondition(ExplosiveProperty.BRISANCE, -5f, Destroy.asResource("silk_touch")));
+    NO_FUSE = register(new ExplosivePropertyCondition(ExplosiveProperty.SENSITIVITY, 4f, Destroy.asResource("no_fuse"))),
+    SILK_TOUCH = register(new ExplosivePropertyCondition(ExplosiveProperty.BRISANCE, -5f, Destroy.asResource("silk_touch"))),
+    SOUND_ACTIVATED = register(new ExplosivePropertyCondition(ExplosiveProperty.SENSITIVITY, 8f, Destroy.asResource("sound_activated"))),
+    UNDERWATER = register(new ExplosivePropertyCondition(ExplosiveProperty.OXYGEN_BALANCE, 2f, Destroy.asResource("underwater")));
   
     public ExplosiveProperties() {
         super(Arrays.stream(ExplosiveProperty.values()).collect(Collectors.toMap(p -> p, p -> new ExplosivePropertiesEntry(0f, p.getDefaultDescription()))));
@@ -57,9 +64,19 @@ public class ExplosiveProperties extends EnumMap<ExplosiveProperties.ExplosivePr
     };
 
     public boolean fulfils(ExplosivePropertyCondition condition) {
-        if (!get(condition.property).conditions.contains(condition)) return false;
+        if (!hasCondition(condition)) return false;
         float value = get(condition.property).value;
         return condition.negative() ? value <= condition.threshhold : value >= condition.threshhold;
+    };
+
+    public boolean hasCondition(ExplosivePropertyCondition condition) {
+        return get(condition.property).conditions.contains(condition);
+    };
+
+    public List<ExplosivePropertyCondition> getConditions() {
+        List<ExplosivePropertyCondition> conditions = new ArrayList<>();
+        for (ExplosivePropertiesEntry entry : values()) conditions.addAll(entry.conditions);
+        return conditions;
     };
 
     public CompoundTag write() {
@@ -84,6 +101,17 @@ public class ExplosiveProperties extends EnumMap<ExplosiveProperties.ExplosivePr
             };
         };
         return properties;
+    };
+
+    public static ExplosiveProperties read(FriendlyByteBuf buffer) {
+        ExplosiveProperties properties = new ExplosiveProperties();
+        for (ExplosiveProperty property : ExplosiveProperty.values()) properties.get(property).value = buffer.readFloat();
+        return properties.withConditions(buffer.readCollection(ArrayList<ExplosivePropertyCondition>::new, b -> EXPLOSIVE_PROPERTY_CONDITIONS.get(b.readResourceLocation())).toArray(i -> new ExplosivePropertyCondition[i]));
+    };
+
+    public void write(FriendlyByteBuf buffer) {
+        for (ExplosivePropertiesEntry entry : values()) buffer.writeFloat(entry.value);
+        buffer.writeCollection(getConditions(), (b, c) -> b.writeResourceLocation(c.rl));
     };
 
     public static class ExplosivePropertiesEntry {

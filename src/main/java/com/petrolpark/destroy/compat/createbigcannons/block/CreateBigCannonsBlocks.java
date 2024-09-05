@@ -2,12 +2,14 @@ package com.petrolpark.destroy.compat.createbigcannons.block;
 
 import static com.petrolpark.destroy.Destroy.REGISTRATE;
 
+import com.petrolpark.destroy.compat.createbigcannons.DestroyMunitionPropertiesHandlers;
 import com.petrolpark.destroy.compat.createbigcannons.item.CustomExplosiveMixChargeBlockItem;
 import com.petrolpark.destroy.compat.jei.DestroyJEISetup;
 import com.tterrag.registrate.util.entry.BlockEntry;
 
 import net.minecraft.world.item.ItemStack;
 import rbasamoyai.createbigcannons.index.CBCBlocks;
+import rbasamoyai.createbigcannons.munitions.config.MunitionPropertiesHandler;
 
 public class CreateBigCannonsBlocks {
 
@@ -15,7 +17,8 @@ public class CreateBigCannonsBlocks {
         .initialProperties(CBCBlocks.POWDER_CHARGE)
         .properties(p -> p
             .noLootTable() // Handled in CustomExplosiveMixChargeBlock class
-        ).item(CustomExplosiveMixChargeBlockItem::new)
+        ).onRegister(block -> MunitionPropertiesHandler.registerBlockPropellantHandler(block, DestroyMunitionPropertiesHandlers.CUSTOM_EXPLOSIVE_MIX_CHARGE))
+        .item(CustomExplosiveMixChargeBlockItem::new)
         .onRegister(item -> DestroyJEISetup.CUSTOM_MIX_EXPLOSIVES.add(() -> new ItemStack(item)))
         .build()
         .register();

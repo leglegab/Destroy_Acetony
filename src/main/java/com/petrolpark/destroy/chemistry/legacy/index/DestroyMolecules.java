@@ -174,6 +174,20 @@ public final class DestroyMolecules {
         .tag(Tags.OZONE_DEPLETER)
         .tag(Tags.SMOG)
         .build(),
+    
+    BORIC_ACID = builder()
+        .id("boric_acid")
+        .structure(LegacyMolecularStructure.deserialize("destroy:linear:OB(O)O"))
+        .boilingPoint(300f)
+        .density(1435f)
+        .molarHeatCapacity(81.3f)
+        .tag(Tags.ACUTELY_TOXIC)
+        .build(),
+
+    BOROHYDRIDE = builder()
+        .id("borohydride")
+        .structure(LegacyMolecularStructure.deserialize("destroy:linear:HB^-1(H)(H)H"))
+        .build(),
 
     BUTADIENE = builder()
         .id("butadiene")
@@ -389,6 +403,16 @@ public final class DestroyMolecules {
     //     .charge(-1)
     //     .tag(Tags.SMOG)
     //     .build(),
+
+    DIBORANE = builder()
+        .id("diborane")
+        .structure(LegacyMolecularStructure.deserialize("destroy:diborane:,,,"))
+        .boilingPoint(-92.49f)
+        .density(1131f)
+        .molarHeatCapacity(56.7f)
+        .tag(Tags.ACUTELY_TOXIC)
+        .tag(Tags.CARCINOGEN)
+        .build(),
 
     DICHLORODIFLUOROMETHANE = builder()
         .id("dichlorodifluoromethane")
@@ -1123,6 +1147,11 @@ public final class DestroyMolecules {
         .tag(Tags.ACUTELY_TOXIC)
         .tag(Tags.GREENHOUSE)
         .tag(Tags.SMOG)
+        .build(),
+
+    TETRAHYDROXY_TETRABORATE = builder()
+        .id("tetrahydroxy_tetraborate")
+        .structure(LegacyMolecularStructure.deserialize("destroy:tetraborate:O,O,O,O"))
         .build(),
     
     TOLUENE = builder()

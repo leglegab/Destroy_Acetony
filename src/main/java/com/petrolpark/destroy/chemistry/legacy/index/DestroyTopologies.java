@@ -157,6 +157,26 @@ public class DestroyTopologies {
             new int[]{4, 3, 2, 1, 0}, new int[]{3, 2, 1, 0, 4}, new int[]{2, 1, 0, 4, 3}, new int[]{1, 0, 4, 3, 2}, new int[]{0, 4, 3, 2, 1} // Mirrors
         }).build("cyclopentadienide"),
 
+    DIBORANE = create(LegacyElement.BORON) // 0
+        .sideChain(new Vec3(-sin(30), 0, cos(30)), new Vec3(-sin(30), 0, cos(30)))
+        .sideChain(new Vec3(-sin(30), 0, -cos(30)), new Vec3(-sin(30), 0, -cos(30)))
+        .atom(LegacyElement.HYDROGEN, new Vec3(cos(45), sin(45), 0)) // 1
+            .withBondTo(0, BondType.SINGLE)
+            .attach()
+        .atom(LegacyElement.BORON, new Vec3(2 * cos(45), 0, 0)) // 2
+            .withSideBranch(new Vec3(sin(30), 0, cos(30)), new Vec3(sin(30), 0, cos(30)))
+            .withSideBranch(new Vec3(sin(30), 0, -cos(30)), new Vec3(sin(30), 0, -cos(30)))
+            .withBondTo(1, BondType.SINGLE)
+            .attach()
+        .atom(LegacyElement.HYDROGEN, new Vec3(cos(45), -sin(45), 0))
+            .withBondTo(0, BondType.SINGLE)
+            .withBondTo(2, BondType.SINGLE)
+            .attach()
+        .reflections(new int[][]{
+            new int[]{1, 0, 3, 2}, new int[]{2, 3, 0, 1}, new int[]{3, 2, 1, 0}
+        }).build("diborane"),
+
+
     ISOHYDROBENZOFURAN = create(LegacyElement.CARBON) // 0
         .sideChain(new Vec3(-cos(30), -sin(30), 0d), new Vec3(-cos(60), -sin(60), 0d))
         .atom(LegacyElement.CARBON, new Vec3(0d, 1d, 0d)) // 1
@@ -217,7 +237,42 @@ public class DestroyTopologies {
             .withBondTo(0, BondType.SINGLE)
             .withBondTo(6, BondType.SINGLE)
             .attach()
-        .build("octasulfur");
+        .build("octasulfur"),
+
+    TETRABORATE = create(LegacyElement.BORON, -1) // 0
+        .sideChain(new Vec3(0, -cos(45), sin(45)), new Vec3(1, -cos(45), sin(45)).normalize())
+        .atom(LegacyElement.BORON, -1, new Vec3(0, 2 * cos(45), 0)) // 1
+            .withSideBranch(new Vec3(0, cos(45), sin(45)), new Vec3(-1, cos(45), sin(45)).normalize())
+            .attach()
+        .atom(LegacyElement.OXYGEN, new Vec3(0, sin(45), cos(45))) // 2
+            .withBondTo(0, BondType.SINGLE)
+            .withBondTo(1, BondType.SINGLE)
+            .attach()
+        .atom(LegacyElement.OXYGEN, new Vec3(cos(45), 0, -sin(45))) // 3
+            .withBondTo(0, BondType.SINGLE)
+            .attach()
+        .atom(LegacyElement.OXYGEN, new Vec3(cos(45),  2 * cos(45), -sin(45))) // 4
+            .withBondTo(1, BondType.SINGLE)
+            .attach()
+        .atom(LegacyElement.BORON, new Vec3(2 * cos(45), cos(45), -sin(45))) // 5
+            .withSideBranch(new Vec3(1, 0, 0), new Vec3(1, 1, -1).normalize())
+            .withBondTo(3, BondType.SINGLE)
+            .withBondTo(4, BondType.SINGLE)
+            .attach()
+        .atom(LegacyElement.OXYGEN, new Vec3(-cos(45), 0, -sin(45))) // 6
+            .withBondTo(0, BondType.SINGLE)
+            .attach()
+        .atom(LegacyElement.OXYGEN, new Vec3(-cos(45),  2 * cos(45), -sin(45))) // 7
+            .withBondTo(1, BondType.SINGLE)
+            .attach()
+        .atom(LegacyElement.BORON, new Vec3(-2 * cos(45), cos(45), -sin(45))) // 8
+            .withBondTo(6, BondType.SINGLE)
+            .withBondTo(7, BondType.SINGLE)
+            .withSideBranch(new Vec3(-1, 0, 0), new Vec3(-1, -1, -1).normalize())
+            .attach()
+        .reflections(new int[][]{
+            new int[]{1, 0, 2, 3}, new int[]{0, 1, 3, 2}, new int[]{1, 0, 3, 2}
+        }).build("tetraborate");
 
     public static Topology.Builder anthracene(boolean quinone) {
         return create(LegacyElement.CARBON) // 0
@@ -288,6 +343,10 @@ public class DestroyTopologies {
 
     private static Topology.Builder create(LegacyElement startingElement) {
         return new Topology.Builder(Destroy.MOD_ID).startWith(startingElement);
+    };
+
+    private static Topology.Builder create(LegacyElement startingElement, double charge) {
+        return new Topology.Builder(Destroy.MOD_ID).startWith(startingElement, charge);
     };
 
     public static void register() {};

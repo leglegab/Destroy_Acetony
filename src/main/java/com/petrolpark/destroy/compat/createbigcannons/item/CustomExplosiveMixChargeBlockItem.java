@@ -4,6 +4,7 @@ import java.util.List;
 
 import javax.annotation.Nullable;
 
+import com.petrolpark.destroy.compat.createbigcannons.block.entity.CustomExplosiveMixChargeBlockEntity;
 import com.petrolpark.destroy.config.DestroyAllConfigs;
 import com.petrolpark.destroy.item.DyeableCustomExplosiveMixBlockItem;
 import com.petrolpark.destroy.world.explosion.ExplosiveProperties.ExplosivePropertyCondition;
@@ -36,7 +37,7 @@ public class CustomExplosiveMixChargeBlockItem extends DyeableCustomExplosiveMix
 
     @Override
     public ExplosivePropertyCondition[] getApplicableExplosionConditions() {
-        return new ExplosivePropertyCondition[]{}; //TODO
+        return CustomExplosiveMixChargeBlockEntity.EXPLOSIVE_PROPERTY_CONDITIONS;
     };
     
 };

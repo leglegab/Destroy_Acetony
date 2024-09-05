@@ -18,10 +18,12 @@ import com.petrolpark.destroy.network.packet.RedstoneProgramSyncC2SPacket;
 import com.petrolpark.destroy.network.packet.RedstoneProgramSyncReplyS2CPacket;
 import com.petrolpark.destroy.network.packet.RedstoneProgrammerPowerChangedS2CPacket;
 import com.petrolpark.destroy.network.packet.RefreshPeriodicTablePonderSceneS2CPacket;
+import com.petrolpark.destroy.network.packet.RequestInventoryFullStateC2SPacket;
 import com.petrolpark.destroy.network.packet.RequestKeypunchNamePacket;
 import com.petrolpark.destroy.network.packet.S2CPacket;
 import com.petrolpark.destroy.network.packet.SeismometerSpikeS2CPacket;
 import com.petrolpark.destroy.network.packet.SelectGlassblowingRecipeC2SPacket;
+import com.petrolpark.destroy.network.packet.SmartExplosionS2CPacket;
 import com.petrolpark.destroy.network.packet.SwissArmyKnifeToolC2SPacket;
 import com.petrolpark.destroy.network.packet.SyncChunkPollutionS2CPacket;
 import com.petrolpark.destroy.network.packet.SyncVatMaterialsS2CPacket;
@@ -70,6 +72,7 @@ public class DestroyMessages {
         addS2CPacket(net, RedstoneProgrammerPowerChangedS2CPacket.class, RedstoneProgrammerPowerChangedS2CPacket::new);
         addS2CPacket(net, SyncChunkPollutionS2CPacket.class, SyncChunkPollutionS2CPacket::new);
         addS2CPacket(net, ExtraInventorySizeChangeS2CPacket.class, ExtraInventorySizeChangeS2CPacket::new);
+        addS2CPacket(net, SmartExplosionS2CPacket.class, SmartExplosionS2CPacket::read);
 
         addC2SPacket(net, SwissArmyKnifeToolC2SPacket.class, SwissArmyKnifeToolC2SPacket::new);
         addC2SPacket(net, RedstoneProgramSyncC2SPacket.class, RedstoneProgramSyncC2SPacket::new);
@@ -80,6 +83,7 @@ public class DestroyMessages {
         addC2SPacket(net, TransferFluidC2SPacket.class, TransferFluidC2SPacket::new);
         addC2SPacket(net, ConfigureColorimeterC2SPacket.class, ConfigureColorimeterC2SPacket::new);
         addC2SPacket(net, SelectGlassblowingRecipeC2SPacket.class, SelectGlassblowingRecipeC2SPacket::new);
+        addC2SPacket(net, RequestInventoryFullStateC2SPacket.class, b -> new RequestInventoryFullStateC2SPacket());
     };
 
     public static <T extends S2CPacket> void addS2CPacket(SimpleChannel net, Class<T> clazz, Function<FriendlyByteBuf, T> decoder) {

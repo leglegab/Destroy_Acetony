@@ -2,17 +2,27 @@ package com.petrolpark.destroy.compat.createbigcannons.entity;
 
 import com.petrolpark.destroy.compat.createbigcannons.block.CreateBigCannonsBlocks;
 import com.petrolpark.destroy.compat.createbigcannons.block.CustomExplosiveMixShellBlock;
-import com.petrolpark.destroy.compat.createbigcannons.block.CustomExplosiveMixShellProperties;
 import com.petrolpark.destroy.item.inventory.CustomExplosiveMixInventory;
+import com.petrolpark.destroy.util.ExplosionHelper;
+import com.petrolpark.destroy.world.explosion.CustomExplosiveMixExplosion;
 
 import net.minecraft.core.Direction;
+import net.minecraft.core.Position;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.Vec3;
+import rbasamoyai.createbigcannons.index.CBCMunitionPropertiesHandlers;
 import rbasamoyai.createbigcannons.munitions.big_cannon.FuzedBigCannonProjectile;
+import rbasamoyai.createbigcannons.munitions.big_cannon.config.BigCannonCommonShellProperties;
+import rbasamoyai.createbigcannons.munitions.big_cannon.config.BigCannonFuzePropertiesComponent;
+import rbasamoyai.createbigcannons.munitions.big_cannon.config.BigCannonProjectilePropertiesComponent;
+import rbasamoyai.createbigcannons.munitions.config.components.BallisticPropertiesComponent;
+import rbasamoyai.createbigcannons.munitions.config.components.EntityDamagePropertiesComponent;
 
-public class CustomExplosiveMixShellProjectile extends FuzedBigCannonProjectile<CustomExplosiveMixShellProperties> {
+public class CustomExplosiveMixShellProjectile extends FuzedBigCannonProjectile {
 
     protected CustomExplosiveMixInventory inv;
     public int color;
@@ -39,20 +49,37 @@ public class CustomExplosiveMixShellProjectile extends FuzedBigCannonProjectile<
     };
 
     @Override
-    public CustomExplosiveMixShellProperties getProperties() {
-        // TODO calculate properties from inventory
-        return super.getProperties();
-    };
-
-    @Override
-    protected void detonate() {
-        //TODO
-        discard();
-    };
-
-    @Override
     public BlockState getRenderedBlockState() {
         return CreateBigCannonsBlocks.CUSTOM_EXPLOSIVE_MIX_SHELL.getDefaultState().setValue(CustomExplosiveMixShellBlock.FACING, Direction.NORTH);
+    };
+
+    @Override
+    protected BigCannonFuzePropertiesComponent getFuzeProperties() {
+        return getShellProperties().fuze();
+    };
+
+    @Override
+    protected void detonate(Position position) {
+        if (level() instanceof ServerLevel serverLevel) ExplosionHelper.explode(serverLevel, CustomExplosiveMixExplosion.create(serverLevel, null, getEffectSource(), new Vec3(position.x(), position.y(), position.z())));
+    };
+
+    @Override
+    protected BigCannonProjectilePropertiesComponent getBigCannonProjectileProperties() {
+        return getShellProperties().bigCannonProperties();
+    };
+
+    @Override
+    public EntityDamagePropertiesComponent getDamageProperties() {
+        return getShellProperties().damage();
+    };
+
+    @Override
+    protected BallisticPropertiesComponent getBallisticProperties() {
+        return getShellProperties().ballistics();
+    };
+
+    public BigCannonCommonShellProperties getShellProperties() {
+        return CBCMunitionPropertiesHandlers.COMMON_SHELL_BIG_CANNON_PROJECTILE.getPropertiesOf(this);
     };
     
 };

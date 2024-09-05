@@ -1168,7 +1168,11 @@ public class LegacyMolecularStructure implements Cloneable {
              * @return This Topology builder
              */
             public Builder startWith(LegacyElement element) {
-                topology.formula = LegacyMolecularStructure.atom(element);
+                return startWith(element, 0d);
+            };
+
+            public Builder startWith(LegacyElement element, double charge) {
+                topology.formula = LegacyMolecularStructure.atom(element, charge);
                 topology.atomsAndLocations.add(Pair.of(new Vec3(0f, 0f, 0f), topology.formula.startingAtom)); // This gives a null warning which has been accounted for
                 return this;
             };
@@ -1210,10 +1214,14 @@ public class LegacyMolecularStructure implements Cloneable {
              * @see AttachedAtom#attach Adding the Atom to this Topology once it has been modified
              */
             public AttachedAtom atom(LegacyElement element, Vec3 location) {
+                return atom(element, 0d, location);
+            };
+
+            public AttachedAtom atom(LegacyElement element, double charge, Vec3 location) {
                 // Check the Formula has been initialized
                 if (topology.formula == null) throw new TopologyDefinitionException("Cannot add Atoms to a Topology that hasn't been initialized with startWith(Element)");
                 // Create the Atom
-                LegacyAtom atom = new LegacyAtom(element);
+                LegacyAtom atom = new LegacyAtom(element, charge);
                 // Add the Atom to the Formula's structure
                 topology.formula.structure.put(atom, new ArrayList<>()); // This gives a null warning which has been accounted for
                 // Add the Atom to the list of Atoms to render

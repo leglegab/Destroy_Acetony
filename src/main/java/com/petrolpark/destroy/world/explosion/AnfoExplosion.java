@@ -18,7 +18,7 @@ public class AnfoExplosion extends SmartExplosion {
 
         @Override
         public boolean shouldBlockExplode(Explosion explosion, BlockGetter reader, BlockPos pos, BlockState state, float power) {
-            return (!reader.getFluidState(pos).isEmpty() || state.is(DestroyBlockTags.ANFO_MINEABLE.tag)) && !state.is(Tags.Blocks.ORES);
+            return (!reader.getFluidState(pos).isEmpty() || state.is(DestroyBlockTags.GANGUE.tag)) && !state.is(Tags.Blocks.ORES);
         };
     };
 

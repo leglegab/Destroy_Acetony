@@ -13,8 +13,8 @@ import com.petrolpark.destroy.chemistry.legacy.LegacyBond.BondType;
 import com.petrolpark.destroy.chemistry.legacy.genericreaction.GenericReactant;
 import com.petrolpark.destroy.chemistry.legacy.genericreaction.SingleGroupGenericReaction;
 import com.petrolpark.destroy.chemistry.legacy.index.DestroyGroupTypes;
+import com.petrolpark.destroy.chemistry.legacy.index.DestroyMolecules;
 import com.petrolpark.destroy.chemistry.legacy.index.group.CarbonylGroup;
-import com.petrolpark.destroy.item.DestroyItems;
 
 public class AldehydeOxidation extends SingleGroupGenericReaction<CarbonylGroup> {
 
@@ -24,7 +24,7 @@ public class AldehydeOxidation extends SingleGroupGenericReaction<CarbonylGroup>
 
     @Override
     public boolean isPossibleIn(ReadOnlyMixture mixture) {
-        return true; // TODO check for actual oxidant once Magic Oxidant is removed
+        return mixture.getConcentrationOf(DestroyMolecules.DICHROMATE) > 0f && mixture.getConcentrationOf(DestroyMolecules.PROTON) > 0f; // TODO check for actual oxidant once Magic Oxidant is removed
     };
 
     @Override
@@ -37,10 +37,13 @@ public class AldehydeOxidation extends SingleGroupGenericReaction<CarbonylGroup>
         structure.remove(hydrogens.get(0))
             .addGroup(LegacyMolecularStructure.alcohol());
         return reactionBuilder()
-            .addReactant(reactant.getMolecule())
-            .addSimpleItemCatalyst(DestroyItems.MAGIC_OXIDANT::get, 0.5f)
+            .addReactant(reactant.getMolecule(), 3, 1)
+            .addReactant(DestroyMolecules.DICHROMATE)
+            .addReactant(DestroyMolecules.PROTON, 8, 1)
             .activationEnergy(200f)
             .addProduct(moleculeBuilder().structure(structure).build())
+            .addProduct(DestroyMolecules.CHROMIUM_III, 2)
+            .addProduct(DestroyMolecules.WATER, 4)
             .build();
     };
 

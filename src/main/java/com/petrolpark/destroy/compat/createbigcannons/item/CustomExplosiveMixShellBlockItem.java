@@ -1,5 +1,6 @@
 package com.petrolpark.destroy.compat.createbigcannons.item;
 
+import com.petrolpark.destroy.compat.createbigcannons.block.entity.CustomExplosiveMixShellBlockEntity;
 import com.petrolpark.destroy.config.DestroyAllConfigs;
 import com.petrolpark.destroy.item.DyeableCustomExplosiveMixBlockItem;
 import com.petrolpark.destroy.world.explosion.ExplosiveProperties.ExplosivePropertyCondition;
@@ -19,7 +20,7 @@ public class CustomExplosiveMixShellBlockItem extends DyeableCustomExplosiveMixB
 
     @Override
     public ExplosivePropertyCondition[] getApplicableExplosionConditions() {
-        return new ExplosivePropertyCondition[]{};
+        return CustomExplosiveMixShellBlockEntity.EXPLOSIVE_PROPERTY_CONDITIONS;
     };
     
 };

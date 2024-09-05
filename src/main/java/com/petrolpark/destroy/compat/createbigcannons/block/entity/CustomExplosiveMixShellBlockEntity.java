@@ -7,6 +7,7 @@ import org.jetbrains.annotations.NotNull;
 import com.petrolpark.destroy.block.entity.IDyeableCustomExplosiveMixBlockEntity;
 import com.petrolpark.destroy.config.DestroyAllConfigs;
 import com.petrolpark.destroy.item.inventory.CustomExplosiveMixInventory;
+import com.petrolpark.destroy.world.explosion.ExplosiveProperties;
 import com.petrolpark.destroy.world.explosion.ExplosiveProperties.ExplosivePropertyCondition;
 
 import net.minecraft.core.BlockPos;
@@ -26,6 +27,17 @@ import net.minecraftforge.items.IItemHandler;
 import rbasamoyai.createbigcannons.munitions.big_cannon.FuzedBlockEntity;
 
 public class CustomExplosiveMixShellBlockEntity extends FuzedBlockEntity implements IDyeableCustomExplosiveMixBlockEntity {
+
+    public static ExplosivePropertyCondition[] EXPLOSIVE_PROPERTY_CONDITIONS = new ExplosivePropertyCondition[]{
+        ExplosiveProperties.CAN_EXPLODE,
+        ExplosiveProperties.DROPS_EXPERIENCE,
+        ExplosiveProperties.ENTITIES_PUSHED,
+        ExplosiveProperties.EVAPORATES_FLUIDS,
+        ExplosiveProperties.ITEMS_DESTROYED,
+        ExplosiveProperties.OBLITERATES,
+        ExplosiveProperties.SILK_TOUCH,
+        ExplosiveProperties.UNDERWATER
+    };
 
     public LazyOptional<IItemHandler> itemCapability;
 
@@ -119,7 +131,7 @@ public class CustomExplosiveMixShellBlockEntity extends FuzedBlockEntity impleme
 
     @Override
     public ExplosivePropertyCondition[] getApplicableExplosionConditions() {
-        return new ExplosivePropertyCondition[]{}; //TODO conditinos
+        return EXPLOSIVE_PROPERTY_CONDITIONS;
     };
     
 };
