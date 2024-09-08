@@ -98,6 +98,14 @@ public class DestroyReactions {
         .addProduct(DestroyMolecules.ADIPIC_ACID)
         .build(),
 
+    //CALCIUM_CARBONATE_DECOMPOSITION = builder() // TODO HARP finish this, add heat
+    //        .id("calcium_carbonate_decomposition")
+    //        .addSimpleItemReactant(DestroyItems.CHALK_DUST, 2f)
+    //        .addProduct(DestroyMolecules.CARBON_DIOXIDE, 2)
+    //        .withResult(2f, PrecipitateReactionResult.of(DestroyItems.QUICKLIME::asStack)) // TODO HARP add quicklime item, sprite, etc
+    //        // TODO HARP raise activation energy so that this doesn't happen spontaneously; endothermic reaction; high activation temp
+    //        .build(),
+
     CALCIUM_HYDROXIDE_SOAP_MAKING = builder()
         .id("calcium_hydroxide_soap_making")
         .addReactant(DestroyMolecules.CALCIUM_ION, 3)
@@ -106,6 +114,9 @@ public class DestroyReactions {
         .addProduct(DestroyMolecules.GLYCEROL, 2)
         .withResult(2f, PrecipitateReactionResult.of(DestroyItems.SOAP::asStack))
         .build(),
+
+    //CALCIUM_OXIDE_DISSOLUTION = builder() // TODO HARP finish this
+    //        .build(),
 
     CARBON_CAPTURE = builder()
         .id("carbon_capture")

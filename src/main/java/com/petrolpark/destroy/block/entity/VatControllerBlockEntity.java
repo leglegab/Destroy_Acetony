@@ -49,6 +49,8 @@ import net.minecraft.nbt.NbtUtils;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.item.PrimedTnt;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -252,7 +254,8 @@ public class VatControllerBlockEntity extends SmartBlockEntity implements IHaveG
     };
 
     public void explode() {
-        explode((level, pos) -> new SmartExplosion(level, null, null, null, pos, 5, 0.6f));
+        PrimedTnt tnt = new PrimedTnt(EntityType.TNT, level);
+        explode((level, pos) -> new SmartExplosion(level, tnt, null, null, pos, 5, 0.6f));
     };
 
     public void explode(BiFunction<Level, Vec3, SmartExplosion> explosionFactory) {

@@ -1,6 +1,6 @@
-This is just a quick community made patch for the mod. Go support the real one!
-
 # Destroy
+
+This is just a quick community made patch for the mod. Go support the real one!
 
 Destroy is a chemistry-themed add-on to the popular Create mod. Right now it's under development.
 
