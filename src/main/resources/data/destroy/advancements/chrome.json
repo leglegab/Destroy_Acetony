@@ -1,0 +1,41 @@
+{
+    "parent": "destroy:urinate",
+    "criteria": {
+      "hold": {
+        "trigger": "minecraft:inventory_changed",
+        "conditions": {
+            "items": [
+                {
+                    "item": "destroy:nether_crocoite"
+                },
+                {
+                  "tag": "forge:raw_materials/chromium"
+                },
+                {
+                  "tag": "forge:ingots/chromium"
+                },
+                {
+                  "item": "destroy:crushed_raw_chromium"
+                }
+            ]
+        }
+      }
+    },
+    "display": {
+      "description": {
+        "color": "#DBA213",
+        "translate": "advancement.destroy.chrome.description"
+      },
+      "icon": {
+        "item": "destroy:nether_crocoite"
+      },
+      "title": {
+        "translate": "advancement.destroy.chrome"
+      }
+    },
+    "requirements": [
+      [
+        "hold"
+      ]
+    ]
+  }

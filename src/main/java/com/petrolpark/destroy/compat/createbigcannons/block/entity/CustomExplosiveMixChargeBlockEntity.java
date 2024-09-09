@@ -25,7 +25,7 @@ public class CustomExplosiveMixChargeBlockEntity extends SimpleDyeableNameableCu
 
     @Override
     public CustomExplosiveMixInventory createInv() {
-        return new CustomExplosiveMixInventory(DestroyAllConfigs.SERVER.compat.customExplosiveMixChargeSize.get());
+        return new CustomExplosiveMixInventory(DestroyAllConfigs.SERVER.compat.customExplosiveMixChargeSize.get(), EXPLOSIVE_PROPERTY_CONDITIONS);
     };
 
     @Override

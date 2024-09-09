@@ -5,8 +5,10 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
+import com.petrolpark.destroy.advancement.DestroyAdvancementTrigger;
 import com.petrolpark.destroy.block.ColorimeterBlock;
 import com.petrolpark.destroy.block.display.MixtureContentsDisplaySource;
+import com.petrolpark.destroy.block.entity.behaviour.DestroyAdvancementBehaviour;
 import com.petrolpark.destroy.block.entity.behaviour.RedstoneQuantityMonitorBehaviour;
 import com.petrolpark.destroy.chemistry.legacy.LegacySpecies;
 import com.petrolpark.destroy.chemistry.legacy.ReadOnlyMixture;
@@ -35,6 +37,8 @@ public class ColorimeterBlockEntity extends SmartBlockEntity {
     protected LegacySpecies molecule;
     public RedstoneQuantityMonitorBehaviour redstoneMonitor;
 
+    protected DestroyAdvancementBehaviour advancementBehaviour;
+
     public ColorimeterBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState state) {
         super(type, pos, state);
     };
@@ -44,6 +48,14 @@ public class ColorimeterBlockEntity extends SmartBlockEntity {
         redstoneMonitor = new RedstoneQuantityMonitorBehaviour(this)
             .onStrengthChanged(strength -> getLevel().setBlockAndUpdate(getBlockPos(), getBlockState().setValue(ColorimeterBlock.POWERED, strength != 0)));
         behaviours.add(redstoneMonitor);
+
+        advancementBehaviour = new DestroyAdvancementBehaviour(this, DestroyAdvancementTrigger.COLORIMETER);
+    };
+
+    @Override
+    public void tick() {
+        super.tick();
+        if (molecule != null && getVatOptional().isPresent()) advancementBehaviour.awardDestroyAdvancement(DestroyAdvancementTrigger.COLORIMETER);
     };
 
     @Override

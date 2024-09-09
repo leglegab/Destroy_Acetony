@@ -1,5 +1,5 @@
 {
-    "parent": "destroy:vat",
+    "parent": "destroy:tap_tree",
     "criteria": {
       "hold": {
         "trigger": "minecraft:inventory_changed",
@@ -18,7 +18,7 @@
         "translate": "advancement.destroy.plastic.description"
       },
       "icon": {
-        "item": "destroy:abs"
+        "item": "destroy:polyisoprene"
       },
       "title": {
         "translate": "advancement.destroy.plastic"

@@ -3,8 +3,8 @@ package com.petrolpark.destroy.compat.createbigcannons.entity;
 import com.petrolpark.destroy.compat.createbigcannons.block.CreateBigCannonsBlocks;
 import com.petrolpark.destroy.compat.createbigcannons.block.CustomExplosiveMixShellBlock;
 import com.petrolpark.destroy.item.inventory.CustomExplosiveMixInventory;
-import com.petrolpark.destroy.util.ExplosionHelper;
 import com.petrolpark.destroy.world.explosion.CustomExplosiveMixExplosion;
+import com.petrolpark.destroy.world.explosion.SmartExplosion;
 
 import net.minecraft.core.Direction;
 import net.minecraft.core.Position;
@@ -60,7 +60,7 @@ public class CustomExplosiveMixShellProjectile extends FuzedBigCannonProjectile 
 
     @Override
     protected void detonate(Position position) {
-        if (level() instanceof ServerLevel serverLevel) ExplosionHelper.explode(serverLevel, CustomExplosiveMixExplosion.create(serverLevel, null, getEffectSource(), new Vec3(position.x(), position.y(), position.z())));
+        if (level() instanceof ServerLevel serverLevel) SmartExplosion.explode(serverLevel, CustomExplosiveMixExplosion.create(serverLevel, null, getEffectSource(), new Vec3(position.x(), position.y(), position.z())));
     };
 
     @Override

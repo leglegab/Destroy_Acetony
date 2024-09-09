@@ -1,5 +1,5 @@
 {
-    "parent": "destroy:plastic",
+    "parent": "destroy:addition_polymer",
     "criteria": {
       "abs": {
         "trigger": "minecraft:inventory_changed",
@@ -166,7 +166,7 @@
       "icon": {
         "item": "destroy:polystyrene"
       },
-      "frame": "goal",
+      "frame": "challenge",
       "title": {
         "translate": "advancement.destroy.every_plastic"
       }

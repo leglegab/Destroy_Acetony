@@ -35,5 +35,7 @@
         "amount": 500
       }
     ],
-    "heatRequirement": "heated"
+    "heatRequirement": "heated",
+    "duration": 1,
+    "__comment": "Mixing recipes do not allow you to specify an actual duration - only fast (0) or slow (any other number)"
   }

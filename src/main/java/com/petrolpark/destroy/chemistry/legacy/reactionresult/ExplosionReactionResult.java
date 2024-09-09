@@ -5,7 +5,6 @@ import java.util.function.BiFunction;
 import com.petrolpark.destroy.block.entity.VatControllerBlockEntity;
 import com.petrolpark.destroy.chemistry.legacy.LegacyReaction;
 import com.petrolpark.destroy.chemistry.legacy.ReactionResult;
-import com.petrolpark.destroy.util.ExplosionHelper;
 import com.petrolpark.destroy.world.explosion.SmartExplosion;
 import com.simibubi.create.content.processing.basin.BasinBlockEntity;
 import com.simibubi.create.foundation.utility.VecHelper;
@@ -29,7 +28,7 @@ public class ExplosionReactionResult extends ReactionResult {
 
     @Override
     public void onBasinReaction(Level level, BasinBlockEntity basin) {
-        if (level instanceof ServerLevel serverLevel) ExplosionHelper.explode(serverLevel, explosionFactory.apply(serverLevel, VecHelper.getCenterOf(basin.getBlockPos())));
+        if (level instanceof ServerLevel serverLevel) SmartExplosion.explode(serverLevel, explosionFactory.apply(serverLevel, VecHelper.getCenterOf(basin.getBlockPos())));
     };
 
     @Override

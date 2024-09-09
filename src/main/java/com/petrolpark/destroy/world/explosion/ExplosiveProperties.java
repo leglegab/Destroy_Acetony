@@ -41,6 +41,7 @@ public class ExplosiveProperties extends EnumMap<ExplosiveProperties.ExplosivePr
 
     CAN_EXPLODE = register(new ExplosivePropertyCondition(ExplosiveProperty.SENSITIVITY, 0f, Destroy.asResource("can_explode"))),
     DROPS_EXPERIENCE = register(new ExplosivePropertyCondition(ExplosiveProperty.TEMPERATURE, -4f, Destroy.asResource("drops_experience"))),
+    DROPS_HEADS = register(new ExplosivePropertyCondition(ExplosiveProperty.TEMPERATURE, -8f, Destroy.asResource("drops_heads"))),
     ENTITIES_PUSHED = register(new ExplosivePropertyCondition(ExplosiveProperty.ENERGY, 7f, Destroy.asResource("entities_pushed"))),
     EXPLODES_RANDOMLY = register(new ExplosivePropertyCondition(ExplosiveProperty.SENSITIVITY, 10f, Destroy.asResource("explodes_randomly"))),
     ITEMS_DESTROYED = register(new ExplosivePropertyCondition(ExplosiveProperty.BRISANCE, 8f, Destroy.asResource("items_destroyed"))),

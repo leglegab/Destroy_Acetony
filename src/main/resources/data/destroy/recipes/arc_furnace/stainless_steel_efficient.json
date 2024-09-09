@@ -39,5 +39,6 @@
         "fluid": "destroy:molten_stainless_steel",
         "amount": 1000
       }
-    ]
+    ],
+    "recipeDuration": 102400
   }

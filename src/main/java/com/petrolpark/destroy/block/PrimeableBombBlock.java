@@ -51,6 +51,11 @@ public class PrimeableBombBlock<T extends PrimedBomb> extends TntBlock {
         super.onBlockExploded(state, level, pos, explosion);
     };
 
+    @Override
+    public void wasExploded(Level pLevel, BlockPos pos, Explosion explosion) {
+        //NOOP
+    };
+
     public int getFuseTime(Level world, BlockPos pos, BlockState state) {
         return 80;
     };

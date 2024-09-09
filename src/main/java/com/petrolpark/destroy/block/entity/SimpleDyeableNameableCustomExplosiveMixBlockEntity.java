@@ -5,6 +5,8 @@ import java.util.List;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import com.mojang.serialization.Dynamic;
+import com.petrolpark.destroy.Destroy;
 import com.petrolpark.destroy.item.inventory.CustomExplosiveMixInventory;
 import com.petrolpark.destroy.world.explosion.ExplosiveProperties;
 import com.simibubi.create.foundation.blockEntity.SmartBlockEntity;
@@ -13,20 +15,21 @@ import com.simibubi.create.foundation.blockEntity.behaviour.BlockEntityBehaviour
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtOps;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.tags.GameEventTags;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.gameevent.BlockPositionSource;
 import net.minecraft.world.level.gameevent.GameEvent;
-import net.minecraft.world.level.gameevent.GameEvent.Context;
 import net.minecraft.world.level.gameevent.GameEventListener;
 import net.minecraft.world.level.gameevent.PositionSource;
-import net.minecraft.world.phys.Vec3;
+import net.minecraft.world.level.gameevent.vibrations.VibrationSystem;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
@@ -34,7 +37,7 @@ import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.items.IItemHandler;
 
-public abstract class SimpleDyeableNameableCustomExplosiveMixBlockEntity extends SmartBlockEntity implements IDyeableCustomExplosiveMixBlockEntity, GameEventListener.Holder<SimpleDyeableNameableCustomExplosiveMixBlockEntity.SoundActivatedExplosiveGameEventListener> {
+public abstract class SimpleDyeableNameableCustomExplosiveMixBlockEntity extends SmartBlockEntity implements IDyeableCustomExplosiveMixBlockEntity, GameEventListener.Holder<VibrationSystem.Listener>, VibrationSystem {
 
     public LazyOptional<IItemHandler> itemCapability;
 
@@ -42,14 +45,18 @@ public abstract class SimpleDyeableNameableCustomExplosiveMixBlockEntity extends
     protected int color;
     protected Component name;
 
-    public SoundActivatedExplosiveGameEventListener gameEventListener;
+    public final VibrationSystem.Listener vibrationListener;
+    public final SoundActivatedExplosiveVibrationSystemUser vibrationUser;
+    protected VibrationSystem.Data vibrationData;
 
     public SimpleDyeableNameableCustomExplosiveMixBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState state) {
         super(type, pos, state);
         color = 0xFFFFFF;
         inv = createInv();
         refreshCapability();
-        gameEventListener = new SoundActivatedExplosiveGameEventListener();
+        vibrationListener = new VibrationSystem.Listener(this);
+        vibrationUser = new SoundActivatedExplosiveVibrationSystemUser();
+        vibrationData = new VibrationSystem.Data();
     };
 
     public abstract CustomExplosiveMixInventory createInv();
@@ -76,12 +83,19 @@ public abstract class SimpleDyeableNameableCustomExplosiveMixBlockEntity extends
     };
 
     @Override
+    public void tick() {
+        super.tick();
+        VibrationSystem.Ticker.tick(getLevel(), getVibrationData(), getVibrationUser());
+    };
+
+    @Override
     protected void read(CompoundTag tag, boolean clientPacket) {
         super.read(tag, clientPacket);
         setColor(tag.getInt("Color"));
         if (tag.contains("CustomName", Tag.TAG_STRING)) name = Component.Serializer.fromJson(tag.getString("CustomName"));
         inv = createInv();
         inv.deserializeNBT(tag.getCompound("ExplosiveMix"));
+        if (tag.contains("VibrationData", Tag.TAG_COMPOUND)) VibrationSystem.Data.CODEC.parse(new Dynamic<>(NbtOps.INSTANCE, tag.getCompound("VibrationData"))).resultOrPartial(Destroy.LOGGER::error).ifPresent(data -> vibrationData = data);
     };
 
     @Override
@@ -90,6 +104,7 @@ public abstract class SimpleDyeableNameableCustomExplosiveMixBlockEntity extends
         tag.putInt("Color", color);
         if (name != null) tag.putString("CustomName", Component.Serializer.toJson(name));
         tag.put("ExplosiveMix", inv.serializeNBT());
+        VibrationSystem.Data.CODEC.encodeStart(NbtOps.INSTANCE, vibrationData).resultOrPartial(Destroy.LOGGER::error).ifPresent(data -> tag.put("VibrationData", data));
     };
 
     @Override
@@ -150,17 +165,31 @@ public abstract class SimpleDyeableNameableCustomExplosiveMixBlockEntity extends
     };
 
     @Override
-    public SoundActivatedExplosiveGameEventListener getListener() {
-        return gameEventListener;
+    public VibrationSystem.Listener getListener() {
+        return vibrationListener;
     };
 
-    public class SoundActivatedExplosiveGameEventListener implements GameEventListener {
+    @Override
+    public VibrationSystem.User getVibrationUser() {
+        return vibrationUser;
+    };
 
-        public final PositionSource position = new BlockPositionSource(getBlockPos());
+    @Override
+    public VibrationSystem.Data getVibrationData() {
+        return vibrationData;
+    };
 
-        @Override
-        public PositionSource getListenerSource() {
-            return position;
+    @Override
+    public void invalidate() {
+        itemCapability.invalidate();
+    };
+
+    public class SoundActivatedExplosiveVibrationSystemUser implements VibrationSystem.User {
+
+        protected final BlockPositionSource position;
+
+        public SoundActivatedExplosiveVibrationSystemUser() {
+            position = new BlockPositionSource(getBlockPos());
         };
 
         @Override
@@ -169,18 +198,18 @@ public abstract class SimpleDyeableNameableCustomExplosiveMixBlockEntity extends
         };
 
         @Override
-        public boolean handleGameEvent(ServerLevel level, GameEvent gameEvent, Context context, Vec3 pos) {
-            Player player = context.sourceEntity() instanceof Player p ? p : null;
-            if (gameEvent.is(GameEventTags.VIBRATIONS) && !(gameEvent.is(GameEventTags.IGNORE_VIBRATIONS_SNEAKING) && player != null && player.isCrouching()) && inv.getExplosiveProperties().fulfils(ExplosiveProperties.SOUND_ACTIVATED)) {
-                explode(player);
-                return true;
-            };
-            return false;
+        public PositionSource getPositionSource() {
+            return position;
         };
 
         @Override
-        public DeliveryMode getDeliveryMode() {
-            return GameEventListener.DeliveryMode.BY_DISTANCE;
+        public boolean canReceiveVibration(ServerLevel level, BlockPos pos, GameEvent gameEvent, GameEvent.Context context) {
+            return inv.getExplosiveProperties().fulfils(ExplosiveProperties.SOUND_ACTIVATED) && !pos.equals(getBlockPos()) && gameEvent.is(GameEventTags.VIBRATIONS) && !gameEvent.is(GameEventTags.IGNORE_VIBRATIONS_SNEAKING);
+        };
+
+        @Override
+        public void onReceiveVibration(ServerLevel level, BlockPos pos, GameEvent gameEvent, Entity entity, Entity playerEntity, float distance) {
+            explode(entity instanceof Player p ? p : null);
         };
 
     };

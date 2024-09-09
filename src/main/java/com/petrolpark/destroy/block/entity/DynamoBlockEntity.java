@@ -18,6 +18,7 @@ import com.petrolpark.destroy.sound.DestroySoundEvents;
 import com.simibubi.create.content.kinetics.belt.transport.TransportedItemStack;
 import com.simibubi.create.content.processing.basin.BasinBlockEntity;
 import com.simibubi.create.content.processing.basin.BasinOperatingBlockEntity;
+import com.simibubi.create.content.processing.basin.BasinRecipe;
 import com.simibubi.create.content.processing.recipe.ProcessingRecipe;
 import com.simibubi.create.content.processing.sequenced.SequencedAssemblyRecipe;
 import com.simibubi.create.foundation.blockEntity.behaviour.BlockEntityBehaviour;
@@ -73,12 +74,19 @@ public class DynamoBlockEntity extends BasinOperatingBlockEntity implements Char
         chargingBehaviour = new ChargingBehaviour(this);
         behaviours.add(chargingBehaviour);
 
-        advancementBehaviour = new DestroyAdvancementBehaviour(this, DestroyAdvancementTrigger.CHARGE_WITH_DYNAMO, DestroyAdvancementTrigger.ELECTROLYZE_WITH_DYNAMO);
+        advancementBehaviour = new DestroyAdvancementBehaviour(this, DestroyAdvancementTrigger.ARC_FURNACE, DestroyAdvancementTrigger.CHARGE_WITH_DYNAMO, DestroyAdvancementTrigger.ELECTROLYZE_WITH_DYNAMO);
         behaviours.add(advancementBehaviour);
     };
 
     public void onItemCharged(ItemStack stack) {
         advancementBehaviour.awardDestroyAdvancement(DestroyAdvancementTrigger.CHARGE_WITH_DYNAMO);
+    };
+
+    @Override
+    public float calculateStressApplied() {
+        lastStressApplied = super.calculateAddedStressCapacity();
+        if (getBlockState().getValue(DynamoBlock.ARC_FURNACE)) lastStressApplied *= DestroyAllConfigs.SERVER.blocks.arcFurnaceStressMultiplier.getF();
+        return lastStressApplied;
     };
 
     @Override
@@ -141,6 +149,20 @@ public class DynamoBlockEntity extends BasinOperatingBlockEntity implements Char
     };
 
     @Override
+    protected void applyBasinRecipe() {
+        if (currentRecipe == null) return;
+        if (getBasin().isEmpty()) return;
+        if (BasinRecipe.match(getBasin().get(), currentRecipe)) {
+            if (currentRecipe.getType() == DestroyRecipeTypes.ELECTROLYSIS.getType()) {
+                advancementBehaviour.awardDestroyAdvancement(DestroyAdvancementTrigger.ELECTROLYZE_WITH_DYNAMO);
+            } else if (currentRecipe.getType() == DestroyRecipeTypes.ARC_FURNACE.getType() || currentRecipe instanceof AbstractCookingRecipe) {
+                advancementBehaviour.awardDestroyAdvancement(DestroyAdvancementTrigger.ARC_FURNACE);
+            };
+        };
+        super.applyBasinRecipe();
+    };
+
+    @Override
     @SuppressWarnings({"null", "resource"})
     public Optional<ChargingRecipe> tryProcessInWorld(ItemEntity itemEntity, boolean simulate) {
         if (!hasLevel() || getBlockState().getValue(DynamoBlock.ARC_FURNACE)) return Optional.empty();
@@ -187,8 +209,6 @@ public class DynamoBlockEntity extends BasinOperatingBlockEntity implements Char
 	public void startProcessingBasin() {
 		if (chargingBehaviour.running && chargingBehaviour.ticksRemaining > 0) return; // If this isn't the right time to process
 		super.startProcessingBasin();
-
-        advancementBehaviour.awardDestroyAdvancement(DestroyAdvancementTrigger.ELECTROLYZE_WITH_DYNAMO);
 
 		chargingBehaviour.start(ChargingBehaviour.Mode.BASIN, Vec3.atBottomCenterOf(getBlockPos().below(2)).add(0f, (2 / 16f) + getBasin().map(basin -> {
             IFluidHandler fluidHandler = basin.getCapability(ForgeCapabilities.FLUID_HANDLER).orElse(null);

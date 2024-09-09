@@ -3,12 +3,14 @@ package com.petrolpark.destroy.chemistry.legacy.index.genericreaction;
 import java.util.List;
 
 import com.petrolpark.destroy.Destroy;
+import com.petrolpark.destroy.advancement.DestroyAdvancementTrigger;
 import com.petrolpark.destroy.chemistry.legacy.LegacyAtom;
 import com.petrolpark.destroy.chemistry.legacy.LegacyElement;
 import com.petrolpark.destroy.chemistry.legacy.LegacyMolecularStructure;
 import com.petrolpark.destroy.chemistry.legacy.LegacySpecies;
 import com.petrolpark.destroy.chemistry.legacy.ReadOnlyMixture;
 import com.petrolpark.destroy.chemistry.legacy.LegacyReaction;
+import com.petrolpark.destroy.chemistry.legacy.LegacyReaction.ReactionBuilder;
 import com.petrolpark.destroy.chemistry.legacy.LegacyBond.BondType;
 import com.petrolpark.destroy.chemistry.legacy.genericreaction.GenericReactant;
 import com.petrolpark.destroy.chemistry.legacy.genericreaction.SingleGroupGenericReaction;
@@ -39,15 +41,18 @@ public class AlcoholOxidation extends SingleGroupGenericReaction<AlcoholGroup> {
             .moveTo(alcohol.oxygen)
             .remove(alcohol.hydrogen)
             .replaceBondTo(alcohol.carbon, BondType.DOUBLE);
-        return reactionBuilder()
+        LegacySpecies product = moleculeBuilder().structure(structure).build();
+        ReactionBuilder builder = reactionBuilder()
             .addReactant(reactant.getMolecule(), 3, 1)
             .addReactant(DestroyMolecules.DICHROMATE)
             .addReactant(DestroyMolecules.PROTON, 8, 1)
-            .addProduct(moleculeBuilder().structure(structure).build(), 3)
+            .addProduct(product, 3)
             .addProduct(DestroyMolecules.CHROMIUM_III, 2)
             .addProduct(DestroyMolecules.WATER, 7)
-            .activationEnergy(25f)
-            .build();
+            .activationEnergy(25f);
+        if (product == DestroyMolecules.ACETONE) builder.withResult(0f, DestroyAdvancementTrigger.ACETONE::asReactionResult);
+        
+        return builder.build();
     };
     
     @Override

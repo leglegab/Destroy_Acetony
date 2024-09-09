@@ -1,5 +1,5 @@
 {
-    "parent": "destroy:extrude",
+    "parent": "destroy:hydrazine",
     "criteria": {
       "anfo": {
         "trigger": "minecraft:inventory_changed",
@@ -130,7 +130,7 @@
       "icon": {
         "item": "destroy:cordite"
       },
-      "frame": "goal",
+      "frame": "challenge",
       "title": {
         "translate": "advancement.destroy.every_explosive"
       }

@@ -1,5 +1,6 @@
 package com.petrolpark.destroy.network.packet;
 
+import java.util.Optional;
 import java.util.function.Supplier;
 
 import com.petrolpark.destroy.network.DestroyMessages;
@@ -27,12 +28,12 @@ public class SmartExplosionS2CPacket extends S2CPacket {
     };
 
     public static void send(ServerPlayer player, SmartExplosion explosion) {
-        DestroyMessages.sendToClient(new SmartExplosionS2CPacket(explosion, explosion.getHitPlayers().get(player)), player);
+        DestroyMessages.sendToClient(new SmartExplosionS2CPacket(explosion, Optional.ofNullable(explosion.getHitPlayers().get(player)).orElse(Vec3.ZERO)), player);
     };
 
     @Override
     public void toBytes(FriendlyByteBuf buffer) {
-        buffer.writeResourceLocation(explosion.getDefaultSerializer().id);
+        buffer.writeResourceLocation(explosion.getSerializer().id);
         explosion.write(buffer);
         buffer.writeDouble(recipientKnockback.x());
         buffer.writeDouble(recipientKnockback.y());

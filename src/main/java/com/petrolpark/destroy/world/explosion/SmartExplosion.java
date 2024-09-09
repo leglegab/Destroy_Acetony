@@ -14,6 +14,7 @@ import javax.annotation.Nullable;
 
 import com.petrolpark.destroy.Destroy;
 import com.petrolpark.destroy.advancement.DestroyAdvancementTrigger;
+import com.petrolpark.destroy.network.packet.SmartExplosionS2CPacket;
 import com.petrolpark.destroy.world.loot.DestroyLootContextParams;
 
 import net.minecraft.client.Minecraft;
@@ -23,6 +24,7 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.protocol.game.ClientboundExplodePacket;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.damagesource.DamageSource;
@@ -73,6 +75,18 @@ public class SmartExplosion extends Explosion {
     static {
         register(DEFAULT_SERIALIZER);
         register(CustomExplosiveMixExplosion.SERIALIZER);
+    };
+
+    public static Explosion explode(Level level, SmartExplosion explosion) {
+        if (ForgeEventFactory.onExplosionStart(level, explosion)) return explosion; // True if cancelled
+        explosion.explode();
+        explosion.finalizeExplosion(level.isClientSide());
+
+        if (level instanceof ServerLevel serverLevel) for(ServerPlayer player : serverLevel.getPlayers(player -> player.distanceToSqr(explosion.getPosition()) < 4096d)) {
+            SmartExplosionS2CPacket.send(player, explosion);
+        };
+
+        return explosion;
     };
 
     /**
@@ -298,7 +312,7 @@ public class SmartExplosion extends Explosion {
     public void effects(boolean clientSide) {
         // Sounds
         if (level.isClientSide()) {
-            level.playLocalSound(position.x, position.y, position.z, SoundEvents.GENERIC_EXPLODE, SoundSource.BLOCKS, 4.0f, (1.0f + (random.nextFloat() * 0.4f)) * 0.7f, false);
+            level.playLocalSound(position.x(), position.y(), position.z(), SoundEvents.GENERIC_EXPLODE, SoundSource.BLOCKS, 4.0f, (1.0f + (random.nextFloat() * 0.4f)) * 0.7f, false);
         };
 
         // Particles
@@ -350,7 +364,7 @@ public class SmartExplosion extends Explosion {
         });
     };
 
-    public SmartExplosion.Serializer<?> getDefaultSerializer() {
+    public SmartExplosion.Serializer<?> getSerializer() {
         return DEFAULT_SERIALIZER;
     };
 

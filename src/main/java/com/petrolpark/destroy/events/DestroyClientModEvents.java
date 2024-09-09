@@ -101,6 +101,11 @@ public class DestroyClientModEvents {
     public static final ResourceLocation trimTypePredicateLocation = new ResourceLocation("trim_type");
 
     @SubscribeEvent
+    public static void beforeModelBake(ModelEvent.BakingCompleted event) {
+        //event.getModelBakery().unbakedCache;
+    };
+
+        @SubscribeEvent
     public static void onModelBake(ModelEvent.ModifyBakingResult event) {
 
         // Armor Trim stuff
@@ -110,7 +115,7 @@ public class DestroyClientModEvents {
                 entry.getKey().toString().endsWith("#inventory")
                 && entry.getValue() instanceof SimpleBakedModel // Don't override anything complicated
                 && Stream.of(entry.getValue().getOverrides().properties).anyMatch(trimTypePredicateLocation::equals) // Check if this item is likely to support trims
-            ) .toList();
+            ).toList();
         for (Entry<ResourceLocation, BakedModel> entry : modelsToReplace) 
             event.getModels().put(entry.getKey(), new UniversalArmorTrimModel(entry.getValue())); // Replace the model with one which wraps the old one but also provides the additional Armor Trims
     };
@@ -122,3 +127,4 @@ public class DestroyClientModEvents {
     };
 
 };
+

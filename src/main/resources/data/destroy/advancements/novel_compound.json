@@ -1,5 +1,5 @@
 {
-    "parent": "destroy:vat",
+    "parent": "destroy:distillation",
     "criteria": {
       "synthesize": {
         "conditions": {

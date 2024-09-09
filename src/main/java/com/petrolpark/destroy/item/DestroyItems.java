@@ -120,7 +120,7 @@ public class DestroyItems {
         .tag(DestroyItemTags.DESTROY_INGOTS.tag, forgeItemTag("ingots/lead"), Tags.Items.INGOTS, ItemTags.TRIM_MATERIALS)
         .register(),
     OXIDIZED_SODIUM_INGOT = REGISTRATE.item("oxidized_sodium_ingot", Item::new)
-        .tag(DestroyItemTags.DESTROY_INGOTS.tag, Tags.Items.INGOTS)
+        .tag(DestroyItemTags.DESTROY_INGOTS.tag, Tags.Items.INGOTS, DestroyItemTags.FLUXES.tag)
         .register(),
     PALLADIUM_INGOT = REGISTRATE.item("palladium_ingot", Item::new)
         .tag(DestroyItemTags.DESTROY_INGOTS.tag, forgeItemTag("ingots/palladium"), Tags.Items.INGOTS, ItemTags.TRIM_MATERIALS)
@@ -179,6 +179,8 @@ public class DestroyItems {
         .register(),
     BORAX = REGISTRATE.item("borax", Item::new)
         .tag(forgeItemTag("raw_materials/borax"), DestroyItemTags.FLUXES.tag)
+        .register(),
+    SLAG = REGISTRATE.item("slag", Item::new)
         .register(),
     SILICA = REGISTRATE.item("silica", Item::new)
         .tag(forgeItemTag("dusts/silica"), forgeItemTag("raw_materials/silica"))

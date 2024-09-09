@@ -1,5 +1,5 @@
 {
-    "parent": "destroy:urinate",
+    "parent": "destroy:haber_process",
     "criteria": {
       "ostwald_process": {
         "conditions": {},

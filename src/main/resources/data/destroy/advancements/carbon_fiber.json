@@ -1,0 +1,32 @@
+{
+    "parent": "destroy:vat",
+    "criteria": {
+      "hold": {
+        "trigger": "minecraft:inventory_changed",
+        "conditions": {
+            "items": [
+                {
+                    "item": "destroy:carbon_fiber"
+                }
+            ]
+        }
+      }
+    },
+    "display": {
+      "description": {
+        "color": "#DBA213",
+        "translate": "advancement.destroy.carbon_fiber.description"
+      },
+      "icon": {
+        "item": "destroy:carbon_fiber"
+      },
+      "title": {
+        "translate": "advancement.destroy.carbon_fiber"
+      }
+    },
+    "requirements": [
+      [
+        "hold"
+      ]
+    ]
+  }

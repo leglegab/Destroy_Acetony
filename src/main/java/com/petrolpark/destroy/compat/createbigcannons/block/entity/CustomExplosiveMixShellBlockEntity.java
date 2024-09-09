@@ -31,6 +31,7 @@ public class CustomExplosiveMixShellBlockEntity extends FuzedBlockEntity impleme
     public static ExplosivePropertyCondition[] EXPLOSIVE_PROPERTY_CONDITIONS = new ExplosivePropertyCondition[]{
         ExplosiveProperties.CAN_EXPLODE,
         ExplosiveProperties.DROPS_EXPERIENCE,
+        ExplosiveProperties.DROPS_HEADS,
         ExplosiveProperties.ENTITIES_PUSHED,
         ExplosiveProperties.EVAPORATES_FLUIDS,
         ExplosiveProperties.ITEMS_DESTROYED,

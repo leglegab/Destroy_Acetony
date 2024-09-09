@@ -50,7 +50,7 @@ public class ChemistryDamageHelper {
             if (molecule.hasTag(DestroyMolecules.Tags.SMELLY)) smelly = true;
             if (molecule.hasTag(DestroyMolecules.Tags.CARCINOGEN)) carcinogen = true;
             if (molecule.hasTag(DestroyMolecules.Tags.LACRIMATOR)) lacrimator = true;
-            if (molecule.getMolecularFormula().get(LegacyElement.LEAD) != 1) lead = true;
+            if (molecule.getMolecularFormula().containsKey(LegacyElement.LEAD)) lead = true;
             if (toxicMolecule != null && smelly && carcinogen && lacrimator && lead) break;
         };
 

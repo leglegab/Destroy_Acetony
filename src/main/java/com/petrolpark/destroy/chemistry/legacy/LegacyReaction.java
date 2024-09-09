@@ -823,6 +823,10 @@ public class LegacyReaction {
             return reaction;
         };
 
+        public boolean hasReactant(LegacySpecies reactant) {
+            return reaction.reactants.containsKey(reactant);
+        };
+
         public class ReactionConstructionException extends ChemistryException {
 
             public ReactionConstructionException(String message) {

@@ -6,6 +6,7 @@ import org.jetbrains.annotations.NotNull;
 
 import com.petrolpark.destroy.world.explosion.ExplosiveProperties;
 import com.petrolpark.destroy.world.explosion.ExplosiveProperties.ExplosiveProperty;
+import com.petrolpark.destroy.world.explosion.ExplosiveProperties.ExplosivePropertyCondition;
 
 import net.minecraft.util.Mth;
 import net.minecraft.world.item.FireworkStarItem;
@@ -13,9 +14,12 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.items.ItemStackHandler;
 
 public class CustomExplosiveMixInventory extends ItemStackHandler {
+
+    protected ExplosivePropertyCondition[] conditions;
     
-    public CustomExplosiveMixInventory(int size) {
+    public CustomExplosiveMixInventory(int size, ExplosivePropertyCondition... conditions) {
         super(size);
+        this.conditions = conditions;
     };
 
     public static boolean canBeAdded(ItemStack stack) {
@@ -33,7 +37,7 @@ public class CustomExplosiveMixInventory extends ItemStackHandler {
             });
         };
         properties.forEach((ep, e) -> e.value = Mth.clamp(e.value, -10f, 10f));
-        return properties;
+        return properties.withConditions(conditions);
     };
 
     /**

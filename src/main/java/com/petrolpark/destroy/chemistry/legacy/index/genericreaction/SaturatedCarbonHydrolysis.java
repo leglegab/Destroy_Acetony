@@ -1,6 +1,7 @@
 package com.petrolpark.destroy.chemistry.legacy.index.genericreaction;
 
 import com.petrolpark.destroy.Destroy;
+import com.petrolpark.destroy.advancement.DestroyAdvancementTrigger;
 import com.petrolpark.destroy.chemistry.legacy.LegacyElement;
 import com.petrolpark.destroy.chemistry.legacy.LegacyMolecularStructure;
 import com.petrolpark.destroy.chemistry.legacy.LegacySpecies;
@@ -34,6 +35,7 @@ public class SaturatedCarbonHydrolysis extends ElectrophilicAddition {
             .displayAsReversible()
             .addCatalyst(DestroyMolecules.PROTON, 2)
             .activationEnergy(20f);
+        if (builder.hasReactant(DestroyMolecules.PROPENE)) builder.withResult(0f, DestroyAdvancementTrigger.PROPANOL::asReactionResult);
     };
 
     

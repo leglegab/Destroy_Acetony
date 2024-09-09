@@ -1,5 +1,5 @@
 {
-    "parent": "destroy:fill_seismograph",
+    "parent": "destroy:arc_furnace",
     "criteria": {
       "eat": {
         "trigger": "minecraft:consume_item",
@@ -18,11 +18,12 @@
         "translate": "advancement.destroy.creatine.description"
       },
       "icon": {
-        "item": "destroy:seismograph"
+        "item": "destroy:creatine"
       },
       "title": {
         "translate": "advancement.destroy.creatine"
-      }
+      },
+      "frame": "challenge"
     },
     "requirements": [
       [

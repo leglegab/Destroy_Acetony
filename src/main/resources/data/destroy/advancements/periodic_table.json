@@ -1,5 +1,5 @@
 {
-    "parent": "destroy:vat",
+    "parent": "destroy:carbon_fiber",
     "criteria": {
       "build": {
         "trigger": "destroy:periodic_table"

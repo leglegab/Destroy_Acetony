@@ -36,7 +36,6 @@ public class CustomExplosiveMixEntity extends PrimedBomb implements IEntityAddit
         super(DestroyEntityTypes.PRIMED_CUSTOM_EXPLOSIVE.get(), level, blockPos, state, owner);
         this.color = color;
         inv = inventory;
-        setFuse(1000);
     };
 
     @Override

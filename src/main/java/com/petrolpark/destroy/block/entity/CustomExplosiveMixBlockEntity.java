@@ -21,6 +21,7 @@ public class CustomExplosiveMixBlockEntity extends SimpleDyeableNameableCustomEx
     public static ExplosivePropertyCondition[] EXPLOSIVE_PROPERTY_CONDITIONS = new ExplosivePropertyCondition[]{
         ExplosiveProperties.CAN_EXPLODE,
         ExplosiveProperties.DROPS_EXPERIENCE,
+        ExplosiveProperties.DROPS_HEADS,
         ExplosiveProperties.ENTITIES_PUSHED,
         ExplosiveProperties.EVAPORATES_FLUIDS,
         ExplosiveProperties.EXPLODES_RANDOMLY,
@@ -57,7 +58,7 @@ public class CustomExplosiveMixBlockEntity extends SimpleDyeableNameableCustomEx
 
     @Override
     public CustomExplosiveMixInventory createInv() {
-        return new CustomExplosiveMixInventory(DestroyAllConfigs.SERVER.blocks.customExplosiveMixSize.get());
+        return new CustomExplosiveMixInventory(DestroyAllConfigs.SERVER.blocks.customExplosiveMixSize.get(), EXPLOSIVE_PROPERTY_CONDITIONS);
     };
 
     @Nullable

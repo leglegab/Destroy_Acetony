@@ -31,7 +31,6 @@ import com.petrolpark.destroy.fluid.MixtureFluid;
 import com.petrolpark.destroy.recipe.DestroyRecipeTypes;
 import com.petrolpark.destroy.recipe.MixtureConversionRecipe;
 import com.petrolpark.destroy.util.DestroyLang;
-import com.petrolpark.destroy.util.ExplosionHelper;
 import com.petrolpark.destroy.util.PollutionHelper;
 import com.petrolpark.destroy.util.vat.Vat;
 import com.petrolpark.destroy.world.explosion.SmartExplosion;
@@ -274,7 +273,7 @@ public class VatControllerBlockEntity extends SmartBlockEntity implements IHaveG
         getVatOptional().ifPresent(vat -> {
             Vec3 center = vat.getCenter();
             deleteVat(getBlockPos());
-            ExplosionHelper.explode(serverLevel, explosionFactory.apply(serverLevel, center));
+            SmartExplosion.explode(serverLevel, explosionFactory.apply(serverLevel, center));
         });
     };
 

@@ -1,5 +1,5 @@
 {
-    "parent": "destroy:distillation",
+    "parent": "destroy:chrome",
     "criteria": {
       "react": {
         "conditions": {},

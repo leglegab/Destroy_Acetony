@@ -1,0 +1,32 @@
+{
+    "parent": "destroy:vat",
+    "criteria": {
+      "hold": {
+        "trigger": "minecraft:inventory_changed",
+        "conditions": {
+            "items": [
+                {
+                    "item": "destroy:touch_powder"
+                }
+            ]
+        }
+      }
+    },
+    "display": {
+      "description": {
+        "color": "#DBA213",
+        "translate": "advancement.destroy.touch_powder.description"
+      },
+      "icon": {
+        "item": "destroy:touch_powder"
+      },
+      "title": {
+        "translate": "advancement.destroy.touch_powder"
+      }
+    },
+    "requirements": [
+      [
+        "hold"
+      ]
+    ]
+  }

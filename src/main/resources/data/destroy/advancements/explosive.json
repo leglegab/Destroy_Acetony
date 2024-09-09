@@ -1,5 +1,5 @@
 {
-    "parent": "destroy:plastic",
+    "parent": "destroy:hydrazine",
     "criteria": {
       "detonate": {
         "conditions": {},

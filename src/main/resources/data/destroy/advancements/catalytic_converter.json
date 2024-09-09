@@ -1,5 +1,5 @@
 {
-    "parent": "destroy:mechanical_sieve",
+    "parent": "destroy:extrude",
     "criteria": {
       "use": {
         "conditions": {},
@@ -16,7 +16,8 @@
       },
       "title": {
         "translate": "advancement.destroy.catalytic_converter"
-      }
+      },
+      "frame": "goal"
     },
     "use": [
       [

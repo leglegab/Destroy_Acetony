@@ -29,6 +29,7 @@ public class DestroyBlocksConfigs extends DestroyConfigBase {
     
     public final ConfigGroup dynamo = group(0, "dynamo", "Dynamo");
     public final ConfigBool dynamoBulkCharging = b(true, "dynamoBulkCharging", "Whether Dynamos can charge multiple Item Stacks at once.");
+    public final ConfigFloat arcFurnaceStressMultiplier = f(5f, 0f, Float.MAX_VALUE, "arcFurnaceStressMultiplier", "The factor by which the stress impact of a Dynamo is multiplied when it is an Arc Furnace");
     public final ConfigBool arcFurnaceAllowsSmelting = b(false, "arcFurnaceAllowsSmelting", "Whether Arc Furnaces can do vanilla Smelting recipes");
     public final ConfigBool arcFurnaceAllowsBlasting = b(true, "arcFurnaceAllowsBlasting", "Whether Arc Furnaces can do vanilla Blasting recipes");
 

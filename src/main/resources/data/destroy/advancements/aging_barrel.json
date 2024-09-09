@@ -1,5 +1,5 @@
 {
-    "parent": "destroy:tap_tree",
+    "parent": "destroy:plastic",
     "criteria": {
       "aging_barrel": {
         "conditions": {},

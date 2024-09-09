@@ -3,17 +3,15 @@ package com.petrolpark.destroy.block;
 import java.util.Collections;
 import java.util.List;
 
-import javax.annotation.Nullable;
-
 import com.petrolpark.destroy.block.entity.CustomExplosiveMixBlockEntity;
 import com.petrolpark.destroy.block.entity.DestroyBlockEntityTypes;
 import com.petrolpark.destroy.block.entity.SimpleDyeableNameableCustomExplosiveMixBlockEntity;
 import com.petrolpark.destroy.entity.CustomExplosiveMixEntity;
 import com.petrolpark.destroy.entity.DestroyEntityTypes;
 import com.petrolpark.destroy.item.inventory.CustomExplosiveMixInventory;
-import com.petrolpark.destroy.util.ExplosionHelper;
 import com.petrolpark.destroy.world.explosion.CustomExplosiveMixExplosion;
 import com.petrolpark.destroy.world.explosion.ExplosiveProperties;
+import com.petrolpark.destroy.world.explosion.SmartExplosion;
 import com.simibubi.create.foundation.block.IBE;
 
 import net.minecraft.core.BlockPos;
@@ -31,7 +29,6 @@ import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.world.level.block.entity.BlockEntityTicker;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.storage.loot.LootParams;
@@ -47,19 +44,14 @@ public class CustomExplosiveMixBlock extends PrimeableBombBlock<CustomExplosiveM
         super(properties, new CustomExplosiveMixEntityFactory());
     };
 
-    @Nullable
-	@Override
-	public <S extends BlockEntity> BlockEntityTicker<S> getTicker(Level pLevel, BlockState pState, BlockEntityType<S> pBlockEntityType) {
-		return null; // This type of block does not need to tick
-	};
-
     @Override
     public void onCaughtFire(BlockState state, Level level, BlockPos pos, Direction face, LivingEntity igniter) {
         withBlockEntityDo(level, pos, be -> {
             CustomExplosiveMixInventory inv = be.getExplosiveInventory();
             ExplosiveProperties properties = inv.getExplosiveProperties();
             if (properties.fulfils(ExplosiveProperties.NO_FUSE)) {
-                if (level instanceof ServerLevel serverLevel) ExplosionHelper.explode(serverLevel, CustomExplosiveMixExplosion.create(level, inv, igniter, Vec3.atCenterOf(pos)));
+                level.removeBlock(pos, false);
+                if (level instanceof ServerLevel serverLevel) SmartExplosion.explode(serverLevel, CustomExplosiveMixExplosion.create(level, inv, igniter, Vec3.atCenterOf(pos)));
             } else if (properties.fulfils(ExplosiveProperties.CAN_EXPLODE)) {
                 super.onCaughtFire(state, level, pos, face, igniter);
                 level.removeBlock(pos, false);
@@ -108,7 +100,7 @@ public class CustomExplosiveMixBlock extends PrimeableBombBlock<CustomExplosiveM
         if (result != InteractionResult.PASS) return result;
         if (!lighter && !level.isClientSide() && player instanceof ServerPlayer serverPlayer) {
             withBlockEntityDo(level, pos, be -> NetworkHooks.openScreen(serverPlayer, be, be::writeToBuffer));
-            return InteractionResult.SUCCESS;
+            return InteractionResult.sidedSuccess(level.isClientSide());
         };
         return InteractionResult.PASS;
     };
