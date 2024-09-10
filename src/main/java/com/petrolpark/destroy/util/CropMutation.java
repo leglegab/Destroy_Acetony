@@ -122,6 +122,8 @@ public class CropMutation {
             return Blocks.NETHERRACK.defaultBlockState();
         } else if (ore.is(AllTags.forgeBlockTag("ores_in_ground/end_stone"))) {
             return Blocks.END_STONE.defaultBlockState();
+        } else if (false) {
+            return Blocks.STONE.defaultBlockState(); //TODO HARP add destroy tags for depleted ores
         } else {
             return Blocks.STONE.defaultBlockState();
         }
