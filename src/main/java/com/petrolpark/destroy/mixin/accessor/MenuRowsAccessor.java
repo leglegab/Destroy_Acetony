@@ -9,16 +9,17 @@ import com.simibubi.create.infrastructure.gui.OpenCreateMenuButton.MenuRows;
 
 @Mixin(MenuRows.class)
 public interface MenuRowsAccessor {
-    
-    @Accessor(
-        value = "leftButtons",
-        remap = false
-    )
-    public List<String> getLeftButtons();
 
     @Accessor(
-        value = "rightButtons",
-        remap = false
+            value = "leftTextKeys",
+            remap = false
     )
-    public List<String> getRightButtons();
+    public List<String> leftTextKeys();
+
+    @Accessor(
+            value = "rightTextKeys",
+            remap = false
+    )
+    public List<String> rightTextKeys();
 };
+

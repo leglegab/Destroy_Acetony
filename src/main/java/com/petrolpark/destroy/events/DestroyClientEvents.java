@@ -2,6 +2,7 @@ package com.petrolpark.destroy.events;
 
 import javax.annotation.Nonnull;
 
+import net.minecraft.client.resources.language.I18n;
 import org.apache.commons.lang3.mutable.MutableObject;
 
 import com.jozufozu.flywheel.util.Color;
@@ -96,40 +97,43 @@ public class DestroyClientEvents {
      */
     @SubscribeEvent
     public static void onGuiInit(ScreenEvent.Init event) {
-        Screen gui = event.getScreen();
+        Screen screen = event.getScreen();
 
-        MenuRows menu = null;
-        int rowIdx = 0;
-        int offsetX = 0;
-
-        if (gui instanceof TitleScreen) {
+        MenuRows menu;
+        int rowIdx;
+        int offsetX;
+        if (screen instanceof TitleScreen) {
             menu = MenuRows.MAIN_MENU;
-            rowIdx = DestroyAllConfigs.CLIENT.configurationButtons.mainMenuConfigButtonRow.get();
-            offsetX =  DestroyAllConfigs.CLIENT.configurationButtons.mainMenuConfigButtonOffsetX.get();
-        } else if (gui instanceof PauseScreen) {
+            rowIdx = DestroyAllConfigs.client().mainMenuConfigButtonRow.get();
+            offsetX = DestroyAllConfigs.client().mainMenuConfigButtonOffsetX.get();
+        } else if (screen instanceof PauseScreen) {
             menu = MenuRows.INGAME_MENU;
-            rowIdx =  DestroyAllConfigs.CLIENT.configurationButtons.pauseMenuConfigButtonRow.get();
-            offsetX =  DestroyAllConfigs.CLIENT.configurationButtons.pauseMenuConfigButtonOffsetX.get();
-        };
+            rowIdx = DestroyAllConfigs.client().ingameMenuConfigButtonRow.get();
+            offsetX = DestroyAllConfigs.client().ingameMenuConfigButtonOffsetX.get();
+        } else {
+            return;
+        }
 
-        if (rowIdx != 0 && menu != null) {
-            boolean onLeft = offsetX < 0;
-            String target = (onLeft ? ((MenuRowsAccessor)menu).getLeftButtons() : ((MenuRowsAccessor)menu).getLeftButtons()).get(rowIdx - 1);
+        if (rowIdx == 0) {
+            return;
+        }
 
-            int offsetX_ = offsetX;
-            MutableObject<GuiEventListener> toAdd = new MutableObject<>(null);
-            event.getListenersList()
+        boolean onLeft = offsetX < 0;
+        String targetMessage = I18n.get((onLeft ? ((MenuRowsAccessor)menu).leftTextKeys() : ((MenuRowsAccessor)menu).rightTextKeys()).get(rowIdx - 1));
+
+        int offsetX_ = offsetX;
+        MutableObject<GuiEventListener> toAdd = new MutableObject<>(null);
+        event.getListenersList()
                 .stream()
                 .filter(w -> w instanceof AbstractWidget)
                 .map(w -> (AbstractWidget) w)
                 .filter(w -> w.getMessage()
-                    .getString()
-                    .equals(target)
-                ).findFirst()
-                .ifPresent(w ->
-                    toAdd.setValue(new OpenDestroyMenuButton(w.getX() + offsetX_ + (onLeft ? -20 : w.getWidth()), w.getY()))
-                );
-            if (toAdd.getValue() != null) event.addListener(toAdd.getValue());
-        };
+                        .getString()
+                        .equals(targetMessage))
+                .findFirst()
+                .ifPresent(w -> toAdd
+                        .setValue(new OpenDestroyMenuButton(w.getX() + offsetX_*2 + (onLeft ? -40 : w.getWidth()), w.getY())));
+        if (toAdd.getValue() != null)
+            event.addListener(toAdd.getValue());
     };
 };
