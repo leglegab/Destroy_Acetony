@@ -104,12 +104,12 @@ public class DestroyClientEvents {
         int offsetX;
         if (screen instanceof TitleScreen) {
             menu = MenuRows.MAIN_MENU;
-            rowIdx = DestroyAllConfigs.client().mainMenuConfigButtonRow.get();
-            offsetX = DestroyAllConfigs.client().mainMenuConfigButtonOffsetX.get();
+            rowIdx = DestroyAllConfigs.CLIENT.configurationButtons.mainMenuConfigButtonRow.get();
+            offsetX = DestroyAllConfigs.CLIENT.configurationButtons.mainMenuConfigButtonOffsetX.get();
         } else if (screen instanceof PauseScreen) {
             menu = MenuRows.INGAME_MENU;
-            rowIdx = DestroyAllConfigs.client().ingameMenuConfigButtonRow.get();
-            offsetX = DestroyAllConfigs.client().ingameMenuConfigButtonOffsetX.get();
+            rowIdx = DestroyAllConfigs.CLIENT.configurationButtons.pauseMenuConfigButtonRow.get();
+            offsetX = DestroyAllConfigs.CLIENT.configurationButtons.pauseMenuConfigButtonOffsetX.get();
         } else {
             return;
         }
@@ -132,7 +132,7 @@ public class DestroyClientEvents {
                         .equals(targetMessage))
                 .findFirst()
                 .ifPresent(w -> toAdd
-                        .setValue(new OpenDestroyMenuButton(w.getX() + offsetX_*2 + (onLeft ? -40 : w.getWidth()), w.getY())));
+                        .setValue(new OpenDestroyMenuButton(w.getX() + offsetX_ + (onLeft ? -20 : w.getWidth()), w.getY())));
         if (toAdd.getValue() != null)
             event.addListener(toAdd.getValue());
     };
