@@ -2,7 +2,10 @@ package com.petrolpark.destroy.events;
 
 import javax.annotation.Nonnull;
 
+import com.petrolpark.destroy.util.Buttons;
+import com.petrolpark.destroy.util.ButtonsCompatF;
 import net.minecraft.client.resources.language.I18n;
+import net.minecraftforge.fml.loading.FMLLoader;
 import org.apache.commons.lang3.mutable.MutableObject;
 
 import com.jozufozu.flywheel.util.Color;
@@ -14,7 +17,6 @@ import com.petrolpark.destroy.client.gui.button.OpenDestroyMenuButton;
 import com.petrolpark.destroy.config.DestroyAllConfigs;
 import com.petrolpark.destroy.item.SwissArmyKnifeItem;
 import com.petrolpark.destroy.item.renderer.SeismometerItemRenderer;
-import com.petrolpark.destroy.mixin.accessor.MenuRowsAccessor;
 import com.petrolpark.destroy.util.CogwheelChainingHandler;
 import com.petrolpark.destroy.util.PollutionHelper;
 import com.simibubi.create.infrastructure.gui.OpenCreateMenuButton.MenuRows;
@@ -119,8 +121,12 @@ public class DestroyClientEvents {
         }
 
         boolean onLeft = offsetX < 0;
-        String targetMessage = I18n.get((onLeft ? ((MenuRowsAccessor)menu).leftTextKeys() : ((MenuRowsAccessor)menu).rightTextKeys()).get(rowIdx - 1));
-
+        String targetMessage;
+        if (FMLLoader.getLoadingModList().getModFileById("create").getMods().get(0).getVersion().toString().contains("f")) {
+            targetMessage = I18n.get((onLeft ? ((ButtonsCompatF)(Object)menu).destroyh$getLeftButton() : ((ButtonsCompatF)(Object)menu).destroyh$getRightButton()).get(rowIdx - 1));
+        } else {
+            targetMessage = I18n.get((onLeft ? ((Buttons)(Object)menu).destroyh$getLeftTextKeys() : ((Buttons)(Object)menu).destroyh$getRightTextKeys()).get(rowIdx - 1));
+        }
         int offsetX_ = offsetX;
         MutableObject<GuiEventListener> toAdd = new MutableObject<>(null);
         event.getListenersList()

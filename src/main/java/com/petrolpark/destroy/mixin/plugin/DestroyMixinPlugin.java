@@ -34,8 +34,8 @@ public class DestroyMixinPlugin implements IMixinConfigPlugin {
         onlyLoadIfModPresent("com.petrolpark.destroy.mixin.CuttingBoardMixin", "farmersdelight");
 
         //Create Patch F/H Compat Mixins
-        onlyLoadIfCreatePatchPresent("com.petrolpark.destroy.mixin.accessor.MenuRowsAccessor", "h");
-        onlyLoadIfCreatePatchPresent("com.petrolpark.destroy.mixin.accessor.MenuRowsCompatFAccessor", "f");
+        onlyLoadIfCreatePatchNotPresent("com.petrolpark.destroy.mixin.MenuRowsMixin", "f");
+        onlyLoadIfCreatePatchPresent("com.petrolpark.destroy.mixin.MenuRowsCompatFMixin", "f");
     };
 
     @Override
@@ -81,9 +81,13 @@ public class DestroyMixinPlugin implements IMixinConfigPlugin {
     };
 
     private static void onlyLoadIfCreatePatchPresent(String mixinClassName, String patch) {
-        System.out.println(FMLLoader.getLoadingModList().getModFileById("create").getMods().get(0).getVersion().toString().contains(patch));
-        System.out.println(FMLLoader.getLoadingModList().getModFileById("create").getMods().get(0).getVersion().toString());
+        System.out.println("[Destroy] Create patch " + patch + " present: " + FMLLoader.getLoadingModList().getModFileById("create").getMods().get(0).getVersion().toString().contains(patch));
         SHOULD_LOAD.put(mixinClassName, () -> FMLLoader.getLoadingModList().getModFileById("create").getMods().get(0).getVersion().toString().contains(patch));
+    };
+
+    private static void onlyLoadIfCreatePatchNotPresent(String mixinClassName, String patch) {
+        System.out.println("[Destroy] Create patch " + patch + " not present: " + !FMLLoader.getLoadingModList().getModFileById("create").getMods().get(0).getVersion().toString().contains(patch));
+        SHOULD_LOAD.put(mixinClassName, () -> !FMLLoader.getLoadingModList().getModFileById("create").getMods().get(0).getVersion().toString().contains(patch));
     };
     
 };
