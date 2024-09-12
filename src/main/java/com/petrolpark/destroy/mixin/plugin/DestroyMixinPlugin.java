@@ -6,6 +6,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.function.Supplier;
 
+import net.minecraftforge.fml.loading.moddiscovery.ModInfo;
+import net.minecraftforge.forgespi.language.IModInfo;
 import org.objectweb.asm.tree.ClassNode;
 import org.spongepowered.asm.mixin.extensibility.IMixinConfigPlugin;
 import org.spongepowered.asm.mixin.extensibility.IMixinInfo;
@@ -30,6 +32,10 @@ public class DestroyMixinPlugin implements IMixinConfigPlugin {
 
         // Farmers' Delight mixins
         onlyLoadIfModPresent("com.petrolpark.destroy.mixin.CuttingBoardMixin", "farmersdelight");
+
+        //Create Patch F/H Compat Mixins
+        onlyLoadIfCreatePatchPresent("com.petrolpark.destroy.mixin.accessor.MenuRowsAccessor", "h");
+        onlyLoadIfCreatePatchPresent("com.petrolpark.destroy.mixin.accessor.MenuRowsCompatFAccessor", "f");
     };
 
     @Override
@@ -72,6 +78,12 @@ public class DestroyMixinPlugin implements IMixinConfigPlugin {
      */
     private static void onlyLoadIfModPresent(String mixinClassName, String modID) {
         SHOULD_LOAD.put(mixinClassName, () -> FMLLoader.getLoadingModList().getModFileById(modID) != null);
+    };
+
+    private static void onlyLoadIfCreatePatchPresent(String mixinClassName, String patch) {
+        System.out.println(FMLLoader.getLoadingModList().getModFileById("create").getMods().get(0).getVersion().toString().contains(patch));
+        System.out.println(FMLLoader.getLoadingModList().getModFileById("create").getMods().get(0).getVersion().toString());
+        SHOULD_LOAD.put(mixinClassName, () -> FMLLoader.getLoadingModList().getModFileById("create").getMods().get(0).getVersion().toString().contains(patch));
     };
     
 };

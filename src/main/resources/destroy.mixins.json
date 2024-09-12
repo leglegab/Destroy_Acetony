@@ -12,6 +12,7 @@
         "accessor.FluidIngredientAccessor",
         "accessor.FluidNetworkAccessor",
         "accessor.MenuRowsAccessor",
+        "accessor.MenuRowsCompatFAccessor",
         "accessor.PipeConnectionAccessor",
         "accessor.PonderTagScreenAccessor",
         "accessor.ProcessingRecipeParamsAccessor",
