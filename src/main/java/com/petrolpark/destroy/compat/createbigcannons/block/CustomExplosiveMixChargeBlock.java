@@ -159,6 +159,7 @@ public class CustomExplosiveMixChargeBlock extends PowderChargeBlock implements 
     public BigCannonPropellantPropertiesComponent getPropellantProperties(CompoundTag nbt) {
         CustomExplosiveMixInventory inv = new CustomExplosiveMixInventory(DestroyAllConfigs.SERVER.compat.customExplosiveMixChargeSize.get());
         inv.deserializeNBT(nbt.getCompound("ExplosiveMix"));
+        if (inv.isEmpty()) return BigCannonPropellantPropertiesComponent.DEFAULT;
         CustomExplosiveMixChargeProperties chargeProperties = DestroyMunitionPropertiesHandlers.CUSTOM_EXPLOSIVE_MIX_CHARGE.getPropertiesOf(this);
         ExplosiveProperties explosiveProperties = inv.getExplosiveProperties();
         if (!explosiveProperties.fulfils(ExplosiveProperties.CAN_EXPLODE)) return BigCannonPropellantPropertiesComponent.DEFAULT;

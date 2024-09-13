@@ -24,6 +24,7 @@ import com.petrolpark.destroy.capability.player.babyblue.PlayerBabyBlueAddiction
 import com.petrolpark.destroy.capability.player.babyblue.PlayerBabyBlueAddictionProvider;
 import com.petrolpark.destroy.capability.player.previousposition.PlayerPreviousPositions;
 import com.petrolpark.destroy.capability.player.previousposition.PlayerPreviousPositionsProvider;
+import com.petrolpark.destroy.commands.AttachedCheckCommand;
 import com.petrolpark.destroy.commands.BabyBlueAddictionCommand;
 import com.petrolpark.destroy.commands.CrudeOilCommand;
 import com.petrolpark.destroy.commands.PollutionCommand;
@@ -329,6 +330,7 @@ public class DestroyCommonEvents {
         new BabyBlueAddictionCommand(event.getDispatcher());
         new PollutionCommand(event.getDispatcher());
         new RegenerateCircuitPatternCommand(event.getDispatcher());
+        new AttachedCheckCommand(event.getDispatcher());
     };
 
     @SubscribeEvent

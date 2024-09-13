@@ -20,6 +20,7 @@ import com.petrolpark.destroy.util.vat.IUVLampBlock;
 import com.petrolpark.destroy.util.vat.IVatHeaterBlock;
 import com.petrolpark.destroy.util.vat.Vat;
 import com.petrolpark.destroy.util.vat.VatMaterial;
+import com.simibubi.create.content.contraptions.StructureTransform;
 import com.simibubi.create.content.decoration.copycat.CopycatBlockEntity;
 import com.simibubi.create.content.equipment.goggles.IHaveGoggleInformation;
 import com.simibubi.create.content.equipment.goggles.IHaveHoveringInformation;
@@ -231,7 +232,7 @@ public class VatSideBlockEntity extends CopycatBlockEntity implements IHaveGoggl
         } else {
             direction = null;
         };
-        controllerPosition = NbtUtils.readBlockPos(tag.getCompound("ControllerPosition"));
+        controllerPosition = NbtUtils.readBlockPos(tag.getCompound("ControllerPosition")).offset(getBlockPos());
         displayType = DisplayType.values()[tag.getInt("DisplayType")];
         oldPower = tag.getFloat("OldHeatingPower");
         oldUV = tag.getFloat("OldUVPower");
@@ -247,7 +248,7 @@ public class VatSideBlockEntity extends CopycatBlockEntity implements IHaveGoggl
     protected void write(CompoundTag tag, boolean clientPacket) {
         super.write(tag, clientPacket);
         if (direction != null) tag.putInt("Side", direction.ordinal());
-        if (controllerPosition != null) tag.put("ControllerPosition", NbtUtils.writeBlockPos(controllerPosition));
+        if (controllerPosition != null) tag.put("ControllerPosition", NbtUtils.writeBlockPos(controllerPosition.subtract(getBlockPos())));
         tag.putInt("DisplayType", displayType.ordinal());
         tag.putFloat("OldHeatingPower", oldPower);
         tag.putFloat("OldUVPower", oldUV);
@@ -462,6 +463,12 @@ public class VatSideBlockEntity extends CopycatBlockEntity implements IHaveGoggl
 
         redstoneMonitor.update();
         invalidateRenderBoundingBox();
+    };
+
+    @Override
+    public void transform(StructureTransform transform) {
+        super.transform(transform);
+        controllerPosition = transform.apply(controllerPosition.offset(transform.unapply(getBlockPos()).subtract(getBlockPos())));
     };
 
     @SuppressWarnings("null")

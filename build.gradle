@@ -32,6 +32,7 @@ sourceSets.main.resources {
 
 mixin {
     add sourceSets.main, "destroy.refmap.json"
+    env.disableRefMap = true
 }
 
 // Workaround for SpongePowered/MixinGradle#38, copied from Create source code
@@ -40,7 +41,7 @@ afterEvaluate {
     tasks.configureReobfTaskForReobfJarJar.mustRunAfter(tasks.compileJava)
 }
 
-// Mod Details
+// Mod Detailss
 version = "${mod_version}"
 group = 'com.petrolpark.destroy'
 archivesBaseName = "destroy-${minecraft_version}"

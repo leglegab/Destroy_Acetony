@@ -5,9 +5,7 @@
         "trigger": "minecraft:inventory_changed",
         "conditions": {
             "items": [
-                {
-                    "item": "destroy:slag"
-                }
+              "destroy:slag"
             ]
         }
       }

@@ -5,9 +5,7 @@
         "trigger": "minecraft:inventory_changed",
         "conditions": {
             "items": [
-                {
-                    "item": "destroy:carbon_fiber"
-                }
+              "destroy:carbon_fiber"
             ]
         }
       }

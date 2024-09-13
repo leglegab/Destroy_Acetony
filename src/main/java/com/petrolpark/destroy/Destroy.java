@@ -7,6 +7,7 @@ import com.petrolpark.compat.CompatMods;
 import com.petrolpark.destroy.advancement.DestroyAdvancementTrigger;
 import com.petrolpark.destroy.block.DestroyBlocks;
 import com.petrolpark.destroy.block.entity.DestroyBlockEntityTypes;
+import com.petrolpark.destroy.block.movementchecks.DestroyMovementChecks;
 import com.petrolpark.destroy.chemistry.api.Chemistry;
 import com.petrolpark.destroy.chemistry.forge.event.ForgeChemistryEventFirer;
 import com.petrolpark.destroy.chemistry.legacy.index.DestroyGenericReactions;
@@ -127,6 +128,7 @@ public class Destroy {
         DestroyStats.register(modEventBus);
         DestroyItemAttributes.register();
         DestroyAttributes.register(modEventBus);
+        DestroyMovementChecks.register();
 
         // Events
         MinecraftForge.EVENT_BUS.register(this);

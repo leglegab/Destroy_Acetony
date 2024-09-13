@@ -201,7 +201,7 @@ public class SmartExplosion extends Explosion {
                         while (momentum > 0f) {
 
                             // If there's an Entity in the way...
-                            EntityHitResult hitResult = ProjectileUtil.getEntityHitResult(level, source, position, positionToExplode, new AABB(position, positionToExplode), entity -> !entity.ignoreExplosion());
+                            EntityHitResult hitResult = ProjectileUtil.getEntityHitResult(level, null, position, positionToExplode, new AABB(position, positionToExplode), entity -> !entity.ignoreExplosion());
                             if (hitResult != null) {
                                 Entity entity = hitResult.getEntity();
                                 // ...update the Entity to experience the maximum strength it could experience from this Explosion...

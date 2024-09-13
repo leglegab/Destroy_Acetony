@@ -29,13 +29,16 @@ public class CustomExplosiveMixChargeBlockEntity extends SimpleDyeableNameableCu
     };
 
     @Override
-    public void explode(@Nullable Player cause) {
-        
-    };
+    public void explode(@Nullable Player cause) {};
 
     @Override
     public ExplosivePropertyCondition[] getApplicableExplosionConditions() {
         return EXPLOSIVE_PROPERTY_CONDITIONS;
+    };
+
+    @Override
+    public String getExplosivePropertyDescriptionTranslationKeySuffix() {
+        return "createbigcannons_charge";
     };
     
 };

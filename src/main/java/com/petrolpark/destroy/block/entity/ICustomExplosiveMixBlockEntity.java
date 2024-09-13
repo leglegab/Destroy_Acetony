@@ -34,6 +34,10 @@ public interface ICustomExplosiveMixBlockEntity extends MenuProvider, ClipboardC
     public void setExplosiveInventory(CustomExplosiveMixInventory inv);
 
     public ExplosivePropertyCondition[] getApplicableExplosionConditions();
+
+    public default String getExplosivePropertyDescriptionTranslationKeySuffix() {
+        return "";
+    };
     
     public default void onPlace(ItemStack blockItemStack) {
         if (blockItemStack.getItem() instanceof ICustomExplosiveMixItem customMixItem) setExplosiveInventory(customMixItem.getExplosiveInventory(blockItemStack));

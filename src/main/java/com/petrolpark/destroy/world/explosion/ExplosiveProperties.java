@@ -181,7 +181,11 @@ public class ExplosiveProperties extends EnumMap<ExplosiveProperties.ExplosivePr
         };
 
         public Component getDefaultDescription() {
-            return DestroyLang.translate("explosive_property."+Lang.asId(name())+".description").component();
+            return Component.translatable(getDescriptionTranslationKey());
+        };
+
+        public String getDescriptionTranslationKey() {
+            return "destroy.explosive_property."+Lang.asId(name())+"description";
         };
 
         @Override

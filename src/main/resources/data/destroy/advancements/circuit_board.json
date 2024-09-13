@@ -5,9 +5,7 @@
         "trigger": "minecraft:inventory_changed",
         "conditions": {
             "items": [
-                {
-                    "item": "destroy:circuit_board"
-                }
+              "destroy:circuit_board"
             ]
         }
       }

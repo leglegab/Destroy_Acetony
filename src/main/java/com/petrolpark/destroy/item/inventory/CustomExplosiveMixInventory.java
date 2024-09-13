@@ -40,6 +40,10 @@ public class CustomExplosiveMixInventory extends ItemStackHandler {
         return properties.withConditions(conditions);
     };
 
+    public boolean isEmpty() {
+        return stacks.isEmpty() || stacks.stream().allMatch(ItemStack::isEmpty);
+    };
+
     /**
      * Items which have special behaviour when exploded
      * @return

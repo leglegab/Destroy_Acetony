@@ -17,6 +17,7 @@ import com.simibubi.create.foundation.gui.menu.AbstractSimiContainerScreen;
 import com.simibubi.create.foundation.gui.widget.IconButton;
 
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.resources.language.I18n;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.Slot;
@@ -62,6 +63,10 @@ public class CustomExplosiveScreen extends AbstractSimiContainerScreen<CustomExp
         super.containerTick();
         explosiveProperties = be.getExplosiveInventory().getExplosiveProperties() 
             .withConditions(be.getApplicableExplosionConditions());
+        explosiveProperties.forEach((property, entry) -> {
+            String altKey = property.getDescriptionTranslationKey() + "." + be.getExplosivePropertyDescriptionTranslationKeySuffix();
+            if (I18n.exists(altKey)) entry.description = Component.translatable(altKey);
+        });
     };
 
     @Override

@@ -35,6 +35,8 @@ import com.petrolpark.destroy.util.PollutionHelper;
 import com.petrolpark.destroy.util.vat.Vat;
 import com.petrolpark.destroy.world.explosion.SmartExplosion;
 import com.simibubi.create.CreateClient;
+import com.simibubi.create.content.contraptions.ITransformableBlockEntity;
+import com.simibubi.create.content.contraptions.StructureTransform;
 import com.simibubi.create.content.equipment.goggles.IHaveGoggleInformation;
 import com.simibubi.create.content.redstone.displayLink.DisplayLinkContext;
 import com.simibubi.create.content.redstone.thresholdSwitch.ThresholdSwitchObservable;
@@ -52,6 +54,7 @@ import com.simibubi.create.foundation.utility.animation.LerpedFloat.Chaser;
 
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction.Axis;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtUtils;
 import net.minecraft.nbt.Tag;
@@ -60,6 +63,7 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Rotation;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
@@ -75,7 +79,7 @@ import net.minecraftforge.fluids.capability.IFluidHandler.FluidAction;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemHandlerHelper;
 
-public class VatControllerBlockEntity extends SmartBlockEntity implements IHaveGoggleInformation, ISpecialWhenHovered, ThresholdSwitchObservable {
+public class VatControllerBlockEntity extends SmartBlockEntity implements IHaveGoggleInformation, ISpecialWhenHovered, ThresholdSwitchObservable, ITransformableBlockEntity {
 
     public static final float AIR_PRESSURE = 101000;
 
@@ -657,6 +661,12 @@ public class VatControllerBlockEntity extends SmartBlockEntity implements IHaveG
 
     public AABB wholeVatAABB() {
         return new AABB(vat.get().getInternalLowerCorner(), vat.get().getUpperCorner()).inflate(1);
+    };
+
+    @Override
+    public void transform(StructureTransform transform) {
+        getVatOptional().ifPresent(v -> v.transform(transform, getBlockPos()));
+        if (transform.rotationAxis != Axis.Y && (transform.rotation == Rotation.CLOCKWISE_90 || transform.rotation == Rotation.COUNTERCLOCKWISE_90)) deleteVat(getBlockPos());
     };
 
     public void addParticles() {

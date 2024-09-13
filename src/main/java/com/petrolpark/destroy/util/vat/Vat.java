@@ -11,6 +11,7 @@ import javax.annotation.Nullable;
 import com.google.common.collect.ImmutableList;
 import com.petrolpark.destroy.block.VatControllerBlock;
 import com.simibubi.create.CreateClient;
+import com.simibubi.create.content.contraptions.StructureTransform;
 import com.simibubi.create.foundation.utility.Pair;
 import com.simibubi.create.foundation.utility.VecHelper;
 
@@ -42,6 +43,7 @@ public class Vat {
         VatMaterial.registerDestroyVatMaterials();
     };
 
+    // Global positions of the corners of this Vat. In NBT they are stored relative to the Controller position.
     private BlockPos lowerCorner;
     private BlockPos upperCorner;
 
@@ -79,6 +81,7 @@ public class Vat {
     public void write(CompoundTag tag, BlockPos controllerPos) {
         tag.put("LowerCorner", NbtUtils.writeBlockPos(lowerCorner.subtract(controllerPos)));
         tag.put("UpperCorner", NbtUtils.writeBlockPos(upperCorner.subtract(controllerPos)));
+        tag.put("LastKnownControllerPos", NbtUtils.writeBlockPos(controllerPos));
         tag.putFloat("Conductance", conductance);
         tag.put("WeakestBlock", NbtUtils.writeBlockState(weakestBlockState));
     };
@@ -259,6 +262,17 @@ public class Vat {
 
     public int getInternalLength() {
         return upperCorner.getZ() - getInternalLowerCorner().getZ();
+    };
+
+    public void transform(StructureTransform transform, BlockPos newControllerPos) {
+        BlockPos controllerMotion = transform.unapply(newControllerPos).subtract(newControllerPos);
+        upperCorner = transform.apply(upperCorner.offset(controllerMotion));
+        lowerCorner = transform.apply(lowerCorner.offset(controllerMotion));
+        BlockPos newUpper = new BlockPos(Math.max(upperCorner.getX(), lowerCorner.getX()), Math.max(upperCorner.getY(), lowerCorner.getY()), Math.max(upperCorner.getZ(), lowerCorner.getZ()));
+        BlockPos newLower = new BlockPos(Math.min(upperCorner.getX(), lowerCorner.getX()), Math.min(upperCorner.getY(), lowerCorner.getY()), Math.min(upperCorner.getZ(), lowerCorner.getZ()));
+        lowerCorner = newLower;
+        upperCorner = newUpper;
+        sides = null;
     };
 
     /**

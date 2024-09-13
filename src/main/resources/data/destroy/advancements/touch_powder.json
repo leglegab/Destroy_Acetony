@@ -5,9 +5,7 @@
         "trigger": "minecraft:inventory_changed",
         "conditions": {
             "items": [
-                {
-                    "item": "destroy:touch_powder"
-                }
+              "destroy:touch_powder"
             ]
         }
       }

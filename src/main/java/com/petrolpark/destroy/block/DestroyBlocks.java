@@ -925,6 +925,17 @@ public class DestroyBlocks {
 
     // UNCATEGORISED
 
+    public static final BlockEntry<Block> FIBERGLASS_BLOCK = REGISTRATE.block("fiberglass_block", Block::new)
+        .initialProperties(() -> Blocks.GLASS)
+        .properties(p -> p
+            .strength(6f)
+            .mapColor(MapColor.SNOW)
+        ).tag(Tags.Blocks.GLASS, BlockTags.MINEABLE_WITH_PICKAXE)
+        .item()
+        .tag(Tags.Items.GLASS)
+        .build()
+        .register();
+
     public static final BlockEntry<GlassBlock>
     
     BOROSILICATE_GLASS = REGISTRATE.block("borosilicate_glass", GlassBlock::new)
@@ -1003,8 +1014,10 @@ public class DestroyBlocks {
         .properties(p -> p
             .mapColor(state -> state.getValue(FastCoolingMoltenPillarBlock.MOLTEN) ? MapColor.COLOR_RED : MapColor.NONE)
             .lightLevel(state -> state.getValue(FastCoolingMoltenPillarBlock.MOLTEN) ? 15 : 0)
-        ).tag(BlockTags.MINEABLE_WITH_PICKAXE)
+            .sound(SoundType.WOOL)
+        ).tag(BlockTags.MINEABLE_WITH_PICKAXE, BlockTags.WOOL)
         .item()
+        .tag(ItemTags.WOOL)
         .build()
         .register();
 
@@ -1021,6 +1034,16 @@ public class DestroyBlocks {
         .register();
 
     public static final BlockEntry<RotatedPillarBlock>
+
+    INSULATED_STAINLESS_STEEL_BLOCK = REGISTRATE.block("insulated_stainless_steel_block", RotatedPillarBlock::new)
+        .initialProperties(STAINLESS_STEEL_BLOCK)
+        .onRegister(CreateRegistrate.connectedTextures(() -> new EncasedCTBehaviour(DestroySpriteShifts.STAINLESS_STEEL_BLOCK)))
+        .onRegister(CreateRegistrate.casingConnectivity((block, cc) -> cc.make(block, DestroySpriteShifts.STAINLESS_STEEL_BLOCK,
+			(s, f) -> f.getAxis() == s.getValue(RotatedPillarBlock.AXIS)))
+        ).transform(TagGen.pickaxeOnly())
+        .item()
+        .build()
+        .register(),
     
     EXTRUDED_CORDITE_BLOCK = REGISTRATE.block("extruded_cordite_block", RotatedPillarBlock::new)
         .initialProperties(() -> Blocks.CLAY)

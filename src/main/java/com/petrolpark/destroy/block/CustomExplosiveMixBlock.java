@@ -48,6 +48,7 @@ public class CustomExplosiveMixBlock extends PrimeableBombBlock<CustomExplosiveM
     public void onCaughtFire(BlockState state, Level level, BlockPos pos, Direction face, LivingEntity igniter) {
         withBlockEntityDo(level, pos, be -> {
             CustomExplosiveMixInventory inv = be.getExplosiveInventory();
+            if (inv.isEmpty()) return;
             ExplosiveProperties properties = inv.getExplosiveProperties();
             if (properties.fulfils(ExplosiveProperties.NO_FUSE)) {
                 level.removeBlock(pos, false);

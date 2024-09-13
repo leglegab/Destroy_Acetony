@@ -1,14 +1,9 @@
 {
     "type": "destroy:arc_furnace",
     "ingredients": [
-      [
-        {
-          "tag": "forge:dusts/chromium"
-        },
-        {
-          "tag": "forge:ingots/chromium"
-        }
-      ],
+      {
+        "tag": "forge:dusts/chromium"
+      },
       {
         "tag": "forge:dusts/nickel"
       },
