@@ -1,5 +1,5 @@
 {
-    "required": "true",
+    "required": true,
     "package": "com.petrolpark.destroy.mixin",
     "compatibilityLevel": "JAVA_17",
     "refmap": "destroy.refmap.json",
@@ -11,7 +11,8 @@
         "accessor.DepotBehaviourAccessor",
         "accessor.FluidIngredientAccessor",
         "accessor.FluidNetworkAccessor",
-        "accessor.MenuRowsAccessor",
+        "MenuRowsMixin",
+        "MenuRowsCompatFMixin",
         "accessor.PipeConnectionAccessor",
         "accessor.PonderTagScreenAccessor",
         "accessor.ProcessingRecipeParamsAccessor",

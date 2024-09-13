@@ -6,6 +6,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.function.Supplier;
 
+import net.minecraftforge.fml.loading.moddiscovery.ModInfo;
+import net.minecraftforge.forgespi.language.IModInfo;
 import org.objectweb.asm.tree.ClassNode;
 import org.spongepowered.asm.mixin.extensibility.IMixinConfigPlugin;
 import org.spongepowered.asm.mixin.extensibility.IMixinInfo;
@@ -30,6 +32,10 @@ public class DestroyMixinPlugin implements IMixinConfigPlugin {
 
         // Farmers' Delight mixins
         onlyLoadIfModPresent("com.petrolpark.destroy.mixin.CuttingBoardMixin", "farmersdelight");
+
+        //Create Patch F/H Compat Mixins
+        onlyLoadIfCreatePatchNotPresent("com.petrolpark.destroy.mixin.MenuRowsMixin", "f");
+        onlyLoadIfCreatePatchPresent("com.petrolpark.destroy.mixin.MenuRowsCompatFMixin", "f");
     };
 
     @Override
@@ -72,6 +78,16 @@ public class DestroyMixinPlugin implements IMixinConfigPlugin {
      */
     private static void onlyLoadIfModPresent(String mixinClassName, String modID) {
         SHOULD_LOAD.put(mixinClassName, () -> FMLLoader.getLoadingModList().getModFileById(modID) != null);
+    };
+
+    private static void onlyLoadIfCreatePatchPresent(String mixinClassName, String patch) {
+        System.out.println("[Destroy] Create patch " + patch + " present: " + FMLLoader.getLoadingModList().getModFileById("create").getMods().get(0).getVersion().toString().contains(patch));
+        SHOULD_LOAD.put(mixinClassName, () -> FMLLoader.getLoadingModList().getModFileById("create").getMods().get(0).getVersion().toString().contains(patch));
+    };
+
+    private static void onlyLoadIfCreatePatchNotPresent(String mixinClassName, String patch) {
+        System.out.println("[Destroy] Create patch " + patch + " not present: " + !FMLLoader.getLoadingModList().getModFileById("create").getMods().get(0).getVersion().toString().contains(patch));
+        SHOULD_LOAD.put(mixinClassName, () -> !FMLLoader.getLoadingModList().getModFileById("create").getMods().get(0).getVersion().toString().contains(patch));
     };
     
 };
