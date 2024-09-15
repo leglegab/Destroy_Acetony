@@ -701,6 +701,13 @@ public class LegacyReaction {
         };
 
         /**
+         * @see ReactionBuilder#reverseReaction(Consumer)
+         */
+        public ReactionBuilder reversible() {
+            return reverseReaction(r -> {});
+        };
+
+        /**
          * Register a reverse Reaction for this Reaction.
          * <p>This reverse Reaction will have opposite {@link ReactionBuilder#addReactant reactants} and {@link ReactionBuilder#addProduct products},
          * but all the same {@link ReactionBuilder#addCatalyst catalysts}. It will {@link ReactionBuilder#dontIncludeInJei not be shown in JEI}, but

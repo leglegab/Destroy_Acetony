@@ -92,6 +92,13 @@ public class DestroyReactions {
         .includeInJeiIf(DestroySubstancesConfigs::babyBlueEnabled)
         .build(),
 
+    BASIC_DIELS_ALDER_REACTION = builder()
+        .id("basic_diels_alder_reaction")
+        .addReactant(DestroyMolecules.BUTADIENE)
+        .addReactant(DestroyMolecules.ETHENE)
+        .addProduct(DestroyMolecules.CYCLOHEXENE)
+        .build(),
+
     BENZENE_ETHYLATION = builder()
         .id("benzene_ethylation")
         .addReactant(DestroyMolecules.BENZENE)
@@ -106,6 +113,32 @@ public class DestroyReactions {
         .addReactant(DestroyMolecules.HYDROGEN, 2, 1)
         .addSimpleItemTagCatalyst(AllTags.forgeItemTag("dusts/nickel"), 1f)
         .addProduct(DestroyMolecules.CYCLOHEXENE)
+        .build(),
+
+    BORAX_DISSOLUTION = builder()
+        .id("borax_dissolution")
+        .addReactant(DestroyMolecules.PROTON, 2, 1)
+        .addSimpleItemTagCatalyst(AllTags.forgeItemTag("raw_materials/borax"), 16f)
+        .addCatalyst(DestroyMolecules.CHLORIDE, 1)
+        .addProduct(DestroyMolecules.SODIUM_ION, 2)
+        .addProduct(DestroyMolecules.WATER, 5)
+        .addProduct(DestroyMolecules.BORIC_ACID, 4)
+        .build(),
+
+    BORAX_PRECIPITATION = builder()
+        .id("borax_precipitation")
+        .addReactant(DestroyMolecules.SODIUM_ION, 2, 1)
+        .addReactant(DestroyMolecules.WATER, 4, 1)
+        .addReactant(DestroyMolecules.TETRAHYDROXY_TETRABORATE)
+        .withResult(15f, PrecipitateReactionResult.of(DestroyItems.BORAX::asStack))
+        .build(),
+
+    BORIC_ACID_NEUTRALIZATION = builder()
+        .id("boric_acid_neutralization")
+        .addReactant(DestroyMolecules.BORIC_ACID)
+        .addReactant(DestroyMolecules.HYDROXIDE)
+        .addProduct(DestroyMolecules.TETRAHYDROXYBORATE)
+        .reversible()
         .build(),
 
     BUTADIENE_CARBONYLATION = builder()
@@ -300,20 +333,13 @@ public class DestroyReactions {
     //TODO possible cyclopentanone/cyclopentadiene interconversion
     //TODO cyclopentanone synthesis from adipic acid
 
-    BASIC_DIELS_ALDER_REACTION = builder()
-        .id("basic_diels_alder_reaction")
-        .addReactant(DestroyMolecules.BUTADIENE)
-        .addReactant(DestroyMolecules.ETHENE)
-        .addProduct(DestroyMolecules.CYCLOHEXENE)
-        .build(),
-
     CHROMATE_CONVERSION = builder()
         .id("chromate_conversion")
         .addReactant(DestroyMolecules.CHROMATE, 2, 1)
         .addReactant(DestroyMolecules.PROTON, 2, 1)
         .addProduct(DestroyMolecules.DICHROMATE)
         .addProduct(DestroyMolecules.WATER)
-        .reverseReaction(r -> {})
+        .reversible()
         .build(),
 
     COPPER_DISSOLUTION = builder() //TODO replace with redox
@@ -831,6 +857,15 @@ public class DestroyReactions {
         .addReactant(DestroyMolecules.HYDROGEN_PEROXIDE)
         .addCatalyst(DestroyMolecules.PROTON, 1)
         .withResult(3f, PrecipitateReactionResult.of(DestroyItems.ACETONE_PEROXIDE::asStack))
+        .build(),
+
+    TETRABORATE_EQUILIBRIUM = builder()
+        .id("tetraborate_equilibrium")
+        .addReactant(DestroyMolecules.BORIC_ACID, 2, 1)
+        .addReactant(DestroyMolecules.TETRAHYDROXYBORATE, 2, 1)
+        .addProduct(DestroyMolecules.TETRAHYDROXY_TETRABORATE)
+        .addProduct(DestroyMolecules.WATER, 5)
+        .reverseReaction(r -> r.setOrder(DestroyMolecules.WATER, 1))
         .build(),
 
     TETRAETHYLLEAD_SYNTHESIS = builder()

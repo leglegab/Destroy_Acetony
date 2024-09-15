@@ -14,6 +14,7 @@ import com.petrolpark.destroy.block.renderer.CentrifugeRenderer;
 import com.petrolpark.destroy.block.renderer.CoolerRenderer;
 import com.petrolpark.destroy.block.renderer.CustomExplosiveMixRenderer;
 import com.petrolpark.destroy.block.renderer.DynamoRenderer;
+import com.petrolpark.destroy.block.renderer.ElementTankRenderer;
 import com.petrolpark.destroy.block.renderer.KeypunchRenderer;
 import com.petrolpark.destroy.block.renderer.MechanicalSieveRenderer;
 import com.petrolpark.destroy.block.renderer.PollutometerRenderer;
@@ -91,6 +92,12 @@ public class DestroyBlockEntityTypes {
         .instance(() -> DynamoCogInstance::new)
         .validBlocks(DestroyBlocks.DYNAMO)
         .renderer(() -> DynamoRenderer::new)
+        .register();
+    
+    public static final BlockEntityEntry<ElementTankBlockEntity> ELEMENT_TANK = REGISTRATE
+        .blockEntity("element_tank", ElementTankBlockEntity::new)
+        .validBlocks(DestroyBlocks.ELEMENT_TANK)
+        .renderer(() -> ElementTankRenderer::new)
         .register();
 
     public static final BlockEntityEntry<ExtrusionDieBlockEntity> EXTRUSION_DIE = REGISTRATE

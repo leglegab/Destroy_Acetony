@@ -16,7 +16,7 @@ import net.minecraftforge.fluids.FluidStack;
 
 public abstract class MixtureFluidIngredient<T extends MixtureFluidIngredient<T>> extends FluidIngredient {
 
-    public static Map<String, MixtureFluidIngredientSubType<?>> MIXTURE_FLUID_INGREDIENT_SUBTYPES = new HashMap<>();
+    public static final Map<String, MixtureFluidIngredientSubType<?>> MIXTURE_FLUID_INGREDIENT_SUBTYPES = new HashMap<>();
 
     static {
         registerMixtureFluidIngredientSubType(MoleculeFluidIngredient.TYPE);
@@ -24,6 +24,7 @@ public abstract class MixtureFluidIngredient<T extends MixtureFluidIngredient<T>
         registerMixtureFluidIngredientSubType(MoleculeTagFluidIngredient.TYPE);
         registerMixtureFluidIngredientSubType(RefrigerantDummyFluidIngredient.TYPE);
         registerMixtureFluidIngredientSubType(IonFluidIngredient.TYPE);
+        registerMixtureFluidIngredientSubType(PureSpeciesFluidIngredient.TYPE);
     };
 
     public static void registerMixtureFluidIngredientSubType(MixtureFluidIngredientSubType<?> ingredientType) {

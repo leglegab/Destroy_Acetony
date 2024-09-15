@@ -3,6 +3,7 @@ package com.petrolpark.destroy.item;
 import static com.petrolpark.destroy.Destroy.REGISTRATE;
 import static com.simibubi.create.AllTags.forgeItemTag;
 
+import com.petrolpark.compat.CompatMods;
 import com.petrolpark.compat.curios.CuriosSetup;
 import com.petrolpark.destroy.block.DestroyBlocks;
 import com.petrolpark.destroy.config.DestroyAllConfigs;
@@ -353,7 +354,7 @@ public class DestroyItems {
         .properties(p -> p
             .stacksTo(1)
         ).onRegister(CreateRegistrate.itemModel(() -> GasMaskModel::new))
-        .tag(DestroyItemTags.CHEMICAL_PROTECTION_HEAD.tag, DestroyItemTags.CHEMICAL_PROTECTION_EYES.tag, DestroyItemTags.CHEMICAL_PROTECTION_NOSE.tag, DestroyItemTags.CHEMICAL_PROTECTION_MOUTH.tag, DestroyItemTags.CONTAMINABLE.tag)
+        .tag(DestroyItemTags.CHEMICAL_PROTECTION_HEAD.tag, DestroyItemTags.CHEMICAL_PROTECTION_EYES.tag, DestroyItemTags.CHEMICAL_PROTECTION_NOSE.tag, DestroyItemTags.CHEMICAL_PROTECTION_MOUTH.tag, DestroyItemTags.CONTAMINABLE.tag, ItemTags.create(CompatMods.BIG_CANNONS.asResource("gas_mask")))
         .transform(CuriosSetup.renderOnHead())
         .onRegister(ChemistryProtectionHeadwearItem.goggles())
         .onRegister(ChemistryProtectionHeadwearItem.durability(() -> DestroyAllConfigs.SERVER.equipment.gasMaskDurability))

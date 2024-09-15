@@ -3,6 +3,7 @@
 	"parent": "block/block",
 	"render_type": "translucent",
 	"textures": {
+		"end": "destroy:block/element_tank_end",
 		"side": "destroy:block/borosilicate_glass",
 		"fluid": "destroy:fluid/gas",
 		"particle": "destroy:block/borosilicate_glass"
@@ -16,8 +17,8 @@
 				"east": {"uv": [0, 0, 16, 16], "texture": "#side", "tintindex": 1},
 				"south": {"uv": [0, 0, 16, 16], "texture": "#side", "tintindex": 1},
 				"west": {"uv": [0, 0, 16, 16], "texture": "#side", "tintindex": 1},
-				"up": {"uv": [0, 0, 16, 16], "texture": "#side", "tintindex": 1},
-				"down": {"uv": [0, 0, 16, 16], "texture": "#side", "tintindex": 1}
+				"up": {"uv": [0, 0, 16, 16], "texture": "#end", "tintindex": 1},
+				"down": {"uv": [0, 0, 16, 16], "texture": "#end", "tintindex": 1}
 			}
 		},
 		{

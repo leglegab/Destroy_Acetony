@@ -46,7 +46,8 @@
     "destroy:sodium_ion": {
         "generic": "destroy.chemical.sodium",
         "specifics": {
-            "destroy:chloride": "fluid.destroy.brine"
+            "destroy:chloride": "fluid.destroy.brine",
+            "destroy:tetrahydroxy_tetraborate": "destroy.chemical.borax"
         }
     } 
 }

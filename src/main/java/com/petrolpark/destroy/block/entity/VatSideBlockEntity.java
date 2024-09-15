@@ -22,7 +22,6 @@ import com.petrolpark.destroy.util.vat.Vat;
 import com.petrolpark.destroy.util.vat.VatMaterial;
 import com.simibubi.create.content.contraptions.StructureTransform;
 import com.simibubi.create.content.decoration.copycat.CopycatBlockEntity;
-import com.simibubi.create.content.equipment.goggles.IHaveGoggleInformation;
 import com.simibubi.create.content.equipment.goggles.IHaveHoveringInformation;
 import com.simibubi.create.content.fluids.FluidFX;
 import com.simibubi.create.content.fluids.FluidTransportBehaviour;
@@ -57,7 +56,7 @@ import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler.FluidAction;
 import net.minecraftforge.items.IItemHandler;
 
-public class VatSideBlockEntity extends CopycatBlockEntity implements IHaveGoggleInformation, IHaveHoveringInformation, ThresholdSwitchObservable {
+public class VatSideBlockEntity extends CopycatBlockEntity implements IHaveLabGoggleInformation, IHaveHoveringInformation, ThresholdSwitchObservable {
 
     private static final int BUFFER_TANK_CAPACITY = 1000;
 

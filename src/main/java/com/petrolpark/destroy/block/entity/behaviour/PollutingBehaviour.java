@@ -34,7 +34,7 @@ public class PollutingBehaviour extends BlockEntityBehaviour {
             fluidsToRelease.add(fluidStack);
         };
 
-        PollutionHelper.pollute(getWorld(), getPos(), fluidsToRelease.toArray(new FluidStack[0]));
+        PollutionHelper.pollute(getWorld(), getPos(), fluidsToRelease.toArray((i) -> new FluidStack[i]));
 
         super.destroy();
     };

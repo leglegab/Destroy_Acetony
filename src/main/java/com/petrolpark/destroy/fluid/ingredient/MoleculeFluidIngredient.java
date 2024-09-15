@@ -54,8 +54,8 @@ public class MoleculeFluidIngredient extends ConcentrationRangeFluidIngredient<M
 
     @Override
     protected void readInternal(JsonObject json) {
-        super.readInternal(json);
         molecule = LegacySpecies.getMolecule(GsonHelper.getAsString(json, "molecule"));
+        super.readInternal(json);
     };
 
     @Override

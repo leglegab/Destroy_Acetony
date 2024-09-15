@@ -1149,6 +1149,11 @@ public final class DestroyMolecules {
         .tag(Tags.SMOG)
         .build(),
 
+    TETRAHYDROXYBORATE = builder()
+        .id("tetrahydroxyborate")
+        .structure(LegacyMolecularStructure.deserialize("destroy:linear:OB^-1(O)(O)O"))
+        .build(),
+
     TETRAHYDROXY_TETRABORATE = builder()
         .id("tetrahydroxy_tetraborate")
         .structure(LegacyMolecularStructure.deserialize("destroy:tetraborate:O,O,O,O"))

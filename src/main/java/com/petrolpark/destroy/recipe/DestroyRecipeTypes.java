@@ -34,6 +34,7 @@ public enum DestroyRecipeTypes implements IRecipeTypeInfo {
     DISC_ELECTROPLATING(DiscElectroplatingRecipe::new),
     DISTILLATION(DistillationRecipe::new),
     ELECTROLYSIS(ElectrolysisRecipe::new),
+    ELEMENT_TANK_FILLING(ElementTankFillingRecipe::new),
     EXTRUSION(ExtrusionRecipe::new),
     GLASSBLOWING(GlassblowingRecipe::new),
     MIXTURE_CONVERSION(MixtureConversionRecipe::new),

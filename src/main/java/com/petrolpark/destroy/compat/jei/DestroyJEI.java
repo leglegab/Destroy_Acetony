@@ -23,6 +23,7 @@ import com.petrolpark.destroy.compat.jei.category.CentrifugationCategory;
 import com.petrolpark.destroy.compat.jei.category.ChargingCategory;
 import com.petrolpark.destroy.compat.jei.category.DistillationCategory;
 import com.petrolpark.destroy.compat.jei.category.ElectrolysisCategory;
+import com.petrolpark.destroy.compat.jei.category.ElementTankFillingCategory;
 import com.petrolpark.destroy.compat.jei.category.ExtrusionCategory;
 import com.petrolpark.destroy.compat.jei.category.GenericReactionCategory;
 import com.petrolpark.destroy.compat.jei.category.GlassblowingCategory;
@@ -50,6 +51,7 @@ import com.petrolpark.destroy.recipe.ChargingRecipe;
 import com.petrolpark.destroy.recipe.DestroyRecipeTypes;
 import com.petrolpark.destroy.recipe.DistillationRecipe;
 import com.petrolpark.destroy.recipe.ElectrolysisRecipe;
+import com.petrolpark.destroy.recipe.ElementTankFillingRecipe;
 import com.petrolpark.destroy.recipe.ExtendedDurationFireworkRocketRecipe;
 import com.petrolpark.destroy.recipe.ExtrusionRecipe;
 import com.petrolpark.destroy.recipe.GlassblowingRecipe;
@@ -284,7 +286,13 @@ public class DestroyJEI implements IModPlugin {
             .catalyst(AllBlocks.BASIN::get)
             .arcFurnaceIcon(() -> new ItemStack(Items.FURNACE))
             .emptyBackground(177, 85)
-            .build("arc_furnace_smelting", (info, helpers) -> new ArcFurnaceCategory(info));
+            .build("arc_furnace_smelting", (info, helpers) -> new ArcFurnaceCategory(info)),
+
+        element_tank_filling = builder(ElementTankFillingRecipe.class)
+            .addTypedRecipes(DestroyRecipeTypes.ELEMENT_TANK_FILLING)
+            .itemIcon(DestroyBlocks.ELEMENT_TANK)
+            .emptyBackground(125, 40)
+            .build("element_tank_filling", ElementTankFillingCategory::new);
 
         DestroyJEI.MOLECULE_RECIPES_NEED_PROCESSING = false;
     };

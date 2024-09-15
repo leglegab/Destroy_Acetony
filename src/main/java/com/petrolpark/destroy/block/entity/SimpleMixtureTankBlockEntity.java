@@ -9,12 +9,14 @@ import org.joml.Vector3f;
 import com.petrolpark.destroy.block.SimplePlaceableMixtureTankBlock;
 import com.petrolpark.destroy.block.entity.behaviour.fluidTankBehaviour.GeniusFluidTankBehaviour;
 import com.petrolpark.destroy.block.renderer.SimpleMixtureTankRenderer.ISimpleMixtureTankRenderInformation;
+import com.petrolpark.destroy.util.DestroyLang;
 import com.simibubi.create.foundation.blockEntity.SmartBlockEntity;
 import com.simibubi.create.foundation.blockEntity.behaviour.BlockEntityBehaviour;
 import com.simibubi.create.foundation.utility.Couple;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.common.capabilities.Capability;
@@ -22,7 +24,7 @@ import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.FluidStack;
 
-public abstract class SimpleMixtureTankBlockEntity extends SmartBlockEntity implements ISimpleMixtureTankRenderInformation<Void> {
+public abstract class SimpleMixtureTankBlockEntity extends SmartBlockEntity implements ISimpleMixtureTankRenderInformation<Void>, IHaveLabGoggleInformation {
 
     protected GeniusFluidTankBehaviour tank;
 
@@ -56,6 +58,12 @@ public abstract class SimpleMixtureTankBlockEntity extends SmartBlockEntity impl
             return tank.getCapability().cast();
         };
         return super.getCapability(cap, side);
+    };
+
+    @Override
+    public boolean addToGoggleTooltip(List<Component> tooltip, boolean isPlayerSneaking) {
+        DestroyLang.tankInfoTooltip(tooltip, DestroyLang.builder().add(getBlockState().getBlock().getName()), getTank().getPrimaryHandler());
+        return true;
     };
 
     public static class SimplePlaceableMixtureTankBlockEntity extends SimpleMixtureTankBlockEntity {

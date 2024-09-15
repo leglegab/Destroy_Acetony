@@ -37,7 +37,6 @@ import com.petrolpark.destroy.world.explosion.SmartExplosion;
 import com.simibubi.create.CreateClient;
 import com.simibubi.create.content.contraptions.ITransformableBlockEntity;
 import com.simibubi.create.content.contraptions.StructureTransform;
-import com.simibubi.create.content.equipment.goggles.IHaveGoggleInformation;
 import com.simibubi.create.content.redstone.displayLink.DisplayLinkContext;
 import com.simibubi.create.content.redstone.thresholdSwitch.ThresholdSwitchObservable;
 import com.simibubi.create.foundation.blockEntity.SmartBlockEntity;
@@ -79,7 +78,7 @@ import net.minecraftforge.fluids.capability.IFluidHandler.FluidAction;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemHandlerHelper;
 
-public class VatControllerBlockEntity extends SmartBlockEntity implements IHaveGoggleInformation, ISpecialWhenHovered, ThresholdSwitchObservable, ITransformableBlockEntity {
+public class VatControllerBlockEntity extends SmartBlockEntity implements IHaveLabGoggleInformation, ISpecialWhenHovered, ThresholdSwitchObservable, ITransformableBlockEntity {
 
     public static final float AIR_PRESSURE = 101000;
 
@@ -114,7 +113,6 @@ public class VatControllerBlockEntity extends SmartBlockEntity implements IHaveG
 
     public SmartInventory inventory;
     protected LazyOptional<IItemHandler> itemCapability;
-    protected boolean inventoryChanged;
 
     protected VatAdvancementBehaviour advancementBehaviour;
 
@@ -156,7 +154,9 @@ public class VatControllerBlockEntity extends SmartBlockEntity implements IHaveG
     protected void updateItemCapability() {
         if (itemCapability.isPresent()) return;
         inventory = new SmartInventory(9, this)
-            .whenContentsChanged(i -> setInventoryChanged());
+            .whenContentsChanged(i -> {
+                if (cachedMixture != null) cachedMixture.disturbEquilibrium();
+        });
         itemCapability = LazyOptional.of(() -> inventory);
     };
 
@@ -167,10 +167,6 @@ public class VatControllerBlockEntity extends SmartBlockEntity implements IHaveG
         } else {
             fluidCapability = LazyOptional.empty();
         };
-    };
-
-    public void setInventoryChanged() {
-        inventoryChanged = true;
     };
 
     @Override
@@ -223,15 +219,14 @@ public class VatControllerBlockEntity extends SmartBlockEntity implements IHaveG
 
             ReactionContext context = new ReactionContext(availableItemStacks, UVPower, false);
 
-            // Dissolve new Items
-            if (inventoryChanged) {
-                availableItemStacks = cachedMixture.dissolveItems(context, fluidAmount);
-                cachedMixture.disturbEquilibrium(); // Disturb the equilibrium anyway as even if an Item Stack is not dissolved, it may still be a new catalyst
-            };
-            inventory.clearContent(); // Clear all Items as they may get re-inserted
-
             // Reacting
             if (!cachedMixture.isAtEquilibrium()) {
+
+                // Dissolve new items
+                availableItemStacks = cachedMixture.dissolveItems(context, fluidAmount);
+                inventory.clearContent(); // Clear all Items as they may get re-inserted
+
+                // React
                 context = new ReactionContext(availableItemStacks, UVPower, false); // Update the context
                 cachedMixture.reactForTick(context, getSimulationLevel());
                 shouldUpdateFluidMixture = true;
@@ -243,8 +238,6 @@ public class VatControllerBlockEntity extends SmartBlockEntity implements IHaveG
             for (ItemStack itemStack : availableItemStacks) {
                 ItemHandlerHelper.insertItemStacked(inventory, itemStack, false);
             };
-
-            inventoryChanged = false;
 
             if (shouldUpdateFluidMixture) {
                 // Enact Reaction Results
@@ -303,7 +296,6 @@ public class VatControllerBlockEntity extends SmartBlockEntity implements IHaveG
 
         // Inventory
         inventory.deserializeNBT(tag.getCompound("Inventory"));
-        inventoryChanged = tag.getBoolean("InventoryChanged");
 
         // Mixture
         if (clientPacket) {
@@ -335,7 +327,6 @@ public class VatControllerBlockEntity extends SmartBlockEntity implements IHaveG
 
         // Inventory
         tag.put("Inventory", inventory.serializeNBT());
-        tag.putBoolean("InventoryChanged", inventoryChanged);
         
         // Mixture
         if (!getLevel().isClientSide()) { // It thinks getLevel() might be null (it's not)

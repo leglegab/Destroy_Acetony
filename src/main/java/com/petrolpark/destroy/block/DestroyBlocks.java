@@ -171,6 +171,21 @@ public class DestroyBlocks {
         .transform(TagGen.pickaxeOnly())
         .register();
 
+    public static final BlockEntry<ElementTankBlock> ELEMENT_TANK = REGISTRATE.block("element_tank", ElementTankBlock::new)
+        .initialProperties(SharedProperties::stone)
+        .properties(p -> p
+            .strength(4f)
+            .sound(SoundType.GLASS)
+            .noOcclusion()
+            .isValidSpawn(DestroyBlocks::never)
+            .isRedstoneConductor(DestroyBlocks::never)
+            .isSuffocating(DestroyBlocks::never)
+            .isViewBlocking(DestroyBlocks::never)
+        ).transform(TagGen.pickaxeOnly())
+        .item()
+        .build()
+        .register();
+
     public static final BlockEntry<ExtrusionDieBlock> EXTRUSION_DIE = REGISTRATE.block("extrusion_die", ExtrusionDieBlock::new)
         .initialProperties(SharedProperties::softMetal)
         .properties(p -> p

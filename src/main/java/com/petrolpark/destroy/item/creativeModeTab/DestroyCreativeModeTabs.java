@@ -35,7 +35,7 @@ public class DestroyCreativeModeTabs {
 				s("chemistry_equipment"),
 				i(DestroyBlocks.VAT_CONTROLLER), i(DestroyBlocks.STAINLESS_STEEL_BLOCK), i(DestroyBlocks.BOROSILICATE_GLASS), d(AllBlocks.FLUID_PIPE), d(AllBlocks.MECHANICAL_PUMP), d(AllBlocks.CREATIVE_FLUID_TANK), d(AllBlocks.BLAZE_BURNER), i(DestroyBlocks.COOLER), i(DestroyBlocks.BUBBLE_CAP), i(DestroyBlocks.CENTRIFUGE), i(DestroyBlocks.DYNAMO), i(DestroyBlocks.BLACKLIGHT), i(DestroyBlocks.COLORIMETER),  i(DestroyBlocks.CATALYTIC_CONVERTER), i(DestroyBlocks.BEAKER), i(DestroyItems.TEST_TUBE), i(DestroyBlocks.TEST_TUBE_RACK), i(DestroyBlocks.MEASURING_CYLINDER), i(DestroyBlocks.ROUND_BOTTOMED_FLASK), i(DestroyItems.PAPER_MASK), i(DestroyItems.LABORATORY_GOGGLES), i(DestroyItems.GAS_MASK), i(DestroyItems.HAZMAT_SUIT), i(DestroyItems.HAZMAT_LEGGINGS), i(DestroyItems.WELLINGTON_BOOTS),
 
-				s("common_chemicals"),
+				//s("common_chemicals"),
 				//TODO
 
 				s("processing"),
@@ -82,7 +82,9 @@ public class DestroyCreativeModeTabs {
 				n(), i(DestroyItems.NICKEL_INFUSED_BEETROOT_ASHES), i(DestroyItems.REDSTONE_INFUSED_BEETROOT_ASHES), i(DestroyItems.ZINC_INFUSED_BEETROOT_ASHES),
 
 				s("periodic_table_blocks"),
-				i(DestroyBlocks.HYDROGEN_PERIODIC_TABLE_BLOCK), i(DestroyBlocks.CARBON_PERIODIC_TABLE_BLOCK), i(DestroyBlocks.NITROGEN_PERIODIC_TABLE_BLOCK), i(DestroyBlocks.OXYGEN_PERIODIC_TABLE_BLOCK), i(DestroyBlocks.FLUORINE_PERIODIC_TABLE_BLOCK), i(DestroyBlocks.CHLORINE_PERIODIC_TABLE_BLOCK), i(DestroyBlocks.CHROMIUM_PERIODIC_TABLE_BLOCK), i(DestroyBlocks.IRON_PERIODIC_TABLE_BLOCK), i(DestroyBlocks.NICKEL_PERIODIC_TABLE_BLOCK), i(DestroyBlocks.COPPER_PERIODIC_TABLE_BLOCK), i(DestroyBlocks.ZINC_PERIODIC_TABLE_BLOCK), i(DestroyBlocks.RHODIUM_PERIODIC_TABLE_BLOCK), i(DestroyBlocks.PALLADIUM_PERIODIC_TABLE_BLOCK), i(DestroyBlocks.IODINE_PERIODIC_TABLE_BLOCK), i(DestroyBlocks.PLATINUM_PERIODIC_TABLE_BLOCK), i(DestroyBlocks.GOLD_PERIODIC_TABLE_BLOCK), i(DestroyBlocks.MERCURY_PERIODIC_TABLE_BLOCK), i(DestroyBlocks.LEAD_PERIODIC_TABLE_BLOCK),
+				i(DestroyBlocks.ELEMENT_TANK), i(DestroyBlocks.HYDROGEN_PERIODIC_TABLE_BLOCK), i(DestroyBlocks.CARBON_PERIODIC_TABLE_BLOCK), i(DestroyBlocks.NITROGEN_PERIODIC_TABLE_BLOCK), i(DestroyBlocks.OXYGEN_PERIODIC_TABLE_BLOCK),
+				//i(DestroyBlocks.FLUORINE_PERIODIC_TABLE_BLOCK),
+				i(DestroyBlocks.CHLORINE_PERIODIC_TABLE_BLOCK), i(DestroyBlocks.CHROMIUM_PERIODIC_TABLE_BLOCK), i(DestroyBlocks.IRON_PERIODIC_TABLE_BLOCK), i(DestroyBlocks.NICKEL_PERIODIC_TABLE_BLOCK), i(DestroyBlocks.COPPER_PERIODIC_TABLE_BLOCK), i(DestroyBlocks.ZINC_PERIODIC_TABLE_BLOCK), i(DestroyBlocks.RHODIUM_PERIODIC_TABLE_BLOCK), i(DestroyBlocks.PALLADIUM_PERIODIC_TABLE_BLOCK), i(DestroyBlocks.IODINE_PERIODIC_TABLE_BLOCK), i(DestroyBlocks.PLATINUM_PERIODIC_TABLE_BLOCK), i(DestroyBlocks.GOLD_PERIODIC_TABLE_BLOCK), i(DestroyBlocks.MERCURY_PERIODIC_TABLE_BLOCK), i(DestroyBlocks.LEAD_PERIODIC_TABLE_BLOCK),
 				
 				s("misc"),
 				i(DestroyItems.BLANK_MUSIC_DISC), i(DestroyItems.MUSIC_DISC_SPECTRUM), i(DestroyItems.CIRCUIT_MASK), i(DestroyItems.RUINED_CIRCUIT_MASK), i(DestroyItems.CIRCUIT_BOARD), i(DestroyItems.RUINED_CIRCUIT_BOARD), i(DestroyItems.MESH), i(DestroyItems.GAS_FILTER), i(DestroyItems.SWISS_ARMY_KNIFE), i(DestroyItems.BUCKET_AND_SPADE), i(DestroyItems.VOLTAIC_PILE), i(DestroyItems.DISCHARGED_VOLTAIC_PILE), i(DestroyItems.PAPER_PULP), i(DestroyItems.TEAR_BOTTLE), i(DestroyItems.URINE_BOTTLE), i(DestroyItems.YEAST)

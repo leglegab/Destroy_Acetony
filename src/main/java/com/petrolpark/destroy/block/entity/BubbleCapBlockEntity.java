@@ -22,7 +22,6 @@ import com.petrolpark.destroy.sound.DestroySoundEvents;
 import com.petrolpark.destroy.util.DestroyLang;
 import com.petrolpark.destroy.util.DistillationTower;
 import com.petrolpark.destroy.util.DestroyLang.TemperatureUnit;
-import com.simibubi.create.content.equipment.goggles.IHaveGoggleInformation;
 import com.simibubi.create.content.redstone.displayLink.DisplayLinkContext;
 import com.simibubi.create.foundation.blockEntity.SmartBlockEntity;
 import com.simibubi.create.foundation.blockEntity.behaviour.BlockEntityBehaviour;
@@ -49,7 +48,7 @@ import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler.FluidAction;
 
-public class BubbleCapBlockEntity extends SmartBlockEntity implements IHaveGoggleInformation, IDirectionalOutputFluidBlockEntity {
+public class BubbleCapBlockEntity extends SmartBlockEntity implements IHaveLabGoggleInformation, IDirectionalOutputFluidBlockEntity {
 
     private static final DecimalFormat df = new DecimalFormat();
     static {

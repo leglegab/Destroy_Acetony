@@ -40,7 +40,14 @@ public class DestroyTagDatagen {
 
         // Destroy Tags
         prov.tag(DestroyItemTags.CHEMICAL_PROTECTION_EYES.tag)
-            .add(AllItems.GOGGLES.get());
+            .add(AllItems.GOGGLES.get())
+            .addOptionalTag(CompatMods.BIG_CANNONS.asResource("gas_mask"));
+        prov.tag(DestroyItemTags.CHEMICAL_PROTECTION_HEAD.tag)
+            .addOptionalTag(CompatMods.BIG_CANNONS.asResource("gas_mask"));
+        prov.tag(DestroyItemTags.CHEMICAL_PROTECTION_NOSE.tag)
+            .addOptionalTag(CompatMods.BIG_CANNONS.asResource("gas_mask"));
+        prov.tag(DestroyItemTags.CHEMICAL_PROTECTION_MOUTH.tag)
+            .addOptionalTag(CompatMods.BIG_CANNONS.asResource("gas_mask"));
         prov.tag(DestroyItemTags.EYES.tag)
             .add(Items.SPIDER_EYE, Items.ENDER_EYE);
         prov.tag(DestroyItemTags.FERTILIZERS.tag)

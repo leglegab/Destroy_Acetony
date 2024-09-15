@@ -1,0 +1,20 @@
+{
+    "type": "minecraft:crafting_shaped",
+    "pattern": [
+      "GPG",
+      "G G",
+      "GGG"
+    ],
+    "key": {
+      "P": {
+        "tag": "forge:plates/stainless_steel"
+      },
+      "B": {
+        "item": "destroy:borosilicate_glass"
+      }
+    },
+    "result": {
+      "item": "destroy:element_tank",
+      "count": 1
+    }
+  }

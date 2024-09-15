@@ -453,7 +453,7 @@ public class ChemistryScenes {
     };
 
     public static final void vatReading(SceneBuilder scene, SceneBuildingUtil util) {
-        scene.title("vat.monitoring", "This text is defined in a language file.");
+        scene.title("vat.reading", "This text is defined in a language file.");
     };
 
     public static final void colorimeter(SceneBuilder scene, SceneBuildingUtil util) {
