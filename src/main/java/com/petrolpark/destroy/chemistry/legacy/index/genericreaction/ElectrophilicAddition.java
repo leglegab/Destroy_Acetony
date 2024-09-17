@@ -44,8 +44,8 @@ public abstract class ElectrophilicAddition extends SingleGroupGenericReaction<S
         ).build();
 
         ReactionBuilder builder = reactionBuilder()
-            .addReactant(substrate)
-            .addProduct(product)
+            .addReactant(substrate, getNucleophileRatio(), 1)
+            .addProduct(product, getNucleophileRatio())
             .activationEnergy(isForAlkynes ? 10f : 25f);
         LegacySpecies electrophile = getElectrophile();
         if (electrophile != null) builder.addReactant(electrophile);
@@ -69,6 +69,13 @@ public abstract class ElectrophilicAddition extends SingleGroupGenericReaction<S
      * @return {@code null} to not add a species to the generated Reaction or Reaction requirements
      */
     public abstract LegacySpecies getElectrophile();
+
+    /**
+     * The ratio of nucleophile/product to {@link ElectrophilicAddition#getElectrophile() electrophile}.
+     */
+    public int getNucleophileRatio() {
+        return 1;
+    };
 
     /**
      * Add any other necessary products, reactants, catalysts and rate constants to the Reaction.

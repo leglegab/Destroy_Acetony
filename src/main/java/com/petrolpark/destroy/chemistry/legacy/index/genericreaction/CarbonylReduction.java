@@ -20,7 +20,7 @@ public class CarbonylReduction extends SingleGroupGenericReaction<CarbonylGroup>
 
     @Override
     public boolean isPossibleIn(ReadOnlyMixture mixture) {
-        return true; // TODO check for actual oxidant once Magic Reductant is removed
+        return true; // TODO check for actual reductant once Magic Reductant is removed
     };
 
     @Override

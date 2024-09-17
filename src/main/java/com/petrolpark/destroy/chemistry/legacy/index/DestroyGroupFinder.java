@@ -15,6 +15,7 @@ import com.petrolpark.destroy.chemistry.legacy.index.group.AcylChlorideGroup;
 import com.petrolpark.destroy.chemistry.legacy.index.group.AlcoholGroup;
 import com.petrolpark.destroy.chemistry.legacy.index.group.AlkeneGroup;
 import com.petrolpark.destroy.chemistry.legacy.index.group.AlkyneGroup;
+import com.petrolpark.destroy.chemistry.legacy.index.group.BoraneGroup;
 import com.petrolpark.destroy.chemistry.legacy.index.group.CarbonylGroup;
 import com.petrolpark.destroy.chemistry.legacy.index.group.CarboxylicAcidGroup;
 import com.petrolpark.destroy.chemistry.legacy.index.group.EsterGroup;
@@ -23,6 +24,7 @@ import com.petrolpark.destroy.chemistry.legacy.index.group.IsocyanateGroup;
 import com.petrolpark.destroy.chemistry.legacy.index.group.NitrileGroup;
 import com.petrolpark.destroy.chemistry.legacy.index.group.NitroGroup;
 import com.petrolpark.destroy.chemistry.legacy.index.group.NonTertiaryAmineGroup;
+import com.petrolpark.destroy.chemistry.legacy.index.group.NonTertiaryBoraneGroup;
 import com.petrolpark.destroy.chemistry.legacy.index.group.PrimaryAmineGroup;
 import com.petrolpark.destroy.chemistry.legacy.index.group.UnsubstitutedAmideGroup;
 
@@ -49,6 +51,7 @@ public class DestroyGroupFinder extends GroupFinder {
             List<LegacyAtom> halogens = new ArrayList<>(chlorines);
             halogens.addAll(bondedAtomsOfElementTo(structure, carbon, LegacyElement.IODINE, BondType.SINGLE));
             List<LegacyAtom> nitrogens = bondedAtomsOfElementTo(structure, carbon, LegacyElement.NITROGEN, BondType.SINGLE);
+            List<LegacyAtom> borons = bondedAtomsOfElementTo(structure, carbon, LegacyElement.BORON, BondType.SINGLE);
             List<LegacyAtom> hydrogens = bondedAtomsOfElementTo(structure, carbon, LegacyElement.HYDROGEN, BondType.SINGLE);
             List<LegacyAtom> carbons = bondedAtomsOfElementTo(structure, carbon, LegacyElement.CARBON, BondType.SINGLE);
             List<LegacyAtom> alkeneCarbons = bondedAtomsOfElementTo(structure, carbon, LegacyElement.CARBON, BondType.DOUBLE);
@@ -95,7 +98,7 @@ public class DestroyGroupFinder extends GroupFinder {
                         };
                      }
                 };
-            } else { // Alcohols, halides, nitriles, amines, isocyanates, nitros
+            } else { // Alcohols, halides, nitriles, amines, isocyanates, nitros, boranes
                 for (LegacyAtom halogen : halogens) {
                     groups.add(new HalideGroup(carbon, halogen, carbons.size()));
                 };
@@ -123,10 +126,17 @@ public class DestroyGroupFinder extends GroupFinder {
                     };
 
                 };
-
                 // Nitriles
                 if (nitrileNitrogens.size() == 1 && carbons.size() == 1) {
                     groups.add(new NitrileGroup(carbon, nitrileNitrogens.get(0)));
+                };
+                // Boranes
+                for (LegacyAtom boron : borons) { 
+                    List<LegacyAtom> boraneHydrogens = bondedAtomsOfElementTo(structure, boron, LegacyElement.HYDROGEN);
+                    for (LegacyAtom boraneHydrogen : boraneHydrogens) {
+                        groups.add(new NonTertiaryBoraneGroup(carbon, boron, boraneHydrogen));
+                    };
+                    groups.add(new BoraneGroup(carbon, boron));
                 };
             };
 

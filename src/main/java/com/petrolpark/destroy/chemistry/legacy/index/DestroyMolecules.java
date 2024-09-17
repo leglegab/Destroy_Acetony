@@ -544,6 +544,20 @@ public final class DestroyMolecules {
         .translationKey("amine")
         .build(),
 
+    GENERIC_BORANE = builder()
+        .id("generic_borane")
+        .structure(LegacyMolecularStructure.deserialize("destroy:linear:RC(R)(R)B(R)R"))
+        .hypothetical()
+        .translationKey("organic_borane")
+        .build(),
+
+    GENERIC_BORATE_ESTER = builder()
+        .id("generic_borate_ester")
+        .structure(LegacyMolecularStructure.deserialize("destroy:linear:RC(R)(R)OB(R)R"))
+        .hypothetical()
+        .translationKey("borate_ester")
+        .build(),
+
     GENERIC_CARBONYL = builder()
         .id("generic_carbonyl")
         .structure(LegacyMolecularStructure.deserialize("destroy:linear:RC=(R)O"))
@@ -598,6 +612,13 @@ public final class DestroyMolecules {
         .structure(LegacyMolecularStructure.deserialize("destroy:linear:RC(R)(R)N"))
         .hypothetical()
         .translationKey("non_tertiary_amine")
+        .build(),
+
+    GENERIC_PRIMARY_BORANE = builder()
+        .id("generic_primary_borane")
+        .structure(LegacyMolecularStructure.deserialize("destroy:linear:RC(R)(R)B"))
+        .hypothetical()
+        .translationKey("non_tertiary_borane")
         .build(),
 
     GLYCEROL = builder()

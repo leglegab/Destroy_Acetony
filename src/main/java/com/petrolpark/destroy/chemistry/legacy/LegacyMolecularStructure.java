@@ -2,8 +2,10 @@ package com.petrolpark.destroy.chemistry.legacy;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -236,7 +238,7 @@ public class LegacyMolecularStructure implements Cloneable {
      * Adds a singly-{@link LegacyBond bonded} sub-Formula to the {@link LegacyMolecularStructure#currentAtom current} {@link LegacyAtom}.
      * @param group The sub-Formula to add
      * @param isSideGroup Whether to stay on the current Atom to which the sub-Formula is being added,
-     * or move to the current Atom of the sub-Formula (defaults to {@code true} if not supplied)
+     * rather than move to the current Atom of the sub-Formula (defaults to {@code true} if not supplied)
      * @return This Formula
      * @see LegacyMolecularStructure#startingAtom How sub-Formulae are added
      * @see LegacyMolecularStructure#addGroup(LegacyMolecularStructure, Boolean, BondType) Adding a non-single Bond
@@ -437,6 +439,140 @@ public class LegacyMolecularStructure implements Cloneable {
             };
         };
         throw new FormulaModificationException(this, "Cannot modify bond between two Atoms if they do not already have a Bond");
+    };
+
+    public LegacyMolecularStructure insertBridgingAtom(LegacyAtom atom1, LegacyAtom atom2, LegacyAtom bridgeAtom) {
+        if (!structure.containsKey(atom1) || !structure.containsKey(atom2)) throw new FormulaModificationException(this, "Cannot add a bridging Atom between two Atoms not in this structure.");
+        if (structure.containsKey(bridgeAtom)) throw new FormulaModificationException(this, "Bridging Atom cannot already exist in the Molecular Structure.");
+        LegacyBond bridgeBond = null;
+        for (LegacyBond bond : structure.get(atom1)) if (bond.getDestinationAtom() == atom2) {
+            bridgeBond = bond;
+            break;
+        };
+        if (bridgeBond == null) throw new FormulaModificationException(this, "Atoms to Bridge must be connected");
+        boolean firstAtomCyclic = false, secondAtomCyclic = false;
+        for (Pair<Vec3, LegacyAtom> cyclicAtom : topology.atomsAndLocations) {
+            firstAtomCyclic |= cyclicAtom.getSecond() == atom1;
+            secondAtomCyclic |= cyclicAtom.getSecond() == atom2;
+            if (firstAtomCyclic && secondAtomCyclic) throw new FormulaModificationException(this, "Cannot add Bridging Atom between two Atoms part of the cycle in a cyclic Molecular Structure");
+        };
+
+        structure.get(atom1).remove(bridgeBond);
+        structure.get(atom2).removeIf(b -> b.getDestinationAtom() == atom1);
+        addAtomToStructure(structure, atom1, bridgeAtom, bridgeBond.getType());
+        addBondBetweenAtoms(structure, atom2, bridgeAtom, bridgeBond.getType());
+
+        updateSideChainStructures();
+
+        return this;
+    };
+
+    /**
+     * Break the Bond between the {@link LegacyMolecularStructure#currentAtom current} {@link LegacyAtom} and the given one.
+     * This method mutates this fragment, as well as returning a <em>new</em> one (read: the return value will not necessarily be {@code this}).
+     * @param otherAtom
+     * @return The other half. If a ring was broken, then the return value will be {@code this}. No guarantee is made about which fragment ({@code this}, or the return value) contains the original {@link LegacyMolecularStructure#currentAtom current Atom}.
+     */
+    public LegacyMolecularStructure cleaveBondTo(LegacyAtom otherAtom) {
+        
+        // Remove the Bond
+        LegacyBond bondCleaved = structure.get(currentAtom).stream().filter(b -> b.getDestinationAtom() == otherAtom).findFirst().orElseThrow(() -> new FormulaModificationException(this, "Cannot cleave Bond between two unconnected Atoms."));
+        structure.get(currentAtom).remove(bondCleaved);
+        structure.get(otherAtom).removeIf(b -> b.getDestinationAtom() == currentAtom);
+    
+        // Traverse fitst fragment
+        Set<LegacyAtom> visited = new HashSet<>(structure.size());
+        Set<LegacyAtom> visitedTwice = new HashSet<>(structure.size());
+        List<LegacyAtom> toVisit = new ArrayList<>(structure.size());
+        boolean cycleInFirstFragment = false;
+        toVisit.add(currentAtom);
+        while (!toVisit.isEmpty()) {
+            LegacyAtom atom = toVisit.get(0);
+            toVisit.remove(atom);
+            visited.add(atom);
+            checkConnected: for (LegacyBond bond : structure.get(atom)) {
+                LegacyAtom connectedAtom = bond.getDestinationAtom();
+                if (visited.contains(connectedAtom)) {
+                    visitedTwice.add(connectedAtom);
+                    continue checkConnected;
+                };
+                if (visitedTwice.contains(connectedAtom) || toVisit.contains(connectedAtom)) {
+                    cycleInFirstFragment = true; // If an Atom is visited more than twice, we have a cycle
+                } else {
+                    toVisit.add(connectedAtom);
+                };
+            };
+        };
+
+        if (visited.contains(otherAtom)) { // If we reached the other Atom of the cleaved bond, thus having broken a ring
+            if (!cycleInFirstFragment) { // If we are still left with a single structure
+                topology = Topology.LINEAR;
+                sideChains = Collections.emptyList();
+                return this;
+            } else { // If we have a cycle remaining but still ended up reaching the other Atom, we broke a different cycle so the Topology has changed unreconcilably
+                throw new FormulaModificationException(this, "Can only break bonds in simple rings, not polycyclic compounds.");
+            }
+        } else { // If we made two distinct fragments
+
+            Set<LegacyAtom> firstFragmentAtoms = new HashSet<>(visited);
+
+            // Traverse the other fragment
+            visited.clear(); // Now will contain all Atoms in the second fragment
+            visitedTwice.clear();
+            toVisit.clear();
+            boolean cycleInSecondFragment = false;
+            toVisit.add(otherAtom);
+            while (!toVisit.isEmpty()) {
+                LegacyAtom atom = toVisit.get(0);
+                toVisit.remove(atom);
+                visited.add(atom);
+                checkConnected: for (LegacyBond bond : structure.get(atom)) {
+                    LegacyAtom connectedAtom = bond.getDestinationAtom();
+                    if (visited.contains(connectedAtom)) {
+                        visitedTwice.add(connectedAtom);
+                        continue checkConnected;
+                    };
+                    if (visitedTwice.contains(connectedAtom) || toVisit.contains(connectedAtom)) {
+                        cycleInSecondFragment = true; // If an Atom is visited more than twice, we have a cycle
+                    } else {
+                        toVisit.add(connectedAtom);
+                    };
+                };
+            };
+
+            LegacyMolecularStructure fragment;
+
+            if (cycleInSecondFragment) {
+                if (cycleInFirstFragment) { // Both fragments have rings
+                    throw new FormulaModificationException(this, "Cannot cleave bonds connecting two or more rings.");
+                } else { // Only the second fragment has a ring
+                    fragment = shallowCopy().removeAllWithoutChecks(visited);
+                    removeAllWithoutChecks(firstFragmentAtoms);
+                    fragment.startingAtom = fragment.currentAtom = currentAtom;
+                    startingAtom = currentAtom = otherAtom;
+                };
+            } else { // Only the first, or neither fragments have a ring
+                fragment = shallowCopy().removeAllWithoutChecks(firstFragmentAtoms);
+                removeAllWithoutChecks(visited);
+                fragment.startingAtom = fragment.currentAtom = otherAtom;
+            };
+
+            fragment.topology = Topology.LINEAR;
+            fragment.sideChains.clear();
+
+            return fragment;
+        }
+    };
+
+    /**
+     * Removes all {@link LegacyAtom}s given. This does not check for other {@link LegacyAtom}s {@link LegacyBond bonded} to the removed one, nor for the Topology of this structure. You should do that.
+     * @param toRemove
+     * @return This Molecular Structure
+     */
+    private LegacyMolecularStructure removeAllWithoutChecks(Collection<LegacyAtom> toRemove) {
+        for (LegacyAtom atom : toRemove) structure.remove(atom);
+        optimumFROWNSCode = null;
+        return this;
     };
 
     /**

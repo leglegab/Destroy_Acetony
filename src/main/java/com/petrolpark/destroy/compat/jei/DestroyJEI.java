@@ -255,7 +255,7 @@ public class DestroyJEI implements IModPlugin {
 
         glassblowing = builder(GlassblowingRecipe.class)
             .addTypedRecipes(DestroyRecipeTypes.GLASSBLOWING)
-            .reactionCatalysts()
+            .catalyst(DestroyBlocks.BLOWPIPE::get)
             .itemIcon(DestroyBlocks.BLOWPIPE)
             .emptyBackground(125, 50)
             .build("glassblowing", GlassblowingCategory::new),

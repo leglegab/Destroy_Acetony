@@ -182,6 +182,9 @@ dependencies {
     // Petrolpark Library (temporary)
     implementation "com.petrolpark:petrolpark:${minecraft_version}-${petrolpark_library_version}"
 
+    // CDK
+    implementation "org.openscience.cdk:cdk-bundle:2.9"
+
     // OPTIONAL DEPENDENCIES
 
     // JEI

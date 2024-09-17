@@ -436,12 +436,13 @@ public class DestroyReactions {
     GOLD_DISSOLUTION = builder()
         .id("gold_dissolution")
         .addSimpleItemReactant(() -> Items.GOLDEN_CARROT, 10f)
-        .addReactant(DestroyMolecules.NITRIC_ACID)
-        .addReactant(DestroyMolecules.HYDROCHLORIC_ACID, 4, 1)
+        .addReactant(DestroyMolecules.NITRATE, 3, 1)
+        .addReactant(DestroyMolecules.CHLORIDE, 4, 1)
+        .addReactant(DestroyMolecules.PROTON, 6, 2)
         .addProduct(DestroyMolecules.CHLOROAURATE)
-        .addProduct(DestroyMolecules.PROTON)
         .addProduct(DestroyMolecules.WATER, 3)
         .addProduct(DestroyMolecules.NITROGEN_DIOXIDE, 3)
+        .preexponentialFactor(1000f)
         .build(),
 
     HABER_PROCESS = builder()
@@ -484,13 +485,13 @@ public class DestroyReactions {
         .addReactant(DestroyMolecules.HYDROXIDE)
         .addReactant(DestroyMolecules.PROTON)
         .addProduct(DestroyMolecules.WATER)
-        .activationEnergy(0f)
-        .preexponentialFactor(6.5e4f) //TODO fiddle with values because currently Water is the most acidic substance in the mod
-        .enthalpyChange(-52.014f)
+        .activationEnergy(0f)// Assume diffusion limited; temperature-independent
+        .preexponentialFactor(1.3e8f) //TODO fiddle with values because currently Water is the most acidic substance in the mod
+        .enthalpyChange(-55.3745f)
         .reverseReaction(reaction -> reaction
-            .activationEnergy(52.014f)
-            .preexponentialFactor(519.5f)
-            .setOrder(DestroyMolecules.WATER, 2)
+            .activationEnergy(55.3745f)
+            .preexponentialFactor(6.641220309e3f) // Two Arrhenius constants need to divide to 5.108631007
+            .setOrder(DestroyMolecules.WATER, 0)
         ).build(),
 
     HYPOCHLORITE_FORMATION = builder()
@@ -590,12 +591,13 @@ public class DestroyReactions {
     MERCURY_FULMINATION = builder()
         .id("mercury_fulmination")
         .addReactant(DestroyMolecules.MERCURY, 3, 1)
-        .addReactant(DestroyMolecules.NITRIC_ACID, 12, 2)
+        .addReactant(DestroyMolecules.NITRATE, 12, 2)
         .addReactant(DestroyMolecules.ETHANOL, 4, 1)
         .addProduct(DestroyMolecules.CARBON_DIOXIDE, 2)
-        .addProduct(DestroyMolecules.WATER, 18)
+        .addProduct(DestroyMolecules.HYDROXIDE, 12)
+        .addProduct(DestroyMolecules.WATER, 6)
         .addProduct(DestroyMolecules.NITROGEN_DIOXIDE, 6)
-        .withResult(1f, PrecipitateReactionResult.of(DestroyItems.FULMINATED_MERCURY::asStack))
+        .withResult(5f, PrecipitateReactionResult.of(DestroyItems.FULMINATED_MERCURY::asStack))
         .build(),
 
     METAXYLENE_TRANSALKYLATION = builder()
@@ -661,9 +663,10 @@ public class DestroyReactions {
     NITRONIUM_FORMATION = builder()
         .id("nitronium_formation")
         .addReactant(DestroyMolecules.NITRIC_ACID)
-        .addReactant(DestroyMolecules.SULFURIC_ACID)
+        .addReactant(DestroyMolecules.SULFATE)
+        .addReactant(DestroyMolecules.PROTON)
         .addProduct(DestroyMolecules.NITRONIUM)
-        .addProduct(DestroyMolecules.WATER)
+        .addProduct(DestroyMolecules.HYDROXIDE)
         .addProduct(DestroyMolecules.HYDROGENSULFATE)
         .build(), //TODO make reversible
 

@@ -76,13 +76,13 @@ import net.minecraftforge.fluids.capability.templates.FluidTank;
 
 public class ProcessingScenes {
     
-    private static final FluidStack purpleFluid, blueFluid, redFluid;
+    public static final FluidStack PURPLE_FLUID, BLUE_FLUID, RED_FLUID;
 
     // Define coloured Fluids
     static {
-        purpleFluid = new FluidStack(PotionFluid.withEffects(1000, Potions.TURTLE_MASTER, List.of()), 1000);
-        blueFluid = new FluidStack(PotionFluid.withEffects(500, Potions.AWKWARD, List.of()), 1000);
-        redFluid = new FluidStack(PotionFluid.withEffects(500, Potions.HEALING, List.of()), 1000);
+        PURPLE_FLUID = new FluidStack(PotionFluid.withEffects(1000, Potions.TURTLE_MASTER, List.of()), 1000);
+        BLUE_FLUID = new FluidStack(PotionFluid.withEffects(500, Potions.AWKWARD, List.of()), 1000);
+        RED_FLUID = new FluidStack(PotionFluid.withEffects(500, Potions.HEALING, List.of()), 1000);
     };
 
     private static FluidStack clearMixture(int amount) {
@@ -193,7 +193,7 @@ public class ProcessingScenes {
 
         // Pre-fill the input Tank
         scene.world.modifyBlockEntity(util.grid.at(2, 5, 3), FluidTankBlockEntity.class, be -> {
-            be.getTankInventory().fill(purpleFluid, FluidAction.EXECUTE);
+            be.getTankInventory().fill(PURPLE_FLUID, FluidAction.EXECUTE);
         });
         // Ensure the Centrifuge faces the right way
         scene.world.modifyBlockEntity(centrifuge, CentrifugeBlockEntity.class, be -> {
@@ -218,14 +218,14 @@ public class ProcessingScenes {
             be.getInputTank().drain(4000, FluidAction.EXECUTE);
             be.sendData();
         });
-        scene.world.modifyBlockEntity(centrifuge, CentrifugeBlockEntity.class, be -> be.getDenseOutputTank().fill(blueFluid, FluidAction.EXECUTE));
+        scene.world.modifyBlockEntity(centrifuge, CentrifugeBlockEntity.class, be -> be.getDenseOutputTank().fill(BLUE_FLUID, FluidAction.EXECUTE));
         scene.world.propagatePipeChange(denseOutputPump);
         scene.overlay.showText(100)
             .text("This text is defined in a language file.")
             .pointAt(util.vector.blockSurface(denseOutputPump, Direction.EAST))
             .attachKeyFrame();
         scene.idle(120);
-        scene.world.modifyBlockEntity(centrifuge, CentrifugeBlockEntity.class, be -> be.getLightOutputTank().fill(redFluid, FluidAction.EXECUTE));
+        scene.world.modifyBlockEntity(centrifuge, CentrifugeBlockEntity.class, be -> be.getLightOutputTank().fill(RED_FLUID, FluidAction.EXECUTE));
         scene.world.propagatePipeChange(lightOutputPump);
         scene.overlay.showText(100)
             .text("This text is defined in a language file.")
@@ -268,11 +268,11 @@ public class ProcessingScenes {
         BlockPos bottomBubbleCap = util.grid.at(2, 1, 1);
         BlockPos middleBubbleCap = util.grid.at(2, 2, 1);
 
-        GasParticleData particleData = new GasParticleData(DestroyParticleTypes.DISTILLATION.get(), purpleFluid, 1.7f);
+        GasParticleData particleData = new GasParticleData(DestroyParticleTypes.DISTILLATION.get(), PURPLE_FLUID, 1.7f);
 
         // Pre-fill the input Tank
         scene.world.modifyBlockEntity(util.grid.at(2, 1, 3), FluidTankBlockEntity.class, be -> {
-            be.getTankInventory().fill(purpleFluid, FluidAction.EXECUTE);
+            be.getTankInventory().fill(PURPLE_FLUID, FluidAction.EXECUTE);
         });
 
         scene.world.showSection(util.select.fromTo(0, 0, 0, 4, 0, 4), Direction.UP);
@@ -291,10 +291,10 @@ public class ProcessingScenes {
         });
         scene.effects.emitParticles(VecHelper.getCenterOf(bottomBubbleCap), Emitter.simple(particleData, new Vec3(0f, 0f, 0f)), 1.0f, 10);
         scene.world.modifyBlockEntity(util.grid.at(2, 2, 1), BubbleCapBlockEntity.class, be -> {
-            be.getInternalTank().fill(blueFluid, FluidAction.EXECUTE);
+            be.getInternalTank().fill(BLUE_FLUID, FluidAction.EXECUTE);
         });
         scene.world.modifyBlockEntity(util.grid.at(2, 3, 1), BubbleCapBlockEntity.class, be -> {
-            be.getInternalTank().fill(redFluid, FluidAction.EXECUTE);
+            be.getInternalTank().fill(RED_FLUID, FluidAction.EXECUTE);
             be.setTicksToFill(BubbleCapBlockEntity.getTankCapacity() / BubbleCapBlockEntity.getTransferRate());
         });
         scene.overlay.showText(100)

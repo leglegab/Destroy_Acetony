@@ -345,7 +345,7 @@ public class LegacyMixture extends ReadOnlyMixture {
                     if (!validStackFound) continue orderEachReaction; // If we don't have the requesite Item Stacks, don't do this Reaction
                 };
 
-                reactionRates.put(possibleReaction, calculateReactionRate(possibleReaction, context) / cycles); // Calculate the Reaction data for this tick
+                reactionRates.put(possibleReaction, calculateReactionRate(possibleReaction, context) / cycles); // Calculate the Reaction data for this sub-tick
                 orderedReactions.add(possibleReaction); // Add the Reaction to the rate-ordered list, which is currently not sorted
             };
 
@@ -353,7 +353,7 @@ public class LegacyMixture extends ReadOnlyMixture {
 
             doEachReaction: for (LegacyReaction reaction : orderedReactions) { // Go through each Reaction, fastest first
 
-                Float molesOfReaction = reactionRates.get(reaction); // We are reacting over one tick, so moles of Reaction that take place in this time = rate of Reaction in M per tick
+                Float molesOfReaction = reactionRates.get(reaction); // We are reacting over one tick, so moles of Reaction that take place in this time = rate of Reaction in M per sub-tick
 
                 for (LegacySpecies reactant : reaction.getReactants()) {
                     int reactantMolarRatio = reaction.getReactantMolarRatio(reactant);
@@ -1051,8 +1051,8 @@ public class LegacyMixture extends ReadOnlyMixture {
             return reactions;
     };
 
-    public static boolean areVeryClose(Float f1, Float f2) {
-        return Math.abs(f1 - f2) <= 0.0001f;
+    public static boolean areVeryClose(float f1, float f2) {
+        return Math.abs(f1 - f2) <= 1 / 512f / 512f;
     };
 
     /**

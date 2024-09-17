@@ -1,6 +1,6 @@
 {
     "max_pressure_difference": 100000,
-    "conductivity": 20,
+    "conductivity": 30,
     "transparent": true,
     "blocks": [
         "minecraft:glass",

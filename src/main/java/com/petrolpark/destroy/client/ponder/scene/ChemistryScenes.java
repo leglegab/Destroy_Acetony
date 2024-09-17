@@ -6,27 +6,37 @@ import java.util.Set;
 import com.petrolpark.client.ponder.instruction.HighlightTagInstruction;
 import com.petrolpark.destroy.block.PeriodicTableBlock;
 import com.petrolpark.destroy.block.PeriodicTableBlock.PeriodicTableEntry;
+import com.petrolpark.destroy.block.entity.BubbleCapBlockEntity;
 import com.petrolpark.destroy.block.entity.VatSideBlockEntity;
+import com.petrolpark.destroy.client.particle.DestroyParticleTypes;
+import com.petrolpark.destroy.client.particle.data.GasParticleData;
 import com.petrolpark.destroy.client.ponder.DestroyPonderTags;
 import com.petrolpark.destroy.client.ponder.instruction.DrainVatInstruction;
 import com.petrolpark.destroy.client.ponder.instruction.SetVatSideTypeInstruction;
 import com.petrolpark.destroy.client.ponder.instruction.ThermometerInstruction;
 import com.petrolpark.destroy.client.ponder.instruction.ThermometerInstruction.ThermometerElement;
+import com.petrolpark.destroy.item.DestroyItems;
+import com.simibubi.create.content.kinetics.mixer.MechanicalMixerBlockEntity;
 import com.simibubi.create.foundation.ponder.ElementLink;
 import com.simibubi.create.foundation.ponder.PonderPalette;
 import com.simibubi.create.foundation.ponder.SceneBuilder;
 import com.simibubi.create.foundation.ponder.SceneBuildingUtil;
 import com.simibubi.create.foundation.ponder.Selection;
+import com.simibubi.create.foundation.ponder.element.EntityElement;
 import com.simibubi.create.foundation.ponder.element.InputWindowElement;
 import com.simibubi.create.foundation.ponder.element.WorldSectionElement;
+import com.simibubi.create.foundation.ponder.instruction.EmitParticlesInstruction.Emitter;
 import com.simibubi.create.foundation.utility.Pointing;
+import com.simibubi.create.foundation.utility.VecHelper;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.phys.Vec3;
+import net.minecraftforge.fluids.capability.IFluidHandler.FluidAction;
 
 public class ChemistryScenes {
     
@@ -317,10 +327,76 @@ public class ChemistryScenes {
 
     public static final void vatItems(SceneBuilder scene, SceneBuildingUtil util) {
         scene.title("vat.items", "This text is defined in a language file.");
+        scene.configureBasePlate(0, 0, 5);
+        scene.showBasePlate();
+
+        scene.idle(5);
+        scene.world.showSection(util.select.fromTo(1, 1, 1, 3, 3, 3), Direction.DOWN);
+        scene.idle(10);
+
+        scene.world.showSection(util.select.position(2, 4, 2), Direction.DOWN);
+        scene.idle(10);
+        scene.overlay.showText(120)
+            .text("This text is defined in a language file.")
+            .pointAt(util.vector.blockSurface(util.grid.at(2, 4, 2), Direction.WEST));
+        scene.idle(20);
+        ElementLink<EntityElement> iodine = scene.world.createItemEntity(util.vector.centerOf(2, 6, 2), Vec3.ZERO, DestroyItems.PAPER_PULP.asStack());
+        scene.idle(20);
+        scene.world.modifyEntity(iodine, Entity::kill);
+        scene.idle(30);
+        scene.world.showSection(util.select.position(0, 2, 2), Direction.EAST);
+        scene.idle(30);
+        scene.world.flapFunnel(util.grid.at(0, 2, 2), true);
+        scene.world.createItemEntity(util.vector.centerOf(0, 2, 2), Vec3.ZERO, DestroyItems.NITROCELLULOSE.asStack());
+        scene.idle(60);
+
+        scene.world.showSection(util.select.position(1, 2, 0), Direction.SOUTH);
+        scene.overlay.showText(80)
+            .text("This text is defined in a language file.")
+            .pointAt(util.vector.blockSurface(util.grid.at(1, 2, 0), Direction.UP));
+        scene.overlay.showOutline(PonderPalette.RED, "funnel", util.select.position(1, 2, 0), 80);
+        scene.idle(100);
+
+        scene.markAsFinished();
     };
 
     public static final void reactions(SceneBuilder scene, SceneBuildingUtil util) {
         scene.title("reactions", "This text is defined in a language file.");
+        scene.configureBasePlate(0, 0, 5);
+        scene.showBasePlate();
+
+        scene.world.showSection(util.select.fromTo(2, 1, 2, 4, 3, 4), Direction.DOWN);
+        scene.idle(20);
+        scene.world.showSection(util.select.position(0, 0, 5), Direction.NORTH);
+        scene.idle(5);
+        for (int y = 1; y <= 3; y++) {
+            scene.world.showSection(util.select.position(0, y, 4), Direction.DOWN);
+            scene.idle(5);
+        };
+        for (int z = 3; z >= 1; z--) {
+            scene.world.showSection(util.select.position(0, 3, z), Direction.DOWN);
+            scene.idle(5);
+        };
+        scene.idle(10);
+        scene.world.showSection(util.select.position(0, 1, 1), Direction.SOUTH);
+        scene.idle(10);
+
+        scene.overlay.showText(80)
+            .text("This text is defined in a language file.")
+            .pointAt(util.vector.blockSurface(util.grid.at(2, 2, 3), Direction.WEST));
+        scene.idle(20);
+        scene.world.modifyBlockEntity(util.grid.at(0, 3, 1), MechanicalMixerBlockEntity.class, MechanicalMixerBlockEntity::startProcessingBasin);
+        scene.idle(80);
+        scene.overlay.showText(80)
+            .text("This text is defined in a language file.")
+            .attachKeyFrame()
+            .independent();
+        scene.idle(100);
+        scene.overlay.showText(80)
+            .text("This text is defined in a language file.")
+            .colored(PonderPalette.GREEN)
+            .independent();
+        scene.idle(100);
     };
     
     public static final void vatTemperature(SceneBuilder scene, SceneBuildingUtil util) {
@@ -450,6 +526,53 @@ public class ChemistryScenes {
 
     public static final void roomTemperature(SceneBuilder scene, SceneBuildingUtil util) {
         scene.title("pollution.room_temperature", "This text is defined in a language file.");
+        scene.configureBasePlate(0, 0, 5);
+        scene.scaleSceneView(0.75f);
+
+        GasParticleData particleData = new GasParticleData(DestroyParticleTypes.DISTILLATION.get(), ProcessingScenes.PURPLE_FLUID, 1.7f);
+        BlockPos reboiler = util.grid.at(0, 1, 1);
+        scene.world.modifyBlockEntity(reboiler, BubbleCapBlockEntity.class, bc -> bc.getTank().fill(ProcessingScenes.PURPLE_FLUID, FluidAction.EXECUTE));
+        
+        scene.showBasePlate();
+
+        scene.idle(10);
+        ThermometerElement thermo = ThermometerInstruction.add(scene, util.vector.topOf(2, 0, 0), 450, 0.25f);
+        scene.idle(10);
+        scene.overlay.showText(100)
+            .text("This text is defined in a language file.")
+            .independent();
+        scene.addInstruction(ThermometerInstruction.chase(thermo, 0.5f, 0.0025f));
+        scene.idle(120);
+
+        scene.world.showSection(util.select.fromTo(0, 1, 1, 0, 3, 1), Direction.DOWN);
+        scene.idle(20);
+
+        scene.overlay.showText(120)
+            .text("This text is defined in a language file.")
+            .pointAt(util.vector.blockSurface(util.grid.at(0, 2, 1), Direction.WEST))
+            .attachKeyFrame();
+        scene.idle(40);
+        scene.world.modifyBlockEntity(reboiler, BubbleCapBlockEntity.class, be -> be.getTank().drain(2000, FluidAction.EXECUTE));
+        scene.effects.emitParticles(VecHelper.getCenterOf(reboiler), Emitter.simple(particleData, Vec3.ZERO), 1.0f, 2);
+        scene.world.modifyBlockEntity(util.grid.at(0, 3, 1), BubbleCapBlockEntity.class, be -> {
+            be.getInternalTank().fill(ProcessingScenes.PURPLE_FLUID, FluidAction.EXECUTE);
+            be.setTicksToFill(BubbleCapBlockEntity.getTankCapacity() / BubbleCapBlockEntity.getTransferRate());
+        });
+        scene.idle(120);
+
+        scene.world.showSection(util.select.fromTo(2, 1, 2, 4, 3, 4), Direction.DOWN);
+        scene.idle(10);
+        ThermometerElement vatThermo = ThermometerInstruction.add(scene, util.vector.topOf(3, 3, 3), 110, 0.75f);
+        scene.idle(30);
+
+        scene.overlay.showText(100)
+            .text("This text is defined in a language file.")
+            .attachKeyFrame()
+            .pointAt(util.vector.blockSurface(util.grid.at(2, 2, 3), Direction.WEST));
+        scene.addInstruction(ThermometerInstruction.chase(vatThermo, 0.5f, 0.0025f));
+        scene.idle(120);
+
+        scene.markAsFinished();
     };
 
     public static final void vatReading(SceneBuilder scene, SceneBuildingUtil util) {

@@ -17,6 +17,7 @@ public class FilterItemStackMixin {
     @Inject(
         method = "Lcom/simibubi/create/content/logistics/filter/FilterItemStack;test(Lnet/minecraft/world/level/Level;Lnet/minecraftforge/fluids/FluidStack;Z)Z",
         at = @At("HEAD"),
+        cancellable = true,
         remap = false
     )
     public void inTest(Level level, FluidStack stack, boolean matchNBT, CallbackInfoReturnable<Boolean> cir) {
