@@ -4,9 +4,13 @@
       "hold": {
         "trigger": "minecraft:inventory_changed",
         "conditions": {
-            "items": [
-              "destroy:slag"
-            ]
+          "items": [
+            {
+              "items": [
+                "destroy:slag"
+              ]
+            }
+          ]
         }
       }
     },

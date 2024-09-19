@@ -9,6 +9,8 @@ import com.petrolpark.destroy.chemistry.legacy.index.genericreaction.AldehydeOxi
 import com.petrolpark.destroy.chemistry.legacy.index.genericreaction.AmideHydrolysis;
 import com.petrolpark.destroy.chemistry.legacy.index.genericreaction.AminePhosgenation;
 import com.petrolpark.destroy.chemistry.legacy.index.genericreaction.BoraneOxidation;
+import com.petrolpark.destroy.chemistry.legacy.index.genericreaction.BorateEsterHydrolysis;
+import com.petrolpark.destroy.chemistry.legacy.index.genericreaction.BorateEsterification;
 import com.petrolpark.destroy.chemistry.legacy.index.genericreaction.CarbonylReduction;
 import com.petrolpark.destroy.chemistry.legacy.index.genericreaction.CarboxylicAcidEsterification;
 import com.petrolpark.destroy.chemistry.legacy.index.genericreaction.CarboxylicAcidReduction;
@@ -17,6 +19,7 @@ import com.petrolpark.destroy.chemistry.legacy.index.genericreaction.CyanideNucl
 import com.petrolpark.destroy.chemistry.legacy.index.genericreaction.ElectrophilicChlorination;
 import com.petrolpark.destroy.chemistry.legacy.index.genericreaction.ElectrophilicChlorohydrination;
 import com.petrolpark.destroy.chemistry.legacy.index.genericreaction.ElectrophilicHydroboration;
+import com.petrolpark.destroy.chemistry.legacy.index.genericreaction.BoraneElectrophilicHydroboration;
 import com.petrolpark.destroy.chemistry.legacy.index.genericreaction.ElectrophilicHydrochlorination;
 import com.petrolpark.destroy.chemistry.legacy.index.genericreaction.ElectrophilicHydroiodination;
 import com.petrolpark.destroy.chemistry.legacy.index.genericreaction.ElectrophilicIodination;
@@ -44,6 +47,7 @@ public class DestroyGenericReactions {
     public static final ElectrophilicChlorohydrination ALKENE_CHLOROHYDRINATION = new ElectrophilicChlorohydrination(false);
     public static final SaturatedCarbonHydrolysis ALKENE_HYDROLYSIS = new SaturatedCarbonHydrolysis(false);
     public static final ElectrophilicHydroboration ALKENE_HYDROBORATION = new ElectrophilicHydroboration(false);
+    public static final BoraneElectrophilicHydroboration ALKENE_HYDROBORATION_WITH_BORANE = new BoraneElectrophilicHydroboration(false);
     public static final ElectrophilicHydrochlorination ALKENE_HYDROCHLORINATION = new ElectrophilicHydrochlorination(false);
     public static final SaturatedCarbonHydrogenation ALKENE_HYDROGENATION = new SaturatedCarbonHydrogenation(false);
     public static final ElectrophilicHydroiodination ALKENE_HYDROIODINATION = new ElectrophilicHydroiodination(false);
@@ -51,6 +55,8 @@ public class DestroyGenericReactions {
     public static final AmideHydrolysis AMIDE_HYDROLYSIS = new AmideHydrolysis();
     public static final AminePhosgenation AMINE_PHOSGENATION = new AminePhosgenation();
     public static final BoraneOxidation BORANE_OXIDATION = new BoraneOxidation();
+    public static final BorateEsterHydrolysis BORATE_ESTER_HYDROLYSIS = new BorateEsterHydrolysis();
+    public static final BorateEsterification BORATE_ESTERIFICATION = new BorateEsterification();
     public static final CarbonylReduction CARBONYL_REDUCTION = new CarbonylReduction();
     public static final CarboxylicAcidReduction CARBOXYLIC_ACID_REDUCTION = new CarboxylicAcidReduction();
     public static final CyanamideAddition CYANAMIDE_ADDITION = new CyanamideAddition();

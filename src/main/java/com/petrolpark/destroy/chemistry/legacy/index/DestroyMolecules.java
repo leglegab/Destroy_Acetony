@@ -606,6 +606,13 @@ public final class DestroyMolecules {
         .hypothetical()
         .translationKey("nitro")
         .build(),
+    
+    GENERIC_ORGANIC_BORIC_ACID = builder()
+        .id("generic_organic_boric_acid")
+        .structure(LegacyMolecularStructure.deserialize("destroy:linear:RB(R)OH"))
+        .hypothetical()
+        .translationKey("organic_boric_acid")
+        .build(),
 
     GENERIC_PRIMARY_AMINE = builder()
         .id("generic_primary_amine")
@@ -1221,6 +1228,14 @@ public final class DestroyMolecules {
         .molarHeatCapacity(132.55f)
         .tag(Tags.SMELLY)
         .tag(Tags.SMOG)
+        .build(),
+
+    TRIMETHYL_BORATE = builder()
+        .id("trimethyl_borate")
+        .structure(LegacyMolecularStructure.deserialize("destroy:linear:COB(OC)OC"))
+        .boilingPoint(68.5f)
+        .density(932f)
+        .molarHeatCapacity(189.9f)
         .build(),
     
     TRINITROTOLUENE = builder()

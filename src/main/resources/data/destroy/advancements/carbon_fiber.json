@@ -1,12 +1,16 @@
 {
-    "parent": "destroy:vat",
+    "parent": "destroy:addition_polymer",
     "criteria": {
       "hold": {
         "trigger": "minecraft:inventory_changed",
         "conditions": {
-            "items": [
-              "destroy:carbon_fiber"
-            ]
+          "items": [
+            {
+              "items": [
+                "destroy:carbon_fiber"
+              ]
+            }
+          ]
         }
       }
     },

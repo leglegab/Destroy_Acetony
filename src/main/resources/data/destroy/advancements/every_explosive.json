@@ -1,5 +1,5 @@
 {
-    "parent": "destroy:hydrazine",
+    "parent": "destroy:explosive",
     "criteria": {
       "anfo": {
         "trigger": "minecraft:inventory_changed",

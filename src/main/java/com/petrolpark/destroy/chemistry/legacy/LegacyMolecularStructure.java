@@ -28,6 +28,8 @@ import com.simibubi.create.foundation.utility.Pair;
 
 import net.minecraft.world.phys.Vec3;
 
+import java.util.stream.Collectors;
+
 /**
  * A Formula is all the {@link LegacyAtom Atoms} in a {@link LegacySpecies}, and the {@link LegacyBond Bonds} that those Atoms have to other Atoms - a Molecule's 'structure'.
  * For convinience, the {@link LegacyFunctionalGroup functional Groups} present in the Molecule are also stored in its Formula.
@@ -219,6 +221,10 @@ public class LegacyMolecularStructure implements Cloneable {
     public LegacyMolecularStructure addAtom(LegacyAtom atom, BondType bondType) {
         addAtomToStructure(structure, currentAtom, atom, bondType);
         return this;
+    };
+
+    public boolean containsAtom(LegacyAtom atom) {
+        return structure.containsKey(atom);
     };
 
     /**
@@ -877,7 +883,7 @@ public class LegacyMolecularStructure implements Cloneable {
             newFormula.groups = new ArrayList<>(groups); // Shallow copy the Groups
             newFormula.topology = this.topology; // Shallow copy the Topology
             updateSideChainStructures();
-            newFormula.sideChains = sideChains.stream().map(pair -> Pair.of(pair.getFirst(), pair.getSecond().shallowCopy())).toList();
+            newFormula.sideChains = sideChains.stream().map(pair -> Pair.of(pair.getFirst(), pair.getSecond().shallowCopy())).collect(Collectors.toList());
             newFormula.optimumFROWNSCode = null; // Delete the FROWNS Code, as copies are typically going to be modified
 
             return newFormula;

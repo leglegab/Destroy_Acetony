@@ -59,6 +59,7 @@ public class GenericReactionCategory extends ReactionCategory<GenericReactionRec
                 reaction = genericReaction.getExampleReaction();
             } catch (Throwable e) {
                 Destroy.LOGGER.warn("Problem generating generic reaction "+genericReaction.id); // Warn but don't do anything
+                throw e;
             };
             if (reaction != null) {
                 // Add the Generic Reaction to JEI.
