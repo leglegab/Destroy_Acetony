@@ -12,6 +12,7 @@ import com.petrolpark.destroy.client.particle.DestroyParticleTypes;
 import com.petrolpark.destroy.client.particle.data.GasParticleData;
 import com.petrolpark.destroy.client.ponder.DestroyPonderTags;
 import com.petrolpark.destroy.client.ponder.instruction.DrainVatInstruction;
+import com.petrolpark.destroy.client.ponder.instruction.SetVatPressureInstruction;
 import com.petrolpark.destroy.client.ponder.instruction.SetVatSideTypeInstruction;
 import com.petrolpark.destroy.client.ponder.instruction.ThermometerInstruction;
 import com.petrolpark.destroy.client.ponder.instruction.ThermometerInstruction.ThermometerElement;
@@ -403,7 +404,7 @@ public class ChemistryScenes {
         scene.title("vat.temperature", "This text is defined in a language file.");
         scene.configureBasePlate(0, 1, 5);
         scene.showBasePlate();
-        scene.scaleSceneView(0.6f);
+        scene.scaleSceneView(0.7f);
 
         Selection vatFace = util.select.fromTo(1, 4, 3, 1, 6, 4);
         Selection vat = util.select.fromTo(1, 3, 1, 4, 7, 5).substract(vatFace);
@@ -518,6 +519,99 @@ public class ChemistryScenes {
 
     public static final void vatPressure(SceneBuilder scene, SceneBuildingUtil util) {
         scene.title("vat.pressure", "This text is defined in a language file.");
+        scene.configureBasePlate(0, 0, 9);
+        scene.scaleSceneView(0.7f);
+        scene.showBasePlate();
+
+        scene.addInstruction(new SetVatSideTypeInstruction(util.grid.at(3, 2, 4), VatSideBlockEntity.DisplayType.NORMAL));
+        scene.addInstruction(new SetVatSideTypeInstruction(util.grid.at(3, 3, 5), VatSideBlockEntity.DisplayType.NORMAL));
+        ElementLink<WorldSectionElement> vat = scene.world.showIndependentSection(util.select.fromTo(3, 1, 3, 6, 4, 6), Direction.DOWN);
+        scene.idle(10);
+
+        BlockPos barometer = util.grid.at(5, 2, 3);
+        Vec3 face = util.vector.blockSurface(barometer, Direction.NORTH);
+        scene.overlay.showText(100)
+            .text("This text is defined in a language file.")
+            .pointAt(face);
+        scene.idle(20);
+        scene.overlay.showControls(new InputWindowElement(face, Pointing.RIGHT).rightClick().withWrench(), 30);
+        scene.idle(5);
+        scene.addInstruction(new SetVatSideTypeInstruction(barometer, VatSideBlockEntity.DisplayType.THERMOMETER));
+        scene.idle(35);
+        scene.overlay.showControls(new InputWindowElement(face, Pointing.RIGHT).rightClick().withWrench(), 30);
+        scene.idle(5);
+        scene.addInstruction(new SetVatSideTypeInstruction(barometer, VatSideBlockEntity.DisplayType.BAROMETER));
+        scene.idle(55);
+        scene.overlay.showText(80)
+            .text("This text is defined in a language file.")
+            .independent();
+        scene.idle(20);
+        BlockPos controller = util.grid.at(4, 2, 3);
+        scene.addInstruction(new SetVatPressureInstruction(controller, 200000f, 0.1f));
+        scene.idle(20);
+        scene.addInstruction(new SetVatPressureInstruction(controller, -200000f, 0.05f));
+        scene.idle(40);
+        scene.addInstruction(new SetVatPressureInstruction(controller, 0f, 0.1f));
+        scene.idle(20);
+
+        scene.world.showSection(util.select.position(2, 0, 9), Direction.NORTH);
+        scene.idle(5);
+        scene.world.showSection(util.select.fromTo(2, 1, 8, 2, 2, 8), Direction.DOWN);
+        scene.idle(5);
+        scene.world.showSection(util.select.position(1, 2, 7), Direction.DOWN);
+        scene.idle(5);
+        scene.world.showSection(util.select.fromTo(1, 1, 6, 1, 2, 6), Direction.EAST);
+        scene.idle(5);
+        scene.world.showSection(util.select.fromTo(2, 1, 5, 2, 2, 6), Direction.DOWN);
+        scene.idle(5);
+        scene.world.showSection(util.select.position(2, 1, 4), Direction.DOWN);
+        scene.idle(5);
+        scene.world.showSection(util.select.fromTo(1, 1, 2, 2, 2, 4).substract(util.select.position(2, 1, 4)), Direction.EAST);
+        scene.idle(5);
+
+        scene.overlay.showText(360)
+            .text("This text is defined in a language file.")
+            .independent(0)
+            .attachKeyFrame();
+        scene.idle(20);
+        scene.addInstruction(new SetVatPressureInstruction(controller, 250000f, 0.05f));
+        scene.idle(80);
+
+        scene.world.moveSection(vat, util.vector.of(0d, 1d, 0d), 20);
+        scene.world.hideSection(util.select.fromTo(1, 1, 2, 2, 2, 4), Direction.WEST);
+        scene.idle(20);
+        scene.overlay.showText(240)
+            .text("This text is defined in a language file.")
+            .independent(40)
+            .attachKeyFrame();
+        scene.idle(20);
+        ElementLink<WorldSectionElement> burners = scene.world.showIndependentSection(util.select.fromTo(4, 1, 1, 5, 1, 2), Direction.SOUTH);
+        scene.world.moveSection(burners, util.vector.of(0d, 0d, 3d), 20);
+        scene.idle(20);
+        scene.addInstruction(new SetVatPressureInstruction(controller, 500000f, 0.05f));
+        scene.idle(60);
+
+        scene.world.hideIndependentSection(burners, Direction.NORTH);
+        scene.idle(20);
+        scene.world.moveSection(vat, util.vector.of(0d, -1d, 0d), 20);
+        scene.idle(20);
+        scene.overlay.showText(100)
+            .text("This text is defined in a language file.")
+            .independent(80)
+            .attachKeyFrame();
+        scene.idle(20);
+        scene.world.showSection(util.select.fromTo(1, 1, 5, 2, 3, 5).substract(util.select.position(2, 1, 5)), Direction.EAST);
+        scene.idle(20);
+        scene.addInstruction(new SetVatPressureInstruction(controller, 750000f, 0.05f));
+        scene.idle(80);
+
+        scene.overlay.showText(80)
+            .text("This text is defined in a language file.")
+            .colored(PonderPalette.GREEN)
+            .independent();
+        scene.idle(100);
+
+        scene.markAsFinished();
     };
 
     public static final void bunsenBurner(SceneBuilder scene, SceneBuildingUtil util) {

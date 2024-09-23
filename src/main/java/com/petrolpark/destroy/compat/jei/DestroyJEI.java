@@ -25,6 +25,7 @@ import com.petrolpark.destroy.compat.jei.category.DistillationCategory;
 import com.petrolpark.destroy.compat.jei.category.ElectrolysisCategory;
 import com.petrolpark.destroy.compat.jei.category.ElementTankFillingCategory;
 import com.petrolpark.destroy.compat.jei.category.ExtrusionCategory;
+import com.petrolpark.destroy.compat.jei.category.FlameRetardantApplicationCategory;
 import com.petrolpark.destroy.compat.jei.category.GenericReactionCategory;
 import com.petrolpark.destroy.compat.jei.category.GlassblowingCategory;
 import com.petrolpark.destroy.compat.jei.category.MixableExplosiveCategory;
@@ -37,6 +38,8 @@ import com.petrolpark.destroy.compat.jei.category.SievingCategory;
 import com.petrolpark.destroy.compat.jei.category.TappingCategory;
 import com.petrolpark.destroy.compat.jei.category.VatMaterialCategory;
 import com.petrolpark.destroy.compat.jei.category.VatMaterialCategory.VatMaterialRecipe;
+import com.petrolpark.destroy.compat.jei.recipemanager.ChemicalSpeciesRecipeManagerPlugin;
+import com.petrolpark.destroy.compat.jei.recipemanager.FireproofingRecipeManagerPlugin;
 import com.petrolpark.destroy.compat.tfmg.SharedDistillationRecipes;
 import com.petrolpark.destroy.config.DestroyAllConfigs;
 import com.petrolpark.destroy.effect.potion.PotionSeparationRecipes;
@@ -54,6 +57,7 @@ import com.petrolpark.destroy.recipe.ElectrolysisRecipe;
 import com.petrolpark.destroy.recipe.ElementTankFillingRecipe;
 import com.petrolpark.destroy.recipe.ExtendedDurationFireworkRocketRecipe;
 import com.petrolpark.destroy.recipe.ExtrusionRecipe;
+import com.petrolpark.destroy.recipe.FlameRetardantApplicationRecipe;
 import com.petrolpark.destroy.recipe.GlassblowingRecipe;
 import com.petrolpark.destroy.recipe.MixtureConversionRecipe;
 import com.petrolpark.destroy.recipe.MutationRecipe;
@@ -101,7 +105,7 @@ public class DestroyJEI implements IModPlugin {
      * All Create and Destroy {@link mezz.jei.api.recipe.RecipeType Recipe Types} which can produce or consume Mixtures, mapped to the class of Recipe which those Recipe Types describe.
      * Create's Recipe Types are not exposed by default, meaning we have to access them through a {@link com.petrolpark.destroy.mixin.compat.jei.CreateRecipeCategoryMixin mixin} and store them here.
      */ 
-    public static final Map<mezz.jei.api.recipe.RecipeType<?>, Class<? extends Recipe<?>>> RECIPE_TYPES = new HashMap<>();
+    public static final Map<mezz.jei.api.recipe.RecipeType<?>, Class<? extends Recipe<?>>> MIXTURE_APPLICABLE_RECIPE_TYPES = new HashMap<>();
     /**
      * A map of Molecules to the Recipes in which they are inputs.
      * This does not include {@link com.petrolpark.destroy.chemistry.legacy.LegacyReaction Reactions}.
@@ -118,6 +122,8 @@ public class DestroyJEI implements IModPlugin {
     public static boolean MOLECULE_RECIPES_NEED_PROCESSING = true;
 
     private static final List<CreateRecipeCategory<?>> allCategories = new ArrayList<>();
+
+    public static CreateRecipeCategory<?> fireproofing;
 
     @SuppressWarnings("unused")
     private void loadCategories() {
@@ -294,6 +300,13 @@ public class DestroyJEI implements IModPlugin {
             .emptyBackground(125, 40)
             .build("element_tank_filling", ElementTankFillingCategory::new);
 
+        fireproofing = builder(FlameRetardantApplicationRecipe.class)
+            .addTypedRecipes(DestroyRecipeTypes.FLAME_RETARDANT_APPLICATION)
+            .doubleItemIcon(AllBlocks.SPOUT::asStack, () -> new ItemStack(Items.NETHERITE_INGOT))
+            .catalyst(AllBlocks.SPOUT::get)
+            .emptyBackground(177, 70)
+			.build("fireproofing", FlameRetardantApplicationCategory::new);
+
         DestroyJEI.MOLECULE_RECIPES_NEED_PROCESSING = false;
     };
 
@@ -344,7 +357,8 @@ public class DestroyJEI implements IModPlugin {
 
     @Override
     public void registerAdvanced(IAdvancedRegistration registration) {
-        registration.addRecipeManagerPlugin(new DestroyRecipeManagerPlugin(registration.getJeiHelpers()));
+        registration.addRecipeManagerPlugin(new ChemicalSpeciesRecipeManagerPlugin(registration.getJeiHelpers()));
+        registration.addRecipeManagerPlugin(new FireproofingRecipeManagerPlugin());
     };
 
     @Override
@@ -415,7 +429,7 @@ public class DestroyJEI implements IModPlugin {
         @Override
         protected void finalizeBuilding(mezz.jei.api.recipe.RecipeType<R> type, CreateRecipeCategory<R> category, Class<? extends R> trueClass) {
             if (recipeClassForMixtures != null) {
-                RECIPE_TYPES.put(type, recipeClassForMixtures);
+                MIXTURE_APPLICABLE_RECIPE_TYPES.put(type, recipeClassForMixtures);
             };
         };
 

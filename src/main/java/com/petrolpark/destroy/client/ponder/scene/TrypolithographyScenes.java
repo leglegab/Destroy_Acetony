@@ -68,7 +68,7 @@ public class TrypolithographyScenes {
             .text("This text is defined in a language file.")
             .pointAt(util.vector.blockSurface(firstBelt, Direction.UP))
             .attachKeyFrame();
-        ElementLink<BeltItemElement> circuit1Element = scene.world.createItemOnBelt(firstBelt, Direction.UP, DestroyItems.CIRCUIT_MASK.asStack());
+        ElementLink<BeltItemElement> circuit1Element = scene.world.createItemOnBelt(firstBelt, Direction.DOWN, DestroyItems.CIRCUIT_MASK.asStack());
 
         scene.idle(40);
         ItemStack circuit1 = DestroyItems.CIRCUIT_MASK.asStack();
@@ -97,7 +97,7 @@ public class TrypolithographyScenes {
         scene.idle(80);
 
         scene.world.removeItemsFromBelt(secondBelt);
-        ElementLink<BeltItemElement> circuit2Element = scene.world.createItemOnBelt(secondBelt, Direction.UP, circuit1);
+        ElementLink<BeltItemElement> circuit2Element = scene.world.createItemOnBelt(secondBelt, Direction.DOWN, circuit1);
         scene.world.stallBeltItem(circuit2Element, false);
         scene.idle(40);
 
@@ -128,7 +128,7 @@ public class TrypolithographyScenes {
         ItemStack circuit3 = DestroyItems.CIRCUIT_MASK.asStack();
         CircuitMaskItem.putPattern(circuit3, CircuitMaskItem.punch(pattern2, 9));
         scene.world.removeItemsFromBelt(thirdBelt);
-        ElementLink<BeltItemElement> circuit3Element = scene.world.createItemOnBelt(thirdBelt, Direction.UP, circuit3);
+        ElementLink<BeltItemElement> circuit3Element = scene.world.createItemOnBelt(thirdBelt, Direction.DOWN, circuit3);
         scene.idle(40);
         scene.world.stallBeltItem(circuit3Element, false);
         scene.idle(70);
@@ -140,7 +140,7 @@ public class TrypolithographyScenes {
         scene.idle(25);
 
         scene.world.removeItemsFromBelt(fourthBelt);
-        ElementLink<BeltItemElement> circuit4Element = scene.world.createItemOnBelt(fourthBelt, Direction.UP, circuit3);
+        ElementLink<BeltItemElement> circuit4Element = scene.world.createItemOnBelt(fourthBelt, Direction.DOWN, circuit3);
         scene.idle(35);
         scene.world.changeBeltItemTo(circuit4Element, DestroyItems.RUINED_CIRCUIT_MASK.asStack());
         ItemParticleOption particle = new ItemParticleOption(ParticleTypes.ITEM, DestroyItems.CIRCUIT_MASK.asStack());
@@ -184,7 +184,7 @@ public class TrypolithographyScenes {
         int pattern1 = CircuitMaskItem.punch(0, 0);
         ItemStack circuit1 = DestroyItems.CIRCUIT_MASK.asStack();
         CircuitMaskItem.putPattern(circuit1, pattern1);
-        scene.world.createItemOnBeltLike(depot, Direction.UP, circuit1);
+        scene.world.createItemOnBeltLike(depot, Direction.DOWN, circuit1);
         scene.idle(20);
         scene.addInstruction(new ShowCircuitPatternInstruction(Pointing.UP, util.vector.blockSurface(depot, Direction.DOWN), pattern1, 60));
         scene.idle(80);
@@ -204,7 +204,7 @@ public class TrypolithographyScenes {
         int pattern2 = CircuitMaskItem.punch(pattern1, 3);
         ItemStack circuit2 = DestroyItems.CIRCUIT_MASK.asStack();
         CircuitMaskItem.putPattern(circuit2, pattern2);
-        scene.world.createItemOnBeltLike(depot, Direction.UP, circuit2);
+        scene.world.createItemOnBeltLike(depot, Direction.DOWN, circuit2);
         scene.idle(20);
         scene.addInstruction(new ShowCircuitPatternInstruction(Pointing.UP, util.vector.blockSurface(depot, Direction.DOWN), pattern2, 120));
         scene.idle(40);
@@ -233,7 +233,7 @@ public class TrypolithographyScenes {
         int pattern3 = CircuitMaskItem.punch(pattern2, 15);
         ItemStack circuit3 = DestroyItems.CIRCUIT_MASK.asStack();
         CircuitMaskItem.putPattern(circuit3, pattern3);
-        scene.world.createItemOnBeltLike(depot, Direction.UP, circuit3);
+        scene.world.createItemOnBeltLike(depot, Direction.DOWN, circuit3);
         scene.idle(20);
         scene.addInstruction(new ShowCircuitPatternInstruction(Pointing.UP, util.vector.blockSurface(depot, Direction.DOWN), pattern3, 60));
         scene.idle(80);
@@ -281,7 +281,7 @@ public class TrypolithographyScenes {
         int pattern1 = CircuitMaskItem.punch(0, 1);
         ItemStack circuit1 = DestroyItems.CIRCUIT_MASK.asStack();
         CircuitMaskItem.putPattern(circuit1, pattern1);
-        scene.world.createItemOnBeltLike(ejector, Direction.UP, circuit1);
+        scene.world.createItemOnBeltLike(ejector, Direction.DOWN, circuit1);
         scene.idle(20);
         scene.addInstruction(new ShowCircuitPatternInstruction(Pointing.UP, util.vector.blockSurface(ejector, Direction.DOWN), pattern1, 60));
         scene.idle(80);
@@ -311,7 +311,8 @@ public class TrypolithographyScenes {
         circuit1Flipped.getOrCreateTag().putBoolean("Flipped", true);
         scene.idle(5);
         scene.world.removeItemsFromBelt(rightBelt);
-        scene.world.createItemOnBelt(rightBelt, Direction.UP, circuit1Flipped);
+        scene.idle(5);
+        scene.world.createItemOnBeltLike(rightBelt, Direction.DOWN, circuit1Flipped);
         scene.idle(20);
         scene.world.toggleRedstonePower(leverSelection);
         scene.effects.indicateRedstone(lever);
@@ -334,7 +335,7 @@ public class TrypolithographyScenes {
         int pattern2 = CircuitMaskItem.punch(pattern1, 2);
         ItemStack circuit2 = circuit1Flipped.copy();
         CircuitMaskItem.putPattern(circuit2, pattern2);
-        scene.world.createItemOnBeltLike(ejector, Direction.UP, circuit2);
+        scene.world.createItemOnBeltLike(ejector, Direction.DOWN, circuit2);
         scene.idle(20);
         scene.addInstruction(new ShowCircuitPatternInstruction(Pointing.UP, util.vector.blockSurface(ejector, Direction.DOWN), pattern2, 60));
         scene.idle(80);

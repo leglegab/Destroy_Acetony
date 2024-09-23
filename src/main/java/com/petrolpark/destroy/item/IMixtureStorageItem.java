@@ -14,6 +14,7 @@ import com.petrolpark.destroy.chemistry.legacy.ClientMixture;
 import com.petrolpark.destroy.chemistry.legacy.ReadOnlyMixture;
 import com.petrolpark.destroy.config.DestroyAllConfigs;
 import com.petrolpark.destroy.fluid.MixtureFluid;
+import com.simibubi.create.content.fluids.tank.CreativeFluidTankBlockEntity.CreativeSmartFluidTank;
 import com.simibubi.create.foundation.utility.Iterate;
 import com.simibubi.create.foundation.utility.Lang;
 
@@ -94,6 +95,10 @@ public interface IMixtureStorageItem {
         for (boolean simulate : Iterate.trueAndFalse) {
             FluidStack drained = itemTank.drain(maxTransfer, simulate || infiniteFluid ? FluidAction.SIMULATE : FluidAction.EXECUTE);
             if (drained.isEmpty()) return InteractionResult.FAIL;
+            if (otherTank instanceof CreativeSmartFluidTank creativeTank) {
+                creativeTank.setContainedFluid(drained);
+                return InteractionResult.SUCCESS;
+            };
             maxTransfer = otherTank.fill(drained, simulate ? FluidAction.SIMULATE : FluidAction.EXECUTE);
             if (maxTransfer == 0) return InteractionResult.FAIL;
         };

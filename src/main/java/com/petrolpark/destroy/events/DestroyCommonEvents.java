@@ -60,6 +60,7 @@ import com.petrolpark.destroy.recipe.ingredient.CircuitPatternIngredient;
 import com.petrolpark.destroy.sound.DestroySoundEvents;
 import com.petrolpark.destroy.util.ChemistryDamageHelper;
 import com.petrolpark.destroy.util.DestroyLang;
+import com.petrolpark.destroy.util.FireproofingHelper;
 import com.petrolpark.destroy.util.DestroyTags.DestroyItemTags;
 import com.petrolpark.destroy.util.DestroyTags.DestroyMobEffectTags;
 import com.petrolpark.destroy.util.PollutionHelper;
@@ -478,12 +479,15 @@ public class DestroyCommonEvents {
     };
 
     /**
-     * Disable eating if the Player is in Baby Blue withdrawal or wearing a Gas Mask.
+     * Disable eating if the Player is in Baby Blue withdrawal or wearing a Gas Mask,
+     * cancel the action of Flint and Steel if it's been made fireproof
      */
     @SubscribeEvent
-    public static void disableEating(PlayerInteractEvent.RightClickItem event) {
+    public static void onPlayerRightClick(PlayerInteractEvent.RightClickItem event) {
         ItemStack stack = event.getItemStack();
         Player player = event.getEntity();
+
+        // Preventing eating
         if (stack.isEdible()) {
             if (ChemistryDamageHelper.Protection.MOUTH_COVERED.isProtected(player)) {
                 player.displayClientMessage(DestroyLang.translate("tooltip.eating_prevented.mouth_protected").component(), true);
@@ -494,6 +498,13 @@ public class DestroyCommonEvents {
                 player.displayClientMessage(DestroyLang.translate("tooltip.eating_prevented.baby_blue").component(), true);
                 event.setCanceled(true);
             };
+        };
+
+        // Fireproof Flint and Steel
+        if (stack.getItem() == Items.FLINT_AND_STEEL && FireproofingHelper.isFireproof(stack)) {
+            stack.hurtAndBreak(1, player, p -> p.broadcastBreakEvent(event.getHand()));
+            event.setCanceled(true);
+            event.setCancellationResult(InteractionResult.SUCCESS);
         };
     };
 

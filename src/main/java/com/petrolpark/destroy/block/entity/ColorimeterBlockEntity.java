@@ -50,6 +50,7 @@ public class ColorimeterBlockEntity extends SmartBlockEntity {
         behaviours.add(redstoneMonitor);
 
         advancementBehaviour = new DestroyAdvancementBehaviour(this, DestroyAdvancementTrigger.COLORIMETER);
+        behaviours.add(advancementBehaviour);
     };
 
     @Override

@@ -67,7 +67,7 @@ public class CartographyTableCategory extends PetrolparkRecipeCategory<Cartograp
         builder.addSlot(RecipeIngredientRole.OUTPUT, 107, 2)
             .setBackground(getRenderedSlot(), -1, -1)
             .addItemStack(recipe.getResultItem(mc.level.registryAccess()))
-            .addTooltipCallback((view, tt) -> {
+            .addRichTooltipCallback((view, tt) -> {
                 if (recipe.getId().equals(scalingRecipeId)) tt.add(DestroyLang.translate("recipe.cartography_table.scaled").style(ChatFormatting.GOLD).component());
                 else if (recipe.getId().equals(lockingRecipeId)) tt.add(Component.translatable("filled_map.locked", 52).withStyle(ChatFormatting.GRAY));
             });

@@ -65,7 +65,7 @@ public abstract class CreateRecipeCategoryMixin<T extends Recipe<?>> {
     /**
      * Injection into {@link com.simibubi.create.compat.jei.category.CreateRecipeCategory#CreateRecipeCategory CreateRecipeCategory}.
      * As Create's {@link mezz.jei.api.recipe.RecipeType Recipe Types} are not exposed by default, we snipe them here and add them to the
-     * {@link com.petrolpark.destroy.compat.jei.DestroyJEI#RECIPE_TYPES list of Recipe Types} for which {@link com.petrolpark.destroy.chemistry.legacy.LegacyMixture Mixtures}
+     * {@link com.petrolpark.destroy.compat.jei.DestroyJEI#MIXTURE_APPLICABLE_RECIPE_TYPES list of Recipe Types} for which {@link com.petrolpark.destroy.chemistry.legacy.LegacyMixture Mixtures}
      * can be {@link com.petrolpark.destroy.fluid.ingredient.MoleculeFluidIngredient ingredients} or results.
      */
     @Inject(
@@ -77,7 +77,7 @@ public abstract class CreateRecipeCategoryMixin<T extends Recipe<?>> {
 
         String recipeTypeId = info.recipeType().getUid().getPath();
         if (CATEGORIES_AND_CLASSES.containsKey(recipeTypeId)) {
-            DestroyJEI.RECIPE_TYPES.put(info.recipeType(), CATEGORIES_AND_CLASSES.get(recipeTypeId));
+            DestroyJEI.MIXTURE_APPLICABLE_RECIPE_TYPES.put(info.recipeType(), CATEGORIES_AND_CLASSES.get(recipeTypeId));
         };
     };
     

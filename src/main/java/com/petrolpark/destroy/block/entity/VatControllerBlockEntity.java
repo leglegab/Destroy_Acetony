@@ -102,7 +102,7 @@ public class VatControllerBlockEntity extends SmartBlockEntity implements IHaveL
     /*
      * As the client side doesn't have access to the cached Mixture, store the pressure, temperature, and whether it is boiling or at equilibrium
      */
-    protected LerpedFloat pressure = LerpedFloat.linear();
+    public LerpedFloat pressure = LerpedFloat.linear();
     protected LerpedFloat temperature = LerpedFloat.linear();
     protected boolean cachedMixtureBoiling = false;
     protected boolean cachedMixtureReacting = false;

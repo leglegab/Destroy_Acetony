@@ -284,10 +284,12 @@ public class DestroyItems {
         ).tag(Tags.Items.DUSTS)
         .register();
 
-    public static final ItemEntry<CarboxylatingItem>
-
-    QUICKLIME = REGISTRATE.item("quicklime", p -> new CarboxylatingItem(p, CHALK_DUST::asStack, () -> DestroyAllConfigs.SERVER.substances.quicklimeBaseDecayTime))
+    public static final ItemEntry<CarboxylatingItem> QUICKLIME = REGISTRATE.item("quicklime", p -> new CarboxylatingItem(p, CHALK_DUST::asStack, () -> DestroyAllConfigs.SERVER.substances.quicklimeBaseDecayTime))
         .tag(Tags.Items.DUSTS, forgeItemTag("dusts/lime"), DestroyItemTags.FLUXES.tag)
+        .register();
+
+    public static final ItemEntry<WaterSensitiveSpontaneouslyCombustingItem> SODIUM_HYDRIDE = REGISTRATE.item("sodium_hydride", WaterSensitiveSpontaneouslyCombustingItem::new)
+        .tag(Tags.Items.DUSTS)
         .register();
     
     public static final ItemEntry<IodineItem> IODINE = REGISTRATE.item("iodine", IodineItem::new)

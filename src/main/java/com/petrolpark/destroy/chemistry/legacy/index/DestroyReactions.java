@@ -358,6 +358,12 @@ public class DestroyReactions {
         .addProduct(DestroyMolecules.COPPER_II)
         .build(),
 
+    CREATINE_PRECIPITATION = builder()
+        .id("creatine_precipitation")
+        .addReactant(DestroyMolecules.CREATINE)
+        .withResult(10f, PrecipitateReactionResult.of(DestroyItems.CREATINE::asStack))
+        .build(),
+
     DINITROTOLUENE_NITRATION = builder()
         .id("dinitrotoluene_nitration")
         .addReactant(DestroyMolecules.DINITROTOLUENE)

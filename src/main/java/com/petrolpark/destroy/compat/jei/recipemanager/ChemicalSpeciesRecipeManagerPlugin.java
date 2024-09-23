@@ -1,4 +1,4 @@
-package com.petrolpark.destroy.compat.jei;
+package com.petrolpark.destroy.compat.jei.recipemanager;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -8,6 +8,8 @@ import java.util.Optional;
 import com.petrolpark.destroy.chemistry.legacy.LegacyFunctionalGroup;
 import com.petrolpark.destroy.chemistry.legacy.LegacySpecies;
 import com.petrolpark.destroy.chemistry.legacy.ReadOnlyMixture;
+import com.petrolpark.destroy.compat.jei.DestroyJEI;
+import com.petrolpark.destroy.compat.jei.MoleculeJEIIngredient;
 import com.petrolpark.destroy.compat.jei.category.GenericReactionCategory;
 import com.petrolpark.destroy.compat.jei.category.ReactionCategory;
 import com.petrolpark.destroy.fluid.DestroyFluids;
@@ -24,11 +26,11 @@ import mezz.jei.api.recipe.category.IRecipeCategory;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraftforge.fluids.FluidStack;
 
-public class DestroyRecipeManagerPlugin implements IRecipeManagerPlugin {
+public class ChemicalSpeciesRecipeManagerPlugin implements IRecipeManagerPlugin {
 
     private final IJeiHelpers helpers;
 
-    public DestroyRecipeManagerPlugin(IJeiHelpers helpers) {
+    public ChemicalSpeciesRecipeManagerPlugin(IJeiHelpers helpers) {
         this.helpers = helpers;
     };
 
@@ -46,7 +48,7 @@ public class DestroyRecipeManagerPlugin implements IRecipeManagerPlugin {
         ) {
             recipeTypes.add(ReactionCategory.TYPE); // Add the Reaction Recipe type
             recipeTypes.add(GenericReactionCategory.TYPE); // Add the generic Reaction Recipe type
-            recipeTypes.addAll(DestroyJEI.RECIPE_TYPES.keySet()); // Add all processing Recipes applicable to Mixtures
+            recipeTypes.addAll(DestroyJEI.MIXTURE_APPLICABLE_RECIPE_TYPES.keySet()); // Add all processing Recipes applicable to Mixtures
         };
         return recipeTypes;
     };
@@ -105,7 +107,7 @@ public class DestroyRecipeManagerPlugin implements IRecipeManagerPlugin {
                     List<Recipe<?>> recipeUses = DestroyJEI.MOLECULES_INPUT.get(molecule); // Recipes in which a Mixture containing this Molecule is required
                     if (recipeUses != null) {
                         recipes.addAll(recipeUses.stream()
-                            .filter(recipe -> recipe.getClass().equals(DestroyJEI.RECIPE_TYPES.get(recipeCategory.getRecipeType()))) // Check for Recipes that match this category
+                            .filter(recipe -> recipe.getClass().equals(DestroyJEI.MIXTURE_APPLICABLE_RECIPE_TYPES.get(recipeCategory.getRecipeType()))) // Check for Recipes that match this category
                             .map(recipe -> (T) recipe) // Cast these Recipes (unchecked conversion, but should be okay as we just checked the class)
                             .toList()
                         );
@@ -132,7 +134,7 @@ public class DestroyRecipeManagerPlugin implements IRecipeManagerPlugin {
                     // Add non-Reaction Recipes
                     List<Recipe<?>> recipeProductions = DestroyJEI.MOLECULES_OUTPUT.get(molecule); // Recipes in which a Mixture containing this Molecule is produced
                     if (recipeProductions != null) recipes.addAll(recipeProductions.stream()
-                        .filter(recipe -> recipe.getClass().equals(DestroyJEI.RECIPE_TYPES.get(recipeCategory.getRecipeType()))) // Check for Recipes that match this category
+                        .filter(recipe -> recipe.getClass().equals(DestroyJEI.MIXTURE_APPLICABLE_RECIPE_TYPES.get(recipeCategory.getRecipeType()))) // Check for Recipes that match this category
                         .map(recipe -> (T) recipe) // Cast these Recipes (unchecked conversion, but should be okay as we just checked the class)
                         .toList()
                     );

@@ -32,7 +32,6 @@ sourceSets.main.resources {
 
 mixin {
     add sourceSets.main, "destroy.refmap.json"
-    env.disableRefMap = true
 }
 
 // Workaround for SpongePowered/MixinGradle#38, copied from Create source code
@@ -46,7 +45,11 @@ version = "${mod_version}"
 group = 'com.petrolpark.destroy'
 archivesBaseName = "destroy-${minecraft_version}"
 
-java.toolchain.languageVersion = JavaLanguageVersion.of(17) //Set Java version
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(17) //Set Java version
+    }
+}
 
 println "Java: ${System.getProperty 'java.version'}, JVM: ${System.getProperty 'java.vm.version'} (${System.getProperty 'java.vendor'}), Arch: ${System.getProperty 'os.arch'}"
 minecraft {
@@ -60,6 +63,7 @@ minecraft {
             arg '-mixin.config=petrolpark.mixins.json'
             arg '-mixin.config=destroy.mixins.json'
             arg '-mixin.config=flywheel.mixins.json'
+            jvmArgs += ['-XX:+AllowEnhancedClassRedefinition']
             property 'forge.logging.console.level', 'info'
             mods {
                 destroy {
@@ -73,6 +77,7 @@ minecraft {
             arg '-mixin.config=create.mixins.json'
             arg '-mixin.config=petrolpark.mixins.json'
             arg '-mixin.config=destroy.mixins.json'
+            jvmArgs += ['-XX:+AllowEnhancedClassRedefinition']
             property 'forge.logging.console.level', 'info'
             mods {
                 destroy {
@@ -180,10 +185,10 @@ dependencies {
     implementation fg.deobf("com.tterrag.registrate:Registrate:${registrate_version}")
 
     // Petrolpark Library (temporary)
-    implementation "com.petrolpark:petrolpark:${minecraft_version}-${petrolpark_library_version}"
+    implementation fg.deobf("com.petrolpark:petrolpark:${minecraft_version}-${petrolpark_library_version}")
 
     // CDK
-    implementation "org.openscience.cdk:cdk-bundle:2.9"
+    //implementation "org.openscience.cdk:cdk-bundle:2.9"
 
     // OPTIONAL DEPENDENCIES
 

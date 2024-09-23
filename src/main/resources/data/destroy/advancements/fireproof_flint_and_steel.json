@@ -1,0 +1,27 @@
+{
+    "parent": "destroy:borax",
+    "criteria": {
+      "try": {
+        "conditions": {},
+        "trigger": "destroy:fireproof_flint_and_steel"
+      }
+    },
+    "display": {
+      "description": {
+        "color": "#DBA213",
+        "translate": "advancement.destroy.fireproof_flint_and_steel.description"
+      },
+      "icon": {
+        "item": "minecraft:flint_and_steel"
+      },
+      "title": {
+        "translate": "advancement.destroy.fireproof_flint_and_steel"
+      },
+      "hidden": true
+    },
+    "requirements": [
+      [
+        "try"
+      ]
+    ]
+  }

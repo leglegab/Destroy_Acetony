@@ -182,6 +182,7 @@ public final class DestroyMolecules {
         .density(1435f)
         .molarHeatCapacity(81.3f)
         .tag(Tags.ACUTELY_TOXIC)
+        .tag(Tags.FLAME_RETARDANT)
         .build(),
 
     BOROHYDRIDE = builder()
@@ -343,6 +344,13 @@ public final class DestroyMolecules {
         .id("copper_ii")
         .structure(LegacyMolecularStructure.atom(LegacyElement.COPPER, 2))
         .color(0xE00FFCA1)
+        .build(),
+
+    CREATINE = builder()
+        .id("creatine")
+        .structure(LegacyMolecularStructure.deserialize("destroy:linear:NC(=N)N(C)CC(=O)O"))
+        // Couldn't find BP or density
+        .molarHeatCapacity(171.1f)
         .build(),
 
     CUBANE = builder()
