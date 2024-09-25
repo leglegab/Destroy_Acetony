@@ -2,10 +2,10 @@ package com.petrolpark.destroy.chemistry.api.reaction.context;
 
 /**
  * A type of {@link IReactionContext}.
- * @since Destroy 1.0
+ * @since Destroy 0.1.0
  * @author petrolpark
  */
-public interface IReactionContextType<RC extends IReactionContext<RC>> {
+public interface IReactionContextType<RC extends IReactionContext<? super RC>> {
     
     /**
      * Get the typical {@link IReactionContext} if the {@link IReactionContextProvider} does not specify one. For example, the default {@link IReactionContext} representing UV power to a {@link IMixture} might be one representing <em>no</em> UV power.

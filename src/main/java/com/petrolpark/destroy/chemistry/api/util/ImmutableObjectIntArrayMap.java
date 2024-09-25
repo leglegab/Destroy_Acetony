@@ -5,7 +5,7 @@ import java.util.Arrays;
 /**
  * An implementation of {@link ImmutableObjectIntMap} which just iterates over a set of keys to find the matching one.
  * Suitable for smaller {@link ImmutableObjectIntMap}s.
- * @since Destroy 1.0
+ * @since Destroy 0.1.0
  * @author petrolpark
  */
 public class ImmutableObjectIntArrayMap<T> implements ImmutableObjectIntMap<T> {
@@ -18,7 +18,7 @@ public class ImmutableObjectIntArrayMap<T> implements ImmutableObjectIntMap<T> {
      * @param keys
      * @param values
      * @throws IllegalArgumentException If the numbers of keys and values do not match.
-     * @since Destroy 1.0
+     * @since Destroy 0.1.0
      * @author petrolpark
      */
     public ImmutableObjectIntArrayMap(T[] keys, int[] values) {

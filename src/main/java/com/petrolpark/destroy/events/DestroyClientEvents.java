@@ -32,6 +32,7 @@ import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.screens.PauseScreen;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.TitleScreen;
+import net.minecraft.client.resources.language.I18n;
 import net.minecraft.nbt.Tag;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -133,7 +134,7 @@ public class DestroyClientEvents {
 
         if (rowIdx != 0 && menu != null) {
             boolean onLeft = offsetX < 0;
-            String target = (onLeft ? ((MenuRowsAccessor)menu).getLeftButtons() : ((MenuRowsAccessor)menu).getLeftButtons()).get(rowIdx - 1);
+            String target =  I18n.get((onLeft ? ((MenuRowsAccessor)menu).getLeftButtons() : ((MenuRowsAccessor)menu).getRightButtons()).get(rowIdx - 1));
 
             int offsetX_ = offsetX;
             MutableObject<GuiEventListener> toAdd = new MutableObject<>(null);

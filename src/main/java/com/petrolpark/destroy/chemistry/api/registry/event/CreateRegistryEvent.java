@@ -13,7 +13,7 @@ import com.petrolpark.destroy.chemistry.api.registry.IRegisteredChemistryObject;
  * <p><b>Usually fired: </b>Once per registry, during startup, before anything is registered to the given registry</p>
  * <p><b>If cancelled: </b>No additional effect</p>
  * @see PriorityRegistrationEvent Adding {@link IRegisteredChemistryObject}s to the {@link IChemistryRegistry}
- * @since Destroy 1.0
+ * @since Destroy 0.1.0
  * @author petrolpark
  */
 public class CreateRegistryEvent<T extends IRegisteredChemistryObject<T, ID>, ID> implements IChemistryEvent {

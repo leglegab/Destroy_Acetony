@@ -5,7 +5,8 @@ import com.petrolpark.destroy.chemistry.api.mixture.IMixtureComponent;
 import com.petrolpark.destroy.chemistry.api.property.ITemperature;
 
 /**
- * @since Destroy 1.0
+ * A {@link IReacting system} that facilitates {@link IChemicalReaction}s.
+ * @since Destroy 0.1.0
  * @author petrolpark
  */
 public interface IChemicalReacting extends IReacting<IChemicalReacting>, ITemperature, IMixture<IMixtureComponent> {

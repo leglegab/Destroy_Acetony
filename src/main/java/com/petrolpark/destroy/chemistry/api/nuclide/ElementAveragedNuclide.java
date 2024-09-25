@@ -10,7 +10,7 @@ import com.petrolpark.destroy.chemistry.api.registry.IRegisteredChemistryObject;
  * <li>All nuclides of an element have a mass equal to the Earth average for that element</li>
  * </ul>
  * This is the default implementation of {@link INuclide} in Destroy, across which isotopic effects are ignored.
- * @since Destroy 1.0
+ * @since Destroy 0.1.0
  * @author petrolpark
  */
 public class ElementAveragedNuclide implements INuclide, IElement, IRegisteredChemistryObject<ElementAveragedNuclide, String>, IElectronegativity {

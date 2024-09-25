@@ -4,7 +4,7 @@ package com.petrolpark.destroy.chemistry.api.event;
  * An object which can be sent out at any time to an unknown number of event subscribers, and modified by them.
  * Some can also be {@link IChemistryEvent#isCancellable() cancelled}, which means they do not get sent to any more event subscribers.
  * You can check if an event got cancelled with {@link IFiredChemistryEvent#isCancelled()}.
- * @since Destroy 1.0
+ * @since Destroy 0.1.0
  * @author petrolpark
  */
 public interface IChemistryEvent {

@@ -8,7 +8,7 @@ import java.util.Random;
 
 /**
  * Two objects in no particular order. They may be {@code null}.
- * @since Destroy 1.0
+ * @since Destroy 0.1.0
  * @author petrolpark
  * @see OrderedCouple Couples which retain the order of the two objects
  */
@@ -21,7 +21,7 @@ public class Couple<O> implements Collection<O> {
      * Constructs a {@link Couple} of the given objects. Although they are labelled '1' and '2' they are not guaranteed to retain this ordering.
      * @param object1
      * @param object2
-     * @since Destroy 1.0
+     * @since Destroy 0.1.0
      * @author petrolpark
      * @see OrderedCouple Couples which retain the order of the two objects
      */
@@ -36,7 +36,7 @@ public class Couple<O> implements Collection<O> {
      * @return The other object in this {@link Couple}, which may be {@code null}
      * @throws IllegalArgumentException If the supplied object is not either of the objects in this {@link Couple}
      * @throws UnsupportedOperationException If both objects in this {@link Couple} are the same, meaning there is no 'other'
-     * @since Destroy 1.0
+     * @since Destroy 0.1.0
      * @author petrolpark
      * @see Couple#getNotEqual(Object) Checking by equality rather than reference
      */
@@ -53,7 +53,7 @@ public class Couple<O> implements Collection<O> {
      * @return The other object in this {@link Couple}, which may be {@code null}
      * @throws IllegalArgumentException If the supplied object is not {@link Object#equals(Object) equal} to either of the objects in this {@link Couple}
      * @throws UnsupportedOperationException If both objects in this {@link Couple} are {@link Object#equals(Object) equal}, meaning there is no 'other'
-     * @since Destroy 1.0
+     * @since Destroy 0.1.0
      * @author petrolpark
      * @see Couple#getNot(Object) Checking by reference rather than equality
      */
@@ -97,7 +97,7 @@ public class Couple<O> implements Collection<O> {
 
     /**
      * Creates a couple with the same two objects.
-     * @since Destroy 1.0
+     * @since Destroy 0.1.0
      * @author petrolpark
      */
     @Override

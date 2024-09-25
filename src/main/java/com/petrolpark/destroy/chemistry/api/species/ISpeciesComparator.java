@@ -9,7 +9,7 @@ import com.petrolpark.destroy.chemistry.api.reaction.IReaction;
  * A distinguisher of two {@link ISpecies}.
  * For example, by default, Destroy does not consider stereochemistry so E-1,2-dichloroethene and Z-1,2-dichloroethene would be the same in most cases.
  * But this may not be wanted in every circumstance, which is what overriding the default Destroy comparator would do.
- * @since Destroy 1.0
+ * @since Destroy 0.1.0
  * @author petrolpark
  */
 public interface ISpeciesComparator {

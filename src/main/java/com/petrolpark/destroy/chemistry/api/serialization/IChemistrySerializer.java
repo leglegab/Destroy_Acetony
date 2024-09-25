@@ -1,7 +1,7 @@
 package com.petrolpark.destroy.chemistry.api.serialization;
 
 /**
- * @since Destroy 1.0
+ * @since Destroy 0.1.0
  * @author petrolpark
  */
 public interface IChemistrySerializer<O extends IChemistrySerializable, S> {

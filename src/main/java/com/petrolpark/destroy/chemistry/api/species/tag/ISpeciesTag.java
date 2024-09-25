@@ -5,7 +5,7 @@ import com.petrolpark.destroy.chemistry.api.tag.ITag;
 
 /**
  * A {@link ITag} applicable to {@link ISpecies}.
- * @since Destroy 1.0
+ * @since Destroy 0.1.0
  * @author petrolpark
  */
 public interface ISpeciesTag<O extends ISpecies> extends ITag<O> {

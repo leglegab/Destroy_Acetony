@@ -5,7 +5,7 @@ import java.util.Map;
 /**
  * Essentially a read-only {@link Map} with the value type being the primitive {@code int}.
  * Values which are not mapped to a value (and so would return {@code null} in a regular {@link Map}) will instead give {@code 0}.
- * @since Destroy 1.0
+ * @since Destroy 0.1.0
  * @author petrolpark
  */
 public interface ImmutableObjectIntMap<T> {

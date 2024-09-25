@@ -4,10 +4,10 @@ import com.petrolpark.destroy.chemistry.minecraft.reaction.context.MinecraftReac
 
 /**
  * Implementation of {@link IReactionContext} which just wraps a {@code double} primitive.
- * @since Destroy 1.0
+ * @since Destroy 0.1.0
  * @author petrolpark
  * @see SimpleValueReactionContext Wrapping an object
- * @see MinecraftReactionContextTypes#UV_POWER Example usage
+ * @see MinecraftReactionContextTypes#SIMPLE_UV_POWER Example usage
  */
 public abstract class PrimitiveDoubleReactionContext implements IReactionContext<PrimitiveDoubleReactionContext> {
     

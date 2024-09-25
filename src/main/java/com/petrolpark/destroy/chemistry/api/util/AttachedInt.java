@@ -1,7 +1,7 @@
 package com.petrolpark.destroy.chemistry.api.util;
 
 /**
- * @since Destroy 1.0
+ * @since Destroy 0.1.0
  * @author petrolpark
  */
 public class AttachedInt<T> {

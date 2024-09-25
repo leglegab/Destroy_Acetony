@@ -17,12 +17,12 @@ import com.petrolpark.destroy.chemistry.api.reaction.IReaction;
  * It would also be possible for them to be mutated when {@link IReaction#isPossible(IMixture, IReactionContextProvider, ITemperature) checking if a Reaction is possible}.
  * //TODO link to enacting reactions
  * </p>
- * @since Destroy 1.0
+ * @since Destroy 0.1.0
  * @author petrolpark
  * @see SimpleValueReactionContext Default implementation which wraps another object
  * @see PrimitiveDoubleReactionContext Implementation which wraps a {@code double} primitive
  */
-public interface IReactionContext<RC extends IReactionContext<RC>> {
+public interface IReactionContext<RC extends IReactionContext<? super RC>> {
      
     /**
      * The {@link IReactionContextType type} of this {@link IReactionContext}.

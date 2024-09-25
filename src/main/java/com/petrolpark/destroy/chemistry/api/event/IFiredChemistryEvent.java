@@ -4,7 +4,7 @@ package com.petrolpark.destroy.chemistry.api.event;
  * A wrapper for {@link IChemistryEvent}s, which are platform-independent.
  * Implementations of this interface will be platform-dependent. The correct implementation(s) will be selected by {@link Firer}.
  * A {@link IChemistryEventFirer} does not strictly need to utilize this class.
- * @since Destroy 1.0
+ * @since Destroy 0.1.0
  * @author petrolpark
  */
 public interface IFiredChemistryEvent<T extends IChemistryEvent> {

@@ -10,7 +10,7 @@ import com.petrolpark.destroy.chemistry.api.reaction.context.IReactionContext;
  * this is obviously hugely costly. {@link IPossibleReactionManager}s are essentially a cache of possible
  * {@link IReaction}s that can be undergone.
  * <p>They are not required, but obviously useful.</p>
- * @since Destroy 1.0
+ * @since Destroy 0.1.0
  * @author petrolpark
  */
 public interface IPossibleReactionManager {
@@ -18,7 +18,7 @@ public interface IPossibleReactionManager {
     /**
      * Get the possible {@link IReaction}s which can progress.
      * @return A collection of {@link IReaction}, which, if they progress right now, are likely not to have a {@link IReaction#getRate(IMixture, com.petrolpark.destroy.chemistry.api.reaction.context.IReactionContextProvider) rate} of {@code 0d}.
-     * @since Destroy 1.0
+     * @since Destroy 0.1.0
      * @author petrolpark
      */
     public Collection<IReaction> getPossibleReactions();

@@ -3,7 +3,7 @@ package com.petrolpark.destroy.chemistry.api.property;
 /**
  * {@inheritDoc}
  * Something which can be heated, often resulting in a change in its {@link ITemperature homgenous temperature}.
- * @since Destroy 1.0
+ * @since Destroy 0.1.0
  * @author petrolpark
  */
 public interface IHeatable {

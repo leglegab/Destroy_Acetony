@@ -1,10 +1,8 @@
 package com.petrolpark.destroy.chemistry.api.species;
 
-import java.util.Collection;
 import java.util.HashSet;
 
 import com.petrolpark.destroy.chemistry.api.atom.IAtom;
-import com.petrolpark.destroy.chemistry.api.nuclide.INuclide;
 import com.petrolpark.destroy.chemistry.api.property.IRelativeAtomicMass;
 import com.petrolpark.destroy.chemistry.api.species.tag.ISpeciesTag;
 import com.petrolpark.destroy.chemistry.api.tag.ITag;
@@ -20,14 +18,14 @@ import com.petrolpark.destroy.chemistry.api.tag.ITag;
  * <li>Only {@link ISpeciesTag}s are stored, even though {@link ITag}s of different types may be applicable
  * </ul>
  * <p>{@link SimpleSpecies} are not mutable.</p>
- * @since Destroy 1.0
+ * @since Destroy 0.1.0
  * @author petrolpark
  */
 public abstract class SimpleSpecies implements ISpecies {
 
     /**
      * The relative atomic mass (in grams per mole) of this {@link SimpleSpecies}, which is just the sum of {@link SimpleSpecies#getAllAtoms() all} {@link IAtom}s' {@link IAtom#getMass() masses}.
-     * @since Destroy 1.0
+     * @since Destroy 0.1.0
      * @author petrolpark
      */
     protected final double relativeAtomicMass;
@@ -41,7 +39,7 @@ public abstract class SimpleSpecies implements ISpecies {
 
     /**
      * The total charge (in elementary charges) of this {@link SimpleSpeces}, which is just the sum of {@link SimpleSpecies#getAllAtoms() all} {@link IAtom}s' {@link IAtom#getCharge() charges}.
-     * @since Destroy 1.0
+     * @since Destroy 0.1.0
      * @author petrolpark
      */
     protected final short charge;

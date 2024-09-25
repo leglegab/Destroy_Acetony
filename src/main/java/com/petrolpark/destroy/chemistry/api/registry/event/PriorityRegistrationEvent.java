@@ -9,7 +9,7 @@ import com.petrolpark.destroy.chemistry.api.registry.IRegisteredChemistryObject;
  * Propose {@link IRegisteredChemistryObject}s to be added to a {@link IChemistryRegistry}.
  * <p><b>Usually fired: </b>Once per registry, during startup</p>
  * <p><b>Not cancellable</b></p>
- * @since Destroy 1.0
+ * @since Destroy 0.1.0
  * @author petrolpark
  * @see AfterRegistrationEvent
  */

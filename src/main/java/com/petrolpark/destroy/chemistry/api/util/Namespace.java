@@ -2,7 +2,7 @@ package com.petrolpark.destroy.chemistry.api.util;
 
 /**
  * A unique identifier for a platform or Destroy add-on which adds its own {@link com.petrolpark.destroy.chemistry.api.registry.IRegisteredChemistryObject IRegisteredChemistryObjects}, subscribes to {@link com.petrolpark.destroy.chemistry.api.event.IChemistryEvent Events}, etc.
- * @since Destroy 1.0
+ * @since Destroy 0.1.0
  * @author petrolpark
  */
 public class Namespace {

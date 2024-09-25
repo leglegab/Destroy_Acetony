@@ -4,7 +4,7 @@ package com.petrolpark.destroy.chemistry.api.event;
  * The master class for firing {@link IChemistryEvent}s.
  * Chemistry Events can be fired on any platform simply by invoking {@link Firer#fire(IChemistryEvent)}.
  * On a platform, {@link Firer#register(IChemistryEventFirer)} must be called exactly once, before any Events are fired.
- * @since Destroy 1.0
+ * @since Destroy 0.1.0
  * @author petrolpark
  */
 public final class Firer {
@@ -21,7 +21,7 @@ public final class Firer {
      * @param event A new Event instance
      * @return The modified Event
      * @throws IllegalStateException if this is being called before any {@link IChemistryEventFirer} has been registered for this Thread
-     * @since Destroy 1.0
+     * @since Destroy 0.1.0
      * @author petrolpark
      */
     public static final <E extends IChemistryEvent> IFiredChemistryEvent<E> fire(E event) {
@@ -34,7 +34,7 @@ public final class Firer {
      * No guarantee is made about the order in which Firers will fire a {@link IChemistryEvent}.
      * @param firer
      * @throws UnsupportedOperationException if the Firer is being registered too late
-     * @since Destroy 1.0
+     * @since Destroy 0.1.0
      * @author petrolpark
      */
     public static final void register(final IChemistryEventFirer firer) {

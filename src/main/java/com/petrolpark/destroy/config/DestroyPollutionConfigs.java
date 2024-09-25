@@ -30,6 +30,7 @@ public class DestroyPollutionConfigs extends DestroyConfigBase {
     public final ConfigBool growingTreesDecreasesPollution = b(true, "growingTreesDecreasesPollution", "Whether growing trees decreases Smog, Greenhouse Gas and Acid Rain levels");
     public final ConfigBool lightningRegeneratesOzone = b(true, "lightningRegeneratesOzone", "Whether lightning strikes generate ozone, decreasing the Ozone Depletion level");
     //public final ConfigBool itemCarboxylationAffected = b(true, "itemCarboxylationAffected", "Items which carboxylate like Quicklime do so faster with higher Greenhouse Gas levels");
+    public final ConfigBool vatUVPowerAffected = b(true, "vatUVPowerAffected", "Whether the level of Ozone Depletion increases the amount of UV power supplied to Vats by the sun");
     
     @Override
 	public String getName() {
@@ -38,7 +39,7 @@ public class DestroyPollutionConfigs extends DestroyConfigBase {
 
     private static class Comments {
         static String
-        enablePollution = "Releasing chemicals increases pollution",
+        enablePollution = "Releasing chemicals increases pollution, and pollution has effects on the world",
 
         visualChanges = "Visual Changes",
         smog = "The sky and grass turn browner the higher the Smog level",

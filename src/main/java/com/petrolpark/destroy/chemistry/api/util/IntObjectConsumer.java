@@ -4,7 +4,7 @@ import java.util.function.BiConsumer;
 
 /**
  * Essentially a {@link BiConsumer} with the first type being the primitive {@code int}.
- * @since Destroy 1.0
+ * @since Destroy 0.1.0
  * @author petrolpark
  */
 @FunctionalInterface

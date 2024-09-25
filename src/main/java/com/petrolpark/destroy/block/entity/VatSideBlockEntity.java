@@ -12,9 +12,11 @@ import org.joml.Math;
 
 import com.petrolpark.destroy.block.DestroyBlocks;
 import com.petrolpark.destroy.block.entity.behaviour.RedstoneQuantityMonitorBehaviour;
+import com.petrolpark.destroy.capability.Pollution.PollutionType;
 import com.petrolpark.destroy.capability.blockEntity.VatSideFluidCapability;
 import com.petrolpark.destroy.config.DestroyAllConfigs;
 import com.petrolpark.destroy.util.DestroyLang;
+import com.petrolpark.destroy.util.PollutionHelper;
 import com.petrolpark.destroy.util.DestroyLang.TemperatureUnit;
 import com.petrolpark.destroy.util.vat.IUVLampBlock;
 import com.petrolpark.destroy.util.vat.IVatHeaterBlock;
@@ -333,7 +335,7 @@ public class VatSideBlockEntity extends CopycatBlockEntity implements IHaveLabGo
         if (VatMaterial.getMaterial(getMaterial()).map(VatMaterial::transparent).orElse(false)) {
             newUVPower = IUVLampBlock.getUVPower(getLevel(), heaterOrLampPos, direction.getOpposite());
             if (newUVPower == 0f) {
-                if (direction == Direction.UP && getLevel().canSeeSky(getBlockPos())) newUVPower = 10f; // It thinks getLevel() might be null //TODO effect of ozone
+                if (direction == Direction.UP) newUVPower = getSkyUV(); // It thinks getLevel() might be null
             };
         };
         if (newUVPower != oldUV) {
@@ -342,6 +344,13 @@ public class VatSideBlockEntity extends CopycatBlockEntity implements IHaveLabGo
         };
 
         sendData();
+    };
+
+    public float getSkyUV() {
+        if (!getLevel().canSeeSky(getBlockPos())) return 0f;
+        float uvPower = 10f;
+        if (PollutionHelper.pollutionEnabled() && DestroyAllConfigs.SERVER.pollution.vatUVPowerAffected.get()) uvPower += 20f * (float)PollutionHelper.getPollution(getLevel(), getBlockPos(), PollutionType.OZONE_DEPLETION) / (float)PollutionType.OZONE_DEPLETION.max;
+        return uvPower;
     };
 
     public static final Optional<Function<VatControllerBlockEntity, Float>> pressureObserved = Optional.of(VatControllerBlockEntity::getPressure);

@@ -7,7 +7,7 @@ import com.petrolpark.destroy.chemistry.api.reaction.context.IReactionContextPro
 /**
  * Something in which {@link IReaction}s or other {@link ITransformation}s occur, typically a {@link IMixture}.
  * In contrast to an {@link IReactor}, which represents the thing in which the chemical change is occuring, {@link IReacting}s represent the substance undergoing change.
- * @since Destroy 1.0
+ * @since Destroy 0.1.0
  * @author petrolpark
  */
 public interface IReacting<R extends IReacting<? super R>> extends IReactionContextProvider {
@@ -15,14 +15,14 @@ public interface IReacting<R extends IReacting<? super R>> extends IReactionCont
     /**
      * Whether a particular {@link ITransformation} is possible in this {@link IReacting}.
      * <strong>This is the be-all-and-end-all as to whether an {@link IReaction} is possible - calling {@link IReaction#isPossible(IReacting)} is not sufficient.</strong>
-     * @since Destroy 1.0
+     * @since Destroy 0.1.0
      * @author petrolpark
      */
     public boolean isPossible(ITransformation<? extends R> transformation);
 
     /**
      * Simulate the {@link ITransformation}s applicable to this {@link IReacting} for a short while.
-     * @since Destroy 1.0
+     * @since Destroy 0.1.0
      * @author petrolpark
      */
     public void react();
@@ -30,7 +30,7 @@ public interface IReacting<R extends IReacting<? super R>> extends IReactionCont
     /**
      * Whether any {@link ITransformation}s are currently occuring
      * - equivalently, whether calling {@link IReacting#react()} will result in a change in state.
-     * @since Destroy 1.0
+     * @since Destroy 0.1.0
      * @author petrolpark
      */
     public boolean isAtEquilibrium();

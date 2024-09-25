@@ -82,7 +82,7 @@ public class SmartExplosion extends Explosion {
         explosion.explode();
         explosion.finalizeExplosion(level.isClientSide());
 
-        if (level instanceof ServerLevel serverLevel) for(ServerPlayer player : serverLevel.getPlayers(player -> player.distanceToSqr(explosion.getPosition()) < 4096d)) {
+        if (level instanceof ServerLevel serverLevel) for (ServerPlayer player : serverLevel.getPlayers(player -> player.distanceToSqr(explosion.getPosition()) < 4096d)) {
             SmartExplosionS2CPacket.send(player, explosion);
         };
 

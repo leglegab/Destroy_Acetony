@@ -7,7 +7,7 @@ import net.minecraftforge.eventbus.api.Event;
 
 /**
  * The Minecraft Forge implementation of {@link IFiredChemistryEvent}.
- * @since Destroy 1.0
+ * @since Destroy 0.1.0
  * @author petrolpark
  */
 public class ForgeChemistryEvent<E extends IChemistryEvent> extends Event implements IFiredChemistryEvent<E> {

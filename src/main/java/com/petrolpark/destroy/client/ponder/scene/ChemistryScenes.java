@@ -4,6 +4,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import com.petrolpark.client.ponder.instruction.HighlightTagInstruction;
+import com.petrolpark.destroy.block.ColorimeterBlock;
 import com.petrolpark.destroy.block.PeriodicTableBlock;
 import com.petrolpark.destroy.block.PeriodicTableBlock.PeriodicTableEntry;
 import com.petrolpark.destroy.block.entity.BubbleCapBlockEntity;
@@ -12,12 +13,16 @@ import com.petrolpark.destroy.client.particle.DestroyParticleTypes;
 import com.petrolpark.destroy.client.particle.data.GasParticleData;
 import com.petrolpark.destroy.client.ponder.DestroyPonderTags;
 import com.petrolpark.destroy.client.ponder.instruction.DrainVatInstruction;
+import com.petrolpark.destroy.client.ponder.instruction.ExplodeInstruction;
 import com.petrolpark.destroy.client.ponder.instruction.SetVatPressureInstruction;
 import com.petrolpark.destroy.client.ponder.instruction.SetVatSideTypeInstruction;
 import com.petrolpark.destroy.client.ponder.instruction.ThermometerInstruction;
 import com.petrolpark.destroy.client.ponder.instruction.ThermometerInstruction.ThermometerElement;
 import com.petrolpark.destroy.item.DestroyItems;
+import com.simibubi.create.AllBlocks;
 import com.simibubi.create.content.kinetics.mixer.MechanicalMixerBlockEntity;
+import com.simibubi.create.content.redstone.nixieTube.NixieTubeBlockEntity;
+import com.simibubi.create.content.redstone.thresholdSwitch.ThresholdSwitchBlock;
 import com.simibubi.create.foundation.ponder.ElementLink;
 import com.simibubi.create.foundation.ponder.PonderPalette;
 import com.simibubi.create.foundation.ponder.SceneBuilder;
@@ -35,7 +40,10 @@ import net.minecraft.core.Direction;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.level.Explosion;
 import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.state.properties.BlockStateProperties;
+import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.fluids.capability.IFluidHandler.FluidAction;
 
@@ -525,7 +533,9 @@ public class ChemistryScenes {
 
         scene.addInstruction(new SetVatSideTypeInstruction(util.grid.at(3, 2, 4), VatSideBlockEntity.DisplayType.NORMAL));
         scene.addInstruction(new SetVatSideTypeInstruction(util.grid.at(3, 3, 5), VatSideBlockEntity.DisplayType.NORMAL));
-        ElementLink<WorldSectionElement> vat = scene.world.showIndependentSection(util.select.fromTo(3, 1, 3, 6, 4, 6), Direction.DOWN);
+        Selection r = util.select.fromTo(4, 4, 4, 5, 4, 5);
+        ElementLink<WorldSectionElement> vat = scene.world.showIndependentSection(util.select.fromTo(3, 1, 3, 6, 4, 6).substract(r), Direction.DOWN);
+        ElementLink<WorldSectionElement> roof = scene.world.showIndependentSection(r, Direction.DOWN);
         scene.idle(10);
 
         BlockPos barometer = util.grid.at(5, 2, 3);
@@ -578,6 +588,7 @@ public class ChemistryScenes {
         scene.idle(80);
 
         scene.world.moveSection(vat, util.vector.of(0d, 1d, 0d), 20);
+        scene.world.moveSection(roof, util.vector.of(0d, 1d, 0d), 20);
         scene.world.hideSection(util.select.fromTo(1, 1, 2, 2, 2, 4), Direction.WEST);
         scene.idle(20);
         scene.overlay.showText(240)
@@ -594,13 +605,14 @@ public class ChemistryScenes {
         scene.world.hideIndependentSection(burners, Direction.NORTH);
         scene.idle(20);
         scene.world.moveSection(vat, util.vector.of(0d, -1d, 0d), 20);
+        scene.world.moveSection(roof, util.vector.of(0d, -1d, 0d), 20);
         scene.idle(20);
         scene.overlay.showText(100)
             .text("This text is defined in a language file.")
             .independent(80)
             .attachKeyFrame();
         scene.idle(20);
-        scene.world.showSection(util.select.fromTo(1, 1, 5, 2, 3, 5).substract(util.select.position(2, 1, 5)), Direction.EAST);
+        ElementLink<WorldSectionElement> piping = scene.world.showIndependentSection(util.select.fromTo(1, 1, 5, 2, 3, 5).substract(util.select.position(2, 1, 5)), Direction.EAST);
         scene.idle(20);
         scene.addInstruction(new SetVatPressureInstruction(controller, 750000f, 0.05f));
         scene.idle(80);
@@ -610,6 +622,35 @@ public class ChemistryScenes {
             .colored(PonderPalette.GREEN)
             .independent();
         scene.idle(100);
+
+        scene.overlay.showText(100)
+            .text("This text is defined in a language file.")
+            .pointAt(util.vector.blockSurface(util.grid.at(3, 4, 5), Direction.WEST))
+            .attachKeyFrame();
+        scene.idle(20);
+        scene.world.hideIndependentSection(roof, Direction.UP);
+        scene.idle(20);
+        ElementLink<WorldSectionElement> glassCeiling = scene.world.showIndependentSection(util.select.fromTo(4, 5, 4, 5, 5, 5), Direction.DOWN);
+        scene.world.moveSection(glassCeiling, util.vector.of(0d, -1d, 0d), 0);
+        scene.idle(20);
+        scene.world.hideIndependentSection(glassCeiling, Direction.UP); // Break the glass ceiling
+        scene.idle(20);
+        ElementLink<WorldSectionElement> copperRoof = scene.world.showIndependentSection(util.select.fromTo(4, 6, 4, 5, 6, 5), Direction.DOWN);
+        scene.world.moveSection(copperRoof, util.vector.of(0d, -2d, 0d), 0);
+        scene.idle(40);
+
+        scene.overlay.showText(100)
+            .text("This text is defined in a language file.")
+            .independent()
+            .attachKeyFrame();
+        scene.idle(20);
+        scene.addInstruction(new SetVatPressureInstruction(controller, 1000000f, 0.05f));
+        scene.idle(40);
+        scene.world.hideIndependentSectionImmediately(vat);
+        scene.world.hideIndependentSectionImmediately(piping);
+        scene.world.hideIndependentSectionImmediately(copperRoof);
+        scene.addInstruction(new ExplodeInstruction(l -> new Explosion(l, null, 5f, 3f, 5f, 80f, false, Explosion.BlockInteraction.DESTROY)));
+        scene.idle(60);
 
         scene.markAsFinished();
     };
@@ -671,14 +712,246 @@ public class ChemistryScenes {
 
     public static final void vatReading(SceneBuilder scene, SceneBuildingUtil util) {
         scene.title("vat.reading", "This text is defined in a language file.");
+        scene.configureBasePlate(0, 0, 7);
+        scene.scaleSceneView(0.7f);
+        scene.showBasePlate();
+
+        BlockPos thermometer = util.grid.at(5, 2, 3);
+        BlockPos barometer = util.grid.at(4, 2, 3);
+
+        scene.idle(10);
+        scene.world.showSection(util.select.fromTo(3, 1, 3, 6, 4, 6), Direction.DOWN);
+        scene.idle(10);
+        scene.overlay.showText(80)
+            .text("This text is defined in a language file.")
+            .pointAt(util.vector.blockSurface(thermometer, Direction.WEST));
+        scene.idle(20);
+        scene.overlay.showControls(new InputWindowElement(util.vector.blockSurface(thermometer, Direction.NORTH), Pointing.RIGHT).rightClick().withWrench(), 60);
+        scene.idle(5);
+        scene.addInstruction(new SetVatSideTypeInstruction(thermometer, VatSideBlockEntity.DisplayType.THERMOMETER));
+        scene.idle(75);
+        scene.overlay.showText(110)
+            .text("This text is defined in a language file.")
+            .pointAt(util.vector.blockSurface(barometer, Direction.WEST))
+            .attachKeyFrame();
+        scene.idle(20);
+        scene.overlay.showControls(new InputWindowElement(util.vector.blockSurface(barometer, Direction.NORTH), Pointing.RIGHT).rightClick().withWrench(), 40);
+        scene.idle(5);
+        scene.addInstruction(new SetVatSideTypeInstruction(barometer, VatSideBlockEntity.DisplayType.THERMOMETER));
+        scene.idle(45);
+        scene.overlay.showControls(new InputWindowElement(util.vector.blockSurface(barometer, Direction.NORTH), Pointing.RIGHT).rightClick().withWrench(), 40);
+        scene.idle(5);
+        scene.addInstruction(new SetVatSideTypeInstruction(barometer, VatSideBlockEntity.DisplayType.BAROMETER));
+        scene.idle(65);
+
+        scene.world.showSection(util.select.fromTo(4, 1, 2, 5, 2, 2), Direction.DOWN);
+        scene.idle(10);
+        scene.addInstruction(new SetVatSideTypeInstruction(thermometer, VatSideBlockEntity.DisplayType.THERMOMETER_BLOCKED));
+        scene.addInstruction(new SetVatSideTypeInstruction(barometer, VatSideBlockEntity.DisplayType.BAROMETER_BLOCKED));
+        scene.effects.indicateRedstone(barometer.north());
+        scene.effects.indicateRedstone(thermometer.north());
+        scene.world.cycleBlockProperty(barometer.north(), BlockStateProperties.POWERED);
+        scene.world.cycleBlockProperty(thermometer.north(), BlockStateProperties.POWERED);
+        scene.idle(20);
+        scene.overlay.showText(100)
+            .text("This text is defined in a language file.")
+            .attachKeyFrame();
+        scene.idle(40);
+        scene.world.showSection(util.select.fromTo(4, 1, 1, 5, 2, 1), Direction.DOWN);
+        scene.idle(10);
+        scene.world.modifyBlockEntityNBT(util.select.position(5, 2, 1), NixieTubeBlockEntity.class, nbt -> nbt.putInt("RedstoneStrength", 6));
+        scene.world.modifyBlockEntityNBT(util.select.position(4, 2, 1), NixieTubeBlockEntity.class, nbt -> nbt.putInt("RedstoneStrength", 1));
+        scene.idle(70);
+
+        scene.overlay.showText(100)
+            .text("This text is defined in a language file.")
+            .attachKeyFrame()
+            .pointAt(util.vector.blockSurface(thermometer, Direction.WEST))
+            .attachKeyFrame();
+        scene.idle(20);
+        scene.overlay.showControls(new InputWindowElement(util.vector.blockSurface(thermometer, Direction.NORTH, 0.25f), Pointing.RIGHT).rightClick(), 80);
+        scene.idle(40);
+        scene.world.modifyBlockEntityNBT(util.select.position(5, 2, 1), NixieTubeBlockEntity.class, nbt -> nbt.putInt("RedstoneStrength", 11));
+        scene.idle(60);
+
+        scene.overlay.showText(200)
+            .text("This text is defined in a language file.")
+            .independent();
+        scene.idle(20);
+        scene.world.cycleBlockProperty(thermometer.north(), BlockStateProperties.POWERED);
+        scene.effects.indicateRedstone(thermometer.north());
+        scene.world.modifyBlockEntityNBT(util.select.position(5, 2, 1), NixieTubeBlockEntity.class, nbt -> nbt.putInt("RedstoneStrength", 0));
+        scene.idle(40);
+        scene.overlay.showText(140)
+            .text("This text is defined in a language file.")
+            .independent(40);
+        scene.idle(20);
+        scene.world.cycleBlockProperty(thermometer.north(), BlockStateProperties.POWERED);
+        scene.effects.indicateRedstone(thermometer.north());
+        scene.world.modifyBlockEntityNBT(util.select.position(5, 2, 1), NixieTubeBlockEntity.class, nbt -> nbt.putInt("RedstoneStrength", 15));
+        scene.idle(40);
+        scene.overlay.showText(80)
+            .text("This text is defined in a language file.")
+            .colored(PonderPalette.GREEN)
+            .independent(80);
+        scene.idle(20);
+        scene.world.modifyBlockEntityNBT(util.select.position(5, 2, 1), NixieTubeBlockEntity.class, nbt -> nbt.putInt("RedstoneStrength", 10));
+        scene.effects.indicateRedstone(thermometer.north());
+        scene.idle(80);
+
+        BlockPos tswitch = util.grid.at(2, 2, 4);
+        BlockPos rs1 = util.grid.at(1, 2, 3);
+        BlockPos rs2 = util.grid.at(1, 2, 4);
+        Selection redstone = util.select.fromTo(rs1, rs2);
+        scene.world.showSection(util.select.fromTo(1, 1, 3, 2, 2, 4), Direction.DOWN);
+        scene.idle(20);
+        scene.overlay.showText(100)
+            .text("This text is defined in a language file.")
+            .pointAt(util.vector.blockSurface(tswitch, Direction.WEST))
+            .attachKeyFrame();
+        scene.idle(20);
+        scene.world.cycleBlockProperty(tswitch, ThresholdSwitchBlock.LEVEL);
+        scene.world.modifyBlocks(redstone, s -> s.setValue(BlockStateProperties.POWER, 4), false);
+        scene.effects.indicateRedstone(rs1);
+        scene.effects.indicateRedstone(rs2);
+        scene.idle(60);
+        scene.world.cycleBlockProperty(tswitch, ThresholdSwitchBlock.LEVEL);
+        scene.world.modifyBlocks(redstone, s -> s.setValue(BlockStateProperties.POWER, 8), false);
+        scene.effects.indicateRedstone(rs1);
+        scene.effects.indicateRedstone(rs2);
+        scene.idle(40);
+
+
+        BlockPos lectern = util.grid.at(1, 1, 6);
+        BlockPos link = util.grid.at(4, 5, 4);
+        scene.world.showSection(util.select.position(lectern), Direction.DOWN);
+        scene.idle(20);
+        scene.addKeyframe();
+        scene.overlay.showControls(new InputWindowElement(util.vector.blockSurface(lectern, Direction.UP), Pointing.DOWN).withItem(AllBlocks.DISPLAY_LINK.asStack()).rightClick(), 40);
+        scene.idle(5);
+        scene.overlay.chaseBoundingBoxOutline(PonderPalette.OUTPUT, "lectern", new AABB(lectern), 35);  
+        scene.idle(40);
+        scene.world.showSection(util.select.position(link), Direction.DOWN);
+        scene.idle(10);
+        scene.overlay.showText(100)
+            .text("This text is defined in a language file.")
+            .pointAt(util.vector.blockSurface(link, Direction.WEST));
+        scene.idle(20);
+        scene.world.flashDisplayLink(link);
+        scene.idle(100);
+        
+        scene.markAsFinished();
     };
 
     public static final void colorimeter(SceneBuilder scene, SceneBuildingUtil util) {
         scene.title("colorimeter", "This text is defined in a language file.");
+        scene.configureBasePlate(0, 0, 5);
+        scene.showBasePlate();
+        scene.idle(10);
+        scene.world.showSection(util.select.fromTo(2, 1, 1, 4, 3, 4), Direction.DOWN);
+        scene.idle(10);
+
+        BlockPos colorimeter = util.grid.at(1, 2, 2);
+
+        scene.world.showSection(util.select.position(0, 1, 2), Direction.DOWN);
+        scene.idle(10);
+        ElementLink<WorldSectionElement> c1 = scene.world.showIndependentSection(util.select.position(colorimeter), Direction.DOWN);
+        scene.world.rotateSection(c1, 0, 90d, 0, 0);
+        scene.world.moveSection(c1, util.vector.of(-1d, 0d, 0d), 0);
+        scene.idle(20);
+        scene.world.rotateSection(c1, 0d, -90d, 0d, 15);
+        scene.world.moveSection(c1, util.vector.of(1d, 0d, 0d), 15);
+        scene.idle(15);
+        scene.world.cycleBlockProperty(colorimeter, ColorimeterBlock.POWERED);
+        scene.idle(5);
+
+        scene.overlay.showText(100)
+            .text("This text is defined in a language file.")
+            .pointAt(util.vector.blockSurface(colorimeter, Direction.WEST));
+        scene.idle(40);
+        scene.overlay.showControls(new InputWindowElement(util.vector.topOf(colorimeter), Pointing.DOWN).rightClick(), 60);
+        scene.idle(80);
+
+        ElementLink<WorldSectionElement> c2 = scene.world.showIndependentSection(util.select.position(3, 2, 0), Direction.DOWN);
+        scene.idle(20);
+        scene.overlay.showText(100)
+            .text("This text is defined in a language file.")
+            .pointAt(util.vector.topOf(3, 2, 0))
+            .attachKeyFrame();
+        scene.idle(20);
+        scene.world.moveSection(c1, util.vector.of(-1d, 0d, 0d), 15);
+        scene.world.moveSection(c2, util.vector.of(0d, 0d, -1d), 15);
+        scene.idle(30);
+        scene.overlay.chaseBoundingBoxOutline(PonderPalette.RED, "c2", new AABB(util.grid.at(3, 2, 1)), 50);
+        scene.overlay.chaseBoundingBoxOutline(PonderPalette.GREEN, "c1", new AABB(colorimeter.east()), 50);
+        scene.idle(70);
+
+        scene.world.moveSection(c1, util.vector.of(1d, 0d, 0d), 15);
+        scene.world.hideIndependentSection(c2, Direction.UP);
+        scene.idle(20);
+        scene.world.showSection(util.select.fromTo(0, 1, 1, 0, 2, 2).substract(util.select.position(0, 1, 2)), Direction.DOWN);
+        scene.idle(10);
+        BlockPos redstone = util.grid.at(0, 2, 2);
+        scene.world.modifyBlock(redstone, s -> s.setValue(BlockStateProperties.POWER, 4), false);
+        scene.effects.indicateRedstone(redstone);
+        scene.world.modifyBlockEntityNBT(util.select.position(0, 2, 1), NixieTubeBlockEntity.class, nbt -> nbt.putInt("RedstoneStrength", 4));
+        scene.idle(10);
+        scene.overlay.showText(100)
+            .text("This text is defined in a language file.")
+            .pointAt(util.vector.blockSurface(colorimeter, Direction.WEST))
+            .attachKeyFrame();
+        scene.idle(60);
+        scene.world.modifyBlock(redstone, s -> s.setValue(BlockStateProperties.POWER, 10), false);
+        scene.effects.indicateRedstone(redstone);
+        scene.world.modifyBlockEntityNBT(util.select.position(0, 2, 1), NixieTubeBlockEntity.class, nbt -> nbt.putInt("RedstoneStrength", 10));
+        scene.idle(80);
+
+        scene.markAsFinished();
     };
 
-    public static final void vatUV(SceneBuilder scene, SceneBuildingUtil util) {
+    public static final void vatUVWithoutBlackLight(SceneBuilder scene, SceneBuildingUtil util) {
+        vatUV(scene, util, false);
+    };
+
+    public static final void vatUVWithBlackLight(SceneBuilder scene, SceneBuildingUtil util) {
+        vatUV(scene, util, true);
+    };
+
+    public static final void vatUV(SceneBuilder scene, SceneBuildingUtil util, boolean includeBlacklight) {
         scene.title("vat.uv", "This text is defined in a language file.");
+        scene.configureBasePlate(0, 0, 5);
+        scene.showBasePlate();
+        scene.idle(10);
+        scene.world.showSection(util.select.fromTo(1, 1, 1, 3, 3, 3), Direction.DOWN);
+        scene.idle(10);
+
+        scene.overlay.showText(80)
+            .text("This text is defined in a language file.")
+            .pointAt(util.vector.blockSurface(util.grid.at(1, 2, 2), Direction.WEST));
+        scene.idle(100);
+        scene.overlay.showText(120)
+            .text("This text is defined in a language file.")
+            .attachKeyFrame()
+            .pointAt(util.vector.topOf(2, 3, 2));
+        scene.idle(40);
+        scene.overlay.showText(80)
+            .text("This text is defined in a language file.")
+            .independent(60);
+        scene.idle(100);
+
+        if (!includeBlacklight) {
+            scene.markAsFinished();
+            return;
+        };
+
+        scene.world.showSection(util.select.position(0, 2, 2), Direction.EAST);
+        scene.idle(10);
+        scene.overlay.showText(80)
+            .text("This text is defined in a language file.")
+            .pointAt(util.vector.blockSurface(util.grid.at(0, 2, 2), Direction.WEST));
+        scene.idle(100);
+
+        scene.markAsFinished();
     };
 
     public static int[] defaultPositions = new int[]{

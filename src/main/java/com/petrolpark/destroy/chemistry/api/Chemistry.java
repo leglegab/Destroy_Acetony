@@ -18,7 +18,7 @@ import com.petrolpark.destroy.chemistry.api.species.ISpeciesComparator;
 
 /**
  * The main class for Destroy's chemistry system.
- * @since Destroy 1.0
+ * @since Destroy 0.1.0
  * @author petrolpark
  */
 public class Chemistry {

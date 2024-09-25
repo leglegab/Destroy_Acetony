@@ -9,7 +9,7 @@ import com.petrolpark.destroy.chemistry.api.species.structure.IMolecularStructur
 
 /**
  * 
- * @since Destroy 1.0
+ * @since Destroy 0.1.0
  * @author petrolpark
  */
 public interface IModifiableTraversableMolecularStructure<S extends IModifiableTraversableMolecularStructure<? super S, A, N, C, CS>, A extends IAtom<? extends N>, N extends INuclide, C extends IAtomConnection<? extends A, ? extends N>, CS extends IAtomConnections<? extends A, ? extends N, ? extends C>> extends ITraversableMolecularStructure<A, N, C, CS>, IModifiableMolecularStructure<S, A, N, C, CS> {
@@ -19,7 +19,7 @@ public interface IModifiableTraversableMolecularStructure<S extends IModifiableT
      * @param atom A new {@link IAtom} not already {@link IMolecularStructure#contains(IAtom) in} this {@link IMolecularStructure}
      * @param connector A function which forms this initial {@link IAtomConnection}, and which should be passed {@code newAtom}, {@code existingAtom} in that order
      * @throws IllegalArgumentException If {@code atom} is already {@link IMolecularStructure#contains(IAtom) in} this {@link IMolecularStructure}
-     * @since Destroy 1.0
+     * @since Destroy 0.1.0
      * @author petrolpark
      * @see IModifiableTraversableMolecularStructure#connect(IAtom, IAtomConnectionFactory) Connecting to an IAtom already in the IMolecularStructure
      */
@@ -35,7 +35,7 @@ public interface IModifiableTraversableMolecularStructure<S extends IModifiableT
      * This {@link IModifiableTraversableMolecularStructure} will still contain the {@link ITraversableMolecularStructure#getSelectedAtom() currently selected} {@link IAtom}, and the fragments in this {@link Collection} will have their {@link ITraversableMolecularStructure#select(IAtom) selected IAtom} set to one of the ones that was originally connected to {@code atom}.
      * This selection is arbitrary, so if the fragments need further modification their {@link ITraversableMolecularStructure#getSelectedAtom() currently selected} {@link IAtom} should be {@link ITraversableMolecularStructure#select(IAtom) reselected.
      * @throws IllegalArgumentException If {@code atom} is not {@link IMolecularStructure#contains(IAtom) in} this {@link IMolecularStructure}.
-     * @since Destroy 1.0
+     * @since Destroy 0.1.0
      * @author petrolpark
      */
     @Override
@@ -46,7 +46,7 @@ public interface IModifiableTraversableMolecularStructure<S extends IModifiableT
      * @param atom
      * @param connector A function which forms the {@link IAtomConnection}, which should be passed the {@link ITraversableMolecularStructure#getSelectedAtom() currently selected} {@link IAtom}, then {@code atom} in that order
      * @throws IllegalArgumentException If {@code atom} or {@code atom2} is not {@link IMolecularStructure#contains(IAtom) in} this {@link IMolecularStructure}.
-     * @since Destroy 1.0
+     * @since Destroy 0.1.0
      * @author petrolpark
      * @see IModifiableMolecularStructure#connect(IAtom, IAtom, com.petrolpark.destroy.chemistry.api.species.structure.IModifiableMolecularStructure.IAtomConnectionFactory) Connecting arbitrary IAtoms
      */

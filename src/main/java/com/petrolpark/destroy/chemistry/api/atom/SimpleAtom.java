@@ -12,7 +12,7 @@ import com.petrolpark.destroy.chemistry.api.property.IElectronegativity;
  * <li>All atoms of one {@link INuclide} have the same electronegativity.
  * </ul>
  * This is the default implentation of {@link IAtom} in Destroy.
- * @since Destroy 1.0
+ * @since Destroy 0.1.0
  * @author petrolpark
  */
 public class SimpleAtom<N extends INuclide & IElectronegativity> implements IAtom<N> {

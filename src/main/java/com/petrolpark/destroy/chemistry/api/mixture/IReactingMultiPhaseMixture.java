@@ -3,7 +3,7 @@ package com.petrolpark.destroy.chemistry.api.mixture;
 import com.petrolpark.destroy.chemistry.api.reaction.IReacting;
 
 /**
- * @since Destroy 1.0
+ * @since Destroy 0.1.0
  * @author petrolpark
  */
 public interface IReactingMultiPhaseMixture <

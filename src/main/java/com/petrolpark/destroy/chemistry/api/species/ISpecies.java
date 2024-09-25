@@ -10,7 +10,7 @@ import com.petrolpark.destroy.chemistry.api.tag.ITaggable;
 /**
  * At the end of the day an {@link ISpecies} is a collection of {@link IAtom}s.
  * This includes things like molecules, ions and free atoms, but typically not things like enzymes.
- * @since Destroy 1.0
+ * @since Destroy 0.1.0
  * @author petrolpark
  * @see ISpeciesComparator Checking if two Species are the same
  * @see SimpleSpecies Default implementation

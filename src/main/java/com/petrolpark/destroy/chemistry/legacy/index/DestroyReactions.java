@@ -32,6 +32,13 @@ public class DestroyReactions {
         .activationEnergy(20f)
         .build(),
 
+    ACETYLENE_TRIMERIZATION = builder()
+        .id("actylene_trimerization")
+        .addReactant(DestroyMolecules.ACETYLENE, 3)
+        .addSimpleItemTagCatalyst(AllTags.forgeItemTag("dusts/nickel"), 5f)
+        .addProduct(DestroyMolecules.BENZENE)
+        .build(),
+
     ACRYLONITRILE_POLYMERIZATION = builder()
         .id("acrylonitrile_polymerization")
         .addReactant(DestroyMolecules.ACRYLONITRILE)

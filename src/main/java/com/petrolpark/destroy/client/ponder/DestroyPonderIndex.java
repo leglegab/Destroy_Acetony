@@ -40,7 +40,7 @@ public class DestroyPonderIndex {
 
         // Blacklight
         HELPER.forComponents(DestroyBlocks.BLACKLIGHT)
-            .addStoryBoard("vat/uv", ChemistryScenes::vatUV);
+            .addStoryBoard("vat/uv", ChemistryScenes::vatUVWithBlackLight);
 
         // Blaze Burner
         HELPER.forComponents(AllBlocks.BLAZE_BURNER)
@@ -66,7 +66,6 @@ public class DestroyPonderIndex {
             .addStoryBoard("processing/centrifuge/generic", ProcessingScenes::centrifugeGeneric)
             .addStoryBoard("processing/centrifuge/mixture", ProcessingScenes::centrifugeMixture, DestroyPonderTags.CHEMISTRY);
 
-        
         // Colorimeter
         HELPER.forComponents(DestroyBlocks.COLORIMETER)
             .addStoryBoard("colorimeter", ChemistryScenes::colorimeter);
@@ -124,6 +123,7 @@ public class DestroyPonderIndex {
             .addStoryBoard("blank_3x3", PollutionScenes::breedingFailure)
             .addStoryBoard("pollution/smog", PollutionScenes::villagerPriceIncrease)
             .addStoryBoard("pollution/cancer", PollutionScenes::cancer)
+            .addStoryBoard("vat/uv", ChemistryScenes::vatUVWithoutBlackLight)
             .addStoryBoard("pollution/smog", PollutionScenes::acidRain)
             .addStoryBoard("pollution/room_temperature", ChemistryScenes::roomTemperature)
             .addStoryBoard("pollution/reduction", PollutionScenes::reduction)
@@ -166,7 +166,7 @@ public class DestroyPonderIndex {
             .addStoryBoard("pollution/basins_and_vats", PollutionScenes::basinsAndVats)
             .addStoryBoard("vat/reading", ChemistryScenes::vatReading)
             .addStoryBoard("colorimeter", ChemistryScenes::colorimeter)
-            .addStoryBoard("vat/uv", ChemistryScenes::vatUV);
+            .addStoryBoard("vat/uv", ChemistryScenes::vatUVWithBlackLight);
     };
 
     private static final ResourceLocation periodicTableSchematicLocation = Destroy.asResource("periodic_table");

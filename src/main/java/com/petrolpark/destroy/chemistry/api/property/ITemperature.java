@@ -2,7 +2,7 @@ package com.petrolpark.destroy.chemistry.api.property;
 
 /**
  * An object of which instances have a single, homogenous or average temperature.
- * @since Destroy 1.0
+ * @since Destroy 0.1.0
  * @author petrolpark
  */
 public interface ITemperature {

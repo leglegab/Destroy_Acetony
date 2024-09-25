@@ -9,7 +9,7 @@ import net.minecraftforge.eventbus.api.Event;
 /**
  * The Minecraft Forge implementation of {@link IChemistryEventFirer}.
  * {@link IChemistryEvent}s are fired as Forge {@link Event}s.
- * @since Destroy 1.0
+ * @since Destroy 0.1.0
  * @author petrolpark
  */
 public class ForgeChemistryEventFirer implements IChemistryEventFirer {
