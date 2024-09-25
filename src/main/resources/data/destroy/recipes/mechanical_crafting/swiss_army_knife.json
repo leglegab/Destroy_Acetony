@@ -7,7 +7,7 @@
     ],
     "key": {
       "P": {
-        "item": "destroy:polypropene"
+        "tag": "destroy:plastic/rigid"
       },
       "M": {
         "item": "create:precision_mechanism"

@@ -84,7 +84,7 @@
             "amount": 1000,
             "nbt": {
                 "Mixture": {
-                    "TranslationKey": "fluid.destroy.lpg",
+                    "TranslationKey": "fluid.destroy.refinery_gas",
                     "Contents": [
                         {
                             "Molecule": "destroy:methane",

@@ -1,5 +1,6 @@
 {
   "values": [
-    "destroy:palladium_block"
+    "destroy:palladium_block",
+    "destroy:palladium_periodic_table_block"
   ]
 }

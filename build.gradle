@@ -40,12 +40,16 @@ afterEvaluate {
     tasks.configureReobfTaskForReobfJarJar.mustRunAfter(tasks.compileJava)
 }
 
-// Mod Details
+// Mod Detailss
 version = "${mod_version}"
 group = 'com.petrolpark.destroy'
 archivesBaseName = "destroy-${minecraft_version}"
 
-java.toolchain.languageVersion = JavaLanguageVersion.of(17) //Set Java version
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(17) //Set Java version
+    }
+}
 
 println "Java: ${System.getProperty 'java.version'}, JVM: ${System.getProperty 'java.vm.version'} (${System.getProperty 'java.vendor'}), Arch: ${System.getProperty 'os.arch'}"
 minecraft {
@@ -56,8 +60,10 @@ minecraft {
         client {
             workingDirectory project.file('run')
             arg '-mixin.config=create.mixins.json'
+            arg '-mixin.config=petrolpark.mixins.json'
             arg '-mixin.config=destroy.mixins.json'
             arg '-mixin.config=flywheel.mixins.json'
+            jvmArgs += ['-XX:+AllowEnhancedClassRedefinition']
             property 'forge.logging.console.level', 'info'
             mods {
                 destroy {
@@ -69,7 +75,9 @@ minecraft {
         server {
             workingDirectory project.file('run/server')
             arg '-mixin.config=create.mixins.json'
+            arg '-mixin.config=petrolpark.mixins.json'
             arg '-mixin.config=destroy.mixins.json'
+            jvmArgs += ['-XX:+AllowEnhancedClassRedefinition']
             property 'forge.logging.console.level', 'info'
             mods {
                 destroy {
@@ -105,15 +113,6 @@ repositories {
         name = 'tterag maven'
         url = 'https://www.cursemaven.com'
     }
-    maven { // Curse Maven
-        url = "https://cursemaven.com"
-        content {
-            includeGroup "curse.maven"
-        }
-    }
-    maven { // Blueprint
-        url = "https://maven.jaackson.me"
-    }
 
     exclusiveContent {
         forRepository {
@@ -126,6 +125,30 @@ repositories {
         filter {
             includeGroup "maven.modrinth"
         }
+    }
+
+    flatDir {
+        dirs "../petrolpark_local_maven/petrolpark/petrolpark-${minecraft_version}/${petrolpark_library_version}"
+    }
+
+    maven {
+        // Curios
+        url = "https://maven.theillusivec4.top/"
+    }
+    maven { // Curse Maven - Farmer's Delight and C:TFMG
+        url = "https://cursemaven.com"
+        content {
+            includeGroup "curse.maven"
+        }
+    }
+    maven { // CBC library library
+        url "https://pkgs.dev.azure.com/djtheredstoner/DevAuth/_packaging/public/maven/v1"
+    }
+    maven { // CBC
+        url "https://maven.realrobotix.me/master"
+    }
+    maven { // Blueprint
+        url = "https://maven.jaackson.me"
     }
 }
 
@@ -156,10 +179,16 @@ dependencies {
     implementation fg.deobf("com.simibubi.create:create-${minecraft_version}:${create_version}:slim") { transitive = false }
 
     // Flywheel
-    implementation fg.deobf("com.jozufozu.flywheel:flywheel-forge-${flywheel_minecraft_version}:${flywheel_version}")
+    implementation fg.deobf("com.jozufozu.flywheel:flywheel-forge-${minecraft_version}:${flywheel_version}")
 
     // Registrate
     implementation fg.deobf("com.tterrag.registrate:Registrate:${registrate_version}")
+
+    // Petrolpark Library (temporary)
+    implementation "com.petrolpark:petrolpark:${minecraft_version}-${petrolpark_library_version}"
+
+    // CDK
+    //implementation "org.openscience.cdk:cdk-bundle:2.9"
 
     // OPTIONAL DEPENDENCIES
 
@@ -170,13 +199,18 @@ dependencies {
 
     // Farmer's Delight
     compileOnly fg.deobf("curse.maven:farmers-delight-398521:${farmersdelight_version}")
-    implementation fg.deobf("curse.maven:farmers-delight-398521:${farmersdelight_version}")
 
-    // Blueprint
-    compileOnly fg.deobf("com.teamabnormals:blueprint:${minecraft_version}-${blueprint_version}")
-    implementation fg.deobf("com.teamabnormals:blueprint:${minecraft_version}-${blueprint_version}")
+    // Curios
+    compileOnly fg.deobf("top.theillusivec4.curios:curios-forge:${curios_version}+${minecraft_version}:api")
+    runtimeOnly fg.deobf("top.theillusivec4.curios:curios-forge:${curios_version}+${minecraft_version}")
+    
+    // TFMG
+    compileOnly fg.deobf("curse.maven:create-industry-693815:5558101")
 
-
+    // CBC
+    implementation fg.deobf("com.rbasamoyai:ritchiesprojectilelib:1.0.0-369e88d+1.20.1-forge")
+    implementation fg.deobf("com.rbasamoyai:createbigcannons:${cbc_version}")
+    
     // ANNOTATION PROCESSORS
 
     annotationProcessor "org.spongepowered:mixin:${mixin_version}:processor"
@@ -203,15 +237,23 @@ jar.finalizedBy('reobfJar')
 // However if you are in a multi-project build, dev time needs unobfed jar files, so you can delay the obfuscation until publishing by doing
 // publish.dependsOn('reobfJar')
 
+java {
+    withSourcesJar()
+    // withJavadocJar() // Too many errors with the JavaDocs; prevents publishing
+}
+
 publishing {
     publications {
         mavenJava(MavenPublication) {
-            artifact jar
+            artifactId = archivesBaseName
+            
+            from components.java
+            fg.component(it)
         }
     }
     repositories {
-        maven {
-            url "file://${project.projectDir}/mcmodsrepo"
+        maven {  
+            url "file://${project.projectDir}/../petrolpark_local_maven"
         }
     }
 }

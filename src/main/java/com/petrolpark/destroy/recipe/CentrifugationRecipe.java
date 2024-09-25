@@ -1,10 +1,17 @@
 package com.petrolpark.destroy.recipe;
 
+import java.util.Set;
+import java.util.HashSet;
+
+import com.ibm.icu.impl.locale.XCldrStub.ImmutableSet;
+import com.petrolpark.recipe.advancedprocessing.IBiomeSpecificProcessingRecipe;
 import com.simibubi.create.content.processing.recipe.ProcessingRecipeBuilder.ProcessingRecipeParams;
 
 import net.minecraftforge.fluids.FluidStack;
 
-public class CentrifugationRecipe extends SingleFluidRecipe {
+public class CentrifugationRecipe extends SingleFluidRecipe implements IBiomeSpecificProcessingRecipe {
+    
+    private Set<BiomeValue> biomes = new HashSet<>();
 
     public CentrifugationRecipe(ProcessingRecipeParams params) {
         super(DestroyRecipeTypes.CENTRIFUGATION, params);
@@ -27,6 +34,16 @@ public class CentrifugationRecipe extends SingleFluidRecipe {
     @Override
     public String getRecipeTypeName() {
         return "Centrifugation";
+    }
+
+    @Override
+    public void setAllowedBiomes(Set<BiomeValue> biomes) {
+        biomes = ImmutableSet.copyOf(biomes);
+    };
+
+    @Override
+    public Set<BiomeValue> getAllowedBiomes() {
+        return biomes;
     };
     
 }

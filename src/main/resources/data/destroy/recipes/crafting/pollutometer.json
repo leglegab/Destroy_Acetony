@@ -2,7 +2,7 @@
     "type": "minecraft:crafting_shaped",
     "pattern": [
       "TPS",
-      "PMP",
+      "PCP",
       " P "
     ],
     "key": {
@@ -10,13 +10,15 @@
         "item": "minecraft:string"
       },
       "P": {
-        "item": "destroy:polypropene"
+        "tag": "destroy:plastic/rigid"
       },
       "S": {
         "item": "destroy:silica"
       },
-      "M": {
-        "item": "destroy:voltaic_pile"
+      "C": {
+        "type": "destroy:circuit_pattern_item",
+        "item": "destroy:circuit_board",
+        "pattern": "destroy:shared_hard_0"
       }
     },
     "result": {

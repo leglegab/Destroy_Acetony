@@ -1,0 +1,9 @@
+{
+    "asset_name": "fluorite",
+    "description": {
+      "color": "#8c86ca",
+      "translate": "destroy.trim_material.fluorite"
+    },
+    "ingredient": "destroy:fluorite",
+    "item_model_index": -1.0
+  }

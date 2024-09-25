@@ -43,7 +43,7 @@ public class ExtendedDurationFireworkRocketRecipe extends CustomRecipe {
     };
 
     public static final Ingredient explosiveIngredient(boolean secondaryExplosive) {
-        return Ingredient.of(secondaryExplosive ? DestroyItemTags.SECONDARY_EXPLOSIVE.tag : DestroyItemTags.PRIMARY_EXPLOSIVE.tag);
+        return Ingredient.of(secondaryExplosive ? DestroyItemTags.SECONDARY_EXPLOSIVES.tag : DestroyItemTags.PRIMARY_EXPLOSIVES.tag);
     };
 
     @Override

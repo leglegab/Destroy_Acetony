@@ -14,6 +14,10 @@
       },
       {
         "type": "single",
+        "resource": "destroy:fluid/gas"
+      },
+      {
+        "type": "single",
         "resource": "destroy:fluid/mixture_flow"
       },
       {
@@ -59,6 +63,25 @@
       {
         "type": "single",
         "resource": "destroy:entity/armor/gas_mask"
+      },
+      {
+        "type": "single",
+        "resource": "destroy:entity/armor/paper_mask"
+      },
+      {
+        "type": "single",
+        "resource": "destroy:entity/armor/laboratory_goggles"
+      },
+      {
+        "type": "single",
+        "resource": "destroy:entity/armor/gold_laboratory_goggles"
+      },
+      {
+        "type": "single",
+        "resource": "destroy:item/test_tube_overlay"
+      },
+      {
+        "type": "destroy:blocks"
       }
     ]
   }

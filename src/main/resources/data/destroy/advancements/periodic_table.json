@@ -1,0 +1,31 @@
+{
+    "parent": "destroy:carbon_fiber",
+    "criteria": {
+      "build": {
+        "trigger": "destroy:periodic_table"
+      }
+    },
+    "display": {
+      "description": {
+        "color": "#DBA213",
+        "translate": "advancement.destroy.periodic_table.description"
+      },
+      "icon": {
+        "item": "destroy:gold_periodic_table_block"
+      },
+      "title": {
+        "translate": "advancement.destroy.periodic_table"
+      },
+      "frame": "challenge",
+      "rewards": {
+        "loot": [
+          "destroy:gold_laboratory_goggles"
+        ]
+      }
+    },
+    "requirements": [
+      [
+        "build"
+      ]
+    ]
+  }

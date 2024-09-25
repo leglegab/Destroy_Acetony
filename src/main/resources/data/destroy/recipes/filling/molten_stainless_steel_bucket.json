@@ -1,0 +1,17 @@
+{
+    "type": "create:filling",
+    "ingredients": [
+      {
+        "item": "minecraft:bucket"
+      },
+      {
+        "fluid": "destroy:molten_stainless_steel",
+        "amount": 1000
+      }
+    ],
+    "results": [
+      {
+        "item": "destroy:molten_stainless_steel_bucket"
+      }
+    ]
+  }

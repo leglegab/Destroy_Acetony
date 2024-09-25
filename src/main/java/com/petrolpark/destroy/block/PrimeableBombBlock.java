@@ -19,19 +19,18 @@ import net.minecraft.world.level.block.TntBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.gameevent.GameEvent;
 
-public class PrimeableBombBlock extends TntBlock {
+public class PrimeableBombBlock<T extends PrimedBomb> extends TntBlock {
 
-    protected PrimedBombEntityFactory factory;
+    protected final PrimedBombEntityFactory<T> factory;
 
     @FunctionalInterface
-    public static interface PrimedBombEntityFactory {
-        PrimedBomb create(Level level, BlockPos pos, @Nullable BlockState state, @Nullable LivingEntity igniter);
+    public interface PrimedBombEntityFactory<T> {
+        T create(Level level, BlockPos pos, @Nullable BlockState state, @Nullable LivingEntity igniter);
     };
 
-    public PrimeableBombBlock(Properties properties, PrimedBombEntityFactory factory) {
+    public PrimeableBombBlock(Properties properties, PrimedBombEntityFactory<T> factory) {
         super(properties);
         this.factory = factory;
-        DispenserBlock.registerBehavior(this, new PrimeableBombDispenseBehaviour());
     };
 
     @Override
@@ -44,19 +43,19 @@ public class PrimeableBombBlock extends TntBlock {
     };
 
     @Override
-    public void wasExploded(Level level, BlockPos pos, Explosion explosion) {
+    public void onBlockExploded(BlockState state, Level level, BlockPos pos, Explosion explosion) {
         if (!level.isClientSide() && factory != null) {
-            PrimedBomb entity = factory.create(level, pos, null, explosion.getIndirectSourceEntity());
-            int i = entity.getFuse();
-            entity.setFuse((short)(level.random.nextInt(i / 4) + i / 8));
+            PrimedBomb entity = factory.create(level, pos, state, explosion.getIndirectSourceEntity());
             level.addFreshEntity(entity);
         };
+        super.onBlockExploded(state, level, pos, explosion);
     };
 
-    /**
-     * Get the fuse time for this bomb.
-     * This does not get called when the entity is exploded by another explosion.
-     */
+    @Override
+    public void wasExploded(Level pLevel, BlockPos pos, Explosion explosion) {
+        //NOOP
+    };
+
     public int getFuseTime(Level world, BlockPos pos, BlockState state) {
         return 80;
     };

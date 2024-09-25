@@ -45,7 +45,7 @@ public interface DestroyFrictionModifier extends IForgeBlockState {
             if (alcoholEffect != null) {
                 return (float)(originalFriction + ((1 - originalFriction)
                     * Math.min(5, alcoholEffect.getAmplifier() + 1) / 5 // Scale the extent of slipping with the amplifier of Inebriation (effects stop compounding after 4)
-                    * (DestroyAllConfigs.COMMON.substances.drunkenSlipping.get() - 0.001f)) // Maximum level of slipping
+                    * (DestroyAllConfigs.SERVER.substances.drunkenSlipping.get() - 0.001f)) // Maximum level of slipping
                 );
             };
         };

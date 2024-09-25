@@ -19,17 +19,23 @@ public class DestroyMixinPlugin implements IMixinConfigPlugin {
     @Override
     public void onLoad(String mixinPackage) {
         // JEI & Create JEI mixins
-        onlyLoadIfModPresent("com.petrolpark.destroy.mixin.accessor.TooltipRendererAccessor", "jei");
-        onlyLoadIfModPresent("com.petrolpark.destroy.mixin.BasinCategoryMixin.java", "jei");
-        onlyLoadIfModPresent("com.petrolpark.destroy.mixin.CreateJEIMixin.java", "jei");
-        onlyLoadIfModPresent("com.petrolpark.destroy.mixin.CreateRecipeCategoryMixin", "jei");
-        onlyLoadIfModPresent("com.petrolpark.destroy.mixin.MixingRecipeCategoryMixin", "jei");
-        onlyLoadIfModPresent("com.petrolpark.destroy.mixin.PackingRecipeCategoryMixin", "jei");
-        onlyLoadIfModPresent("com.petrolpark.destroy.mixin.ProcessingRecipeMixin", "jei");
-        onlyLoadIfModPresent("com.petrolpark.destroy.mixin.TooltipRendererMixin", "jei");
+        onlyLoadIfModPresent("BasinCategoryMixin", "jei");
+        onlyLoadIfModPresent("CreateJEIMixin", "jei");
+        onlyLoadIfModPresent("CreateRecipeCategoryAccessor", "jei");
+        onlyLoadIfModPresent("CreateRecipeCategoryMixin", "jei");
+        onlyLoadIfModPresent("DeployingCategoryMixin", "jei");
+        onlyLoadIfModPresent("GhostIngredientHandlerMixin", "jei");
+        onlyLoadIfModPresent("MixingCategoryMixin", "jei");
+        onlyLoadIfModPresent("PackingCategoryMixin", "jei");
+        onlyLoadIfModPresent("ProcessingRecipeMixin", "jei");
+        onlyLoadIfModPresent("TooltipRendererMixin", "jei");
 
         // Farmers' Delight mixins
-        onlyLoadIfModPresent("com.petrolpark.destroy.mixin.CuttingBoardMixin", "farmersdelight");
+        onlyLoadIfModPresent("CuttingBoardMixin", "farmersdelight");
+
+        // TFMG mixins
+        onlyLoadIfModPresent("AdvancedDistillationCategoryMixin", "tfmg", "jei");
+        onlyLoadIfModPresent("DistillationOutputBlockEntityMixin", "tfmg");
     };
 
     @Override
@@ -70,8 +76,14 @@ public class DestroyMixinPlugin implements IMixinConfigPlugin {
      * as this calls the class, which will crash as it can't find the class into which its mixing
      * @param modID ID of the Mod on which this Mixin depends
      */
-    private static void onlyLoadIfModPresent(String mixinClassName, String modID) {
-        SHOULD_LOAD.put(mixinClassName, () -> FMLLoader.getLoadingModList().getModFileById(modID) != null);
+    private static void onlyLoadIfModPresent(String mixinClassName, String ...requiredModIDs) {
+        String className = "com.destroy.petrolpark.mixin.compat."+requiredModIDs[0]+"."+mixinClassName+".java";
+        SHOULD_LOAD.put(className, () -> {
+            for (String modID : requiredModIDs) {
+                if (FMLLoader.getLoadingModList().getModFileById(modID) == null) return false;
+            };
+            return true;
+        });
     };
     
 };

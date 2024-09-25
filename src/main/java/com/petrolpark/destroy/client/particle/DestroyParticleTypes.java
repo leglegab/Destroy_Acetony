@@ -19,15 +19,17 @@ import net.minecraftforge.registries.RegistryObject;
 
 public enum DestroyParticleTypes {
 
+    BOILING_FLUID_BUBBLE(BoilingFluidBubbleParticle.Data::new),
     DISTILLATION(GasParticleData::new),
     EVAPORATION(GasParticleData::new),
+    RAIN(RainParticle.Data::new),
     TEAR(TearParticle.Data::new),
     TINTED_SPLASH(TintedSplashParticle.Data::new);
 
-    private final ParticleEntry<?> particleEntry;
+    private final ParticleEntry<? extends ParticleOptions> particleEntry;
 
     <T extends ParticleOptions> DestroyParticleTypes(Supplier<? extends ICustomParticleData<T>> typeProvider) {
-        particleEntry = new ParticleEntry<>(Lang.asId(name()), typeProvider); // Create an entry for this Particle
+        particleEntry = new ParticleEntry<T>(Lang.asId(name()), typeProvider); // Create an entry for this Particle
     };
 
     public static void register(IEventBus eventBus) {

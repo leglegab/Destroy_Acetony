@@ -3,6 +3,7 @@ package com.petrolpark.destroy.block.entity;
 import java.text.DecimalFormat;
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Function;
 
 import javax.annotation.Nullable;
 
@@ -10,23 +11,28 @@ import org.jetbrains.annotations.NotNull;
 import org.joml.Math;
 
 import com.petrolpark.destroy.block.DestroyBlocks;
-import com.petrolpark.destroy.capability.blockEntity.VatSideTankCapability;
+import com.petrolpark.destroy.block.entity.behaviour.RedstoneQuantityMonitorBehaviour;
+import com.petrolpark.destroy.capability.Pollution.PollutionType;
+import com.petrolpark.destroy.capability.blockEntity.VatSideFluidCapability;
 import com.petrolpark.destroy.config.DestroyAllConfigs;
 import com.petrolpark.destroy.util.DestroyLang;
+import com.petrolpark.destroy.util.PollutionHelper;
 import com.petrolpark.destroy.util.DestroyLang.TemperatureUnit;
 import com.petrolpark.destroy.util.vat.IUVLampBlock;
 import com.petrolpark.destroy.util.vat.IVatHeaterBlock;
 import com.petrolpark.destroy.util.vat.Vat;
 import com.petrolpark.destroy.util.vat.VatMaterial;
+import com.simibubi.create.content.contraptions.StructureTransform;
 import com.simibubi.create.content.decoration.copycat.CopycatBlockEntity;
-import com.simibubi.create.content.equipment.goggles.IHaveGoggleInformation;
 import com.simibubi.create.content.equipment.goggles.IHaveHoveringInformation;
 import com.simibubi.create.content.fluids.FluidFX;
 import com.simibubi.create.content.fluids.FluidTransportBehaviour;
 import com.simibubi.create.content.fluids.FluidTransportBehaviour.AttachmentTypes;
+import com.simibubi.create.content.redstone.thresholdSwitch.ThresholdSwitchObservable;
 import com.simibubi.create.foundation.blockEntity.behaviour.BlockEntityBehaviour;
 import com.simibubi.create.foundation.blockEntity.behaviour.fluid.SmartFluidTankBehaviour;
 import com.simibubi.create.foundation.item.TooltipHelper;
+import com.simibubi.create.foundation.ponder.PonderWorld;
 import com.simibubi.create.foundation.utility.VecHelper;
 import com.simibubi.create.foundation.utility.animation.LerpedFloat;
 import com.simibubi.create.foundation.utility.animation.LerpedFloat.Chaser;
@@ -37,6 +43,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtUtils;
+import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -51,7 +58,7 @@ import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler.FluidAction;
 import net.minecraftforge.items.IItemHandler;
 
-public class VatSideBlockEntity extends CopycatBlockEntity implements IHaveGoggleInformation, IHaveHoveringInformation {
+public class VatSideBlockEntity extends CopycatBlockEntity implements IHaveLabGoggleInformation, IHaveHoveringInformation, ThresholdSwitchObservable {
 
     private static final int BUFFER_TANK_CAPACITY = 1000;
 
@@ -65,6 +72,10 @@ public class VatSideBlockEntity extends CopycatBlockEntity implements IHaveGoggl
     protected LazyOptional<IFluidHandler> fluidCapability;
 
     protected LazyOptional<IItemHandler> itemCapability;
+
+    public RedstoneQuantityMonitorBehaviour redstoneMonitor;
+
+    protected int initializationTicks;
 
     /**
      * The power in/output from a {@link com.petrolpark.destroy.util.vat.IVatHeaterBlock heater or cooler} this
@@ -93,12 +104,14 @@ public class VatSideBlockEntity extends CopycatBlockEntity implements IHaveGoggl
         oldUV = 0f;
         fluidCapability = LazyOptional.empty();
         itemCapability = LazyOptional.empty();
+        initializationTicks = 3;
         refreshItemCapability();
         refreshFluidCapability();
     };
 
     @Override
     protected AABB createRenderBoundingBox() {
+        if (getController() != null) return getController().createRenderBoundingBox();
         return super.createRenderBoundingBox();
 	};
 
@@ -110,6 +123,9 @@ public class VatSideBlockEntity extends CopycatBlockEntity implements IHaveGoggl
         behaviours.add(inputBehaviour);
         fluidCapability = LazyOptional.empty(); // Temporarily set this to an empty optional
         refreshFluidCapability();
+
+        redstoneMonitor = new RedstoneQuantityMonitorBehaviour(this);
+        behaviours.add(redstoneMonitor);
     };
 
     @Override
@@ -132,7 +148,7 @@ public class VatSideBlockEntity extends CopycatBlockEntity implements IHaveGoggl
                 liquidOutputCap = LazyOptional.of(() -> vatController.getLiquidTank());
                 gasOutputCap = LazyOptional.of(() -> vatController.getGasTank());
             };
-			return new VatSideTankCapability(this, liquidOutputCap.orElse(null), gasOutputCap.orElse(null), inputCap.orElse(null));
+			return new VatSideFluidCapability(this, liquidOutputCap.orElse(null), gasOutputCap.orElse(null), inputCap.orElse(null));
         });
     };
 
@@ -190,7 +206,15 @@ public class VatSideBlockEntity extends CopycatBlockEntity implements IHaveGoggl
     @SuppressWarnings("null")
     public void tick() {
         super.tick();
+        if (!hasLevel()) return;
+
+        // Update connected pipes
+        if (initializationTicks > 0) {
+            initializationTicks--;
+            if (!getLevel().isClientSide() && initializationTicks <= 0) getBlockState().updateNeighbourShapes(getLevel(), getBlockPos(), 3);
+        };
  
+        // Animation
         if (getLevel().isClientSide()) { // It thinks getLevel() might be null (it's not)
             ventOpenness.tickChaser();
             if (spoutingTicks > 0) {
@@ -209,10 +233,11 @@ public class VatSideBlockEntity extends CopycatBlockEntity implements IHaveGoggl
         } else {
             direction = null;
         };
-        controllerPosition = NbtUtils.readBlockPos(tag.getCompound("ControllerPosition"));
+        controllerPosition = NbtUtils.readBlockPos(tag.getCompound("ControllerPosition")).offset(getBlockPos());
         displayType = DisplayType.values()[tag.getInt("DisplayType")];
         oldPower = tag.getFloat("OldHeatingPower");
         oldUV = tag.getFloat("OldUVPower");
+        if (tag.contains("InitializationTicks", Tag.TAG_INT)) initializationTicks = tag.getInt("InitializationTicks");
         if (clientPacket) {
             spoutingTicks = tag.getInt("SpoutingTicks");
             spoutingFluid = FluidStack.loadFluidStackFromNBT(tag.getCompound("SpoutingFluid"));
@@ -224,10 +249,11 @@ public class VatSideBlockEntity extends CopycatBlockEntity implements IHaveGoggl
     protected void write(CompoundTag tag, boolean clientPacket) {
         super.write(tag, clientPacket);
         if (direction != null) tag.putInt("Side", direction.ordinal());
-        if (controllerPosition != null) tag.put("ControllerPosition", NbtUtils.writeBlockPos(controllerPosition));
+        if (controllerPosition != null) tag.put("ControllerPosition", NbtUtils.writeBlockPos(controllerPosition.subtract(getBlockPos())));
         tag.putInt("DisplayType", displayType.ordinal());
         tag.putFloat("OldHeatingPower", oldPower);
         tag.putFloat("OldUVPower", oldUV);
+        if (initializationTicks > 0) tag.putInt("InitializationTicks", initializationTicks);
         if (clientPacket) {
             tag.putInt("SpoutingTicks", spoutingTicks);
             if (!spoutingFluid.isEmpty()) tag.put("SpoutingFluid", spoutingFluid.writeToNBT(new CompoundTag()));
@@ -245,6 +271,15 @@ public class VatSideBlockEntity extends CopycatBlockEntity implements IHaveGoggl
             return itemCapability.cast();
         };
         return super.getCapability(cap, side);
+    };
+
+    /**
+     * Inhertited from {@link ThresholdSwitchObservable}
+     */
+    @Override
+    public float getPercent() {
+        if (getController() == null) return 0f;
+        return getController().getPercent();
     };
 
     /**
@@ -273,7 +308,7 @@ public class VatSideBlockEntity extends CopycatBlockEntity implements IHaveGoggl
     public boolean isPipeSubmerged(boolean client, @Nullable Float partialTicks) {
         VatControllerBlockEntity controller = getController();
         if (controller == null) return false;
-        if (direction == Direction.DOWN) return true;
+        if (direction == Direction.DOWN) return true;//!controller.getLiquidTank().isEmpty();
         if (direction == Direction.UP) return !controller.canFitFluid();
         return pipeHeightAboveVatBase() < (client ? controller.getRenderedFluidLevel(partialTicks == null ? 0f : partialTicks) : controller.getFluidLevel());
     };
@@ -297,10 +332,10 @@ public class VatSideBlockEntity extends CopycatBlockEntity implements IHaveGoggl
         };
 
         float newUVPower = 0f;
-        if (VatMaterial.getMaterial(getMaterial().getBlock()).map(VatMaterial::transparent).orElse(false)) {
+        if (VatMaterial.getMaterial(getMaterial()).map(VatMaterial::transparent).orElse(false)) {
             newUVPower = IUVLampBlock.getUVPower(getLevel(), heaterOrLampPos, direction.getOpposite());
             if (newUVPower == 0f) {
-                if (direction == Direction.UP && getLevel().canSeeSky(getBlockPos())) newUVPower = 10f; // It thinks getLevel() might be null
+                if (direction == Direction.UP) newUVPower = getSkyUV(); // It thinks getLevel() might be null
             };
         };
         if (newUVPower != oldUV) {
@@ -311,28 +346,41 @@ public class VatSideBlockEntity extends CopycatBlockEntity implements IHaveGoggl
         sendData();
     };
 
-    public static enum DisplayType {
-        NORMAL,
-        BAROMETER,
-        THERMOMETER,
-        PIPE,
-        CLOSED_VENT,
-        OPEN_VENT;
+    public float getSkyUV() {
+        if (!getLevel().canSeeSky(getBlockPos())) return 0f;
+        float uvPower = 10f;
+        if (PollutionHelper.pollutionEnabled() && DestroyAllConfigs.SERVER.pollution.vatUVPowerAffected.get()) uvPower += 20f * (float)PollutionHelper.getPollution(getLevel(), getBlockPos(), PollutionType.OZONE_DEPLETION) / (float)PollutionType.OZONE_DEPLETION.max;
+        return uvPower;
+    };
 
-        public boolean validForTop() {
-            return this != BAROMETER && this != THERMOMETER;
+    public static final Optional<Function<VatControllerBlockEntity, Float>> pressureObserved = Optional.of(VatControllerBlockEntity::getPressure);
+    public static final Optional<Function<VatControllerBlockEntity, Float>> temperatureObserved = Optional.of(VatControllerBlockEntity::getTemperature);
+
+    public static enum DisplayType {
+
+        NORMAL(true, true, false, false, false, Optional.empty()),
+        BAROMETER(false, true, false, true, false, pressureObserved),
+        BAROMETER_BLOCKED(false, true, false, true, false, pressureObserved),
+        THERMOMETER(false, true, false, false, true, temperatureObserved),
+        THERMOMETER_BLOCKED(false, true, false, false, true, temperatureObserved),
+        PIPE(true, true, false, false, false, Optional.empty()),
+        CLOSED_VENT(true, false, true, false, false, Optional.empty()),
+        OPEN_VENT(true, false, true, false, false, Optional.empty());
+
+        public final boolean validForTop, validForSide, isVent, showsPressure, showsTemperature;
+        public final Optional<Function<VatControllerBlockEntity, Float>> quantityObserved;
+
+        private DisplayType(boolean validForTop, boolean validForSide, boolean isVent, boolean showsPressure, boolean showsTemperature, Optional<Function<VatControllerBlockEntity, Float>> quantityObserved) {
+            this.validForTop = validForTop;
+            this.validForSide = validForSide;
+            this.isVent = isVent;
+            this.showsPressure = showsPressure;
+            this.showsTemperature = showsTemperature;
+            this.quantityObserved = quantityObserved;
         };
 
         public boolean validForBottom() {
-            return validForTop() && this != CLOSED_VENT && this != OPEN_VENT;
-        };
-
-        public boolean validForSide() {
-            return this != OPEN_VENT && this != CLOSED_VENT;
-        };
-
-        public boolean isVent() {
-            return this == CLOSED_VENT || this == OPEN_VENT;
+            return validForTop && !isVent;
         };
     };
 
@@ -342,14 +390,15 @@ public class VatSideBlockEntity extends CopycatBlockEntity implements IHaveGoggl
 
     @SuppressWarnings("null") // It thinks getLevel() might be null (it's not)
     public void setDisplayType(DisplayType displayType) {
-        if (this.displayType == displayType) return;
-        boolean updateVent = this.displayType == DisplayType.OPEN_VENT;
+        DisplayType oldDisplayType = this.displayType;
+        if (oldDisplayType == displayType) return;
+        boolean updateVent = oldDisplayType == DisplayType.OPEN_VENT;
         this.displayType = displayType;
         if (!hasLevel()) return;
 
         if (getLevel().isClientSide()) ventOpenness.chase(displayType == DisplayType.OPEN_VENT ? 1f : 0f, 0.3f, Chaser.EXP);
 
-        getBlockState().updateNeighbourShapes(getLevel(), getBlockPos(), 3);
+        if (!getLevel().isClientSide()) getBlockState().updateNeighbourShapes(getLevel(), getBlockPos(), 3);
         updateDisplayType(getBlockPos().relative(direction)); // Check for a Pipe
         sendData();
 
@@ -360,11 +409,31 @@ public class VatSideBlockEntity extends CopycatBlockEntity implements IHaveGoggl
             if (controller.cachedMixture != null) controller.cachedMixture.disturbEquilibrium();
             if (controller.openVentPos == null) controller.openVentPos = getBlockPos();
         };
+
+        // If the observer has been switched, create new bounds
+        redstoneMonitor.quantityObserved = displayType.quantityObserved.map(f -> {
+            if (getController() == null) return () -> 0f;
+            return () -> f.apply(getController());
+        });
+        if (oldDisplayType.quantityObserved != this.displayType.quantityObserved) {
+            if (this.displayType.showsPressure) {
+                redstoneMonitor.lowerThreshold = 0f;
+                redstoneMonitor.upperThreshold = getVatOptional().isPresent() ? getVatOptional().get().getMaxPressure() : 100000f;
+            } else if (this.displayType.showsTemperature) {
+                redstoneMonitor.lowerThreshold = 273f;
+                redstoneMonitor.upperThreshold = 373f;
+            } else {
+                redstoneMonitor.lowerThreshold = 0f;
+                redstoneMonitor.upperThreshold = 1f;
+            };
+            redstoneMonitor.update();
+        };
     };
 
     @SuppressWarnings("null")
     public void updateDisplayType(BlockPos neighborPos) {
         if (getController() == null) return;
+        if (getLevel() instanceof PonderWorld) return; // Don't automatically update in Ponder World - the type is forced
         FluidTransportBehaviour behaviour = BlockEntityBehaviour.get(getLevel(), neighborPos, FluidTransportBehaviour.TYPE);
         boolean nextToPipe = false;
         if (behaviour != null) {
@@ -373,30 +442,45 @@ public class VatSideBlockEntity extends CopycatBlockEntity implements IHaveGoggl
         };
         boolean nextToAir = getLevel().getBlockState(neighborPos).isAir(); // It thinks getLevel() might be null (it's not)
         
-        if (nextToPipe) {
+        if (nextToPipe) { 
             setDisplayType(DisplayType.PIPE);
         } else if (!nextToAir) {
-            setDisplayType(DisplayType.NORMAL);
+            if (getDisplayType().showsPressure) {
+                setDisplayType(DisplayType.BAROMETER_BLOCKED);
+            } else if (getDisplayType().showsTemperature) {
+                setDisplayType(DisplayType.THERMOMETER_BLOCKED);
+            } else {
+                setDisplayType(DisplayType.NORMAL);
+            };
         } else {
             if (getDisplayType() == DisplayType.PIPE) setDisplayType(DisplayType.NORMAL);
+            if (getDisplayType() == DisplayType.THERMOMETER_BLOCKED) setDisplayType(DisplayType.THERMOMETER);
+            if (getDisplayType() == DisplayType.BAROMETER_BLOCKED) setDisplayType(DisplayType.BAROMETER);
             switch (direction) {
                 case UP: {
-                    if (!getDisplayType().validForTop()) setDisplayType(DisplayType.NORMAL);
+                    if (!getDisplayType().validForTop) setDisplayType(DisplayType.NORMAL);
                     break;
                 } case DOWN: {
                     if (!getDisplayType().validForBottom()) setDisplayType(DisplayType.NORMAL);
                     break;
                 } default: {
-                    if (!getDisplayType().validForSide()) setDisplayType(DisplayType.NORMAL);
-                }
+                    if (!getDisplayType().validForSide) setDisplayType(DisplayType.NORMAL);
+                };
             };
         };
 
+        redstoneMonitor.update();
         invalidateRenderBoundingBox();
     };
 
+    @Override
+    public void transform(StructureTransform transform) {
+        super.transform(transform);
+        controllerPosition = transform.apply(controllerPosition.offset(transform.unapply(getBlockPos()).subtract(getBlockPos())));
+    };
+
     @SuppressWarnings("null")
-    public void updateRedstone() {
+    public void updateRedstoneInput() {
         if (!hasLevel()) return;
         boolean hasPower = getLevel().hasNeighborSignal(getBlockPos()); // It thinks getLevel() might be null
         if (getDisplayType() == DisplayType.OPEN_VENT && hasPower) setDisplayType(DisplayType.CLOSED_VENT);
@@ -418,21 +502,17 @@ public class VatSideBlockEntity extends CopycatBlockEntity implements IHaveGoggl
     public boolean addToGoggleTooltip(List<Component> tooltip, boolean isPlayerSneaking) {
         VatControllerBlockEntity controller = getController();
         if (!getVatOptional().isPresent() || controller == null) return false;
-        switch (getDisplayType()) {
-            case THERMOMETER: {
-                TemperatureUnit unit = DestroyAllConfigs.CLIENT.chemistry.temperatureUnit.get();
-                DestroyLang.translate("tooltip.vat.temperature", unit.of(controller.getTemperature(), df)).style(ChatFormatting.WHITE).forGoggles(tooltip);
-                if (DestroyAllConfigs.CLIENT.chemistry.nerdMode.get()) DestroyLang.translate("tooltip.vat.power", df.format(controller.heatingPower / 1000f)).forGoggles(tooltip);
-                break;
-            } case BAROMETER: {
-                Vat vat = getVatOptional().get();
-                DestroyLang.translate("tooltip.vat.pressure.header").style(ChatFormatting.WHITE).forGoggles(tooltip);
-                DestroyLang.translate("tooltip.vat.pressure.current", df.format(controller.getPressure() / 1000f)).style(ChatFormatting.GRAY).forGoggles(tooltip, 1);
-                DestroyLang.translate("tooltip.vat.pressure.max", df.format(vat.getMaxPressure() / 1000f), vat.getWeakestBlock().getBlock().getName().getString()).style(ChatFormatting.GRAY).forGoggles(tooltip, 1);
-                break;
-            } default: {
-                VatControllerBlockEntity.vatFluidTooltip(getController(), tooltip);
-            };
+        if (getDisplayType().showsTemperature) {
+            TemperatureUnit unit = DestroyAllConfigs.CLIENT.chemistry.temperatureUnit.get();
+            DestroyLang.translate("tooltip.vat.temperature", unit.of(controller.getTemperature(), df)).style(ChatFormatting.WHITE).forGoggles(tooltip);
+            if (DestroyAllConfigs.CLIENT.chemistry.nerdMode.get()) DestroyLang.translate("tooltip.vat.power", df.format(controller.heatingPower / 1000f)).forGoggles(tooltip);
+        } else if (getDisplayType().showsPressure) {
+            Vat vat = getVatOptional().get();
+            DestroyLang.translate("tooltip.vat.pressure.header", " ").style(ChatFormatting.WHITE).forGoggles(tooltip);
+            DestroyLang.translate("tooltip.vat.pressure.current", df.format(controller.getPressure() / 1000f)).style(ChatFormatting.GRAY).forGoggles(tooltip, 1);
+            DestroyLang.translate("tooltip.vat.pressure.max", df.format(vat.getMaxPressure() / 1000f), vat.getWeakestBlock().getBlock().getName().getString()).style(ChatFormatting.GRAY).forGoggles(tooltip, 1);
+        } else {
+            VatControllerBlockEntity.vatFluidTooltip(getController(), tooltip);
         };
         return true;
     };
@@ -447,5 +527,10 @@ public class VatSideBlockEntity extends CopycatBlockEntity implements IHaveGoggl
             };
         };
         return false;
+    };
+
+    @Override
+    public void invalidateRenderBoundingBox() {
+        super.invalidateRenderBoundingBox();
     };
 };

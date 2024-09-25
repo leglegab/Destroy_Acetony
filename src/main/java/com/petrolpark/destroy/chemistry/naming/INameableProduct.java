@@ -1,11 +1,11 @@
 package com.petrolpark.destroy.chemistry.naming;
 
-import com.petrolpark.destroy.chemistry.Molecule;
+import com.petrolpark.destroy.chemistry.legacy.LegacySpecies;
 
 import net.minecraft.network.chat.Component;
 
 /**
- * Something which has a name and can be found in a solution. This is typically a single {@link Molecule} or a salt.
+ * Something which has a name and can be found in a solution. This is typically a single {@link LegacySpecies} or a salt.
  */
 public interface INameableProduct {
     

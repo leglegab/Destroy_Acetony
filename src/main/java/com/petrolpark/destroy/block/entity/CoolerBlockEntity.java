@@ -6,12 +6,14 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import com.petrolpark.destroy.block.CoolerBlock;
-import com.petrolpark.destroy.chemistry.Molecule;
-import com.petrolpark.destroy.chemistry.ReadOnlyMixture;
-import com.petrolpark.destroy.chemistry.index.DestroyMolecules;
+import com.petrolpark.destroy.chemistry.legacy.LegacySpecies;
+import com.petrolpark.destroy.chemistry.legacy.ReadOnlyMixture;
+import com.petrolpark.destroy.chemistry.legacy.index.DestroyMolecules;
+import com.petrolpark.destroy.config.DestroyAllConfigs;
 import com.petrolpark.destroy.fluid.DestroyFluids;
 import com.petrolpark.destroy.util.DestroyLang;
 import com.petrolpark.destroy.util.PollutionHelper;
+import com.petrolpark.destroy.util.DestroyTags.DestroyFluidTags;
 import com.simibubi.create.AllBlocks;
 import com.simibubi.create.content.equipment.goggles.IHaveGoggleInformation;
 import com.simibubi.create.content.fluids.tank.FluidTankBlock;
@@ -50,12 +52,11 @@ import net.minecraftforge.fluids.capability.IFluidHandler.FluidAction;
 
 public class CoolerBlockEntity extends SmartBlockEntity implements IHaveGoggleInformation {
 
-    public static final int MAX_COOLING_TICKS = 12000; // 10 minutes; how much the Cooler will fill before stopping any excess Fluid
     private static final int TANK_CAPACITY = 1000;
 
     private SmartFluidTankBehaviour tank;
 
-    private int coolingTicks; // How many ticks this Cooler has left of cooling
+    public int coolingTicks; // How many ticks this Cooler has left of cooling
     protected LerpedFloat headAnimation;
 	protected LerpedFloat headAngle;
 
@@ -80,8 +81,11 @@ public class CoolerBlockEntity extends SmartBlockEntity implements IHaveGoggleIn
     /**
      * Use up the Fluid in this Cooler, turning it into ticks of cooling.
      */
+    @SuppressWarnings("deprecation")
     private void consumeFluid() {
         if (!hasLevel()) return;
+
+        float coolingPower = 0f;
 
         FluidStack fluidStack = tank.getPrimaryHandler().getFluid();
         if (DestroyFluids.isMixture(fluidStack)) {
@@ -91,34 +95,37 @@ public class CoolerBlockEntity extends SmartBlockEntity implements IHaveGoggleIn
 
             float totalMolesPerBucket = 0f;
             float totalRefrigerantMolesPerBucket = 0f;
-            float coolingPower = 0f;
-            for (Molecule molecule : mixture.getContents(true)) {
+            for (LegacySpecies molecule : mixture.getContents(true)) {
                 float concentration = mixture.getConcentrationOf(molecule);
                 totalMolesPerBucket += concentration;
                 if (molecule.hasTag(DestroyMolecules.Tags.REFRIGERANT)) {
                     totalRefrigerantMolesPerBucket += concentration;
-                    coolingPower += concentration * amount * molecule.getMolarHeatCapacity() / 100;
+                    coolingPower += DestroyAllConfigs.SERVER.blocks.coolerEfficiency.getF() * concentration * amount * molecule.getMolarHeatCapacity() / 100;
                 };
             };
 
-            coolingPower *= totalRefrigerantMolesPerBucket / totalMolesPerBucket; // Scale the effectiveness of the refrigerant with its purity
+            if (DestroyAllConfigs.SERVER.blocks.coolerEnhancedByPurity.get()) coolingPower *= totalRefrigerantMolesPerBucket / totalMolesPerBucket; // Scale the effectiveness of the refrigerant with its purity
 
-            if (coolingPower > 0f) {
+            
+        } else if (fluidStack.getFluid().is(DestroyFluidTags.COOLANT.tag)) {
+            coolingPower += fluidStack.getAmount(); // One bucket of coolant = 50 seconds of coling
+        }
 
-                // Begin cooling
-                setColdnessOfBlock(ColdnessLevel.FROSTING);
-                coolingTicks += coolingPower;
+        if (coolingPower > 0f) {
 
-                // Stop insertion if necessary
-                if (coolingTicks >= MAX_COOLING_TICKS) {
-                    tank.forbidInsertion();
-                };
+            // Begin cooling
+            setColdnessOfBlock(ColdnessLevel.FROSTING);
+            coolingTicks += coolingPower;
+
+            // Stop insertion if necessary
+            if (coolingTicks >= getMaxCoolingTicks()) {
+                tank.forbidInsertion();
             };
         };
 
         // Discard the Fluid
         tank.getPrimaryHandler().drain(TANK_CAPACITY, FluidAction.EXECUTE);
-        PollutionHelper.pollute(getLevel(), fluidStack);
+        PollutionHelper.pollute(getLevel(), getBlockPos(), fluidStack);
 
         notifyUpdate();
     };
@@ -140,7 +147,7 @@ public class CoolerBlockEntity extends SmartBlockEntity implements IHaveGoggleIn
         
         if (coolingTicks > 0) {
             coolingTicks--;
-            if (coolingTicks < MAX_COOLING_TICKS) {
+            if (coolingTicks < getMaxCoolingTicks()) {
                 tank.allowInsertion();
             };
             if (coolingTicks <= 0) {
@@ -295,6 +302,14 @@ public class CoolerBlockEntity extends SmartBlockEntity implements IHaveGoggleIn
         DestroyLang.translate("tooltip.cooler.time_remaining", timeRemaining)
             .forGoggles(tooltip);
         return true;
+    };
+
+    /**
+     * How much the Cooler will fill before stopping any excess Fluid
+     * @return 10 minutes by default
+     */
+    public int getMaxCoolingTicks() {
+        return DestroyAllConfigs.SERVER.blocks.maximumCoolingTicks.get();
     };
     
 };

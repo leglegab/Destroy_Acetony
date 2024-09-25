@@ -2,7 +2,7 @@
     "type": "create:crushing",
     "ingredients": [
       {
-        "item": "create:limestone"
+        "tag": "create:stone_types/limestone"
       }
     ],
     "results": [

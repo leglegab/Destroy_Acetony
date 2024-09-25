@@ -1,0 +1,27 @@
+{
+    "parent": "destroy:propanol",
+    "criteria": {
+      "make": {
+        "conditions": {},
+        "trigger": "destroy:acetone"
+      }
+    },
+    "display": {
+      "description": {
+        "color": "#DBA213",
+        "translate": "advancement.destroy.acetone.description"
+      },
+      "icon": {
+        "item": "destroy:chromium_powder"
+      },
+      "title": {
+        "translate": "advancement.destroy.acetone"
+      },
+      "frame": "challenge"
+    },
+    "requirements": [
+      [
+        "make"
+      ]
+    ]
+  }

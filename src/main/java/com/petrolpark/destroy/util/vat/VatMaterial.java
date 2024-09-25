@@ -2,46 +2,47 @@ package com.petrolpark.destroy.util.vat;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Optional;
+import java.util.Iterator;
 
 import com.petrolpark.destroy.block.DestroyBlocks;
-import com.simibubi.create.AllBlocks;
+import com.petrolpark.recipe.ingredient.BlockIngredient;
 
-import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.state.BlockState;
 
 /**
  * Information about a Block from which a Vat can be construced.
  * @param maxPressure The maxmimum pressure (in pascals) this Material can withstand before the Vat explodes
  * @param thermalConductivity The thermal conductivity (in watts per block-side-length-kelvin) of this Material
  * @param transparent Whether Blocks of this Material are permeable to sunlight and UV
- * @param corrodes Whether a Block of this Material will be removed if the Vat contains a strong acid
+ * @param builtin Whether this Vat Material must exist and was not added by a datapack
  */
-public record VatMaterial(float maxPressure, float thermalConductivity, boolean transparent) {
+public record VatMaterial(float maxPressure, float thermalConductivity, boolean transparent, boolean builtIn) {
 
-    public static final Map<Block, VatMaterial> BLOCK_MATERIALS = new HashMap<>();
+    public static final Map<BlockIngredient<?>, VatMaterial> BLOCK_MATERIALS = new HashMap<>();
 
-    public static final VatMaterial UNBREAKABLE = new VatMaterial(Float.MAX_VALUE, 0f, false);
-    public static final VatMaterial GLASS = new VatMaterial(100000f, 15f, true);
+    public static final VatMaterial UNBREAKABLE = new VatMaterial(Float.MAX_VALUE, 0f, false, true);
 
     /**
      * Whether the given Block can be used to construct a Vat.
      * @param block
      */
-    public static boolean isValid(Block block) {
-        return BLOCK_MATERIALS.containsKey(block);
+    public static boolean isValid(BlockState state) {
+        return BLOCK_MATERIALS.keySet().stream().anyMatch(ingredient -> ingredient.isValid(state));
     };
 
-    public static Optional<VatMaterial> getMaterial(Block block) {
-        return Optional.ofNullable(BLOCK_MATERIALS.get(block));
+    public static Optional<VatMaterial> getMaterial(BlockState state) {
+        return BLOCK_MATERIALS.entrySet().stream().filter(entry -> entry.getKey().isValid(state)).map(Entry::getValue).findFirst();
+    };
+
+    public static void clearDatapackMaterials() {
+        for (Iterator<Entry<BlockIngredient<?>, VatMaterial>> iterator = BLOCK_MATERIALS.entrySet().iterator(); iterator.hasNext();) {
+            if (!iterator.next().getValue().builtIn()) iterator.remove();
+        };
     };
 
     public static void registerDestroyVatMaterials() {
-
-        BLOCK_MATERIALS.put(DestroyBlocks.VAT_CONTROLLER.get(), UNBREAKABLE);
-        BLOCK_MATERIALS.put(AllBlocks.COPPER_CASING.get(), new VatMaterial(1000000f, 400f, false));
-        BLOCK_MATERIALS.put(Blocks.IRON_BLOCK, new VatMaterial(500000f, 50f, false));
-        BLOCK_MATERIALS.put(Blocks.GLASS, GLASS);
-        BLOCK_MATERIALS.put(Blocks.TINTED_GLASS, new VatMaterial(100000f, 12f, false));
+        BLOCK_MATERIALS.put(new BlockIngredient.SingleBlockIngredient(DestroyBlocks.VAT_CONTROLLER.get()), UNBREAKABLE);
     };
 };

@@ -1,0 +1,22 @@
+{   "parent": "block/block",
+    "textures": {
+        "particle": "destroy:block/custom_explosive_mix_shell",
+        "top": "destroy:block/custom_explosive_mix_shell_top",
+        "bottom": "destroy:block/custom_explosive_mix_shell_bottom",
+        "side": "destroy:block/custom_explosive_mix_shell"
+    },
+    "elements": [
+        {
+            "from": [3, 0, 3],
+            "to": [13, 16, 13],
+            "faces": {
+                "north": {"uv": [3, 0, 13, 16], "texture": "#side", "tintindex": 0, "cullface": "north"},
+                "east": {"uv": [3, 0, 13, 16], "texture": "#side", "tintindex": 0, "cullface": "east"},
+                "south": {"uv": [3, 0, 13, 16], "texture": "#side", "tintindex": 0, "cullface": "south"},
+                "west": {"uv": [3, 0, 13, 16], "texture": "#side", "tintindex": 0, "cullface": "west"},
+                "down": {"uv": [3, 3, 13, 13], "texture": "#bottom", "tintindex": 0, "cullface": "down"}
+            }
+        }
+    ],
+    "render_type": "cutout"
+}

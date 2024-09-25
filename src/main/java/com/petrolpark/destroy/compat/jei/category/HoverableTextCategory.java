@@ -6,6 +6,8 @@ import java.util.Map;
 
 import com.jozufozu.flywheel.util.AnimationTickHolder;
 import com.mojang.blaze3d.vertex.PoseStack;
+import com.petrolpark.compat.jei.category.ITickableCategory;
+import com.petrolpark.compat.jei.category.PetrolparkRecipeCategory;
 import com.petrolpark.destroy.client.gui.stackedtextbox.AbstractStackedTextBox;
 import com.petrolpark.destroy.client.gui.stackedtextbox.AbstractStackedTextBox.Area;
 import com.petrolpark.destroy.client.gui.stackedtextbox.AbstractStackedTextBox.LinesAndActivationAreas;
@@ -22,11 +24,12 @@ import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.world.item.crafting.Recipe;
 
-public abstract class HoverableTextCategory<T extends Recipe<?>> extends DestroyRecipeCategory<T> implements ITickableCategory {
+public abstract class HoverableTextCategory<T extends Recipe<?>> extends PetrolparkRecipeCategory<T> implements ITickableCategory {
 
     private static final Map<Recipe<?>, Collection<LinesAndActivationAreas>> PARAGRAPHS = new HashMap<>();
 
-    protected static AbstractStackedTextBox textBoxStack = AbstractStackedTextBox.NOTHING;;
+    protected AbstractStackedTextBox textBoxStack = AbstractStackedTextBox.NOTHING;
+    protected static Recipe<?> textBoxActivatingRecipe = null; // Which recipe's text we are hovering over, if any
 
     public HoverableTextCategory(Info<T> info, IJeiHelpers helpers) {
         super(info, helpers);
@@ -45,12 +48,14 @@ public abstract class HoverableTextCategory<T extends Recipe<?>> extends Destroy
     @Override
     public void tick() {
         textBoxStack.tick();
+        if (!textBoxStack.isActive()) {
+            textBoxStack = AbstractStackedTextBox.NOTHING;
+        };
     };
 
     @Override
     public void setRecipe(IRecipeLayoutBuilder builder, T recipe, IFocusGroup focuses) {
         textBoxStack = AbstractStackedTextBox.NOTHING;
-        PARAGRAPHS.clear();
         PARAGRAPHS.put(recipe, getHoverableTexts(recipe));
     };
 
@@ -85,6 +90,7 @@ public abstract class HoverableTextCategory<T extends Recipe<?>> extends Destroy
                             .withActivationArea(pair.getFirst())
                             .withPalette(getPaletteForBoxes())
                             .withText(pair.getSecond());
+                        textBoxActivatingRecipe = recipe;
                         break checkParagraphs;
                     };
                 };
@@ -92,9 +98,11 @@ public abstract class HoverableTextCategory<T extends Recipe<?>> extends Destroy
         };
 
         // Render the current stack of text boxes
-        stack.pushPose();
-        stack.translate(10, 0, 0);
-        textBoxStack.render(graphics, (int)mouseX, (int)mouseY, partialTicks);
-        stack.popPose();
+        if (textBoxActivatingRecipe == recipe) {
+            stack.pushPose();
+            stack.translate(10, 0, 0);
+            textBoxStack.render(graphics, (int)mouseX, (int)mouseY, partialTicks);
+            stack.popPose();
+        };
     };
 };

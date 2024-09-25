@@ -2,16 +2,17 @@
     "type": "create:mixing",
     "ingredients": [
       {
-        "tag": "destroy:fertilizer"
+        "tag": "destroy:fertilizers"
       },
       {
-        "tag": "destroy:fertilizer"
+        "tag": "destroy:fertilizers"
       },
       {
         "mixtureFluidWithSalt": "destroy:mixture",
         "cation": "destroy:ammonium",
         "anion": "destroy:nitrate",
-        "concentration": 3.0,
+        "min_concentration": 3.0,
+        "max_concentration": 5.0,
         "amount": 200
       }
     ],

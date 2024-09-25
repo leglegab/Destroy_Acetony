@@ -1,6 +1,12 @@
 package com.petrolpark.destroy.item;
 
+import com.petrolpark.destroy.config.DestroySubstancesConfigs;
+import com.petrolpark.destroy.item.tooltip.IDynamicItemDescription;
+import com.simibubi.create.foundation.item.ItemDescription;
+import com.simibubi.create.foundation.item.TooltipHelper.Palette;
+
 import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.AreaEffectCloud;
@@ -9,7 +15,10 @@ import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 
-public class IodineItem extends Item {
+/**
+ * Fun fact I'm pretty sure this is the first ever thing I coded
+ */
+public class IodineItem extends Item implements IDynamicItemDescription {
     public IodineItem(Properties pProperties) {
         super(pProperties);
     };
@@ -17,7 +26,7 @@ public class IodineItem extends Item {
     @Override
     public boolean onEntityItemUpdate(ItemStack itemStack, ItemEntity itemEntity) {
 
-        if (itemEntity.isOnFire() && !itemEntity.level().isClientSide()) {
+        if (DestroySubstancesConfigs.iodineDragonsBreath() && itemEntity.isOnFire() && !itemEntity.level().isClientSide()) {
             EnderDragon dummyDragon = new EnderDragon(null, itemEntity.level()); //create a dummy Ender Dragon
 
             AreaEffectCloud dragonBreath = new AreaEffectCloud(itemEntity.level(), itemEntity.getX(), itemEntity.getY(),itemEntity.getZ());
@@ -38,5 +47,18 @@ public class IodineItem extends Item {
 
         return super.onEntityItemUpdate(itemStack, itemEntity);
     };
+
+    @Override
+    public ItemDescription getItemDescription() {
+        return new ItemDescription.Builder(getPalette())
+            .addSummary(Component.translatable("item.destroy.iodine.dynamic_tooltip.summary").getString())
+            .addBehaviour(Component.translatable("item.destroy.iodine.dynamic_tooltip.condition").getString(), Component.translatable("item.destroy.iodine.dynamic_tooltip.behaviour").getString())
+            .build();
+    }
+
+    @Override
+    public Palette getPalette() {
+        return Palette.STANDARD_CREATE;
+    };
     
-}
+};

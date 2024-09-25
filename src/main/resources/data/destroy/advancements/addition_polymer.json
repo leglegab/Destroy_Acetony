@@ -1,0 +1,27 @@
+{
+    "parent": "destroy:aibn",
+    "criteria": {
+      "make": {
+        "conditions": {},
+        "trigger": "destroy:addition_polymer"
+      }
+    },
+    "display": {
+      "description": {
+        "color": "#DBA213",
+        "translate": "advancement.destroy.addition_polymer.description"
+      },
+      "icon": {
+        "item": "destroy:polyethene"
+      },
+      "title": {
+        "translate": "advancement.destroy.addition_polymer"
+      },
+      "frame": "goal"
+    },
+    "requirements": [
+      [
+        "make"
+      ]
+    ]
+  }

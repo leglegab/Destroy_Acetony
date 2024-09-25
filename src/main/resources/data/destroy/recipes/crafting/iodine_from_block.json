@@ -1,0 +1,12 @@
+{
+    "type": "minecraft:crafting_shapeless",
+    "ingredients": [
+      {
+        "tag": "forge:storage_blocks/iodine"
+      }
+    ],
+    "result": {
+      "item": "destroy:iodine",
+      "count": 9
+    }
+  }

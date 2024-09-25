@@ -1,0 +1,9 @@
+{
+    "asset_name": "shadow_steel",
+    "description": {
+      "color": "#665d78",
+      "translate": "destroy.trim_material.shadow_steel"
+    },
+    "ingredient": "create:shadow_steel",
+    "item_model_index": -1.0
+  }

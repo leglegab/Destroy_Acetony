@@ -44,7 +44,7 @@ public class ChargingRecipe extends ProcessingRecipe<RecipeWrapper> implements I
 
     @Override
     protected boolean canSpecifyDuration() {
-        return false;
+        return true;
     };
 
     @Override

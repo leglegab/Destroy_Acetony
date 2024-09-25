@@ -1,6 +1,6 @@
 package com.petrolpark.destroy.effect;
 
-import com.petrolpark.destroy.advancement.DestroyAdvancements;
+import com.petrolpark.destroy.advancement.DestroyAdvancementTrigger;
 import com.petrolpark.destroy.capability.player.babyblue.PlayerBabyBlueAddictionProvider;
 
 import net.minecraft.world.effect.MobEffectCategory;
@@ -38,13 +38,12 @@ public class BabyBlueHighMobEffect extends UncurableMobEffect {
 
             if (livingEntity instanceof Player player) {
                 Level level = player.level();
-                DestroyAdvancements.TAKE_BABY_BLUE.award(level, player);
-                if (player.getY() >= 1000) DestroyAdvancements.TAKE_BABY_BLUE_HIGH.award(level, player);
+                DestroyAdvancementTrigger.TAKE_BABY_BLUE.award(level, player);
             };
 
             if (livingEntity instanceof Animal animal && !animal.isBaby()) {
+                if (animal.getAge() > 0) animal.resetLove();
                 animal.setAge(0);
-                animal.resetLove();
             };
         };
 

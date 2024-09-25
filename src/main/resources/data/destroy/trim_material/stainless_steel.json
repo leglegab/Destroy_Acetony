@@ -1,0 +1,9 @@
+{
+    "asset_name": "stainless_steel",
+    "description": {
+      "color": "#665d78",
+      "translate": "destroy.trim_material.stainless_steel"
+    },
+    "ingredient": "destroy:stainless_steel_ingot",
+    "item_model_index": -1.0
+  }

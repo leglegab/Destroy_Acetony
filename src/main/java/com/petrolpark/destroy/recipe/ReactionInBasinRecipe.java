@@ -9,20 +9,21 @@ import javax.annotation.Nullable;
 
 import com.petrolpark.destroy.Destroy;
 import com.petrolpark.destroy.block.entity.behaviour.ExtendedBasinBehaviour;
-import com.petrolpark.destroy.capability.level.pollution.LevelPollution;
-import com.petrolpark.destroy.chemistry.Mixture;
-import com.petrolpark.destroy.chemistry.ReactionResult;
-import com.petrolpark.destroy.chemistry.Mixture.Phases;
-import com.petrolpark.destroy.chemistry.reactionresult.CombinedReactionResult;
-import com.petrolpark.destroy.chemistry.reactionresult.PrecipitateReactionResult;
+import com.petrolpark.destroy.capability.Pollution;
+import com.petrolpark.destroy.chemistry.legacy.LegacyMixture;
+import com.petrolpark.destroy.chemistry.legacy.ReactionResult;
+import com.petrolpark.destroy.chemistry.legacy.LegacyMixture.Phases;
+import com.petrolpark.destroy.chemistry.legacy.reactionresult.CombinedReactionResult;
+import com.petrolpark.destroy.chemistry.legacy.reactionresult.PrecipitateReactionResult;
 import com.petrolpark.destroy.fluid.DestroyFluids;
 import com.petrolpark.destroy.fluid.MixtureFluid;
 import com.petrolpark.destroy.util.vat.IVatHeaterBlock;
-import com.simibubi.create.content.kinetics.mixer.MixingRecipe;
 import com.simibubi.create.content.processing.basin.BasinBlockEntity;
+import com.simibubi.create.content.processing.basin.BasinRecipe;
 import com.simibubi.create.content.processing.recipe.ProcessingRecipeBuilder;
 import com.simibubi.create.content.processing.recipe.ProcessingRecipeBuilder.ProcessingRecipeParams;
 import com.simibubi.create.foundation.fluid.FluidIngredient;
+import com.simibubi.create.foundation.recipe.RecipeFinder;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -32,8 +33,9 @@ import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.fluids.FluidStack;
 
-public class ReactionInBasinRecipe extends MixingRecipe {
+public class ReactionInBasinRecipe extends BasinRecipe {
 
+    private static final Object recipeCacheKey = new Object();
     private static final int BASIN_MAX_OUTPUT = 1000;
 
     public ReactionInBasinRecipe(ProcessingRecipeParams params) {
@@ -47,32 +49,52 @@ public class ReactionInBasinRecipe extends MixingRecipe {
         List<ItemStack> availableItemsCopy = availableItems.stream().map(ItemStack::copy).filter(stack -> !stack.isEmpty()).toList();
 
         boolean canReact = true; // Start by assuming we will be able to React
+        boolean containsMixtures = false; // If the ONLY thing we have are non-Mixtures, even if they can be converted to Mixtures we don't want to react
 
         boolean isBasinTooFullToReact = false;
         
         Level level = basin.getLevel();
         BlockPos pos = basin.getBlockPos();
         float heatingPower = IVatHeaterBlock.getHeatingPower(level, pos.below(), Direction.UP);
-        float outsideTemperature = LevelPollution.getLocalTemperature(level, pos);
+        float outsideTemperature = Pollution.getLocalTemperature(level, pos);
 
-        Map<Mixture, Double> mixtures = new HashMap<>(availableFluids.size()); // A Map of all available Mixtures to the volume of them available (in Buckets)
+        Map<LegacyMixture, Double> mixtures = new HashMap<>(availableFluids.size()); // A Map of all available Mixtures to the volume of them available (in Buckets)
         int totalAmount = 0; // How much Mixture there is
 
         // Check all Fluids are Mixturess
         for (FluidStack fluidStack : availableFluids) {
-            if (!DestroyFluids.isMixture(fluidStack)) { // Can't react with any non-Mixtures
-                canReact = false;
-                break;
+
+            LegacyMixture mixture;
+            if (DestroyFluids.isMixture(fluidStack)) {
+                // True Mixtures
+                mixture = LegacyMixture.readNBT(fluidStack.getOrCreateTag().getCompound("Mixture"));
+                containsMixtures = true;
+            } else {
+                // Non-Mixture -> Mixture conversions
+                MixtureConversionRecipe recipe = RecipeFinder.get(recipeCacheKey, basin.getLevel(), r -> r.getType() == DestroyRecipeTypes.MIXTURE_CONVERSION.getType())
+                    .stream()
+                    .map(r -> (MixtureConversionRecipe)r)
+                    .filter(r -> r.getFluidIngredients().get(0).test(fluidStack))
+                    .findFirst()
+                    .orElse(null);
+                if (recipe == null) {
+                    canReact = false;
+                    break;
+                } else {
+                    mixture = LegacyMixture.readNBT(recipe.getFluidResults().get(0).getOrCreateTag().getCompound("Mixture"));
+                };
             };
+
             int amount = fluidStack.getAmount();
             totalAmount += amount;
-            Mixture mixture = Mixture.readNBT(fluidStack.getOrCreateTag().getCompound("Mixture"));
             mixtures.put(mixture, (double)amount / 1000d);
         };
 
+        if (!containsMixtures) canReact = false; // Don't react without Mixtures, even if there are fluids which could be converted into Mixtures 
+
         tryReact: if (canReact) {
             // TODO modify temp according to Heat Level
-            Mixture mixture = Mixture.mix(mixtures);
+            LegacyMixture mixture = LegacyMixture.mix(mixtures);
             ReactionInBasinResult result = mixture.reactInBasin(totalAmount, availableItemsCopy, heatingPower, outsideTemperature); // Mutably react the Mixture and change the Item Stacks
 
             // If equilibrium was not disturbed, don't do anything else
@@ -153,9 +175,9 @@ public class ReactionInBasinRecipe extends MixingRecipe {
     };
 
     /**
-     * The outcome of {@link com.petrolpark.destroy.chemistry.Reaction reacting} a {@link com.petrolpark.destroy.chemistry.Reaction Mixture} in a Basin.
+     * The outcome of {@link com.petrolpark.destroy.chemistry.legacy.LegacyReaction reacting} a {@link com.petrolpark.destroy.chemistry.legacy.LegacyReaction Mixture} in a Basin.
      * @param ticks The number of ticks it took for the Mixture to reach equilibrium
-     * @param reactionresults The {@link com.petrolpark.destroy.chemistry.ReactionResult results} of Reacting this Mixture
+     * @param reactionresults The {@link com.petrolpark.destroy.chemistry.legacy.ReactionResult results} of Reacting this Mixture
      * @param amount The amount (in mB) of resultant Mixture
      */
     public static record ReactionInBasinResult(int ticks, Map<ReactionResult, Integer> reactionresults, int amount) {};

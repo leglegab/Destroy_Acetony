@@ -4,7 +4,6 @@ import javax.annotation.Nullable;
 
 import com.petrolpark.destroy.block.DestroyBlocks;
 import com.petrolpark.destroy.block.PrimeableBombBlock;
-import com.petrolpark.destroy.util.ExplosionHelper;
 import com.petrolpark.destroy.world.explosion.AnfoExplosion;
 import com.petrolpark.destroy.world.explosion.DebrisMiningExplosion;
 import com.petrolpark.destroy.world.explosion.ObliterationExplosion;
@@ -44,7 +43,7 @@ public abstract class PrimedBomb extends PrimedTnt {
     @Override
     protected void explode() {
         if (level() instanceof ServerLevel serverLevel)
-        ExplosionHelper.explode(serverLevel, getExplosion(serverLevel, position, this));
+        SmartExplosion.explode(serverLevel, getExplosion(serverLevel, position, this));
     };
 
     @Nullable

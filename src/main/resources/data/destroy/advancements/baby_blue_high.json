@@ -1,9 +1,26 @@
 {
     "parent": "destroy:baby_blue",
+    "conditions": [
+      {
+        "type": "petrolpark:config_boolean",
+        "mod": "destroy",
+        "value": "enableBabyBlue"
+      }
+    ],
     "criteria": {
       "take": {
-        "conditions": {},
-        "trigger": "destroy:take_baby_blue_high"
+        "conditions": {
+          "player": {
+            "location": {
+              "position": {
+                "y": {
+                  "min": 1000
+                }
+              }
+            }
+          }
+        },
+        "trigger": "destroy:take_baby_blue"
       }
     },
     "display": {

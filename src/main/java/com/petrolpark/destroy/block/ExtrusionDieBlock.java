@@ -2,9 +2,9 @@ package com.petrolpark.destroy.block;
 
 import javax.annotation.Nullable;
 
+import com.petrolpark.block.entity.behaviour.AbstractRememberPlacerBehaviour;
 import com.petrolpark.destroy.block.entity.DestroyBlockEntityTypes;
 import com.petrolpark.destroy.block.entity.ExtrusionDieBlockEntity;
-import com.petrolpark.destroy.block.entity.behaviour.DestroyAdvancementBehaviour;
 import com.petrolpark.destroy.block.shape.DestroyShapes;
 import com.petrolpark.destroy.world.damage.DestroyDamageSources;
 import com.simibubi.create.content.equipment.wrench.IWrenchable;
@@ -44,7 +44,7 @@ public class ExtrusionDieBlock extends RotatedPillarBlock implements IBE<Extrusi
 
     @Override
     public void setPlacedBy(Level level, BlockPos pos, BlockState state, @Nullable LivingEntity placer, ItemStack stack) {
-        DestroyAdvancementBehaviour.setPlacedBy(level, pos, placer);
+        AbstractRememberPlacerBehaviour.setPlacedBy(level, pos, placer);
         super.setPlacedBy(level, pos, state, placer, stack);
     };
 

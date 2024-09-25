@@ -1,0 +1,26 @@
+{
+    "parent": "destroy:addition_polymer",
+    "criteria": {
+      "keypunch": {
+        "conditions": {},
+        "trigger": "destroy:keypunch"
+      }
+    },
+    "display": {
+      "description": {
+        "color": "#DBA213",
+        "translate": "advancement.destroy.keypunch.description"
+      },
+      "icon": {
+        "item": "destroy:keypunch"
+      },
+      "title": {
+        "translate": "advancement.destroy.keypunch"
+      }
+    },
+    "requirements": [
+      [
+        "keypunch"
+      ]
+    ]
+  }

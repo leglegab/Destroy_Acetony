@@ -65,15 +65,14 @@ public class SyringeItem extends Item implements CustomUseEffectsItem {
 
     @Override
     public boolean onLeftClickEntity(ItemStack stack, Player player, Entity entity) {
-        if (entity instanceof LivingEntity livingEntity && !entity.level().isClientSide()) {
+        if (entity instanceof LivingEntity livingEntity) {
             onInject(stack, entity.level(), livingEntity);
             if (!player.isCreative()) {
                 player.getInventory().removeItem(stack);
                 player.getInventory().add(new ItemStack(DestroyItems.SYRINGE.get()));
             };
-            return true;
         };
-        return super.onLeftClickEntity(stack, player, entity);
+        return false;
     };
 
     @Override

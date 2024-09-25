@@ -1,0 +1,9 @@
+{
+    "asset_name": "rhodium",
+    "description": {
+      "color": "#c9c8d3",
+      "translate": "destroy.trim_material.rhodium"
+    },
+    "ingredient": "destroy:rhodium_ingot",
+    "item_model_index": -1.0
+  }

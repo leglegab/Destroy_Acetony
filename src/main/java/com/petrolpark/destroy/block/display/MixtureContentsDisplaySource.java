@@ -6,8 +6,8 @@ import java.util.List;
 
 import javax.annotation.Nullable;
 
-import com.petrolpark.destroy.chemistry.ClientMixture;
-import com.petrolpark.destroy.chemistry.ReadOnlyMixture;
+import com.petrolpark.destroy.chemistry.legacy.ClientMixture;
+import com.petrolpark.destroy.chemistry.legacy.ReadOnlyMixture;
 import com.petrolpark.destroy.util.DestroyLang;
 import com.petrolpark.destroy.util.DestroyLang.TemperatureUnit;
 import com.simibubi.create.content.redstone.displayLink.DisplayLinkContext;
@@ -92,7 +92,7 @@ public abstract class MixtureContentsDisplaySource extends DisplaySource {
         }, "TemperatureUnit");
     };
 
-    private void addMoleculeNameTypeSelection(ModularGuiLineBuilder builder) {
+    public static void addMoleculeNameTypeSelection(ModularGuiLineBuilder builder) {
         builder.addSelectionScrollInput(0, 137, (si, l) -> {
             si.forOptions(List.of(DestroyLang.translate("display_source.mixture.molecule_name_type.iupac").component(), DestroyLang.translate("display_source.mixture.molecule_name_type.common").component()))
             .titled(DestroyLang.translate("display_source.mixture.molecule_name_type").component());

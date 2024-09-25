@@ -3,7 +3,7 @@
     "criteria": {
       "extrude": {
         "conditions": {},
-        "trigger": "destroy:use_extrusion_die"
+        "trigger": "destroy:extrude"
       }
     },
     "display": {

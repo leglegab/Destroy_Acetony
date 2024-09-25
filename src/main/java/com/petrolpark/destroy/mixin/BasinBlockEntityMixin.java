@@ -8,6 +8,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
+import com.petrolpark.destroy.block.entity.behaviour.DestroyAdvancementBehaviour;
 import com.petrolpark.destroy.block.entity.behaviour.ExtendedBasinBehaviour;
 import com.petrolpark.destroy.util.DestroyLang;
 import com.simibubi.create.content.equipment.goggles.IHaveHoveringInformation;
@@ -44,6 +45,7 @@ public abstract class BasinBlockEntityMixin implements IHaveHoveringInformation 
         // );
         // behaviours.add(getInputTank());
         // behaviours.add(getOutputTank());
+        behaviours.add(new DestroyAdvancementBehaviour((BasinBlockEntity)(Object)this)); // Have to add this here because if it's a deferred behaviour it's too late to record the player
     };
     
     /**

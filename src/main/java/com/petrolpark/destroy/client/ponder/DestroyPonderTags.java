@@ -42,40 +42,42 @@ public class DestroyPonderTags {
             .add(DestroyBlocks.AGING_BARREL)
             .add(DestroyBlocks.BLACKLIGHT)
             .add(DestroyBlocks.BUBBLE_CAP)
+            .add(DestroyBlocks.CATALYTIC_CONVERTER)
             .add(DestroyBlocks.CENTRIFUGE)
-            .add(DestroyBlocks.COAXIAL_GEAR)
             .add(DestroyBlocks.COOLER)
-            .add(DestroyBlocks.DIFFERENTIAL)
-            .add(DestroyBlocks.DOUBLE_CARDAN_SHAFT)
+            .add(DestroyBlocks.CUSTOM_EXPLOSIVE_MIX)
             .add(DestroyBlocks.DYNAMO)
             .add(DestroyBlocks.EXTRUSION_DIE)
             .add(DestroyItems.HYPERACCUMULATING_FERTILIZER)
-            .add(DestroyBlocks.PLANETARY_GEARSET)
+            .add(DestroyBlocks.KEYPUNCH)
+            .add(DestroyItems.POLLUTION_SYMBOL)
             .add(DestroyBlocks.PUMPJACK)
+            .add(DestroyBlocks.REDSTONE_PROGRAMMER)
             .add(DestroyItems.SEISMOMETER)
+            .add(DestroyItems.SEISMOGRAPH)
+            .add(DestroyBlocks.TREE_TAP)
             .add(DestroyBlocks.VAT_CONTROLLER)
         ;
 
         TagBuilder vatSideBlockBuilder = PonderRegistry.TAGS.forTag(DestroyPonderTags.VAT_SIDE_BLOCKS);
-        VatMaterial.BLOCK_MATERIALS.forEach((block, material) -> vatSideBlockBuilder.add(block));
+        VatMaterial.BLOCK_MATERIALS.forEach((blockIngredient, material) -> blockIngredient.getDisplayedItemStacks().forEach(stack -> vatSideBlockBuilder.add(stack.getItem())));
 
         PonderRegistry.TAGS.forTag(AllPonderTags.FLUIDS)
             .add(DestroyBlocks.BUBBLE_CAP)
+            .add(DestroyBlocks.CATALYTIC_CONVERTER)
             .add(DestroyBlocks.CENTRIFUGE)
             .add(DestroyBlocks.PUMPJACK)
+            .add(DestroyBlocks.TREE_TAP)
             .add(DestroyBlocks.VAT_CONTROLLER)
         ;
 
         PonderRegistry.TAGS.forTag(AllPonderTags.KINETIC_APPLIANCES)
             .add(DestroyBlocks.CENTRIFUGE)
             .add(DestroyBlocks.DYNAMO)
-        ;
-
-        PonderRegistry.TAGS.forTag(AllPonderTags.KINETIC_RELAYS)
-            .add(DestroyBlocks.COAXIAL_GEAR)
-            .add(DestroyBlocks.DIFFERENTIAL)
-            .add(DestroyBlocks.DOUBLE_CARDAN_SHAFT)
-            .add(DestroyBlocks.PLANETARY_GEARSET)
+            .add(DestroyBlocks.KEYPUNCH)
+            .add(DestroyBlocks.MECHANICAL_SIEVE)
+            .add(DestroyBlocks.PUMPJACK)
+            .add(DestroyBlocks.TREE_TAP)
         ;
 
         PonderRegistry.TAGS.forTag(AllPonderTags.ARM_TARGETS)
@@ -84,11 +86,13 @@ public class DestroyPonderTags {
 
         PonderRegistry.TAGS.forTag(AllPonderTags.REDSTONE)
             .add(DestroyBlocks.DYNAMO)
+            .add(DestroyBlocks.REDSTONE_PROGRAMMER)
         ;
 
         PonderRegistry.TAGS.forTag(AllPonderTags.DISPLAY_SOURCES)
             .add(DestroyBlocks.BUBBLE_CAP)
             .add(DestroyBlocks.CENTRIFUGE)
+            .add(DestroyBlocks.COLORIMETER)
             .add(DestroyBlocks.POLLUTOMETER)
             .add(DestroyBlocks.VAT_CONTROLLER)
         ;
@@ -96,6 +100,10 @@ public class DestroyPonderTags {
         PonderRegistry.TAGS.forTag(AllPonderTags.CONTRAPTION_ACTOR)
             .add(DestroyBlocks.EXTRUSION_DIE)
         ;
+    };
+
+    public static final void refreshVatMaterialsTag() {
+        VatMaterial.BLOCK_MATERIALS.keySet().forEach(blockIngredient -> blockIngredient.getDisplayedItemStacks().forEach(stack -> PonderRegistry.TAGS.forTag(VAT_SIDE_BLOCKS).add(stack.getItem())));
     };
     
 };

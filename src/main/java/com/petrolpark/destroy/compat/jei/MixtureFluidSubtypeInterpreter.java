@@ -1,11 +1,13 @@
 package com.petrolpark.destroy.compat.jei;
 
+import com.petrolpark.destroy.compat.jei.recipemanager.ChemicalSpeciesRecipeManagerPlugin;
+
 import mezz.jei.api.ingredients.subtypes.IIngredientSubtypeInterpreter;
 import mezz.jei.api.ingredients.subtypes.UidContext;
 import net.minecraftforge.fluids.FluidStack;
 
 /**
- * The proper interpretation of Mixtures is done by interpreting all of the contents of the Mixture separately in {@link DestroyRecipeManagerPlugin}.
+ * The proper interpretation of Mixtures is done by interpreting all of the contents of the Mixture separately in {@link ChemicalSpeciesRecipeManagerPlugin}.
 */ 
 public class MixtureFluidSubtypeInterpreter implements IIngredientSubtypeInterpreter<FluidStack> {
 

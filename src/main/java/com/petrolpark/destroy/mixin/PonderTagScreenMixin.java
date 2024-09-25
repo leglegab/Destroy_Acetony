@@ -48,7 +48,7 @@ public class PonderTagScreenMixin {
             ms.translate(0, 0, 200);
 
             Minecraft minecraft = Minecraft.getInstance();
-            graphics.renderTooltip(minecraft.font, DestroyLang.vatMaterialTooltip(hoveredItem), Optional.empty(), hoveredItem, mouseX, mouseY);
+            graphics.renderTooltip(minecraft.font, DestroyLang.vatMaterialTooltip(hoveredItem, DestroyLang.GRAYS), Optional.empty(), hoveredItem, mouseX, mouseY);
 
             ms.popPose();
             RenderSystem.enableDepthTest();

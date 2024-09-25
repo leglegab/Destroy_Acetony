@@ -1,6 +1,6 @@
 package com.petrolpark.destroy.item;
 
-import com.petrolpark.destroy.advancement.DestroyAdvancements;
+import com.petrolpark.destroy.advancement.DestroyAdvancementTrigger;
 import com.petrolpark.destroy.util.CropMutation;
 
 import net.minecraft.core.BlockPos;
@@ -34,13 +34,13 @@ public class HyperaccumulatingFertilizerItem extends BoneMealItem {
      */
     private static boolean grow(Level level, BlockPos cropPos) {
 
-        BlockState crostate = level.getBlockState(cropPos);
-        Block cropBlock = crostate.getBlock();
+        BlockState cropState = level.getBlockState(cropPos);
+        Block cropBlock = cropState.getBlock();
         BlockPos potentialOrePos = cropPos.below(2);
         BlockState potentialOreState = level.getBlockState(potentialOrePos);
 
-        if (cropBlock instanceof BonemealableBlock && crostate.is(BlockTags.CROPS)) {
-            CropMutation mutation = CropMutation.getMutation(crostate, potentialOreState);
+        if (cropBlock instanceof BonemealableBlock && cropState.is(BlockTags.CROPS)) {
+            CropMutation mutation = CropMutation.getMutation(cropState, potentialOreState);
             if (mutation.isSuccessful()) {
                 if (level.isClientSide()) {
                     addGrowthParticles(level, cropPos, 100);
@@ -57,15 +57,21 @@ public class HyperaccumulatingFertilizerItem extends BoneMealItem {
     };
 
     @Override
+    @SuppressWarnings("deprecation")
     public InteractionResult useOn(UseOnContext context) {
         Level level = context.getLevel();
-        boolean couldGrow = grow(level, context.getClickedPos()); // Try grow the Crop
+        BlockPos pos = context.getClickedPos();
+        ItemStack stack = context.getItemInHand();
+        boolean couldGrow = grow(level, pos); // Try grow the Crop
         if (couldGrow) { // If necessary, use up one Hyperaccumulating Fertilizer
             Player player = context.getPlayer();
             if (!level.isClientSide() && player != null && !player.isCreative()) {
                 context.getItemInHand().shrink(1);
             };
-            DestroyAdvancements.HYPERACCUMULATE.award(level, player);
+            DestroyAdvancementTrigger.HYPERACCUMULATE.award(level, player);
+            return InteractionResult.SUCCESS;
+        } else if (BoneMealItem.growCrop(stack, level, pos) || BoneMealItem.growWaterPlant(stack, level, pos, (Direction)null)) {
+            if (!level.isClientSide()) level.levelEvent(1505, pos, 0);
             return InteractionResult.SUCCESS;
         };
         return super.useOn(context);

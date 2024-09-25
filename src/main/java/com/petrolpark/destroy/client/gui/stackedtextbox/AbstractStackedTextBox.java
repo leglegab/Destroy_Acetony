@@ -204,10 +204,10 @@ public abstract class AbstractStackedTextBox extends ElementWidget {
     };
 
     public static class Area {
-        int minX;
-        int maxX;
-        int minY;
-        int maxY;
+        public int minX;
+        public int maxX;
+        public int minY;
+        public int maxY;
 
         public Area(int x, int y, int width, int height) {
             minX = x;

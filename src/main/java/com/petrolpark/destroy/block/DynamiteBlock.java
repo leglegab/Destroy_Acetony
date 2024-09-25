@@ -4,8 +4,8 @@ import org.jetbrains.annotations.Nullable;
 
 import com.petrolpark.destroy.block.entity.DestroyBlockEntityTypes;
 import com.petrolpark.destroy.block.entity.DynamiteBlockEntity;
-import com.petrolpark.destroy.util.ExplosionHelper;
 import com.petrolpark.destroy.world.explosion.ExcavationExplosion;
+import com.petrolpark.destroy.world.explosion.SmartExplosion;
 import com.simibubi.create.foundation.block.IBE;
 
 import net.minecraft.core.BlockPos;
@@ -31,7 +31,7 @@ public class DynamiteBlock extends Block implements IBE<DynamiteBlockEntity> {
         //level.removeBlock(pos, false);
         withBlockEntityDo(serverLevel, pos, be -> {
             ExcavationExplosion excavationExplosion = new ExcavationExplosion(level, source, pos, new AABB(be.excavationAreaLowerCorner, be.excavationAreaUpperCorner));
-            ExplosionHelper.explode(serverLevel, excavationExplosion);
+            SmartExplosion.explode(serverLevel, excavationExplosion);
         });
     };
     

@@ -19,6 +19,7 @@ public class ContaminatedItemDescription implements TooltipModifier {
 
     @Override
     public void modify(ItemTooltipEvent context) {
+        if (!context.getItemStack().hasTag()) return;
         CompoundTag tag = context.getItemStack().getOrCreateTag();
 
         if (tag.contains("ContaminatingFluid", Tag.TAG_COMPOUND)) {

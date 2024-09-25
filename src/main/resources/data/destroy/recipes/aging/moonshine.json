@@ -1,5 +1,12 @@
 {
     "type": "destroy:aging",
+    "conditions": [
+      {
+        "type": "petrolpark:config_boolean",
+        "mod": "destroy",
+        "value": "enableAlcohol"
+      }
+    ],
     "ingredients": [
         {
             "fluid": "minecraft:water",

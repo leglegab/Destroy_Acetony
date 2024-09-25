@@ -3,9 +3,9 @@ package com.petrolpark.destroy.fluid.ingredient;
 import java.text.DecimalFormat;
 
 import com.google.gson.JsonObject;
-import com.petrolpark.destroy.chemistry.Molecule;
-import com.petrolpark.destroy.chemistry.ReadOnlyMixture;
-import com.petrolpark.destroy.chemistry.index.DestroyMolecules;
+import com.petrolpark.destroy.chemistry.legacy.LegacySpecies;
+import com.petrolpark.destroy.chemistry.legacy.ReadOnlyMixture;
+import com.petrolpark.destroy.chemistry.legacy.index.DestroyMolecules;
 
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
@@ -69,7 +69,7 @@ public abstract class ConcentrationRangeFluidIngredient<T extends MixtureFluidIn
      * and the rest water.
      * @param molecule
      */
-    public ReadOnlyMixture getMixtureOfRightConcentration(Molecule molecule) {
+    public ReadOnlyMixture getMixtureOfRightConcentration(LegacySpecies molecule) {
         float targetConcentration = getTargetConcentration();
         ReadOnlyMixture mixture = new ReadOnlyMixture();
         mixture.addMolecule(molecule, targetConcentration);

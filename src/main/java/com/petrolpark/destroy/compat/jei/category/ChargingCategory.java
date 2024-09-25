@@ -2,6 +2,7 @@ package com.petrolpark.destroy.compat.jei.category;
 
 import java.util.List;
 
+import com.petrolpark.compat.jei.category.PetrolparkRecipeCategory;
 import com.petrolpark.destroy.compat.jei.animation.AnimatedDynamo;
 import com.petrolpark.destroy.recipe.ChargingRecipe;
 import com.simibubi.create.content.processing.recipe.ProcessingOutput;
@@ -14,9 +15,9 @@ import mezz.jei.api.recipe.IFocusGroup;
 import mezz.jei.api.recipe.RecipeIngredientRole;
 import net.minecraft.client.gui.GuiGraphics;
 
-public class ChargingCategory extends DestroyRecipeCategory<ChargingRecipe> {
+public class ChargingCategory extends PetrolparkRecipeCategory<ChargingRecipe> {
 
-    private final AnimatedDynamo dynamo = new AnimatedDynamo(false);
+    private final AnimatedDynamo dynamo = new AnimatedDynamo(false, false);
 
     public ChargingCategory(Info<ChargingRecipe> info, IJeiHelpers helpers) {
         super(info, helpers);

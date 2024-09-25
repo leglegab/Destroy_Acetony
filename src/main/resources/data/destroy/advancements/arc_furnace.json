@@ -1,0 +1,26 @@
+{
+    "parent": "destroy:carbon_fiber",
+    "criteria": {
+      "cook": {
+        "conditions": {},
+        "trigger": "destroy:arc_furnace"
+      }
+    },
+    "display": {
+      "description": {
+        "color": "#DBA213",
+        "translate": "advancement.destroy.arc_furnace.description"
+      },
+      "icon": {
+        "item": "minecraft:blast_furnace"
+      },
+      "title": {
+        "translate": "advancement.destroy.arc_furnace"
+      }
+    },
+    "requirements": [
+      [
+        "cook"
+      ]
+    ]
+  }

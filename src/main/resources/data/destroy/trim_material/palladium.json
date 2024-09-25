@@ -1,0 +1,9 @@
+{
+    "asset_name": "palladium",
+    "description": {
+      "color": "#d5c6c6",
+      "translate": "destroy.trim_material.palladium"
+    },
+    "ingredient": "destroy:palladium_ingot",
+    "item_model_index": -1.0
+  }

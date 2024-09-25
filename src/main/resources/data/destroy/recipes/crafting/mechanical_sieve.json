@@ -1,0 +1,17 @@
+{
+    "type": "minecraft:crafting_shaped",
+    "pattern": [
+      "ASA"
+    ],
+    "key": {
+      "S": {
+        "item": "destroy:mesh"
+      },
+      "A": {
+        "item": "create:andesite_alloy"
+      }
+    },
+    "result": {
+      "item": "destroy:mechanical_sieve"
+    }
+  }

@@ -4,7 +4,7 @@ import java.util.List;
 import java.util.function.Consumer;
 
 import com.petrolpark.destroy.capability.entity.EntityChemicalPoison;
-import com.petrolpark.destroy.chemistry.Molecule;
+import com.petrolpark.destroy.chemistry.legacy.LegacySpecies;
 import com.petrolpark.destroy.config.DestroyAllConfigs;
 import com.petrolpark.destroy.world.damage.DestroyDamageSources;
 
@@ -40,7 +40,7 @@ public class ChemicalPoisonMobEffect extends UncurableMobEffect {
         if (!livingEntity.level().isClientSide()) {
             int duration = livingEntity.getEffect(DestroyMobEffects.CHEMICAL_POISON.get()).getDuration(); // This is the bit it says is null
             if (duration % 50 == 0) {
-                Molecule molecule = null;
+                LegacySpecies molecule = null;
                 LazyOptional<EntityChemicalPoison> cap = getCap(livingEntity);
                 if (cap.isPresent()) molecule = cap.resolve().get().getMolecule();
                 livingEntity.hurt(DestroyDamageSources.chemicalPoison(livingEntity.level(), molecule), 1f);
@@ -66,7 +66,7 @@ public class ChemicalPoisonMobEffect extends UncurableMobEffect {
             Minecraft minecraft = Minecraft.getInstance();
             if (minecraft.player != null) {
                 minecraft.player.getCapability(EntityChemicalPoison.Provider.ENTITY_CHEMICAL_POISON).ifPresent(cp -> {
-                    Molecule molecule = cp.getMolecule();
+                    LegacySpecies molecule = cp.getMolecule();
                     if (molecule != null) tooltip.set(0, Component.translatable("effect.destroy.chemical_poison.molecule", cp.getMolecule().getName(DestroyAllConfigs.CLIENT.chemistry.iupacNames.get())));
                 });
             };

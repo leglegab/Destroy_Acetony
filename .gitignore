@@ -23,6 +23,7 @@ eclipse
 run
 .vscode
 tempdata
+libs
 
 # Files from Forge MDK
 .DS_Store

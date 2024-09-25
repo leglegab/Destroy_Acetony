@@ -18,7 +18,7 @@ public class ObliterationCondition implements LootItemCondition {
     public boolean test(LootContext context) {
         SmartExplosion explosion = context.getParamOrNull(DestroyLootContextParams.SMART_EXPLOSION);
         if (explosion != null) {
-            return explosion.shouldDoSpecialDrops();
+            return explosion.shouldDoObliterationDrops();
         } else {
             return false;
         }

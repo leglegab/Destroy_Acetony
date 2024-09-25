@@ -1,0 +1,26 @@
+{
+    "type": "minecraft:crafting_shaped",
+    "pattern": [
+      " C ",
+      "PFP",
+      " Z "
+    ],
+    "key": {
+      "P": {
+        "tag": "forge:plates/stainless_steel"
+      },
+      "F": {
+        "item": "destroy:mesh"
+      },
+      "C": {
+        "tag": "minecraft:coals"
+      },
+      "Z": {
+        "item": "destroy:zeolite"
+      }
+    },
+    "result": {
+      "item": "destroy:gas_filter",
+      "count": 1
+    }
+  }

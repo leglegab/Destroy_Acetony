@@ -4,9 +4,9 @@ import java.util.Collection;
 import java.util.List;
 
 import com.google.gson.JsonObject;
-import com.petrolpark.destroy.chemistry.Mixture;
-import com.petrolpark.destroy.chemistry.Molecule;
-import com.petrolpark.destroy.chemistry.ReadOnlyMixture;
+import com.petrolpark.destroy.chemistry.legacy.LegacyMixture;
+import com.petrolpark.destroy.chemistry.legacy.LegacySpecies;
+import com.petrolpark.destroy.chemistry.legacy.ReadOnlyMixture;
 import com.petrolpark.destroy.config.DestroyAllConfigs;
 import com.petrolpark.destroy.fluid.ingredient.mixturesubtype.MixtureFluidIngredientSubType;
 import com.petrolpark.destroy.util.DestroyLang;
@@ -22,7 +22,7 @@ public class MoleculeFluidIngredient extends ConcentrationRangeFluidIngredient<M
 
     public static final Type TYPE = new Type();
 
-    protected Molecule molecule;
+    protected LegacySpecies molecule;
 
     @Override
     public MixtureFluidIngredientSubType<MoleculeFluidIngredient> getType() {
@@ -36,14 +36,14 @@ public class MoleculeFluidIngredient extends ConcentrationRangeFluidIngredient<M
     };
 
     @Override
-    protected boolean testMixture(Mixture mixture) {
+    protected boolean testMixture(LegacyMixture mixture) {
         return mixture.hasUsableMolecule(molecule, minConcentration, maxConcentration, null);
     };
 
     @Override
     protected void readInternal(FriendlyByteBuf buffer) {
         super.readInternal(buffer);
-        molecule = Molecule.getMolecule(buffer.readUtf());
+        molecule = LegacySpecies.getMolecule(buffer.readUtf());
     };
 
     @Override
@@ -54,8 +54,8 @@ public class MoleculeFluidIngredient extends ConcentrationRangeFluidIngredient<M
 
     @Override
     protected void readInternal(JsonObject json) {
+        molecule = LegacySpecies.getMolecule(GsonHelper.getAsString(json, "molecule"));
         super.readInternal(json);
-        molecule = Molecule.getMolecule(GsonHelper.getAsString(json, "molecule"));
     };
 
     @Override
@@ -87,16 +87,16 @@ public class MoleculeFluidIngredient extends ConcentrationRangeFluidIngredient<M
             float minConc = fluidTag.getFloat("MinimumConcentration");
             float maxConc = fluidTag.getFloat("MaximumConcentration");
     
-            Molecule molecule = Molecule.getMolecule(moleculeID);
+            LegacySpecies molecule = LegacySpecies.getMolecule(moleculeID);
             Component moleculeName = molecule == null ? DestroyLang.translate("tooltip.unknown_molecule").component() : molecule.getName(DestroyAllConfigs.CLIENT.chemistry.iupacNames.get());
     
             return TooltipHelper.cutStringTextComponent(DestroyLang.translate("tooltip.mixture_ingredient.molecule", moleculeName, df.format(minConc), df.format(maxConc)).string(), Palette.GRAY_AND_WHITE);
         };
     
         @Override
-        public Collection<Molecule> getContainedMolecules(CompoundTag fluidTag) {
+        public Collection<LegacySpecies> getContainedMolecules(CompoundTag fluidTag) {
             String moleculeID = fluidTag.getString("MoleculeRequired");
-            Molecule molecule = Molecule.getMolecule(moleculeID);
+            LegacySpecies molecule = LegacySpecies.getMolecule(moleculeID);
             if (molecule == null) return List.of();
             return List.of(molecule);
         };

@@ -5,10 +5,10 @@ import java.util.Collection;
 import java.util.List;
 
 import com.google.gson.JsonObject;
-import com.petrolpark.destroy.chemistry.Mixture;
-import com.petrolpark.destroy.chemistry.Molecule;
-import com.petrolpark.destroy.chemistry.MoleculeTag;
-import com.petrolpark.destroy.chemistry.ReadOnlyMixture;
+import com.petrolpark.destroy.chemistry.legacy.LegacyMixture;
+import com.petrolpark.destroy.chemistry.legacy.LegacySpecies;
+import com.petrolpark.destroy.chemistry.legacy.LegacySpeciesTag;
+import com.petrolpark.destroy.chemistry.legacy.ReadOnlyMixture;
 import com.petrolpark.destroy.fluid.ingredient.mixturesubtype.MixtureFluidIngredientSubType;
 import com.petrolpark.destroy.util.DestroyLang;
 import com.simibubi.create.foundation.item.TooltipHelper;
@@ -23,9 +23,9 @@ public class MoleculeTagFluidIngredient extends ConcentrationRangeFluidIngredien
 
     public static final Type TYPE = new Type();
 
-    protected MoleculeTag tag;
+    protected LegacySpeciesTag tag;
 
-    public MoleculeTagFluidIngredient(MoleculeTag tag, float minConc, float maxConc) {
+    public MoleculeTagFluidIngredient(LegacySpeciesTag tag, float minConc, float maxConc) {
         this.tag = tag;
         minConcentration = minConc;
         maxConcentration = maxConc;
@@ -39,7 +39,7 @@ public class MoleculeTagFluidIngredient extends ConcentrationRangeFluidIngredien
     };
 
     @Override
-    protected boolean testMixture(Mixture mixture) {
+    protected boolean testMixture(LegacyMixture mixture) {
         return mixture.hasUsableMolecules(m -> m.hasTag(tag), minConcentration, maxConcentration, (m) -> false);
     };
 
@@ -52,7 +52,7 @@ public class MoleculeTagFluidIngredient extends ConcentrationRangeFluidIngredien
     @Override
     protected void readInternal(FriendlyByteBuf buffer) {
         super.readInternal(buffer);
-        tag = MoleculeTag.MOLECULE_TAGS.get(buffer.readUtf());
+        tag = LegacySpeciesTag.MOLECULE_TAGS.get(buffer.readUtf());
     };
 
     @Override
@@ -67,7 +67,7 @@ public class MoleculeTagFluidIngredient extends ConcentrationRangeFluidIngredien
         IllegalStateException e = new IllegalStateException("Molecule Tag fluid ingredients must declare a valid tag");
         if (!json.has("tag")) throw e;
         String tagId = GsonHelper.getAsString(json, "tag");
-        tag = MoleculeTag.MOLECULE_TAGS.get(tagId);
+        tag = LegacySpeciesTag.MOLECULE_TAGS.get(tagId);
         if (tag == null) throw e;
     };
 
@@ -79,7 +79,7 @@ public class MoleculeTagFluidIngredient extends ConcentrationRangeFluidIngredien
 
     @Override
     public List<ReadOnlyMixture> getExampleMixtures() {
-        return MoleculeTag.MOLECULES_WITH_TAGS.get(tag).stream().map(this::getMixtureOfRightConcentration).toList();
+        return LegacySpeciesTag.MOLECULES_WITH_TAGS.get(tag).stream().map(this::getMixtureOfRightConcentration).toList();
     };
 
     protected static class Type extends MixtureFluidIngredientSubType<MoleculeTagFluidIngredient> {
@@ -98,7 +98,7 @@ public class MoleculeTagFluidIngredient extends ConcentrationRangeFluidIngredien
         public List<Component> getDescription(CompoundTag fluidTag) {
             String tagId = fluidTag.getString("MoleculeTag");
             if (tagId == null || tagId.isEmpty()) return List.of();
-            MoleculeTag tag = MoleculeTag.MOLECULE_TAGS.get(tagId);
+            LegacySpeciesTag tag = LegacySpeciesTag.MOLECULE_TAGS.get(tagId);
             if (tag == null) return List.of();
             float minConc = fluidTag.getFloat("MinimumConcentration");
             float maxConc = fluidTag.getFloat("MaximumConcentration");
@@ -106,14 +106,14 @@ public class MoleculeTagFluidIngredient extends ConcentrationRangeFluidIngredien
             List<Component> tooltip = new ArrayList<>();
             tooltip.addAll(TooltipHelper.cutStringTextComponent(DestroyLang.translate("tooltip.mixture_ingredient.molecule_tag_1").string(), Palette.GRAY_AND_WHITE));
             tooltip.add(tag.getFormattedName());
-            tooltip.addAll(TooltipHelper.cutStringTextComponent(DestroyLang.translate("tooltip.mixture_ingredient.molecule_tag_2", df.format(minConc), df.format(maxConc)).string(), Palette.GRAY_AND_WHITE));
+            tooltip.addAll(TooltipHelper.cutTextComponent(DestroyLang.translate("tooltip.mixture_ingredient.molecule_tag_2", df.format(minConc), df.format(maxConc)).component(), Palette.GRAY_AND_WHITE.primary(), Palette.GRAY_AND_WHITE.highlight()));
     
             return tooltip;
         };
     
         @Override
-        public Collection<Molecule> getContainedMolecules(CompoundTag fluidTag) {
-            return MoleculeTag.MOLECULES_WITH_TAGS.get(MoleculeTag.MOLECULE_TAGS.get(fluidTag.getString("MoleculeTag")));
+        public Collection<LegacySpecies> getContainedMolecules(CompoundTag fluidTag) {
+            return LegacySpeciesTag.MOLECULES_WITH_TAGS.get(LegacySpeciesTag.MOLECULE_TAGS.get(fluidTag.getString("MoleculeTag")));
         };
 
     };

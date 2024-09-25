@@ -1,0 +1,24 @@
+{
+	"parent": "block/block",
+	"textures": {
+		"front": "destroy:block/colorimeter_front",
+		"back": "destroy:block/colorimeter_back",
+		"side": "destroy:block/colorimeter_side",
+		"top": "destroy:block/stainless_steel_block",
+		"particle": "destroy:block/colorimeter_front"
+	},
+	"elements": [
+		{
+			"from": [0, 0, 0],
+			"to": [16, 16, 16],
+			"faces": {
+				"north": {"uv": [0, 0, 16, 16], "texture": "front"},
+				"east": {"uv": [16, 0, 0, 16], "texture": "side"},
+				"south": {"uv": [0, 0, 16, 16], "texture": "back"},
+				"west": {"uv": [0, 0, 16, 16], "texture": "side"},
+				"up": {"uv": [0, 0, 16, 16], "texture": "top"},
+				"down": {"uv": [0, 0, 16, 16], "texture": "top"}
+			}
+		}
+	]
+}

@@ -6,10 +6,12 @@ import java.util.stream.Collectors;
 
 import com.petrolpark.destroy.Destroy;
 import com.petrolpark.destroy.block.entity.BubbleCapBlockEntity;
-import com.petrolpark.destroy.capability.level.pollution.LevelPollution;
-import com.petrolpark.destroy.chemistry.Mixture;
-import com.petrolpark.destroy.chemistry.Molecule;
-import com.petrolpark.destroy.chemistry.ReadOnlyMixture;
+import com.petrolpark.destroy.capability.Pollution;
+import com.petrolpark.destroy.chemistry.legacy.LegacyMixture;
+import com.petrolpark.destroy.chemistry.legacy.LegacySpecies;
+import com.petrolpark.destroy.chemistry.legacy.ReadOnlyMixture;
+import com.petrolpark.destroy.compat.tfmg.SharedDistillationRecipes;
+import com.petrolpark.destroy.config.DestroyAllConfigs;
 import com.petrolpark.destroy.fluid.DestroyFluids;
 import com.petrolpark.destroy.fluid.MixtureFluid;
 import com.petrolpark.destroy.recipe.DestroyRecipeTypes;
@@ -23,6 +25,7 @@ import com.simibubi.create.foundation.utility.Iterate;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -32,7 +35,6 @@ import net.minecraftforge.fluids.capability.IFluidHandler.FluidAction;
 public class DistillationTower {
 
     private static final Object distillationRecipeKey = new Object();
-    private static final int PROCESS_TIME = 100; // How often (in ticks) to attempt processing
 
     private BlockPos position; // The bottom of the Distillation Tower
     private List<BubbleCapBlockEntity> bubbleCaps;
@@ -42,7 +44,7 @@ public class DistillationTower {
     public DistillationTower(Level level, BlockPos controllerPos) { // Create a new Distillation Tower from scratch
         position = controllerPos;
         bubbleCaps = new ArrayList<>();
-        tick = PROCESS_TIME;
+        tick = getProcessingTime();
         int i = 0;
         while (true) {
             BlockEntity be = level.getBlockEntity(controllerPos.above(i));
@@ -53,6 +55,10 @@ public class DistillationTower {
             };
             i++;
         };
+    };
+
+    public int getProcessingTime() {
+        return DestroyAllConfigs.SERVER.blocks.bubbleCapRecipeFrequency.get();
     };
 
     public DistillationTower(CompoundTag compound, Level level, BlockPos pos) { // Create a new Distillation Tower from NBT
@@ -114,19 +120,19 @@ public class DistillationTower {
         if (tick <= 0) {
             findRecipe(level);
             process();
-            tick = PROCESS_TIME; // Reset counter
+            tick = getProcessingTime(); // Reset counter
         };
     };
 
     public void findRecipe(Level level) {
-        if (getControllerBubbleCap() == null) return;
+        if (getControllerBubbleCap() == null || level.isClientSide()) return;
         SmartFluidTank inputTank = getControllerBubbleCap().getTank();
-        if (lastRecipe == null || !lastRecipe.getRequiredFluid().test(inputTank.getFluid())) { // If the Recipe has changed
+        if (lastRecipe == null || !lastRecipe.getRequiredFluid().test(inputTank.getFluid()) || !lastRecipe.isValidAt(level, getControllerPos())) { // If the Recipe has changed
             List<Recipe<?>> possibleRecipes = RecipeFinder.get(distillationRecipeKey, level, r -> r.getType() == DestroyRecipeTypes.DISTILLATION.getType()).stream().filter(r -> {
                 DistillationRecipe recipe = (DistillationRecipe) r;
-                if (!recipe.getRequiredFluid().test(inputTank.getFluid())) return false; // If there is insufficient input Fluid
-                return true;
+                return (recipe.getRequiredFluid().test(inputTank.getFluid())) && recipe.isValidAt(level, getControllerPos()); // If there is sufficient input Fluid and we're in the right biome
             }).collect(Collectors.toList());
+            possibleRecipes.addAll(SharedDistillationRecipes.getTFMGToDestroyRecipes(level));
             if (possibleRecipes.size() >= 1) {
                 lastRecipe = (DistillationRecipe)possibleRecipes.get(0);
             } else {
@@ -214,6 +220,9 @@ public class DistillationTower {
         // If we've got to this point, the Recipe is being successfully processed
         controller.particleFluid = fluidDrained.copy();
         controller.onDistill();
+        if (controller.advancementBehaviour.getPlayer() instanceof ServerPlayer player) {
+            player.triggerRecipeCrafted(lastRecipe, List.of());
+        };
         return true;
     };
 
@@ -228,23 +237,23 @@ public class DistillationTower {
     private List<FluidStack> getFractionsOfMixture(ReadOnlyMixture mixture, int mixtureAmount, int numberOfFractions) {
         List<FluidStack> fractions = new ArrayList<>(numberOfFractions);
 
-        float roomTemperature = LevelPollution.getLocalTemperature(getControllerBubbleCap().getLevel(), getControllerPos());
+        float roomTemperature = Pollution.getLocalTemperature(getControllerBubbleCap().getLevel(), getControllerPos());
         float maxTemperature = Math.max(getTemperatureForDistillationTower(getControllerBubbleCap().getLevel(), getControllerPos()), mixture.getTemperature());
 
         if (numberOfFractions == 0) return fractions;
         if (numberOfFractions == 1) return List.of(MixtureFluid.of(mixtureAmount, mixture));
 
-        Mixture gasMixture = new Mixture().setTemperature(roomTemperature); // If there are gases, these do not separate by boiling point (as they never condense), so these are all grouped into one FluidStack
+        LegacyMixture gasMixture = new LegacyMixture().setTemperature(roomTemperature); // If there are gases, these do not separate by boiling point (as they never condense), so these are all grouped into one FluidStack
         boolean thereAreGases = false;
 
-        Mixture residueMixture = new Mixture(); // If there are Molecules with a higher boiling point than the Mixture or Blaze Burner can reach, these do not separate by boiling point as they never evaporate
+        LegacyMixture residueMixture = new LegacyMixture(); // If there are Molecules with a higher boiling point than the Mixture or Blaze Burner can reach, these do not separate by boiling point as they never evaporate
 
-        List<Molecule> liquids = new ArrayList<>();
+        List<LegacySpecies> liquids = new ArrayList<>();
 
         float lowestBoilingPoint = roomTemperature;
         float highestBoilingPoint = roomTemperature;
 
-        for (Molecule molecule : mixture.getContents(false)) {
+        for (LegacySpecies molecule : mixture.getContents(false)) {
             if (molecule.getBoilingPoint() < roomTemperature) { // Add all gases to the gas fraction
                 thereAreGases = true;
                 gasMixture.addMolecule(molecule, mixture.getConcentrationOf(molecule));
@@ -262,10 +271,10 @@ public class DistillationTower {
         if (thereAreGases) numberOfFractions--; // If there is a gas fraction, there must be one fewer liquid fractions
 
         float interval = (highestBoilingPoint - lowestBoilingPoint) / numberOfFractions; // Split the whole temperature range into (numberOfFraction) equal-sized temperature ranges...
-        List<Mixture> liquidMixtures = new ArrayList<>(numberOfFractions);
-        for (int i = 0; i < numberOfFractions; i++) liquidMixtures.add(new Mixture().setTemperature(roomTemperature));
+        List<LegacyMixture> liquidMixtures = new ArrayList<>(numberOfFractions);
+        for (int i = 0; i < numberOfFractions; i++) liquidMixtures.add(new LegacyMixture().setTemperature(roomTemperature));
 
-        for (Molecule molecule : liquids) {
+        for (LegacySpecies molecule : liquids) {
             checkEachFraction: for (int fraction = 0; fraction < numberOfFractions; fraction++) { // ...If a Molecule's BP is in the nth temperature range, it goes in the nth fraction
                 if (molecule.getBoilingPoint() <= lowestBoilingPoint + ((fraction + 1) * interval)) {
                     liquidMixtures.get(fraction).addMolecule(molecule, mixture.getConcentrationOf(molecule));
@@ -278,7 +287,7 @@ public class DistillationTower {
         fractions.add(MixtureFluid.of(residueAmount, residueMixture)); // Add Residue regardless of whether there is anything there
 
         for (int fraction = 0; fraction < numberOfFractions; fraction++) { // Add all the liquid fractions
-            Mixture fractionMixture = liquidMixtures.get(fraction);
+            LegacyMixture fractionMixture = liquidMixtures.get(fraction);
             int amount = fractionMixture.recalculateVolume(mixtureAmount);
             if (amount == 0) continue;
             fractions.add(MixtureFluid.of(amount, fractionMixture));
@@ -303,7 +312,7 @@ public class DistillationTower {
      * Get the temperature (in kelvins) to which this Heat Level will heat the Distillation Tower.
      */
     public static float getTemperatureForDistillationTower(Level level, BlockPos pos) {
-        float roomTemperature = LevelPollution.getLocalTemperature(level, pos);
+        float roomTemperature = Pollution.getLocalTemperature(level, pos);
         float temperature = roomTemperature;
         HeatLevel heatLevel = BasinBlockEntity.getHeatLevelOf(level.getBlockState(pos.below()));
         if (heatLevel.name() == "FROSTING") temperature = 273f;

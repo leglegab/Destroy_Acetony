@@ -1,0 +1,26 @@
+{
+    "parent": "destroy:andrussow_process",
+    "criteria": {
+      "make": {
+        "conditions": {},
+        "trigger": "destroy:ethylanthraquinone"
+      }
+    },
+    "display": {
+      "description": {
+        "color": "#DBA213",
+        "translate": "advancement.destroy.ethylanthraquinone.description"
+      },
+      "icon": {
+        "item": "destroy:palladium_powder"
+      },
+      "title": {
+        "translate": "advancement.destroy.ethylanthraquinone"
+      }
+    },
+    "requirements": [
+      [
+        "make"
+      ]
+    ]
+  }

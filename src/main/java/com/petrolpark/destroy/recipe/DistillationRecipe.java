@@ -1,8 +1,15 @@
 package com.petrolpark.destroy.recipe;
 
+import java.util.HashSet;
+import java.util.Set;
+
+import com.google.common.collect.ImmutableSet;
+import com.petrolpark.recipe.advancedprocessing.IBiomeSpecificProcessingRecipe;
 import com.simibubi.create.content.processing.recipe.ProcessingRecipeBuilder.ProcessingRecipeParams;
 
-public class DistillationRecipe extends SingleFluidRecipe {
+public class DistillationRecipe extends SingleFluidRecipe implements IBiomeSpecificProcessingRecipe {
+
+    private Set<BiomeValue> biomes = new HashSet<>();
 
     public DistillationRecipe(ProcessingRecipeParams params) {
         super(DestroyRecipeTypes.DISTILLATION, params);
@@ -33,6 +40,16 @@ public class DistillationRecipe extends SingleFluidRecipe {
     @Override
     public String getRecipeTypeName() {
         return "distillation";
+    }
+
+    @Override
+    public void setAllowedBiomes(Set<BiomeValue> biomes) {
+        this.biomes = ImmutableSet.copyOf(biomes);
+    };
+
+    @Override
+    public Set<BiomeValue> getAllowedBiomes() {
+        return biomes;
     };
     
 }

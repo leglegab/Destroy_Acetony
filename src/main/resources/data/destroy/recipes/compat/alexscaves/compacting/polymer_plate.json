@@ -8,13 +8,13 @@
     "type": "create:compacting",
     "ingredients": [
       {
-        "tag": "destroy:plastic"
+        "tag": "destroy:plastic/rigid"
       },
       {
-        "tag": "destroy:plastic"
+        "tag": "destroy:plastic/rigid"
       },
       {
-        "tag": "destroy:plastic"
+        "tag": "destroy:plastic/rigid"
       },
       {
         "item": "alexscaves:toxic_paste"

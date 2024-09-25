@@ -1,0 +1,16 @@
+{
+    "type": "minecraft:crafting_shaped",
+    "pattern": [
+      "###",
+      "###",
+      "###"
+    ],
+    "key": {
+      "#": {
+        "item": "destroy:iodine"
+      }
+    },
+    "result": {
+      "item": "destroy:iodine_block"
+    }
+  }

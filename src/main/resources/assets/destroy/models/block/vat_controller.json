@@ -1,12 +1,12 @@
 {
     "parent": "block/cube",
     "textures": {
-      "particle": "create:block/copper_casing",
-      "down": "create:block/copper_casing",
-      "up": "create:block/copper_casing",
-      "north": "create:block/copper_casing",
-      "east": "create:block/copper_casing",
+      "particle": "destroy:block/stainless_steel_block",
+      "down": "destroy:block/stainless_steel_block",
+      "up": "destroy:block/stainless_steel_block",
+      "north": "destroy:block/stainless_steel_block",
+      "east": "destroy:block/stainless_steel_block",
       "south": "destroy:block/vat_controller",
-      "west": "create:block/copper_casing"
+      "west": "destroy:block/stainless_steel_block"
     }
   }

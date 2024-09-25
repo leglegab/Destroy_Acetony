@@ -1,6 +1,7 @@
 package com.petrolpark.destroy.client.gui.menu;
 
 import com.petrolpark.destroy.Destroy;
+import com.petrolpark.destroy.client.gui.screen.CustomExplosiveScreen;
 import com.petrolpark.destroy.client.gui.screen.RedstoneProgrammerScreen;
 import com.tterrag.registrate.builders.MenuBuilder.ForgeMenuFactory;
 import com.tterrag.registrate.builders.MenuBuilder.ScreenFactory;
@@ -14,6 +15,7 @@ import net.minecraft.world.inventory.AbstractContainerMenu;
 public class DestroyMenuTypes {
 
     public static final MenuEntry<RedstoneProgrammerMenu> REDSTONE_PROGRAMMER = register("redstone_programmer", RedstoneProgrammerMenu::new, () -> RedstoneProgrammerScreen::new);
+	public static final MenuEntry<CustomExplosiveMenu> CUSTOM_EXPLOSIVE = register("custom_explosive",  CustomExplosiveMenu::new, () -> CustomExplosiveScreen::new);
 
     private static <C extends AbstractContainerMenu, S extends Screen & MenuAccess<C>> MenuEntry<C> register(
 		String name, ForgeMenuFactory<C> factory, NonNullSupplier<ScreenFactory<C, S>> screenFactory) {

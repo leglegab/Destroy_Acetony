@@ -1,0 +1,27 @@
+{
+    "parent": "destroy:keypunch",
+    "criteria": {
+      "keypunch": {
+        "conditions": {},
+        "trigger": "destroy:keypunch_five"
+      }
+    },
+    "display": {
+      "description": {
+        "color": "#DBA213",
+        "translate": "advancement.destroy.keypunch_five.description"
+      },
+      "icon": {
+        "item": "destroy:keypunch"
+      },
+      "title": {
+        "translate": "advancement.destroy.keypunch_five"
+      },
+      "frame": "challenge"
+    },
+    "requirements": [
+      [
+        "keypunch"
+      ]
+    ]
+  }

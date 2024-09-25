@@ -1,0 +1,33 @@
+{
+    "parent": "destroy:arc_furnace",
+    "criteria": {
+      "eat": {
+        "trigger": "minecraft:consume_item",
+        "conditions": {
+            "item": {
+            "items": [
+                "destroy:creatine"
+            ]
+        }
+        }
+      }
+    },
+    "display": {
+      "description": {
+        "color": "#DBA213",
+        "translate": "advancement.destroy.creatine.description"
+      },
+      "icon": {
+        "item": "destroy:creatine"
+      },
+      "title": {
+        "translate": "advancement.destroy.creatine"
+      },
+      "frame": "challenge"
+    },
+    "requirements": [
+      [
+        "eat"
+      ]
+    ]
+  }

@@ -1,76 +1,100 @@
 package com.petrolpark.destroy.compat.jei;
 
 import java.util.ArrayList;
-import java.util.Collection;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.function.Consumer;
 import java.util.function.Supplier;
 
+import com.petrolpark.compat.jei.category.builder.PetrolparkCategoryBuilder;
 import com.petrolpark.destroy.Destroy;
 import com.petrolpark.destroy.block.DestroyBlocks;
-import com.petrolpark.destroy.chemistry.Molecule;
+import com.petrolpark.destroy.chemistry.legacy.LegacySpecies;
+import com.petrolpark.destroy.client.gui.screen.RedstoneProgrammerScreen;
+import com.petrolpark.destroy.compat.jei.animation.ArcFurnaceIcon;
 import com.petrolpark.destroy.compat.jei.category.AgingCategory;
+import com.petrolpark.destroy.compat.jei.category.ArcFurnaceCategory;
+import com.petrolpark.destroy.compat.jei.category.CartographyTableCategory;
+import com.petrolpark.destroy.compat.jei.category.CartographyTableCategory.CartographyTableRecipe;
 import com.petrolpark.destroy.compat.jei.category.CentrifugationCategory;
 import com.petrolpark.destroy.compat.jei.category.ChargingCategory;
-import com.petrolpark.destroy.compat.jei.category.DestroyRecipeCategory;
 import com.petrolpark.destroy.compat.jei.category.DistillationCategory;
 import com.petrolpark.destroy.compat.jei.category.ElectrolysisCategory;
+import com.petrolpark.destroy.compat.jei.category.ElementTankFillingCategory;
 import com.petrolpark.destroy.compat.jei.category.ExtrusionCategory;
+import com.petrolpark.destroy.compat.jei.category.FlameRetardantApplicationCategory;
 import com.petrolpark.destroy.compat.jei.category.GenericReactionCategory;
-import com.petrolpark.destroy.compat.jei.category.ITickableCategory;
+import com.petrolpark.destroy.compat.jei.category.GlassblowingCategory;
+import com.petrolpark.destroy.compat.jei.category.MixableExplosiveCategory;
+import com.petrolpark.destroy.compat.jei.category.MixableExplosiveCategory.MixableExplosiveRecipe;
+import com.petrolpark.destroy.compat.jei.category.MixtureConversionCategory;
 import com.petrolpark.destroy.compat.jei.category.MutationCategory;
 import com.petrolpark.destroy.compat.jei.category.ObliterationCategory;
 import com.petrolpark.destroy.compat.jei.category.ReactionCategory;
+import com.petrolpark.destroy.compat.jei.category.SievingCategory;
+import com.petrolpark.destroy.compat.jei.category.TappingCategory;
+import com.petrolpark.destroy.compat.jei.category.VatMaterialCategory;
+import com.petrolpark.destroy.compat.jei.category.VatMaterialCategory.VatMaterialRecipe;
+import com.petrolpark.destroy.compat.jei.recipemanager.ChemicalSpeciesRecipeManagerPlugin;
+import com.petrolpark.destroy.compat.jei.recipemanager.FireproofingRecipeManagerPlugin;
+import com.petrolpark.destroy.compat.tfmg.SharedDistillationRecipes;
+import com.petrolpark.destroy.config.DestroyAllConfigs;
+import com.petrolpark.destroy.effect.potion.PotionSeparationRecipes;
 import com.petrolpark.destroy.fluid.DestroyFluids;
+import com.petrolpark.destroy.item.CustomExplosiveMixBlockItem;
 import com.petrolpark.destroy.item.DestroyItems;
+import com.petrolpark.destroy.item.armorMaterial.DestroyArmorMaterials;
 import com.petrolpark.destroy.recipe.AgingRecipe;
+import com.petrolpark.destroy.recipe.ArcFurnaceRecipe;
 import com.petrolpark.destroy.recipe.CentrifugationRecipe;
 import com.petrolpark.destroy.recipe.ChargingRecipe;
 import com.petrolpark.destroy.recipe.DestroyRecipeTypes;
 import com.petrolpark.destroy.recipe.DistillationRecipe;
 import com.petrolpark.destroy.recipe.ElectrolysisRecipe;
+import com.petrolpark.destroy.recipe.ElementTankFillingRecipe;
 import com.petrolpark.destroy.recipe.ExtendedDurationFireworkRocketRecipe;
 import com.petrolpark.destroy.recipe.ExtrusionRecipe;
+import com.petrolpark.destroy.recipe.FlameRetardantApplicationRecipe;
+import com.petrolpark.destroy.recipe.GlassblowingRecipe;
+import com.petrolpark.destroy.recipe.MixtureConversionRecipe;
 import com.petrolpark.destroy.recipe.MutationRecipe;
 import com.petrolpark.destroy.recipe.ObliterationRecipe;
 import com.petrolpark.destroy.recipe.ReactionRecipe;
 import com.petrolpark.destroy.recipe.ReactionRecipe.GenericReactionRecipe;
-import com.petrolpark.destroy.util.DestroyLang;
+import com.petrolpark.destroy.recipe.SievingRecipe;
+import com.petrolpark.destroy.recipe.TappingRecipe;
 import com.simibubi.create.AllBlocks;
-import com.simibubi.create.compat.jei.CreateJEI;
-import com.simibubi.create.compat.jei.DoubleItemIcon;
-import com.simibubi.create.compat.jei.EmptyBackground;
-import com.simibubi.create.compat.jei.ItemIcon;
 import com.simibubi.create.compat.jei.category.CreateRecipeCategory;
-import com.simibubi.create.compat.jei.category.CreateRecipeCategory.Info;
 import com.simibubi.create.content.processing.basin.BasinRecipe;
-import com.simibubi.create.foundation.recipe.IRecipeTypeInfo;
+import com.simibubi.create.foundation.utility.Pair;
 
 import mezz.jei.api.IModPlugin;
 import mezz.jei.api.JeiPlugin;
 import mezz.jei.api.constants.RecipeTypes;
 import mezz.jei.api.forge.ForgeTypes;
-import mezz.jei.api.gui.drawable.IDrawable;
-import mezz.jei.api.helpers.IJeiHelpers;
 import mezz.jei.api.helpers.IPlatformFluidHelper;
-import mezz.jei.api.recipe.RecipeType;
 import mezz.jei.api.recipe.category.IRecipeCategory;
+import mezz.jei.api.recipe.vanilla.IJeiAnvilRecipe;
 import mezz.jei.api.registration.IAdvancedRegistration;
+import mezz.jei.api.registration.IGuiHandlerRegistration;
 import mezz.jei.api.registration.IModIngredientRegistration;
 import mezz.jei.api.registration.IRecipeCatalystRegistration;
 import mezz.jei.api.registration.IRecipeCategoryRegistration;
 import mezz.jei.api.registration.IRecipeRegistration;
 import mezz.jei.api.registration.ISubtypeRegistration;
 import mezz.jei.api.runtime.IJeiRuntime;
+import mezz.jei.library.plugins.vanilla.anvil.AnvilRecipe;
+import net.minecraft.client.Minecraft;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.Recipe;
-import net.minecraft.world.level.ItemLike;
-import net.minecraftforge.event.TickEvent;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraft.world.item.crafting.RecipeType;
 
 @JeiPlugin
 public class DestroyJEI implements IModPlugin {
@@ -79,26 +103,27 @@ public class DestroyJEI implements IModPlugin {
 
     /**
      * All Create and Destroy {@link mezz.jei.api.recipe.RecipeType Recipe Types} which can produce or consume Mixtures, mapped to the class of Recipe which those Recipe Types describe.
-     * Create's Recipe Types are not exposed by default, meaning we have to access them through a {@link com.petrolpark.destroy.mixin.CreateRecipeCategoryMixin mixin} and store them here.
+     * Create's Recipe Types are not exposed by default, meaning we have to access them through a {@link com.petrolpark.destroy.mixin.compat.jei.CreateRecipeCategoryMixin mixin} and store them here.
      */ 
-    public static final Map<RecipeType<?>, Class<? extends Recipe<?>>> RECIPE_TYPES = new HashMap<>();
+    public static final Map<mezz.jei.api.recipe.RecipeType<?>, Class<? extends Recipe<?>>> MIXTURE_APPLICABLE_RECIPE_TYPES = new HashMap<>();
     /**
      * A map of Molecules to the Recipes in which they are inputs.
-     * This does not include {@link com.petrolpark.destroy.chemistry.Reaction Reactions}.
+     * This does not include {@link com.petrolpark.destroy.chemistry.legacy.LegacyReaction Reactions}.
      */
-    public static final Map<Molecule, List<Recipe<?>>> MOLECULES_INPUT = new HashMap<>();
+    public static final Map<LegacySpecies, List<Recipe<?>>> MOLECULES_INPUT = new HashMap<>();
     /**
-     * A map of Molecules to the Recipes in which they are outputs.
-     * This does not include {@link com.petrolpark.destroy.chemistry.Reaction Reactions}.
+     * A map of Molecules to the Recipes in which they are outputs.u
+     * This does not include {@link com.petrolpark.destroy.chemistry.legacy.LegacyReaction Reactions}.
      */
-    public static final Map<Molecule, List<Recipe<?>>> MOLECULES_OUTPUT = new HashMap<>();
+    public static final Map<LegacySpecies, List<Recipe<?>>> MOLECULES_OUTPUT = new HashMap<>();
     /**
      * Whether Recipes have not yet been added to {@link DestroyJEI#MOLECULES_INPUT} and {@link DestroyJEI#MOLECULES_OUTPUT}.
      */
     public static boolean MOLECULE_RECIPES_NEED_PROCESSING = true;
 
-    private final List<CreateRecipeCategory<?>> allCategories = new ArrayList<>();
-    private static final List<ITickableCategory> tickingCategories = new ArrayList<>();
+    private static final List<CreateRecipeCategory<?>> allCategories = new ArrayList<>();
+
+    public static CreateRecipeCategory<?> fireproofing;
 
     @SuppressWarnings("unused")
     private void loadCategories() {
@@ -122,6 +147,14 @@ public class DestroyJEI implements IModPlugin {
             .emptyBackground(120, 115)
             .build("centrifugation", CentrifugationCategory::new),
 
+        potion_centrifugation = builder(CentrifugationRecipe.class)
+            .addRecipes(() -> PotionSeparationRecipes.ALL.values())
+            .enableIfCreateConfig(c -> c.allowBrewingInMixer)
+            .catalyst(DestroyBlocks.CENTRIFUGE::get)
+            .doubleItemIcon(DestroyBlocks.CENTRIFUGE.get(), Items.BREWING_STAND)
+            .emptyBackground(120, 115)
+            .build("potion_centrifugation", CentrifugationCategory::new),
+
         charging = builder(ChargingRecipe.class)
 			.addTypedRecipes(DestroyRecipeTypes.CHARGING)
 			.catalyst(DestroyBlocks.DYNAMO::get)
@@ -131,6 +164,7 @@ public class DestroyJEI implements IModPlugin {
 
         distillation = builder(DistillationRecipe.class)
             .addTypedRecipes(DestroyRecipeTypes.DISTILLATION)
+            .addRecipes(() -> SharedDistillationRecipes.getTFMGToDestroyRecipes(Minecraft.getInstance().level))
             .acceptsMixtures()
             .catalyst(DestroyBlocks.BUBBLE_CAP::get)
             .itemIcon(DestroyBlocks.BUBBLE_CAP.get())
@@ -153,16 +187,14 @@ public class DestroyJEI implements IModPlugin {
 
         obliteration = builder(ObliterationRecipe.class)
             .addTypedRecipes(DestroyRecipeTypes.OBLITERATION)
-            .itemIcon(DestroyBlocks.NITROCELLULOSE_BLOCK.get())
+            .itemIcon(CustomExplosiveMixBlockItem::getExampleItemStack)
             .emptyBackground(177, 70)
             .build("obliteration", ObliterationCategory::new),
 
         reaction = builder(ReactionRecipe.class)
             .addRecipes(ReactionCategory.RECIPES::values)
             // Doesn't accept Mixtures as Reactions involve Molecules, not Mixtures.
-            .catalyst(AllBlocks.MECHANICAL_MIXER::get)
-            .catalyst(AllBlocks.BASIN::get)
-            .catalyst(DestroyBlocks.VAT_CONTROLLER::get)
+            .reactionCatalysts()
             .itemIcon(DestroyItems.MOLECULE_DISPLAY.get())
             .emptyBackground(180, 125)
             .build("reaction", ReactionCategory::new),
@@ -170,9 +202,7 @@ public class DestroyJEI implements IModPlugin {
         genericReaction = builder(GenericReactionRecipe.class)
             .addRecipes(GenericReactionCategory.RECIPES::values)
             // Doesn't accept Mixtures as Generic Reactions involve Molecules, not Mixtures.
-            .catalyst(AllBlocks.MECHANICAL_MIXER::get)
-            .catalyst(AllBlocks.BASIN::get)
-            .catalyst(DestroyBlocks.VAT_CONTROLLER::get)
+            .reactionCatalysts()
             .itemIcon(DestroyItems.MOLECULE_DISPLAY.get())
             .emptyBackground(180, 125)
             .build("generic_reaction", GenericReactionCategory::new),
@@ -184,7 +214,98 @@ public class DestroyJEI implements IModPlugin {
             .catalyst(AllBlocks.BASIN::get)
             .doubleItemIcon(DestroyBlocks.DYNAMO.get(), AllBlocks.BASIN.get())
             .emptyBackground(177, 85)
-            .build("electrolysis", (info, helpers) -> new ElectrolysisCategory(info));
+            .build("electrolysis", (info, helpers) -> new ElectrolysisCategory(info)),
+
+        tapping = builder(TappingRecipe.class)
+            .addRecipes(() -> TappingCategory.RECIPES)
+            .acceptsMixtures()
+            .catalyst(DestroyBlocks.TREE_TAP::get)
+            .itemIcon(DestroyBlocks.TREE_TAP.get())
+            .emptyBackground(177, 70)
+            .build("tapping", TappingCategory::new),
+
+        mixture_conversion = builder(MixtureConversionRecipe.class)
+            .addTypedRecipes(DestroyRecipeTypes.MIXTURE_CONVERSION)
+            .reactionCatalysts()
+            .doubleItemIcon(DestroyItems.TEST_TUBE.get(), Items.WATER_BUCKET)
+            .emptyBackground(125, 20)
+            .build("mixture_conversion", MixtureConversionCategory::new),
+
+        cartography_table = builder(CartographyTableRecipe.class)
+            .addRecipes(CartographyTableCategory::getAllRecipes)
+            .catalyst(() -> Items.CARTOGRAPHY_TABLE)
+            .itemIcon(Items.CARTOGRAPHY_TABLE)
+            .emptyBackground(125, 20)
+            .build("cartography_table", CartographyTableCategory::new),
+
+        vat_material = builder(VatMaterialRecipe.class)
+            .addRecipes(VatMaterialCategory::getAllRecipes)
+            .catalyst(DestroyBlocks.VAT_CONTROLLER::get)
+            .itemIcon(DestroyBlocks.VAT_CONTROLLER.get())
+            .emptyBackground(180, 83)
+            .build("vat_material", VatMaterialCategory::new),
+
+        mixable_explosive = builder(MixableExplosiveRecipe.class)
+            .addRecipes(MixableExplosiveCategory::getAllRecipes)
+            .catalysts(DestroyJEISetup.CUSTOM_MIX_EXPLOSIVES)
+            .doubleItemIcon(CustomExplosiveMixBlockItem::getExampleItemStack, () -> new ItemStack(Items.GUNPOWDER))
+            .emptyBackground(180, 121)
+            .build("mixable_explosive", MixableExplosiveCategory::new),
+
+        sieving = builder(SievingRecipe.class)
+            .addTypedRecipes(DestroyRecipeTypes.SIEVING)
+            .catalyst(DestroyBlocks.MECHANICAL_SIEVE::get)
+            .itemIcon(DestroyBlocks.MECHANICAL_SIEVE)
+            .emptyBackground(150, 90)
+            .build("sieving", SievingCategory::new),
+
+        glassblowing = builder(GlassblowingRecipe.class)
+            .addTypedRecipes(DestroyRecipeTypes.GLASSBLOWING)
+            .catalyst(DestroyBlocks.BLOWPIPE::get)
+            .itemIcon(DestroyBlocks.BLOWPIPE)
+            .emptyBackground(125, 50)
+            .build("glassblowing", GlassblowingCategory::new),
+
+        arc_furnace = builder(BasinRecipe.class)
+            .addTypedRecipes(DestroyRecipeTypes.ARC_FURNACE)
+            .acceptsMixtures(ArcFurnaceRecipe.class)
+            .catalyst(DestroyBlocks.DYNAMO::get)
+            .catalyst(DestroyBlocks.CARBON_FIBER_BLOCK::get)
+            .catalyst(AllBlocks.BASIN::get)
+            .arcFurnaceIcon(() -> ItemStack.EMPTY)
+            .emptyBackground(177, 85)
+            .build("arc_furnace", (info, helpers) -> new ArcFurnaceCategory(info)),
+
+        arc_furnace_blasting = builder(BasinRecipe.class)
+            .addTypedRecipesIf(() -> RecipeType.BLASTING, ArcFurnaceCategory::toBasinRecipe, r -> DestroyAllConfigs.SERVER.blocks.arcFurnaceAllowsBlasting.get())
+            .catalyst(DestroyBlocks.DYNAMO::get)
+            .catalyst(DestroyBlocks.CARBON_FIBER_BLOCK::get)
+            .catalyst(AllBlocks.BASIN::get)
+            .arcFurnaceIcon(() -> new ItemStack(Items.BLAST_FURNACE))
+            .emptyBackground(177, 85)
+            .build("arc_furnace_blasting", (info, helpers) -> new ArcFurnaceCategory(info)),
+
+        arc_furnace_smelting = builder(BasinRecipe.class)
+            .addTypedRecipesIf(() -> RecipeType.SMELTING, ArcFurnaceCategory::toBasinRecipe, r -> DestroyAllConfigs.SERVER.blocks.arcFurnaceAllowsSmelting.get())
+            .catalyst(DestroyBlocks.DYNAMO::get)
+            .catalyst(DestroyBlocks.CARBON_FIBER_BLOCK::get)
+            .catalyst(AllBlocks.BASIN::get)
+            .arcFurnaceIcon(() -> new ItemStack(Items.FURNACE))
+            .emptyBackground(177, 85)
+            .build("arc_furnace_smelting", (info, helpers) -> new ArcFurnaceCategory(info)),
+
+        element_tank_filling = builder(ElementTankFillingRecipe.class)
+            .addTypedRecipes(DestroyRecipeTypes.ELEMENT_TANK_FILLING)
+            .itemIcon(DestroyBlocks.ELEMENT_TANK)
+            .emptyBackground(125, 40)
+            .build("element_tank_filling", ElementTankFillingCategory::new);
+
+        fireproofing = builder(FlameRetardantApplicationRecipe.class)
+            .addTypedRecipes(DestroyRecipeTypes.FLAME_RETARDANT_APPLICATION)
+            .doubleItemIcon(AllBlocks.SPOUT::asStack, () -> new ItemStack(Items.NETHERITE_INGOT))
+            .catalyst(AllBlocks.SPOUT::get)
+            .emptyBackground(177, 70)
+			.build("fireproofing", FlameRetardantApplicationCategory::new);
 
         DestroyJEI.MOLECULE_RECIPES_NEED_PROCESSING = false;
     };
@@ -197,7 +318,6 @@ public class DestroyJEI implements IModPlugin {
     @Override
     public void registerCategories(IRecipeCategoryRegistration registration) {
         loadCategories();
-        CategoryBuilder.helpers = registration.getJeiHelpers();
         registration.addRecipeCategories(allCategories.toArray(IRecipeCategory[]::new));
     };
 
@@ -205,7 +325,11 @@ public class DestroyJEI implements IModPlugin {
 	public void registerRecipes(IRecipeRegistration registration) {
         allCategories.forEach(c -> c.registerRecipes(registration));
 
+        // Example crafts
         registration.addRecipes(RecipeTypes.CRAFTING, ExtendedDurationFireworkRocketRecipe.exampleRecipes());
+
+        // Anvil repairs
+        registration.addRecipes(RecipeTypes.ANVIL, getAnvilRepairs());
 	};
 
     @Override
@@ -215,7 +339,7 @@ public class DestroyJEI implements IModPlugin {
     
     @Override
     public void registerIngredients(IModIngredientRegistration registration) {
-        registration.register(MoleculeJEIIngredient.TYPE, Molecule.MOLECULES.values(), MoleculeJEIIngredient.HELPER, MoleculeJEIIngredient.RENDERER);
+        registration.register(MoleculeJEIIngredient.TYPE, LegacySpecies.MOLECULES.values(), MoleculeJEIIngredient.HELPER, MoleculeJEIIngredient.RENDERER);
     };
 
     @Override
@@ -224,9 +348,17 @@ public class DestroyJEI implements IModPlugin {
         registration.registerSubtypeInterpreter(ForgeTypes.FLUID_STACK, DestroyFluids.MIXTURE.get().getFlowing(), new MixtureFluidSubtypeInterpreter());
     };
 
+    @SuppressWarnings({"unchecked", "rawtypes"})
+	@Override
+	public void registerGuiHandlers(IGuiHandlerRegistration registration) {
+		registration.addGhostIngredientHandler(RedstoneProgrammerScreen.class, new DestroyGhostIngredientHandler());
+        registration.addGlobalGuiHandler(new ExtendedInventoryGuiHandler());
+	};
+
     @Override
     public void registerAdvanced(IAdvancedRegistration registration) {
-        registration.addRecipeManagerPlugin(new DestroyRecipeManagerPlugin(registration.getJeiHelpers()));
+        registration.addRecipeManagerPlugin(new ChemicalSpeciesRecipeManagerPlugin(registration.getJeiHelpers()));
+        registration.addRecipeManagerPlugin(new FireproofingRecipeManagerPlugin());
     };
 
     @Override
@@ -234,97 +366,38 @@ public class DestroyJEI implements IModPlugin {
         jeiRuntime = Optional.of(runtime);
     };
 
-    public static void tick() {
-        tickingCategories.forEach(ITickableCategory::tick);
+    private <T extends Recipe<?>> DestroyCategoryBuilder<T> builder(Class<? extends T> recipeClass) {
+        return new DestroyCategoryBuilder<>(recipeClass);
     };
 
-    private <T extends Recipe<?>> CategoryBuilder<T> builder(Class<? extends T> recipeClass) {
-        return new CategoryBuilder<>(recipeClass);
-    };
-    
-    /**
-     * Used to generate JEI Categories for Destroy.
-     * Basically all copied from the {@link com.simibubi.create.compat.jei.CreateJEI.CategoryBuilder Create source code}.
-     */
-    private class CategoryBuilder<T extends Recipe<?>> {
-        private static IJeiHelpers helpers;
+    public static class DestroyCategoryBuilder<R extends Recipe<?>> extends PetrolparkCategoryBuilder<R, DestroyCategoryBuilder<R>> {
 
-        private Class<? extends T> recipeClass;
-
-        private IDrawable background;
-		private IDrawable icon;
-        private Class<? extends T> recipeClassForMixtures;
-
-        private final List<Consumer<List<T>>> recipeListConsumers = new ArrayList<>();
-		private final List<Supplier<? extends ItemStack>> catalysts = new ArrayList<>();
-
-        public CategoryBuilder(Class<? extends T> recipeClass) {
-			this.recipeClass = recipeClass;
-		};
-
-        /**
-         * Adds a List of Recipes to this Category.
-         * @param collection The List of Recipes
-         * @return This Category Builder
-         */
-        public CategoryBuilder<T> addRecipes(Supplier<Collection<? extends T>> collection) {
-			recipeListConsumers.add(recipes -> recipes.addAll(collection.get()));
-            Destroy.LOGGER.info("Loaded " + collection.get().size()+ " recipes of type " + recipeClass.getSimpleName()+ ".");
-            return this;
-		};
-
-        /**
-         * Adds all Recipes of a given Recipe Type to this Category.
-         * @param recipeTypeEntry The Recipe Type
-         * @return This Category Builder
-         */
-        public CategoryBuilder<T> addTypedRecipes(IRecipeTypeInfo recipeTypeEntry) {
-            recipeListConsumers.add(recipes -> CreateJEI.<T>consumeTypedRecipes(recipes::add, recipeTypeEntry.getType()));
-            return this;
+        private Class<? extends R> recipeClassForMixtures;
+        
+        public DestroyCategoryBuilder(Class<? extends R> recipeClass) {
+            super(Destroy.MOD_ID, recipeClass, allCategories::add);
         };
 
         /**
-         * Adds a given Item as a Catalyst for all Recipes of this Category.
-         * Useful for adding the required machines for a Category of Recipe.
-         * @param itemSupplier A Supplier of the catalyst Item
+         * Adds all the Items which can be used to do chemical Reactions as catalysts for this Category.
          * @return This Category Builder
          */
-        public CategoryBuilder<T> catalyst(Supplier<ItemLike> itemSupplier) {
-            catalysts.add(() -> new ItemStack(itemSupplier.get().asItem()));
-            return this;
+        public DestroyCategoryBuilder<R> reactionCatalysts() {
+            return this
+                .catalyst(AllBlocks.MECHANICAL_MIXER::get)
+                .catalyst(AllBlocks.BASIN::get)
+                .catalyst(DestroyBlocks.VAT_CONTROLLER::get);
         };
 
         /**
-         * Sets the given Item as the icon for this Category.
-         * @param item Typically this will be the machine required for this Type of Recipe
+         * Set an Arc Furnace as the icon for this Category
+         * @param item Small Item rendered to the bottom right of the Arc Furnace
          * @return This Category Builder
          */
-        public CategoryBuilder<T> itemIcon(ItemLike item) {
-			this.icon = new ItemIcon(() -> new ItemStack(item));
-			return this;
-		};
-
-        /**
-         * Sets the given pair of Items as the icon for this Category.
-         * @param bigItem Typically this will be the machine required for this Type of Recipe
-         * @param smallItem Typically this will be a way to differentiate this use from other uses of the same machine
-         * @return This Category Builder
-         */
-        public CategoryBuilder<T> doubleItemIcon(ItemLike bigItem, ItemLike smallItem) {
-            this.icon = new DoubleItemIcon(() -> new ItemStack(bigItem), () -> new ItemStack(smallItem));
+        public DestroyCategoryBuilder<R> arcFurnaceIcon(Supplier<ItemStack> item) {
+            icon = new ArcFurnaceIcon(item);
             return this;
         };
-
-        /**
-         * Sets the size of the Background for this Category.
-         * @param width
-         * @param height
-         * @return This Category Builder
-         */
-        public CategoryBuilder<T> emptyBackground(int width, int height) {
-			this.background = new EmptyBackground(width, height);
-			return this;
-		};
 
         /**
          * Marks this Category as being able to have <em>Mixtures</em> as in its outputs and/or inputs.
@@ -333,7 +406,7 @@ public class DestroyJEI implements IModPlugin {
          * when searching Recipes for/including Molecules.
          * @return This Category Builder
          */
-        public CategoryBuilder<T> acceptsMixtures() {
+        public DestroyCategoryBuilder<R> acceptsMixtures() {
             this.recipeClassForMixtures = recipeClass;
             return this;
         };
@@ -344,61 +417,44 @@ public class DestroyJEI implements IModPlugin {
          * If this is not flagged, Recipes can still include Mixtures, but they will not show up
          * when searching Recipes for/including Molecules.
          * @param actualRecipeClass The class of Recipes which this Category actually describes (this is
-         * not necessarily the same as the given {@link CategoryBuilder#recipeClass Recipe Class}, for
+         * not necessarily the same as the given {@link TempCategoryBuilder#recipeClass Recipe Class}, for
          * example if this Category extends {@link com.simibubi.create.compat.jei.category.BasinCategory BasinCategory})
          * @return This Category Builder
          */
-        public CategoryBuilder<T> acceptsMixtures(Class<? extends T> actualRecipeClass) {
+        public DestroyCategoryBuilder<R> acceptsMixtures(Class<? extends R> actualRecipeClass) {
             this.recipeClassForMixtures = actualRecipeClass;
             return this;
         };
 
-        /**
-         * Builds this Category.
-         * @param name The Resource Location (e.g. for use in language file)
-         * @param factory Initializer of the Category class
-         * @return This Category
-         */
-        public CreateRecipeCategory<T> build(String name, DestroyRecipeCategory.Factory<T> factory) {
-            Supplier<List<T>> recipesSupplier = () -> {
-                List<T> recipes = new ArrayList<>();
-                for (Consumer<List<T>> consumer : recipeListConsumers) {
-                    consumer.accept(recipes);
-                };
-                return recipes;
-            };
-
-            mezz.jei.api.recipe.RecipeType<T> type = new mezz.jei.api.recipe.RecipeType<T>(Destroy.asResource(name), recipeClass);
-
-            Info<T> info = new Info<T>(
-                type,
-                DestroyLang.translate("recipe."+name).component(),
-                background,
-                icon,
-                recipesSupplier,
-                catalysts
-            );
-
-            CreateRecipeCategory<T> category = factory.create(info, helpers);
-            allCategories.add(category);
-
-            if (category instanceof ITickableCategory tickableCategory) tickingCategories.add(tickableCategory);
-
+        @Override
+        protected void finalizeBuilding(mezz.jei.api.recipe.RecipeType<R> type, CreateRecipeCategory<R> category, Class<? extends R> trueClass) {
             if (recipeClassForMixtures != null) {
-                RECIPE_TYPES.put(type, recipeClassForMixtures);
+                MIXTURE_APPLICABLE_RECIPE_TYPES.put(type, recipeClassForMixtures);
             };
-
-            return category;
         };
+
     };
 
-    public class ClientEvents {
+    private static List<IJeiAnvilRecipe> getAnvilRepairs() {
+        List<Pair<Item, Ingredient>> repairables = List.of(
+            Pair.of(DestroyItems.HAZMAT_SUIT.get(), DestroyArmorMaterials.HAZMAT.getRepairIngredient()),
+            Pair.of(DestroyItems.HAZMAT_LEGGINGS.get(), DestroyArmorMaterials.HAZMAT.getRepairIngredient()),
+            Pair.of(DestroyItems.WELLINGTON_BOOTS.get(), DestroyArmorMaterials.HAZMAT.getRepairIngredient()),
 
-        @SubscribeEvent
-        public static void onTick(TickEvent.ClientTickEvent event) {
-            if (event.phase == TickEvent.Phase.END) {
-                tick();
-            };
-        };
+            Pair.of(DestroyItems.GAS_MASK.get(), DestroyItems.GAS_MASK.get().getRepairIngredient()),
+            Pair.of(DestroyItems.PAPER_MASK.get(), DestroyItems.PAPER_MASK.get().getRepairIngredient()),
+            Pair.of(DestroyItems.LABORATORY_GOGGLES.get(), DestroyItems.LABORATORY_GOGGLES.get().getRepairIngredient()),
+            Pair.of(DestroyItems.GOLD_LABORATORY_GOGGLES.get(), DestroyItems.GOLD_LABORATORY_GOGGLES.get().getRepairIngredient())
+        );
+
+        return repairables.stream().map(pair -> makeRepairRecipe(new ItemStack(pair.getFirst()), pair.getSecond())).toList();
+    };
+
+    public static IJeiAnvilRecipe makeRepairRecipe(ItemStack input, Ingredient repairItem) {
+        ItemStack halfDurability = input.copy();
+        halfDurability.setDamageValue(halfDurability.getMaxDamage() / 2);
+        ItemStack threeQuarterDurability = input.copy();
+        threeQuarterDurability.setDamageValue(threeQuarterDurability.getMaxDamage() * 3 / 4);
+        return new AnvilRecipe(Collections.singletonList(halfDurability), Arrays.asList(repairItem.getItems()), Collections.singletonList(threeQuarterDurability), null);
     };
 };

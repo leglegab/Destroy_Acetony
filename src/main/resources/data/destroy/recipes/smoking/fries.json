@@ -1,0 +1,8 @@
+{
+    "type": "minecraft:smoking",
+    "ingredient": {
+        "item": "destroy:raw_fries"
+    },
+    "result": "destroy:fries",
+    "cookingtime": 200
+}

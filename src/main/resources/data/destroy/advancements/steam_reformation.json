@@ -1,0 +1,27 @@
+{
+    "parent": "destroy:acetone",
+    "criteria": {
+      "make": {
+        "conditions": {},
+        "trigger": "destroy:steam_reformation"
+      }
+    },
+    "display": {
+      "description": {
+        "color": "#DBA213",
+        "translate": "advancement.destroy.steam_reformation.description"
+      },
+      "icon": {
+        "item": "destroy:silica"
+      },
+      "title": {
+        "translate": "advancement.destroy.steam_reformation"
+      },
+      "frame": "goal"
+    },
+    "requirements": [
+      [
+        "make"
+      ]
+    ]
+  }

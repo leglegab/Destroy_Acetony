@@ -1,12 +1,13 @@
 {
     "type": "minecraft:crafting_shaped",
     "pattern": [
-      "G",
-      "C"
+      " P ",
+      "PGP",
+      " P "
     ],
     "key": {
-      "C": {
-        "item": "create:copper_casing"
+      "P": {
+        "tag": "forge:plates/stainless_steel"
       },
       "G": {
         "item": "destroy:gas_filter"

@@ -67,6 +67,10 @@ public class DestroySoundEvents {
         .category(SoundSource.BLOCKS)
         .build(),
 
+    SILENCE = create("silence")
+        .category(SoundSource.RECORDS)
+        .build(),
+
     SPRAY_BOTTLE_SPRAYS = create("spray_bottle_spray")
         .category(SoundSource.PLAYERS)
         .build(),

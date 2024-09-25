@@ -1,5 +1,6 @@
 {
   "values": [
+    "destroy:blank_music_disc",
     "destroy:music_disc_spectrum"
   ]
 }

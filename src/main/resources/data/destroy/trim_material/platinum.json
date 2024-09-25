@@ -1,0 +1,9 @@
+{
+    "asset_name": "platinum",
+    "description": {
+      "color": "#aedbdb",
+      "translate": "destroy.trim_material.platinum"
+    },
+    "ingredient": "destroy:platinum_ingot",
+    "item_model_index": -1.0
+  }

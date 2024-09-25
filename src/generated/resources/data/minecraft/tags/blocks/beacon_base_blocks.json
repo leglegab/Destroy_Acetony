@@ -2,9 +2,13 @@
   "values": [
     "destroy:fluorite_block",
     "destroy:raw_nickel_block",
+    "destroy:chromium_block",
     "destroy:nickel_block",
     "destroy:palladium_block",
     "destroy:platinum_block",
-    "destroy:rhodium_block"
+    "destroy:rhodium_block",
+    "destroy:lead_block",
+    "destroy:stainless_steel_block",
+    "destroy:chiseled_rhodium_block"
   ]
 }

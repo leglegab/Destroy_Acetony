@@ -15,7 +15,7 @@ import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.petrolpark.destroy.Destroy;
-import com.petrolpark.destroy.chemistry.Molecule;
+import com.petrolpark.destroy.chemistry.legacy.LegacySpecies;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.resources.ResourceLocation;
@@ -25,9 +25,9 @@ import net.minecraft.server.packs.resources.ResourceManagerReloadListener;
 
 public class SaltNameOverrides {
 
-    public static final Map<Molecule, SaltNameOverrides> ALL_OVERRIDES = new HashMap<>();
+    public static final Map<LegacySpecies, SaltNameOverrides> ALL_OVERRIDES = new HashMap<>();
 
-    public static final Manager MANAGER = new Manager();
+    public static final Listener RELOAD_LISTENER = new Listener();
 
     /**
      * The translation key of the name to be used for this Molecule when it is part of a salt.
@@ -38,7 +38,7 @@ public class SaltNameOverrides {
     /**
      * The translation keys of names of salts this Molecule forms with other Molecules.
      */
-    public Map<Molecule, String> specificOverrideKeys;
+    public Map<LegacySpecies, String> specificOverrideKeys;
 
     public SaltNameOverrides() {
         specificOverrideKeys = new HashMap<>();
@@ -51,7 +51,7 @@ public class SaltNameOverrides {
             JsonObject jsonObject = GSON.fromJson(new InputStreamReader(inputStream, StandardCharsets.UTF_8), JsonObject.class);
             jsonObject.entrySet().forEach(moleculeEntry -> {
                 String moleculeId = moleculeEntry.getKey();
-                Molecule molecule = Molecule.getMolecule(moleculeId);
+                LegacySpecies molecule = LegacySpecies.getMolecule(moleculeId);
                 if (molecule == null) throw new IllegalStateException("Unknown molecule in overrides: "+moleculeId);
 
                 SaltNameOverrides overrides = ALL_OVERRIDES.get(molecule);
@@ -63,7 +63,7 @@ public class SaltNameOverrides {
                     JsonObject specificsObject = overridesObject.getAsJsonObject("specifics");
                     for (Entry<String, JsonElement> overrideEntry : specificsObject.entrySet()) {
                         String partnerId = overrideEntry.getKey();
-                        Molecule partner = Molecule.getMolecule(partnerId);
+                        LegacySpecies partner = LegacySpecies.getMolecule(partnerId);
                         if (partner == null) throw new IllegalStateException("Unknown molecule in overrides of "+moleculeId+": "+partnerId);
                         overrides.specificOverrideKeys.put(partner, overrideEntry.getValue().getAsString());
                     };
@@ -72,7 +72,7 @@ public class SaltNameOverrides {
                 ALL_OVERRIDES.put(molecule, overrides);
             });
         } catch (Throwable e) {
-            Destroy.LOGGER.error("Error loading salt name overrides.", e);
+            Destroy.LOGGER.error("Error loading salt name overrides:", e);
         };
     }
 
@@ -80,8 +80,8 @@ public class SaltNameOverrides {
         Minecraft minecraft = Minecraft.getInstance();
         ALL_OVERRIDES.clear();
         for (String namespace : resourceManager.getNamespaces()) {
-            ResourceLocation location = new ResourceLocation(namespace, "lang/salt_name_overrides/"+minecraft.getLanguageManager().getSelected()+".json");
-            Optional<Resource> resource = resourceManager .getResource(location);
+            ResourceLocation location = new ResourceLocation(namespace, "lang/destroy_compat/salt_name_overrides/"+minecraft.getLanguageManager().getSelected()+".json");
+            Optional<Resource> resource = resourceManager.getResource(location);
             if (resource.isPresent()) {
                 try (InputStream inputStream = resource.get().open()) {
                     loadOverridesFromJson(inputStream);
@@ -92,7 +92,7 @@ public class SaltNameOverrides {
         }; 
     };
 
-    public static class Manager implements ResourceManagerReloadListener {
+    public static class Listener implements ResourceManagerReloadListener {
         
         @Override
         public void onResourceManagerReload(ResourceManager resourceManager) {

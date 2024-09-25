@@ -5,7 +5,8 @@
             "file": "destroy:font/inline_symbols.png",
 	        "ascent": 7,
 	        "chars": [
-                "\ued00\ued01\ued02\ued03\ued04\ued05\ued06\ued07\ued08\ued09\ued0a\ued0b\ued0c\ued0d\u0000\u0000"
+                "\ued00\ued01\ued02\ued03\ued04\ued05\ued06\ued07\ued08\ued09\ued0a\ued0b\ued0c\ued0d\ued0e\ued0f",
+                "\ued10\ued11\ued12\ued13\ued14\ued15\ued16\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000"
             ]
         }
     ]

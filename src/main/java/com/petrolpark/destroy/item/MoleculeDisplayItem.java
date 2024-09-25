@@ -7,8 +7,8 @@ import java.util.Optional;
 import java.util.Set;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.petrolpark.destroy.chemistry.Molecule;
-import com.petrolpark.destroy.chemistry.MoleculeTag;
+import com.petrolpark.destroy.chemistry.legacy.LegacySpecies;
+import com.petrolpark.destroy.chemistry.legacy.LegacySpeciesTag;
 import com.petrolpark.destroy.client.gui.MoleculeRenderer;
 import com.petrolpark.destroy.config.DestroyAllConfigs;
 import com.petrolpark.destroy.item.tooltip.DestroyTooltipComponent;
@@ -37,7 +37,7 @@ public class MoleculeDisplayItem extends Item {
         super(properties);
     };
 
-    public static ItemStack with(Molecule molecule) {
+    public static ItemStack with(LegacySpecies molecule) {
         ItemStack stack = new ItemStack(DestroyItems.MOLECULE_DISPLAY.get(), 1);
         stack.getOrCreateTag().putString("Molecule", molecule.getFullID());
         return stack;
@@ -45,17 +45,17 @@ public class MoleculeDisplayItem extends Item {
 
     @Override
     public Optional<TooltipComponent> getTooltipImage(ItemStack stack) {
-        Molecule molecule = getMolecule(stack);
+        LegacySpecies molecule = getMolecule(stack);
         if (molecule == null) return Optional.empty();
         return Optional.of(new MoleculeTooltip(molecule));
     };
 
-    private static Molecule getMolecule(ItemStack itemStack) {
+    private static LegacySpecies getMolecule(ItemStack itemStack) {
         if (!DestroyItems.MOLECULE_DISPLAY.isIn(itemStack)) return null;
-        return Molecule.getMolecule(itemStack.getOrCreateTag().getString("Molecule"));
+        return LegacySpecies.getMolecule(itemStack.getOrCreateTag().getString("Molecule"));
     };
 
-    public static List<Component> getLore(Molecule molecule) {
+    public static List<Component> getLore(LegacySpecies molecule) {
         List<Component> tooltip = new ArrayList<>();
         if (molecule == null) return tooltip;
 
@@ -79,9 +79,9 @@ public class MoleculeDisplayItem extends Item {
             };
         };
 
-        Set<MoleculeTag> tags = molecule.getTags();
+        Set<LegacySpeciesTag> tags = molecule.getTags();
         if (!tags.isEmpty()) tooltip.add(Component.literal(" "));
-        for (MoleculeTag tag : tags) {
+        for (LegacySpeciesTag tag : tags) {
             tooltip.add(tag.getFormattedName());
         };
 
@@ -90,15 +90,19 @@ public class MoleculeDisplayItem extends Item {
 
     public static class MoleculeTooltip extends DestroyTooltipComponent<MoleculeTooltip, ClientMoleculeTooltipComponent> {
 
-        private final Molecule molecule;
+        private final LegacySpecies molecule;
     
-        public MoleculeTooltip(Molecule molecule) {
-            super(ClientMoleculeTooltipComponent::new);
+        public MoleculeTooltip(LegacySpecies molecule) {
             this.molecule = molecule;
         };
 
-        public Molecule getMolecule() {
+        public LegacySpecies getMolecule() {
             return this.molecule;
+        }
+
+        @Override
+        public ClientMoleculeTooltipComponent getClientTooltipComponent() {
+            return new ClientMoleculeTooltipComponent(this);
         };
     };
 

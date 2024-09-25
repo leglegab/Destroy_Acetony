@@ -9,7 +9,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import com.petrolpark.destroy.Destroy;
-import com.petrolpark.destroy.advancement.DestroyAdvancements;
+import com.petrolpark.destroy.advancement.DestroyAdvancementTrigger;
 import com.petrolpark.destroy.block.BubbleCapBlock;
 import com.petrolpark.destroy.block.display.MixtureContentsDisplaySource;
 import com.petrolpark.destroy.block.entity.behaviour.DestroyAdvancementBehaviour;
@@ -22,7 +22,6 @@ import com.petrolpark.destroy.sound.DestroySoundEvents;
 import com.petrolpark.destroy.util.DestroyLang;
 import com.petrolpark.destroy.util.DistillationTower;
 import com.petrolpark.destroy.util.DestroyLang.TemperatureUnit;
-import com.simibubi.create.content.equipment.goggles.IHaveGoggleInformation;
 import com.simibubi.create.content.redstone.displayLink.DisplayLinkContext;
 import com.simibubi.create.foundation.blockEntity.SmartBlockEntity;
 import com.simibubi.create.foundation.blockEntity.behaviour.BlockEntityBehaviour;
@@ -49,7 +48,7 @@ import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler.FluidAction;
 
-public class BubbleCapBlockEntity extends SmartBlockEntity implements IHaveGoggleInformation, IDirectionalOutputFluidBlockEntity {
+public class BubbleCapBlockEntity extends SmartBlockEntity implements IHaveLabGoggleInformation, IDirectionalOutputFluidBlockEntity {
 
     private static final DecimalFormat df = new DecimalFormat();
     static {
@@ -57,7 +56,6 @@ public class BubbleCapBlockEntity extends SmartBlockEntity implements IHaveGoggl
         df.setMaximumFractionDigits(0);
     };
 
-    private static final int TANK_CAPACITY = 1000;
     private static final int TRANSFER_SPEED = 20; // The rate (mB/tick) at which Fluid is transferred from the internal Tank to the actual Tank
 
     private Direction pipeFace;
@@ -72,7 +70,7 @@ public class BubbleCapBlockEntity extends SmartBlockEntity implements IHaveGoggl
     protected SmartFluidTankBehaviour internalTank, tank;
     protected LazyOptional<IFluidHandler> allFluidCapability;
 
-    protected DestroyAdvancementBehaviour advancementBehaviour;
+    public DestroyAdvancementBehaviour advancementBehaviour;
     protected PollutingBehaviour pollutingBehaviour;
 
     private int initializationTicks;
@@ -90,9 +88,9 @@ public class BubbleCapBlockEntity extends SmartBlockEntity implements IHaveGoggl
 
     @Override
     public void addBehaviours(List<BlockEntityBehaviour> behaviours) {
-        tank = new GeniusFluidTankBehaviour(SmartFluidTankBehaviour.OUTPUT, this, 1, TANK_CAPACITY, true)
+        tank = new GeniusFluidTankBehaviour(SmartFluidTankBehaviour.OUTPUT, this, 1, getTankCapacity(), true)
             .whenFluidUpdates(this::notifyUpdate);
-        internalTank = new GeniusFluidTankBehaviour(SmartFluidTankBehaviour.INPUT, this, 1, TANK_CAPACITY, true)
+        internalTank = new GeniusFluidTankBehaviour(SmartFluidTankBehaviour.INPUT, this, 1, getTankCapacity(), true)
             .forbidExtraction()
             .forbidInsertion()
             .whenFluidUpdates(this::notifyUpdate);
@@ -102,7 +100,7 @@ public class BubbleCapBlockEntity extends SmartBlockEntity implements IHaveGoggl
 			return new CombinedTankWrapper(tank.getCapability().orElse(null), internalTank.getCapability().orElse(null));
 		});
 
-        advancementBehaviour = new DestroyAdvancementBehaviour(this);
+        advancementBehaviour = new DestroyAdvancementBehaviour(this, DestroyAdvancementTrigger.DISTILL);
         behaviours.add(advancementBehaviour);
 
         pollutingBehaviour = new PollutingBehaviour(this);
@@ -198,11 +196,11 @@ public class BubbleCapBlockEntity extends SmartBlockEntity implements IHaveGoggl
     public void onDistill() {
         if (!isController) return;
         DestroySoundEvents.DISTILLATION_TOWER_BOIL.playOnServer(level, getBlockPos());
-        advancementBehaviour.awardDestroyAdvancement(DestroyAdvancements.DISTILL);
+        advancementBehaviour.awardDestroyAdvancement(DestroyAdvancementTrigger.DISTILL);
     };
 
     public static int getTankCapacity() {
-        return TANK_CAPACITY;
+        return DestroyAllConfigs.SERVER.blocks.bubbleCapCapacity.get();
     };
 
     /**

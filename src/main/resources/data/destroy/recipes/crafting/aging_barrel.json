@@ -7,7 +7,7 @@
     ],
     "key": {
       "N": {
-        "item": "destroy:nylon"
+        "tag": "destroy:plastic/textile"
       },
       "L": {
         "tag": "minecraft:logs"

@@ -1,5 +1,5 @@
 {
-    "parent": "destroy:extrude",
+    "parent": "destroy:explosive",
     "criteria": {
       "anfo": {
         "trigger": "minecraft:inventory_changed",
@@ -7,7 +7,7 @@
           "items": [
             {
               "items": [
-                "destroy:anfo_block"
+                "destroy:anfo"
               ]
             }
           ]
@@ -31,7 +31,7 @@
           "items": [
             {
               "items": [
-                "destroy:dynamite_block"
+                "destroy:dynamite"
               ]
             }
           ]
@@ -43,7 +43,7 @@
           "items": [
             {
               "items": [
-                "destroy:nitrocellulose_block"
+                "destroy:nitrocellulose"
               ]
             }
           ]
@@ -55,7 +55,67 @@
           "items": [
             {
               "items": [
-                "destroy:picric_acid_block"
+                "destroy:picric_acid_tablet"
+              ]
+            }
+          ]
+        }
+      },
+      "tnt": {
+        "trigger": "minecraft:inventory_changed",
+        "conditions": {
+          "items": [
+            {
+              "items": [
+                "destroy:tnt_tablet"
+              ]
+            }
+          ]
+        }
+      },
+      "tatp": {
+        "trigger": "minecraft:inventory_changed",
+        "conditions": {
+          "items": [
+            {
+              "items": [
+                "destroy:acetone_peroxide"
+              ]
+            }
+          ]
+        }
+      },
+      "hg": {
+        "trigger": "minecraft:inventory_changed",
+        "conditions": {
+          "items": [
+            {
+              "items": [
+                "destroy:fulminated_mercury"
+              ]
+            }
+          ]
+        }
+      },
+      "nhn": {
+        "trigger": "minecraft:inventory_changed",
+        "conditions": {
+          "items": [
+            {
+              "items": [
+                "destroy:nickel_hydrazine_nitrate"
+              ]
+            }
+          ]
+        }
+      },
+      "tp": {
+        "trigger": "minecraft:inventory_changed",
+        "conditions": {
+          "items": [
+            {
+              "items": [
+                "destroy:touch_powder"
               ]
             }
           ]
@@ -70,7 +130,7 @@
       "icon": {
         "item": "destroy:cordite"
       },
-      "frame": "goal",
+      "frame": "challenge",
       "title": {
         "translate": "advancement.destroy.every_explosive"
       }
@@ -90,6 +150,21 @@
       ],
       [
         "tnp"
+      ],
+      [
+        "tnt"
+      ],
+      [
+        "tatp"
+      ],
+      [
+        "hg"
+      ],
+      [
+        "nhn"
+      ],
+      [
+        "tp"
       ]
     ]
   }

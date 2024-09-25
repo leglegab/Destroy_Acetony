@@ -1,0 +1,27 @@
+{
+    "type": "minecraft:crafting_shaped",
+    "pattern": [
+        "PPP",
+        "RBE",
+        "PPP"
+    ],
+    "key": {
+        "B": {
+            "type": "destroy:circuit_pattern_item",
+            "item": "destroy:circuit_board",
+            "pattern": "destroy:shared_hard_0"
+        },
+        "P": {
+            "tag": "forge:plates/stainless_steel"
+        },
+        "E": {
+            "tag": "destroy:eyes"
+        },
+        "R": {
+            "item": "minecraft:redstone"
+        }
+    },
+    "result": {
+        "item": "destroy:colorimeter"
+    }
+}
