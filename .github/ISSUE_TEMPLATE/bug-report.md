@@ -33,9 +33,9 @@ If applicable, add screenshots to help explain your problem.
 
 **System Information**
 
-You should only report issues on the latest version of Destroy. No others are supported. Include the following information:
+You should only report issues on the latest update of Destroy, or on the latest snapshot (if it is for an unreleased update). For snapshots, it would be useful if you also checked if the bug exists in the latest full update. No other versions are supported. Include the following information:
 
- - Create version [e.g. 0.5.1f]
+ - Create version [e.g. 0.5.1h]
  - Other mods and their versions [e.g. Create: TFMG 0.7.0, JEI 1.20.1]
 
 **Additional context**
