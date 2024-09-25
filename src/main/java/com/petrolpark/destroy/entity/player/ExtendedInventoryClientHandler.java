@@ -17,6 +17,8 @@ import com.petrolpark.destroy.config.DestroyClientConfigs;
 import com.petrolpark.destroy.config.DestroyClientConfigs.ExtraInventoryClientSettings;
 import com.petrolpark.destroy.entity.player.ExtendedInventory.DelayedSlotPopulation;
 import com.petrolpark.destroy.entity.player.ExtendedInventory.SlotFactory;
+import com.petrolpark.destroy.network.DestroyMessages;
+import com.petrolpark.destroy.network.packet.RequestInventoryFullStateC2SPacket;
 import com.simibubi.create.foundation.gui.menu.AbstractSimiContainerScreen;
 import com.simibubi.create.foundation.utility.Iterate;
 
@@ -366,6 +368,9 @@ public class ExtendedInventoryClientHandler {
         AbstractContainerMenu menu = screen.getMenu();
         Minecraft mc = Minecraft.getInstance();
 
+        if (menu == mc.player.inventoryMenu) DestroyMessages.sendToServer(new RequestInventoryFullStateC2SPacket()); // Just in case
+        
+
         if (!ExtendedInventory.supportsExtraInventory(menu) && !(menu == mc.player.inventoryMenu || screen instanceof CreativeModeInventoryScreen)) {
             currentScreen = null;
             return;
@@ -397,7 +402,7 @@ public class ExtendedInventoryClientHandler {
         if (!(
             screen.getMenu() == mc.player.inventoryMenu // Render in the survival Inventory even though the Slots are not added to it in the usual way
             || ExtendedInventory.supportsExtraInventory(screen.getMenu()) // Render in menus to which Slots are added in the usual way
-            || (screen instanceof CreativeModeInventoryScreen creativeScreen && CreativeModeInventoryScreen.selectedTab.getType() == CreativeModeTab.Type.INVENTORY) // Render in the Survival Inventory Tab of the Creative Menu even though the Slots are not added to it in the usual way
+            || (screen instanceof CreativeModeInventoryScreen && CreativeModeInventoryScreen.selectedTab.getType() == CreativeModeTab.Type.INVENTORY) // Render in the Survival Inventory Tab of the Creative Menu even though the Slots are not added to it in the usual way
         ) || (
             screen instanceof IExtendedInventoryScreen customScreen && customScreen.customExtendedInventoryRendering() // Don't render in Screens which do it themselves
         )) return;

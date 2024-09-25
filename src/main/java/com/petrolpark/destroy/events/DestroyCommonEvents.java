@@ -199,7 +199,7 @@ public class DestroyCommonEvents {
     };
 
     @SubscribeEvent
-    public static void onAttachCapabilitiesPlayer(AttachCapabilitiesEvent<Entity> event) {
+    public static void onAttachCapabilitiesEntity(AttachCapabilitiesEvent<Entity> event) {
         Entity entity = event.getObject();
         if (entity instanceof LivingEntity) {
             // Add Chemical Poison Capability

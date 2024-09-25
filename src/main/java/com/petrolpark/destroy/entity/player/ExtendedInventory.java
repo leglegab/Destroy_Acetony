@@ -58,11 +58,15 @@ public class ExtendedInventory extends Inventory {
     };
 
     public void updateSize() {
+        updateSize(false);
+    };
+
+    public void updateSize(boolean forceSync) {
         int sizeBefore = extraItems.size();
         int hotbarBefore = extraHotbarSlots;
         if (player.getAttributes().hasAttribute(DestroyAttributes.EXTRA_HOTBAR_SLOTS.get())) setExtraHotbarSlots((int)player.getAttributeValue(DestroyAttributes.EXTRA_HOTBAR_SLOTS.get()));
         if (player.getAttributes().hasAttribute(DestroyAttributes.EXTRA_INVENTORY_SIZE.get())) setExtraInventorySize((int)player.getAttributeValue(DestroyAttributes.EXTRA_INVENTORY_SIZE.get()));
-        if ((sizeBefore != extraItems.size() || hotbarBefore != extraHotbarSlots) && !player.level().isClientSide() && player instanceof ServerPlayer sp && sp.connection != null) {
+        if ((forceSync || sizeBefore != extraItems.size() || hotbarBefore != extraHotbarSlots) && !player.level().isClientSide() && player instanceof ServerPlayer sp && sp.connection != null) {
             DestroyMessages.sendToClient(new ExtraInventorySizeChangeS2CPacket(extraItems.size(), extraHotbarSlots, false), sp);
         };
     };

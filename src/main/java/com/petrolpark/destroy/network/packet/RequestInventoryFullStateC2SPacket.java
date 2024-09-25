@@ -14,6 +14,7 @@ public class RequestInventoryFullStateC2SPacket extends C2SPacket {
     public boolean handle(Supplier<Context> supplier) {
         supplier.get().enqueueWork(() -> {
             supplier.get().getSender().inventoryMenu.broadcastFullState();
+            supplier.get().getSender().inventoryMenu.sendAllDataToRemote();
         });
         return true;
     };

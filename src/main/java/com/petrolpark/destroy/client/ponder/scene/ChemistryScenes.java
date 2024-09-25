@@ -929,15 +929,15 @@ public class ChemistryScenes {
             .text("This text is defined in a language file.")
             .pointAt(util.vector.blockSurface(util.grid.at(1, 2, 2), Direction.WEST));
         scene.idle(100);
-        scene.overlay.showText(120)
+        scene.overlay.showText(140)
             .text("This text is defined in a language file.")
             .attachKeyFrame()
             .pointAt(util.vector.topOf(2, 3, 2));
         scene.idle(40);
-        scene.overlay.showText(80)
+        scene.overlay.showText(100)
             .text("This text is defined in a language file.")
-            .independent(60);
-        scene.idle(100);
+            .independent(80);
+        scene.idle(120);
 
         if (!includeBlacklight) {
             scene.markAsFinished();
@@ -948,6 +948,7 @@ public class ChemistryScenes {
         scene.idle(10);
         scene.overlay.showText(80)
             .text("This text is defined in a language file.")
+            .attachKeyFrame()
             .pointAt(util.vector.blockSurface(util.grid.at(0, 2, 2), Direction.WEST));
         scene.idle(100);
 

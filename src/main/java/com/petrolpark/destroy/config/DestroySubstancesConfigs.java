@@ -30,7 +30,7 @@ public class DestroySubstancesConfigs extends DestroyConfigBase {
     public final ConfigFloat hangoverNoiseTriggerRadius = f(5f, 0f, 128f, "hangoverNoiseTriggerRadius", "[in blocks]", "The square radius away from a noise which will be checked for entities with hangovers");
     
     public final ConfigGroup creatine = group(0, "creatine", "Creatine");
-    public final ConfigInt creatineExtraInventorySize = i(12, 0, 256, "creatineExtraInventorySize", "The number of additional Inventory Slots granted by taking Creatine");
+    public final ConfigInt creatineExtraInventorySize = i(15, 0, 256, "creatineExtraInventorySize", "The number of additional Inventory Slots granted by taking Creatine");
     public final ConfigInt creatineExtraHotbarSlots = i(3, 0, 32, "creatineExtraHotbarSlots", "The maximum number of extra Hotbar Slots granted by taking Creatine");
     public final ConfigBool keepCreatineExtraInventorySizeOnDeath = b(false, "keepCreatineExtraInventorySizeOnDeath", Comments.overriddenKeepInv, "[This will only affect the extra inventory slots due to Creatine, other mods may handle it differently]");
 

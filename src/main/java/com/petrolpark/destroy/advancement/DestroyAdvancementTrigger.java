@@ -40,6 +40,7 @@ public enum DestroyAdvancementTrigger {
     ETHYLANTHRAQUINONE,
     EXTRUDE,
     FILL_SEISMOGRAPH,
+    FIREPROOF_FLINT_AND_STEEL,
     DETONATE("detonate", "explosive"),
     HABER_PROCESS,
     HANGOVER,
