@@ -3,6 +3,10 @@
     "destroy:laboratory_goggles",
     "destroy:gold_laboratory_goggles",
     "destroy:gas_mask",
-    "create:goggles"
+    "create:goggles",
+    {
+      "id": "#createbigcannons:gas_mask",
+      "required": false
+    }
   ]
 }

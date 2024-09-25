@@ -67,6 +67,7 @@ import net.minecraft.world.level.material.MapColor;
 import net.minecraft.world.level.storage.loot.entries.LootItem;
 import net.minecraft.world.level.storage.loot.functions.ApplyBonusCount;
 import net.minecraft.world.level.storage.loot.functions.SetItemCountFunction;
+import net.minecraft.world.level.storage.loot.predicates.LootItemBlockStatePropertyCondition;
 import net.minecraft.world.level.storage.loot.providers.number.ConstantValue;
 import net.minecraft.world.level.storage.loot.providers.number.UniformGenerator;
 import net.minecraftforge.common.Tags;
@@ -687,7 +688,9 @@ public class DestroyBlocks {
     public static final BlockEntry<FullyGrownCropBlock>
 
     GOLDEN_CARROTS = REGISTRATE.block("golden_carrots", p -> new FullyGrownCropBlock(p, () -> Items.GOLDEN_CARROT))
-        .initialProperties(() -> Blocks.CARROTS)
+        .loot((lt, b) ->
+            lt.add(b, lt.createCropDrops(b, Items.GOLDEN_CARROT, Items.GOLDEN_CARROT, LootItemBlockStatePropertyCondition.hasBlockStateProperties(b)))
+        ).initialProperties(() -> Blocks.CARROTS)
         .tag(BlockTags.CROPS)
         .register();
 

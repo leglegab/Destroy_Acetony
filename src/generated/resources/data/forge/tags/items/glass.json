@@ -1,5 +1,6 @@
 {
   "values": [
+    "destroy:fiberglass_block",
     "destroy:borosilicate_glass"
   ]
 }
