@@ -2,11 +2,8 @@ package com.petrolpark.destroy.network.packet;
 
 import java.util.function.Supplier;
 
-import com.petrolpark.destroy.entity.player.ExtendedInventory;
 import com.petrolpark.destroy.entity.player.ExtendedInventoryClientHandler;
-import com.petrolpark.destroy.network.DestroyMessages;
 
-import net.minecraft.client.Minecraft;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraftforge.network.NetworkEvent.Context;
 
@@ -37,15 +34,7 @@ public class ExtraInventorySizeChangeS2CPacket extends S2CPacket {
 
     @Override
     public boolean handle(Supplier<Context> supplier) {
-        supplier.get().enqueueWork(() -> {
-            Minecraft mc = Minecraft.getInstance();
-            if (mc.player == null) return;
-            ExtendedInventory inv = ExtendedInventory.get(mc.player);
-            inv.setExtraInventorySize(extraInventorySize);
-            inv.setExtraHotbarSlots(extraHotbarSlots);
-            ExtendedInventoryClientHandler.refreshClientInventoryMenu(inv);
-            if (requestFullState) DestroyMessages.sendToServer(new RequestInventoryFullStateC2SPacket());
-        });
+        supplier.get().enqueueWork(() -> ExtendedInventoryClientHandler.handleExtendedInventorySizeChange(this));
         return true;
     };
     

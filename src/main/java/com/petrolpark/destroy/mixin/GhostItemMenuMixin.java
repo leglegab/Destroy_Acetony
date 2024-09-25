@@ -25,10 +25,9 @@ public abstract class GhostItemMenuMixin extends MenuBase<Object> {
     };
     
     @Inject(
-        method = "Lcom/simibubi/create/foundation/gui/menu/GhostItemMenu;clicked",
+        method = "Lcom/simibubi/create/foundation/gui/menu/GhostItemMenu;clicked(IILnet/minecraft/world/inventory/ClickType;Lnet/minecraft/world/entity/player/Player;)V",
         at = @At("HEAD"),
-        cancellable = true,
-        remap = false
+        cancellable = true
     )
     public void inClicked(int slotId, int dragType, ClickType clickTypeIn, Player player, CallbackInfo ci) {
         if (slotId >= 0 && slots.get(slotId).container == player.getInventory()) {
@@ -38,10 +37,9 @@ public abstract class GhostItemMenuMixin extends MenuBase<Object> {
     };
 
     @Inject(
-        method = "Lcom/simibubi/create/foundation/gui/menu/GhostItemMenu;quickMoveStack",
+        method = "Lcom/simibubi/create/foundation/gui/menu/GhostItemMenu;quickMoveStack(Lnet/minecraft/world/entity/player/Player;I)Lnet/minecraft/world/item/ItemStack;",
         at = @At("HEAD"),
-        cancellable = true,
-        remap = false
+        cancellable = true
     )
     public void inQuickMoveStack(Player playerIn, int index, CallbackInfoReturnable<ItemStack> cir) {
         if (index >= 0 && slots.get(index).container == player.getInventory() && index >= 36) {

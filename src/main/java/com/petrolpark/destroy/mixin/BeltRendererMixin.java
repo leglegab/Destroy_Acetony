@@ -18,12 +18,11 @@ import net.minecraft.world.item.ItemStack;
 public class BeltRendererMixin {
     
     @Redirect(
-        method = "renderItems",
+        method = "Lcom/simibubi/create/content/kinetics/belt/BeltRenderer;renderItems(Lcom/simibubi/create/content/kinetics/belt/BeltBlockEntity;FLcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/client/renderer/MultiBufferSource;II)V",
         at = @At(
             value = "INVOKE",
             target = "Lnet/minecraft/client/renderer/entity/ItemRenderer;render(Lnet/minecraft/world/item/ItemStack;Lnet/minecraft/world/item/ItemDisplayContext;ZLcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/client/renderer/MultiBufferSource;IILnet/minecraft/client/resources/model/BakedModel;)V"
-        ),
-        remap = false
+        )
     )
     private void renderOnBelt(ItemRenderer renderer, ItemStack pItemStack, ItemDisplayContext pItemDisplayContext, boolean leftHand, PoseStack pPoseStack, MultiBufferSource pBuffer, int pCombinedLight, int pCombinedOverlay, BakedModel pModel) {
         renderer.render(pItemStack, DestroyItemDisplayContexts.BELT, false, pPoseStack, pBuffer, pCombinedLight, pCombinedOverlay, pModel);

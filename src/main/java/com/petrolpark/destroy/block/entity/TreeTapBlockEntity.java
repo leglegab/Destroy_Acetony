@@ -25,9 +25,8 @@ import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler.FluidAction;
-import rbasamoyai.createbigcannons.base.goggles.IHaveEntityGoggleInformation;
 
-public class TreeTapBlockEntity extends BlockBreakingKineticBlockEntity implements IHaveEntityGoggleInformation {
+public class TreeTapBlockEntity extends BlockBreakingKineticBlockEntity {
 
     protected LazyOptional<IFluidHandler> fluidCapability;
 	public GeniusFluidTankBehaviour tank;

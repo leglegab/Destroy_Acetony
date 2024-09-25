@@ -34,6 +34,8 @@ import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.level.storage.loot.LootParams.Builder;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
 import net.minecraft.world.phys.Vec3;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.util.Lazy;
 
 public class CustomExplosiveMixExplosion extends SmartExplosion {
@@ -171,6 +173,7 @@ public class CustomExplosiveMixExplosion extends SmartExplosion {
         };
 
         @Override
+        @OnlyIn(Dist.CLIENT)
         public SmartExplosion read(FriendlyByteBuf buffer) {
             Minecraft mc = Minecraft.getInstance();
             return CustomExplosiveMixExplosion.create(mc.level, ExplosiveProperties.read(buffer), buffer.readCollection(ArrayList<ItemStack>::new, FriendlyByteBuf::readItem), null, new Vec3(buffer.readDouble(), buffer.readDouble(), buffer.readDouble()));

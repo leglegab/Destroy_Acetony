@@ -106,7 +106,7 @@ public abstract class CartographyTableMenuMixin extends AbstractContainerMenu {
     };
 
     @Inject(
-        method = "lambda$setupResultSlot$0",
+        method = "Lnet/minecraft/world/inventory/CartographyTableMenu;lambda$setupResultSlot$0(Lnet/minecraft/world/item/ItemStack;Lnet/minecraft/world/item/ItemStack;Lnet/minecraft/world/item/ItemStack;Lnet/minecraft/world/level/Level;Lnet/minecraft/core/BlockPos;)V",
         at = @At(
             value = "INVOKE",
             target = "Lnet/minecraft/world/item/ItemStack;is(Lnet/minecraft/world/item/Item;)Z",

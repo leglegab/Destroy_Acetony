@@ -18,6 +18,7 @@ import com.petrolpark.destroy.config.DestroyClientConfigs.ExtraInventoryClientSe
 import com.petrolpark.destroy.entity.player.ExtendedInventory.DelayedSlotPopulation;
 import com.petrolpark.destroy.entity.player.ExtendedInventory.SlotFactory;
 import com.petrolpark.destroy.network.DestroyMessages;
+import com.petrolpark.destroy.network.packet.ExtraInventorySizeChangeS2CPacket;
 import com.petrolpark.destroy.network.packet.RequestInventoryFullStateC2SPacket;
 import com.simibubi.create.foundation.gui.menu.AbstractSimiContainerScreen;
 import com.simibubi.create.foundation.utility.Iterate;
@@ -137,6 +138,16 @@ public class ExtendedInventoryClientHandler {
             rightY = 0;
         };
         ExtendedInventory.refreshPlayerInventoryMenu(inv.player, DestroyAllConfigs.CLIENT.extraInventoryWidth.get(), invX + INVENTORY_PADDING, invY + INVENTORY_PADDING, DestroyClientConfigs.getLeftSlots(inv.getExtraHotbarSlots()), leftX, leftY, rightX, rightY);
+    };
+
+    public static void handleExtendedInventorySizeChange(ExtraInventorySizeChangeS2CPacket packet) {
+        Minecraft mc = Minecraft.getInstance();
+        if (mc.player == null) return;
+        ExtendedInventory inv = ExtendedInventory.get(mc.player);
+        inv.setExtraInventorySize(packet.extraInventorySize);
+        inv.setExtraHotbarSlots(packet.extraHotbarSlots);
+        refreshClientInventoryMenu(inv);
+        if (packet.requestFullState) DestroyMessages.sendToServer(new RequestInventoryFullStateC2SPacket());
     };
 
     /**

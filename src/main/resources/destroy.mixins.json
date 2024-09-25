@@ -56,7 +56,6 @@
         "PipeConnectionMixin",
         "PlayerMixin",
         "PonderTagScreenMixin",
-        "PonderWorldMixin",
         "SchematicannonInventoryMixin",
         "SequencedAssemblyRecipeMixin",
         "ServerGamePacketListenerImplMixin",
@@ -86,6 +85,7 @@
         "HeartTypeMixin",
         "LevelRendererMixin",
         "MultiPlayerGameModeMixin",
+        "PonderWorldMixin",
         "RecipeBookComponentMixin"
     ],
     "injectors": {
