@@ -12,5 +12,6 @@
       {
         "item": "destroy:zinc_powder"
       }
-    ]
+    ],
+    "processingTime": 200
   }

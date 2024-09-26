@@ -12,5 +12,6 @@
       {
         "item": "destroy:lead_powder"
       }
-    ]
+    ],
+    "processingTime": 200
   }

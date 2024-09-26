@@ -12,5 +12,6 @@
       {
         "item": "destroy:iron_powder"
       }
-    ]
+    ],
+    "processingTime": 200
   }

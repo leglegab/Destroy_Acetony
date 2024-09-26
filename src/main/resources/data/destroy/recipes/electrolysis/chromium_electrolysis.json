@@ -12,5 +12,6 @@
       {
         "item": "destroy:chromium_powder"
       }
-    ]
+    ],
+    "processingTime": 200
   }

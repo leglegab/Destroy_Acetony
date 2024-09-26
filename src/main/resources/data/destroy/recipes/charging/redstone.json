@@ -9,5 +9,6 @@
       {
         "item": "minecraft:redstone"
       }
-    ]
+    ],
+    "processingTime": 200
   }

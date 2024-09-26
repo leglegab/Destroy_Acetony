@@ -9,5 +9,6 @@
       {
         "item": "destroy:voltaic_pile"
       }
-    ]
+    ],
+    "processingTime": 200
   }

@@ -12,5 +12,6 @@
       {
         "item": "destroy:copper_powder"
       }
-    ]
+    ],
+    "processingTime": 200
   }

@@ -8,5 +8,6 @@
         "amount": 100
       }
     ],
-    "results": []
+    "results": [],
+    "processingTime": 200
   }

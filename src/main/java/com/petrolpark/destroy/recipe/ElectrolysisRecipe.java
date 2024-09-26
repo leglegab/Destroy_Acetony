@@ -7,6 +7,7 @@ public class ElectrolysisRecipe extends BasinRecipe {
 
     public ElectrolysisRecipe(ProcessingRecipeParams params) {
         super(DestroyRecipeTypes.ELECTROLYSIS, params);
+        if (processingDuration == 0) processingDuration = 200;
     };
     
 };

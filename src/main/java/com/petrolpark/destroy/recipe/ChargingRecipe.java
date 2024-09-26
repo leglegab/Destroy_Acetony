@@ -24,6 +24,7 @@ public class ChargingRecipe extends ProcessingRecipe<RecipeWrapper> implements I
 
     public ChargingRecipe(ProcessingRecipeParams params) {
         super(DestroyRecipeTypes.CHARGING, params);
+        if (processingDuration == 0) processingDuration = 200;
     };
 
     @Override

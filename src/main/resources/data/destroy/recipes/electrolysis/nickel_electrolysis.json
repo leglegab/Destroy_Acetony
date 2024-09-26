@@ -12,5 +12,6 @@
       {
         "item": "destroy:nickel_powder"
       }
-    ]
+    ],
+    "processingTime": 200
   }
