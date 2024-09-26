@@ -25,10 +25,9 @@ public class DestroyMixinPlugin implements IMixinConfigPlugin {
         onlyLoadIfModPresent("CreateRecipeCategoryMixin", "jei");
         onlyLoadIfModPresent("DeployingCategoryMixin", "jei");
         onlyLoadIfModPresent("GhostIngredientHandlerMixin", "jei");
-        onlyLoadIfModPresent("MixingCategoryMixin", "jei");
+        onlyLoadIfModPresent("JeiProcessingRecipeMixin", "jei");
         onlyLoadIfModPresent("PackingCategoryMixin", "jei");
-        onlyLoadIfModPresent("ProcessingRecipeMixin", "jei");
-        onlyLoadIfModPresent("TooltipRendererMixin", "jei");
+        onlyLoadIfModPresent("MixingCategoryMixin", "jei");
 
         // Farmers' Delight mixins
         onlyLoadIfModPresent("CuttingBoardMixin", "farmersdelight");
@@ -77,7 +76,7 @@ public class DestroyMixinPlugin implements IMixinConfigPlugin {
      * @param modID ID of the Mod on which this Mixin depends
      */
     private static void onlyLoadIfModPresent(String mixinClassName, String ...requiredModIDs) {
-        String className = "com.destroy.petrolpark.mixin.compat."+requiredModIDs[0]+"."+mixinClassName+".java";
+        String className = "com.petrolpark.destroy.mixin.compat."+requiredModIDs[0]+"."+mixinClassName;
         SHOULD_LOAD.put(className, () -> {
             for (String modID : requiredModIDs) {
                 if (FMLLoader.getLoadingModList().getModFileById(modID) == null) return false;

@@ -1,5 +1,5 @@
 {
-    "type": "create:splashing",
+    "type": "destroy:sieving",
     "ingredients": [
       {
         "item": "destroy:coal_infused_beetroot_ashes"

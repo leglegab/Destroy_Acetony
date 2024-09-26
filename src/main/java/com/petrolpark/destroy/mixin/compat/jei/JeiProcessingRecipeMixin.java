@@ -31,7 +31,11 @@ public abstract class JeiProcessingRecipeMixin {
      * {@link com.petrolpark.destroy.compat.jei.DestroyJEI#MOLECULES_INPUT ingredient} or {@link com.petrolpark.destroy.compat.jei.DestroyJEI#MOLECULES_OUTPUT result}.
      */
     @SuppressWarnings("unchecked")
-    @Inject(method = "<init>", at = @At(value = "RETURN"))
+    @Inject(
+        method = "<init>",
+        at = @At(value = "RETURN"),
+        remap = false
+    )
     public void inInit(IRecipeTypeInfo typeInfo, ProcessingRecipeParams params, CallbackInfo ci) {
         if (!DestroyJEI.MOLECULE_RECIPES_NEED_PROCESSING) return;
         for (FluidIngredient ingredient : ((ProcessingRecipeParamsAccessor)params).getFluidIngredients()) {
