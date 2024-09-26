@@ -18,6 +18,9 @@ public abstract class FluidTankBlockEntityMixin {
         return new GeniusFluidTank(FluidTankBlockEntity.getCapacityMultiplier(), this::invokeOnFluidStackChanged);
     };
 
-    @Invoker("onFluidStackChanged")
+    @Invoker(
+        value = "onFluidStackChanged",
+        remap = false
+    )
     public abstract void invokeOnFluidStackChanged(FluidStack stack);
 };

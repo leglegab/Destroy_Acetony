@@ -1,5 +1,5 @@
 {
-    "parent": "destroy:urinate",
+    "parent": "destroy:haber_process",
     "criteria": {
       "ostwald_process": {
         "conditions": {},
@@ -12,7 +12,7 @@
         "translate": "advancement.destroy.ostwald_process.description"
       },
       "icon": {
-        "item": "destroy:rhodium_ingot"
+        "item": "destroy:rhodium_powder"
       },
       "title": {
         "translate": "advancement.destroy.ostwald_process"

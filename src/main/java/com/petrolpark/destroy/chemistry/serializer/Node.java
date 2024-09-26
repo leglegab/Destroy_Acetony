@@ -7,18 +7,18 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import com.petrolpark.destroy.chemistry.Atom;
-import com.petrolpark.destroy.chemistry.Element;
-import com.petrolpark.destroy.chemistry.Bond.BondType;
+import com.petrolpark.destroy.chemistry.legacy.LegacyAtom;
+import com.petrolpark.destroy.chemistry.legacy.LegacyElement;
+import com.petrolpark.destroy.chemistry.legacy.LegacyBond.BondType;
 
 public class Node {
-    private Atom atom;
+    private LegacyAtom atom;
     public Boolean visited;
     private List<Edge> edges;
     private Branch branch;
     private Map<Branch, BondType> sideBranches;
 
-    public Node(Atom atom) {
+    public Node(LegacyAtom atom) {
         this.atom = atom;
         visited = false;
         edges = new ArrayList<>();
@@ -36,8 +36,11 @@ public class Node {
                 break;
             };
         };
-        if (atom.rGroupNumber != 0 && atom.getElement() == Element.R_GROUP) {
+        if (atom.rGroupNumber != 0 && atom.getElement() == LegacyElement.R_GROUP) {
             string += atom.rGroupNumber;
+        };
+        if (atom.formalCharge != 0) {
+            string += "^"+((atom.formalCharge % 1.0 != 0) ? String.format("%s", atom.formalCharge) :String.format("%.0f", atom.formalCharge));
         };
         if (!isTerminal && nextEdge != null) { // Also checking if the next edge is null is sort of redundant, but at least it gets rid of that nasty yellow squiggly line
             string += nextEdge.bondType.getFROWNSCode(); // It thinks 'nextEdge' can be null
@@ -51,7 +54,7 @@ public class Node {
         return string;
     };
 
-    public Atom getAtom() {
+    public LegacyAtom getAtom() {
         return this.atom;
     };
 

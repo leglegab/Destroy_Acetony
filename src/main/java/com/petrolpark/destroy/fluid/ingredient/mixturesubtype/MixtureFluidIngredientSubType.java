@@ -3,7 +3,7 @@ package com.petrolpark.destroy.fluid.ingredient.mixturesubtype;
 import java.util.Collection;
 import java.util.List;
 
-import com.petrolpark.destroy.chemistry.Molecule;
+import com.petrolpark.destroy.chemistry.legacy.LegacySpecies;
 import com.petrolpark.destroy.fluid.ingredient.MixtureFluidIngredient;
 
 import net.minecraft.nbt.CompoundTag;
@@ -32,5 +32,5 @@ public abstract class MixtureFluidIngredientSubType<T extends MixtureFluidIngred
      * MixtureFluidIngredient#addNBT here}.
      * @param fluidTag
      */
-    public abstract Collection<Molecule> getContainedMolecules(CompoundTag fluidTag);
+    public abstract Collection<LegacySpecies> getContainedMolecules(CompoundTag fluidTag);
 };

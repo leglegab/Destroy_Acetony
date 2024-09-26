@@ -7,12 +7,15 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
+import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 
+import com.petrolpark.destroy.effect.potion.PotionFluidMixingRecipes;
 import com.petrolpark.destroy.fluid.DestroyFluids;
 import com.petrolpark.destroy.mixin.accessor.BasinOperatingBlockEntityAccessor;
 import com.petrolpark.destroy.recipe.ReactionInBasinRecipe;
 import com.simibubi.create.content.kinetics.mixer.MechanicalMixerBlockEntity;
 import com.simibubi.create.content.processing.basin.BasinRecipe;
+import com.simibubi.create.infrastructure.config.AllConfigs;
 
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Recipe;
@@ -26,17 +29,20 @@ public class MechanicalMixerBlockEntityMixin {
     
     /**
      * Injection into {@link com.simibubi.create.content.contraptions.components.mixer.MechanicalMixerBlockEntity Mechanical Mixers}
-     * to allow them to recognise Mixtures that are able to React.
+     * to allow them to recognise Mixtures that are able to React, and also stir up Potions.
      * @see com.petrolpark.destroy.recipe.ReactionInBasinRecipe Reactions in Basins
      */
     @Inject(
         method = "getMatchingRecipes()Ljava/util/List;",
-        at = @At("HEAD"),
+        at = @At(
+            value = "INVOKE_ASSIGN",
+            target = "Lcom/simibubi/create/content/processing/basin/BasinOperatingBlockEntity;getMatchingRecipes()Ljava/util/List;"
+        ),
         cancellable = true,
-        remap = false
-        
+        remap = false,
+        locals = LocalCapture.CAPTURE_FAILHARD
     )
-    public void inGetMatchingRecipes(CallbackInfoReturnable<List<Recipe<?>>> ci) {
+    public void inGetMatchingRecipes(CallbackInfoReturnable<List<Recipe<?>>> ci, List<Recipe<?>> matchingRecipes) {
 
         ((BasinOperatingBlockEntityAccessor)this).invokeGetBasin().ifPresent(basin -> {
 
@@ -59,16 +65,19 @@ public class MechanicalMixerBlockEntityMixin {
                 };
             };
 
-            if (!containsOnlyMixtures) return; // If there are Fluids other than Mixtures, don't bother Reacting
-            if (availableFluidStacks.size() <= 0) return; // If there are no Mixtures, don't bother Reacting
-                
-            for (int slot = 0; slot < itemHandler.getSlots(); slot++) {
-                availableItemStacks.add(itemHandler.getStackInSlot(slot));
+            if (containsOnlyMixtures) { // If there are Fluids other than Mixtures, don't bother Reacting
+                if (availableFluidStacks.size() <= 0) return; // If there are no Mixtures, don't bother Reacting
+                    
+                for (int slot = 0; slot < itemHandler.getSlots(); slot++) {
+                    availableItemStacks.add(itemHandler.getStackInSlot(slot));
+                };
+                    
+                // Only return this if there is definitely a Reaction possible
+                ReactionInBasinRecipe recipe = ReactionInBasinRecipe.create(availableFluidStacks, availableItemStacks, basin);
+                if (!(recipe == null) && BasinRecipe.match(basin, recipe)) matchingRecipes.add(recipe); 
+            } else if (AllConfigs.server().recipes.allowBrewingInMixer.get()) {
+                matchingRecipes.addAll(PotionFluidMixingRecipes.ALL.stream().filter(recipe -> BasinRecipe.match(basin, recipe)).toList());
             };
-              
-            // Only return this if there is definitely a Reaction possible
-            ReactionInBasinRecipe recipe = ReactionInBasinRecipe.create(availableFluidStacks, availableItemStacks, basin);
-            if (!(recipe == null) && BasinRecipe.match(basin, recipe)) ci.setReturnValue(List.of(recipe)); // It thinks basin.getLevel() might be null
         });
     };
     

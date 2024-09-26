@@ -1,0 +1,29 @@
+
+{
+    "type": "create:mixing",
+    "conditions": [
+        {
+            "type": "forge:mod_loaded",
+            "modid": "tfmg"
+        }
+    ],
+    "ingredients": [
+      {
+        "mixtureFluidWithTaggedMolecules": "destroy:mixture",
+        "amount": 250,
+        "tag": "destroy:refrigerant",
+        "min_concentration": 1.0,
+        "max_concentration": 10.0
+      },
+      {
+        "fluid": "minecraft:water",
+        "amount": 250
+      }
+    ],
+    "results": [
+      {
+        "fluid": "tfmg:cooling_fluid",
+        "amount": 500
+      }
+    ]
+  }

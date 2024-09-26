@@ -11,6 +11,7 @@ import javax.annotation.Nullable;
 import com.google.common.collect.ImmutableList;
 import com.petrolpark.destroy.block.VatControllerBlock;
 import com.simibubi.create.CreateClient;
+import com.simibubi.create.content.contraptions.StructureTransform;
 import com.simibubi.create.foundation.utility.Pair;
 import com.simibubi.create.foundation.utility.VecHelper;
 
@@ -42,6 +43,7 @@ public class Vat {
         VatMaterial.registerDestroyVatMaterials();
     };
 
+    // Global positions of the corners of this Vat. In NBT they are stored relative to the Controller position.
     private BlockPos lowerCorner;
     private BlockPos upperCorner;
 
@@ -67,18 +69,19 @@ public class Vat {
     };
 
     @SuppressWarnings("deprecation")
-    public static Optional<Vat> read(CompoundTag tag) {
+    public static Optional<Vat> read(CompoundTag tag, BlockPos controllerPos) {
         if (!tag.contains("LowerCorner", Tag.TAG_COMPOUND) || !tag.contains("UpperCorner", Tag.TAG_COMPOUND)) return Optional.empty();
-        Vat vat = new Vat(NbtUtils.readBlockPos(tag.getCompound("LowerCorner")), NbtUtils.readBlockPos(tag.getCompound("UpperCorner")));
+        Vat vat = new Vat(NbtUtils.readBlockPos(tag.getCompound("LowerCorner")).offset(controllerPos), NbtUtils.readBlockPos(tag.getCompound("UpperCorner")).offset(controllerPos));
         vat.conductance = tag.getFloat("Conductance");
         vat.weakestBlockState = NbtUtils.readBlockState(BuiltInRegistries.BLOCK.asLookup(), tag.getCompound("WeakestBlock"));
-        vat.maximumPressure = VatMaterial.BLOCK_MATERIALS.get(vat.weakestBlockState.getBlock()).maxPressure();
+        vat.maximumPressure = VatMaterial.getMaterial(vat.weakestBlockState).map(VatMaterial::maxPressure).orElseGet(() -> 0f);
         return Optional.of(vat);
     };
 
-    public void write(CompoundTag tag) {
-        tag.put("LowerCorner", NbtUtils.writeBlockPos(lowerCorner));
-        tag.put("UpperCorner", NbtUtils.writeBlockPos(upperCorner));
+    public void write(CompoundTag tag, BlockPos controllerPos) {
+        tag.put("LowerCorner", NbtUtils.writeBlockPos(lowerCorner.subtract(controllerPos)));
+        tag.put("UpperCorner", NbtUtils.writeBlockPos(upperCorner.subtract(controllerPos)));
+        tag.put("LastKnownControllerPos", NbtUtils.writeBlockPos(controllerPos));
         tag.putFloat("Conductance", conductance);
         tag.put("WeakestBlock", NbtUtils.writeBlockState(weakestBlockState));
     };
@@ -142,7 +145,7 @@ public class Vat {
                     } else {
                         allAir = false;
                         Block block = state.getBlock();
-                        if (!VatMaterial.isValid(block) || (block instanceof VatControllerBlock && !blockPos.equals(controllerPos))) allWalls = false;
+                        if (!VatMaterial.isValid(state) || (block instanceof VatControllerBlock && !blockPos.equals(controllerPos))) allWalls = false;
                     }
                 };
 
@@ -200,11 +203,11 @@ public class Vat {
              */
             if (((onXSide ^ onYSide) ^ onZSide) && !(onXSide && onYSide)) {
                 BlockState state = level.getBlockState(blockPos);
-                if (!VatMaterial.isValid(state.getBlock())) {
+                if (!VatMaterial.isValid(state)) {
                     successful = false;
                     break;
                 };
-                VatMaterial material = VatMaterial.BLOCK_MATERIALS.get(state.getBlock());
+                VatMaterial material = VatMaterial.getMaterial(state).get();
                 if (material.maxPressure() < maximumPressure) {
                     maximumPressure = material.maxPressure();
                     weakestBlockState = state;
@@ -259,6 +262,17 @@ public class Vat {
 
     public int getInternalLength() {
         return upperCorner.getZ() - getInternalLowerCorner().getZ();
+    };
+
+    public void transform(StructureTransform transform, BlockPos newControllerPos) {
+        BlockPos controllerMotion = transform.unapply(newControllerPos).subtract(newControllerPos);
+        upperCorner = transform.apply(upperCorner.offset(controllerMotion));
+        lowerCorner = transform.apply(lowerCorner.offset(controllerMotion));
+        BlockPos newUpper = new BlockPos(Math.max(upperCorner.getX(), lowerCorner.getX()), Math.max(upperCorner.getY(), lowerCorner.getY()), Math.max(upperCorner.getZ(), lowerCorner.getZ()));
+        BlockPos newLower = new BlockPos(Math.min(upperCorner.getX(), lowerCorner.getX()), Math.min(upperCorner.getY(), lowerCorner.getY()), Math.min(upperCorner.getZ(), lowerCorner.getZ()));
+        lowerCorner = newLower;
+        upperCorner = newUpper;
+        sides = null;
     };
 
     /**

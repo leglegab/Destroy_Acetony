@@ -1,0 +1,9 @@
+{
+    "asset_name": "rainbow",
+    "description": {
+      "color": "#f9b5f4",
+      "translate": "destroy.trim_material.rainbow"
+    },
+    "ingredient": "create:chromatic_compound",
+    "item_model_index": -1.0
+  }

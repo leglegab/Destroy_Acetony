@@ -1,0 +1,22 @@
+{
+    "type": "minecraft:crafting_shaped",
+    "pattern": [
+      "I",
+      "C",
+      "P"
+    ],
+    "key": {
+      "I": {
+        "item": "create:brass_hand"
+      },
+      "P": {
+        "item": "create:fluid_pipe"
+      },
+      "C": {
+        "item": "create:andesite_casing"
+      }
+    },
+    "result": {
+      "item": "destroy:tree_tap"
+    }
+  }

@@ -6,11 +6,11 @@ import java.util.Set;
 
 import com.google.common.collect.Sets;
 import com.petrolpark.destroy.Destroy;
-import com.petrolpark.destroy.chemistry.Group;
-import com.petrolpark.destroy.chemistry.GroupType;
-import com.petrolpark.destroy.chemistry.Molecule;
-import com.petrolpark.destroy.chemistry.Reaction;
-import com.petrolpark.destroy.chemistry.genericreaction.GenericReaction;
+import com.petrolpark.destroy.chemistry.legacy.LegacyFunctionalGroup;
+import com.petrolpark.destroy.chemistry.legacy.LegacyFunctionalGroupType;
+import com.petrolpark.destroy.chemistry.legacy.LegacySpecies;
+import com.petrolpark.destroy.chemistry.legacy.LegacyReaction;
+import com.petrolpark.destroy.chemistry.legacy.genericreaction.GenericReaction;
 import com.petrolpark.destroy.recipe.ReactionRecipe;
 import com.petrolpark.destroy.recipe.ReactionRecipe.GenericReactionRecipe;
 
@@ -23,15 +23,15 @@ public class GenericReactionCategory extends ReactionCategory<GenericReactionRec
     public static RecipeType<GenericReactionRecipe> TYPE;
 
     /**
-     * Each {@link com.petrolpark.destroy.chemistry.GroupType Group Type} mapped to the Set of {@link com.petrolpark.destroy.chemistry.genericreaction.GenericReaction Generic Reactions} that can produce it.
-     * The {@link com.petrolpark.destroy.chemistry.Molecule#isNovel novel} results of {@link com.petrolpark.destroy.chemistry.genericreaction.GenericReaction#getExampleReaction this Reaction} are used to
+     * Each {@link com.petrolpark.destroy.chemistry.legacy.LegacyFunctionalGroupType Group Type} mapped to the Set of {@link com.petrolpark.destroy.chemistry.legacy.genericreaction.GenericReaction Generic Reactions} that can produce it.
+     * The {@link com.petrolpark.destroy.chemistry.legacy.LegacySpecies#isNovel novel} results of {@link com.petrolpark.destroy.chemistry.legacy.genericreaction.GenericReaction#getExampleReaction this Reaction} are used to
      * determine if a Generic Reaction can produce a Group.
      */
-    public static Map<GroupType<?>, Set<GenericReaction>> GROUP_RECIPES = new HashMap<>();
+    public static Map<LegacyFunctionalGroupType<?>, Set<GenericReaction>> GROUP_RECIPES = new HashMap<>();
 
     /**
-     * The set of all {@link com.petrolpark.destroy.chemistry.genericreaction.GenericReaction#getExampleReaction example} {@link com.petrolpark.destroy.chemistry.Reaction Reactions}, mapped to
-     * the {@link com.petrolpark.destroy.chemistry.genericreaction.GenericReaction Generic Reactions} of which they are the example.
+     * The set of all {@link com.petrolpark.destroy.chemistry.legacy.genericreaction.GenericReaction#getExampleReaction example} {@link com.petrolpark.destroy.chemistry.legacy.LegacyReaction Reactions}, mapped to
+     * the {@link com.petrolpark.destroy.chemistry.legacy.genericreaction.GenericReaction Generic Reactions} of which they are the example.
      */
     public static Map<GenericReaction, GenericReactionRecipe> RECIPES = new HashMap<>();
 
@@ -54,19 +54,20 @@ public class GenericReactionCategory extends ReactionCategory<GenericReactionRec
      */
     static {
         for (GenericReaction genericReaction : GenericReaction.GENERIC_REACTIONS) {
-            Reaction reaction = null;
+            LegacyReaction reaction = null;
             try {
                 reaction = genericReaction.getExampleReaction();
             } catch (Throwable e) {
                 Destroy.LOGGER.warn("Problem generating generic reaction "+genericReaction.id); // Warn but don't do anything
+                throw e;
             };
             if (reaction != null) {
                 // Add the Generic Reaction to JEI.
                 RECIPES.put(genericReaction, GenericReactionRecipe.create(genericReaction));
-                for (Molecule product : reaction.getProducts()) {
+                for (LegacySpecies product : reaction.getProducts()) {
                     if (product.isNovel()) {
                         // Determine what functional groups this Generic Reaction can produce
-                        for (Group<?> functionalGroup : product.getFunctionalGroups()) {
+                        for (LegacyFunctionalGroup<?> functionalGroup : product.getFunctionalGroups()) {
                             GROUP_RECIPES.merge(functionalGroup.getType(), Set.of(genericReaction), Sets::union);
                         };
                     };

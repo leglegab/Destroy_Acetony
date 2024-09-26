@@ -7,17 +7,20 @@ import javax.annotation.Nullable;
 
 import org.jetbrains.annotations.NotNull;
 
-import com.petrolpark.destroy.advancement.DestroyAdvancements;
+import com.petrolpark.block.entity.behaviour.AbstractRememberPlacerBehaviour;
+import com.petrolpark.destroy.advancement.DestroyAdvancementTrigger;
 import com.petrolpark.destroy.block.DestroyBlocks;
 import com.petrolpark.destroy.block.PumpjackBlock;
 import com.petrolpark.destroy.block.entity.behaviour.DestroyAdvancementBehaviour;
 import com.petrolpark.destroy.block.entity.behaviour.PollutingBehaviour;
 import com.petrolpark.destroy.capability.chunk.ChunkCrudeOil;
+import com.petrolpark.destroy.config.DestroyAllConfigs;
 import com.petrolpark.destroy.fluid.DestroyFluids;
 import com.petrolpark.destroy.sound.DestroySoundEvents;
 import com.simibubi.create.content.equipment.goggles.IHaveGoggleInformation;
 import com.simibubi.create.content.kinetics.base.KineticBlockEntityRenderer;
 import com.simibubi.create.foundation.blockEntity.SmartBlockEntity;
+import com.simibubi.create.foundation.blockEntity.behaviour.BehaviourType;
 import com.simibubi.create.foundation.blockEntity.behaviour.BlockEntityBehaviour;
 import com.simibubi.create.foundation.blockEntity.behaviour.fluid.SmartFluidTankBehaviour;
 
@@ -28,6 +31,7 @@ import net.minecraft.core.Direction.Axis;
 import net.minecraft.core.Direction.AxisDirection;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.Mth;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
@@ -45,6 +49,7 @@ public class PumpjackBlockEntity extends SmartBlockEntity implements IHaveGoggle
 
     public SmartFluidTankBehaviour tank;
     protected PollutingBehaviour pollutionBehaviour;
+    protected RememberPlacerForOilDiscoveryBehaviour prospectingBehaviour;
     protected DestroyAdvancementBehaviour advancementBehaviour;
 
     public WeakReference<PumpjackCamBlockEntity> source;
@@ -59,15 +64,18 @@ public class PumpjackBlockEntity extends SmartBlockEntity implements IHaveGoggle
 
     @Override
     public void addBehaviours(List<BlockEntityBehaviour> behaviours) {
-        tank = new SmartFluidTankBehaviour(SmartFluidTankBehaviour.OUTPUT, this, 1, 2000, false)
+        tank = new SmartFluidTankBehaviour(SmartFluidTankBehaviour.OUTPUT, this, 1, getTankCapacity(), false)
             .forbidInsertion();
         behaviours.add(tank);
 
-        advancementBehaviour = new DestroyAdvancementBehaviour(this);
+        advancementBehaviour = new DestroyAdvancementBehaviour(this, DestroyAdvancementTrigger.USE_PUMPJACK);
         behaviours.add(advancementBehaviour);
 
         pollutionBehaviour = new PollutingBehaviour(this);
         behaviours.add(pollutionBehaviour);
+
+        prospectingBehaviour = new RememberPlacerForOilDiscoveryBehaviour(this);
+        behaviours.add(prospectingBehaviour);
     };
 
     @Override
@@ -103,14 +111,14 @@ public class PumpjackBlockEntity extends SmartBlockEntity implements IHaveGoggle
         LazyOptional<ChunkCrudeOil> crudeOilOptional = chunk.getCapability(ChunkCrudeOil.Provider.CHUNK_CRUDE_OIL);
         if (!crudeOilOptional.isPresent()) return; // Don't go any further if there's somehow no capability
         int oilAmount = crudeOilOptional.map(crudeOilCap -> {
-            crudeOilCap.generate(chunk, advancementBehaviour.getPlayer());
+            crudeOilCap.generate(chunk, prospectingBehaviour.getPlayer());
             return crudeOilCap.getAmount();
         }).orElse(0);
         if (oilAmount == 0) return; // Don't go any further if there's no oil
-        advancementBehaviour.awardDestroyAdvancement(DestroyAdvancements.USE_PUMPJACK);
+        advancementBehaviour.awardDestroyAdvancement(DestroyAdvancementTrigger.USE_PUMPJACK);
         // Add the oil to the Pumpjack's internal tank
         tank.allowInsertion();
-        int amountPumped = tank.getPrimaryHandler().fill(new FluidStack(DestroyFluids.CRUDE_OIL.get(), (int)Math.min(oilAmount, Math.abs(cam.getSpeed() / 16))), FluidAction.EXECUTE);
+        int amountPumped = tank.getPrimaryHandler().fill(new FluidStack(DestroyFluids.CRUDE_OIL.get(), (int)Math.min(oilAmount, DestroyAllConfigs.SERVER.blocks.pumpjackExtractionSpeed.getF() * Math.abs(cam.getSpeed() / 16f))), FluidAction.EXECUTE);
         tank.forbidInsertion();
         crudeOilOptional.ifPresent(crudeOilCap -> crudeOilCap.decreaseAmount(amountPumped));
     };
@@ -176,6 +184,32 @@ public class PumpjackBlockEntity extends SmartBlockEntity implements IHaveGoggle
     @Override
     public boolean addToGoggleTooltip(List<Component> tooltip, boolean isPlayerSneaking) {
         return containedFluidTooltip(tooltip, isPlayerSneaking, getCapability(ForgeCapabilities.FLUID_HANDLER));
+    };
+
+    public class RememberPlacerForOilDiscoveryBehaviour extends AbstractRememberPlacerBehaviour {
+
+        public RememberPlacerForOilDiscoveryBehaviour(SmartBlockEntity be) {
+            super(be);
+        };
+
+        public static BehaviourType<?> TYPE = new BehaviourType<>();
+
+        @Override
+        public boolean shouldRememberPlacer(Player placer) {
+            LevelChunk chunk = getLevel().getChunkAt(getBlockPos());
+            if (chunk == null) return true;
+            return chunk.getCapability(ChunkCrudeOil.Provider.CHUNK_CRUDE_OIL).map(ChunkCrudeOil::isGenerated).orElse(true);
+        };
+
+        @Override
+        public BehaviourType<?> getType() {
+            return TYPE;
+        };
+
+    };
+
+    public int getTankCapacity() {
+        return DestroyAllConfigs.SERVER.blocks.pumpjackCapacity.get();
     };
     
 };

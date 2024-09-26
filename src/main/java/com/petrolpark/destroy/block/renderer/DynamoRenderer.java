@@ -24,14 +24,13 @@ public class DynamoRenderer extends KineticBlockEntityRenderer<DynamoBlockEntity
     };
 
     @Override
-    @SuppressWarnings("null")
     protected void renderSafe(DynamoBlockEntity dynamo, float partialTicks, PoseStack ms, MultiBufferSource buffer, int light, int overlay) {
         super.renderSafe(dynamo, partialTicks, ms, buffer, light, overlay);
         if ((!dynamo.isRunning() && dynamo.soundDuration <= 0) || !dynamo.hasLevel()) return; // It thinks getLevel() can be null (it can't)
         RandomSource rand = dynamo.getLevel().getRandom();
-        if (rand.nextFloat() > 0.1f) return;
+        if (rand.nextFloat() > 0.1f || !dynamo.shouldRenderArcs()) return;
 
-        boolean northSouthAligned = dynamo.getBlockState().getValue(DynamoBlock.FACING).getAxis() == Axis.Z;
+        boolean northSouthAligned = dynamo.getBlockState().getValue(DynamoBlock.AXIS) == Axis.Z;
         Vec3 electrodePos1 = Vec3.atLowerCornerOf(dynamo.getBlockPos()).add(northSouthAligned ? 3 / 16f : 8 / 16f, -2 / 16f, northSouthAligned ? 8 / 16f : 3 / 16f);
         Vec3 electrodePos2 = Vec3.atLowerCornerOf(dynamo.getBlockPos()).add(northSouthAligned ? 13 / 16f : 8 / 16f, -2 / 16f, northSouthAligned ? 8 / 16f : 13 / 16f);
         Vec3 targetPos = dynamo.getLightningTargetPosition();
@@ -67,7 +66,12 @@ public class DynamoRenderer extends KineticBlockEntityRenderer<DynamoBlockEntity
 
     @Override
     protected SuperByteBuffer getRotatedModel(DynamoBlockEntity be, BlockState state) {
-        return CachedBufferer.partial(DestroyPartials.DYNAMO_COG, state);
+        return CachedBufferer.partial(state.getValue(DynamoBlock.ARC_FURNACE) ? DestroyPartials.ARC_FURNACE_SHAFT : DestroyPartials.DYNAMO_SHAFT, state);
+    };
+
+    @Override
+    public boolean shouldRenderOffScreen(DynamoBlockEntity pBlockEntity) {
+        return true;
     };
 
 }

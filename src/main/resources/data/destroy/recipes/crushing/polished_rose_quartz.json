@@ -8,12 +8,11 @@
     "results": [
       {
         "item": "destroy:silica",
-        "count": 1,
-        "chance": 0.02
+        "count": 1
       },
       {
         "item": "minecraft:redstone",
-        "count": 4,
+        "count": 3,
         "chance": 0.5
       }
     ],

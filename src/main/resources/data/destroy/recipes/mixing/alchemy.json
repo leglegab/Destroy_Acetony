@@ -2,14 +2,14 @@
     "type": "create:mixing",
     "ingredients": [
       {
-        "fluid": "destroy:urine",
+        "fluidTag": "forge:urine",
         "amount": 250
       },
       {
-        "item": "create:crushed_raw_lead"
+        "tag": "forge:ingots/lead"
       },
       {
-        "item": "create:crushed_raw_lead"
+        "tag": "forge:ingots/lead"
       },
       {
         "tag": "forge:dyes/black"
@@ -26,7 +26,7 @@
     ],
     "results": [
       {
-        "item": "create:crushed_raw_gold",
+        "item": "minecraft:gold_ingot",
         "count": 2
       }
     ],

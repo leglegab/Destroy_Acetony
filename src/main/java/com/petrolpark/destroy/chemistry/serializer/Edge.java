@@ -1,6 +1,6 @@
 package com.petrolpark.destroy.chemistry.serializer;
 
-import com.petrolpark.destroy.chemistry.Bond.BondType;
+import com.petrolpark.destroy.chemistry.legacy.LegacyBond.BondType;
 
 public class Edge {
     public BondType bondType;  

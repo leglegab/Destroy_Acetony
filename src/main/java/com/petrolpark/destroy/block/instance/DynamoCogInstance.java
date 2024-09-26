@@ -2,10 +2,13 @@ package com.petrolpark.destroy.block.instance;
 
 import com.jozufozu.flywheel.api.Instancer;
 import com.jozufozu.flywheel.api.MaterialManager;
+import com.petrolpark.destroy.block.DynamoBlock;
 import com.petrolpark.destroy.block.model.DestroyPartials;
 import com.simibubi.create.content.kinetics.base.KineticBlockEntity;
 import com.simibubi.create.content.kinetics.base.SingleRotatingInstance;
 import com.simibubi.create.content.kinetics.base.flwdata.RotatingData;
+
+import net.minecraft.world.level.block.state.BlockState;
 
 public class DynamoCogInstance extends SingleRotatingInstance<KineticBlockEntity> {
 
@@ -21,6 +24,7 @@ public class DynamoCogInstance extends SingleRotatingInstance<KineticBlockEntity
 
     @Override
     protected Instancer<RotatingData> getModel() {
-        return getRotatingMaterial().getModel(DestroyPartials.DYNAMO_COG, blockEntity.getBlockState());
+        BlockState state = blockEntity.getBlockState();
+        return getRotatingMaterial().getModel(state.getValue(DynamoBlock.ARC_FURNACE) ? DestroyPartials.ARC_FURNACE_SHAFT : DestroyPartials.DYNAMO_SHAFT, blockEntity.getBlockState());
     };
 };

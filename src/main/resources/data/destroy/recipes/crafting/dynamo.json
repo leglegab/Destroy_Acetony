@@ -1,0 +1,30 @@
+{
+    "type": "minecraft:crafting_shaped",
+    "pattern": [
+      "ASA",
+      "PRP",
+      "ABA"
+    ],
+    "key": {
+      "S": {
+        "item": "create:shaft"
+      },
+      "P": {
+        "tag": "forge:ingots/copper"
+      },
+      "A": {
+        "item": "create:andesite_alloy"
+      },
+      "R": {
+        "tag": "forge:raw_materials/iron"
+      },
+      "B": {
+        "tag": "minecraft:coals"
+      }
+    },
+    "result": {
+      "item": "destroy:dynamo",
+      "count": 1
+    },
+    "acceptMirrored": false
+  }

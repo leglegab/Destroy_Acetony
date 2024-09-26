@@ -1,6 +1,7 @@
 package com.petrolpark.destroy.compat.jei.category;
 
 import com.mojang.blaze3d.vertex.PoseStack;
+import com.petrolpark.compat.jei.category.PetrolparkRecipeCategory;
 import com.petrolpark.destroy.block.DestroyBlocks;
 import com.petrolpark.destroy.compat.jei.animation.GUIBlockRenderer;
 import com.petrolpark.destroy.recipe.ExtrusionRecipe;
@@ -16,7 +17,7 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.core.Direction.Axis;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 
-public class ExtrusionCategory extends DestroyRecipeCategory<ExtrusionRecipe> {
+public class ExtrusionCategory extends PetrolparkRecipeCategory<ExtrusionRecipe> {
 
     private static final GUIBlockRenderer blockRenderer = new GUIBlockRenderer();
 

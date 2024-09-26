@@ -7,7 +7,7 @@
     ],
     "key": {
       "N": {
-        "item": "destroy:nylon"
+        "tag": "destroy:plastics/textile"
       },
       "L": {
         "tag": "forge:leather"

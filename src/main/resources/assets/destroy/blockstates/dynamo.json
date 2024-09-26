@@ -1,17 +1,17 @@
 {
     "variants": {
-        "facing=north": {
+        "axis=z,arc_furnace=false": {
             "model": "destroy:block/dynamo/block"
         },
-        "facing=south": {
-            "model": "destroy:block/dynamo/block"
-        },
-        "facing=east": {
+        "axis=x,arc_furnace=false": {
             "model": "destroy:block/dynamo/block",
             "y": 90
         },
-        "facing=west": {
-            "model": "destroy:block/dynamo/block",
+        "axis=z,arc_furnace=true": {
+            "model": "destroy:block/dynamo/arc_furnace_dynamo_block"
+        },
+        "axis=x,arc_furnace=true": {
+            "model": "destroy:block/dynamo/arc_furnace_dynamo_block",
             "y": 90
         }
     }

@@ -4,34 +4,52 @@ import javax.annotation.Nonnull;
 
 import org.apache.commons.lang3.mutable.MutableObject;
 
-import com.jozufozu.flywheel.util.Color;
+import com.mojang.datafixers.util.Either;
+import com.petrolpark.destroy.DestroyClient;
 import com.petrolpark.destroy.block.renderer.BlockEntityBehaviourRenderer;
-import com.petrolpark.destroy.capability.level.pollution.ClientLevelPollutionData;
-import com.petrolpark.destroy.capability.level.pollution.LevelPollution;
-import com.petrolpark.destroy.capability.level.pollution.LevelPollution.PollutionType;
+import com.petrolpark.destroy.capability.Pollution.PollutionType;
 import com.petrolpark.destroy.client.gui.button.OpenDestroyMenuButton;
+import com.petrolpark.destroy.client.gui.screen.CustomExplosiveScreen;
 import com.petrolpark.destroy.config.DestroyAllConfigs;
+import com.petrolpark.destroy.item.DyeableCustomExplosiveMixBlockItem;
+import com.petrolpark.destroy.item.ICustomExplosiveMixItem;
 import com.petrolpark.destroy.item.SwissArmyKnifeItem;
 import com.petrolpark.destroy.item.renderer.SeismometerItemRenderer;
+import com.petrolpark.destroy.item.tooltip.ExplosivePropertiesTooltip;
 import com.petrolpark.destroy.mixin.accessor.MenuRowsAccessor;
-import com.petrolpark.destroy.util.CogwheelChainingHandler;
+import com.petrolpark.destroy.util.DestroyLang;
+import com.petrolpark.destroy.util.FireproofingHelper;
 import com.petrolpark.destroy.util.PollutionHelper;
+import com.petrolpark.destroy.world.explosion.ExplosiveProperties;
+import com.simibubi.create.foundation.utility.AnimationTickHolder;
+import com.simibubi.create.foundation.utility.Color;
 import com.simibubi.create.infrastructure.gui.OpenCreateMenuButton.MenuRows;
 
+import net.minecraft.ChatFormatting;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.screens.PauseScreen;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.TitleScreen;
+import net.minecraft.client.resources.language.I18n;
+import net.minecraft.nbt.Tag;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.level.material.FogType;
 import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.client.event.RenderTooltipEvent;
 import net.minecraftforge.client.event.ScreenEvent;
 import net.minecraftforge.client.event.ViewportEvent.ComputeFogColor;
 import net.minecraftforge.client.event.ViewportEvent.RenderFog;
 import net.minecraftforge.event.TickEvent;
+import net.minecraftforge.event.entity.player.ItemTooltipEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
 
+@OnlyIn(Dist.CLIENT)
 @EventBusSubscriber(Dist.CLIENT)
 public class DestroyClientEvents {
 
@@ -45,9 +63,10 @@ public class DestroyClientEvents {
     @SubscribeEvent
     public static void onTick(TickEvent.ClientTickEvent event) {
         if (event.phase == TickEvent.Phase.START) {
-            CogwheelChainingHandler.tick();
             SeismometerItemRenderer.tick();
             SwissArmyKnifeItem.clientPlayerTick();
+            DestroyClient.FOG_HANDLER.tick();
+            DestroyClient.EXTENDED_INVENTORY_HANDLER.tick(event);
         } else {
             BlockEntityBehaviourRenderer.tick();
         };
@@ -60,10 +79,10 @@ public class DestroyClientEvents {
     public static void renderFog(RenderFog event) {
         if (!DestroyClientEvents.smogEnabled()) return;
         if (event.getType() == FogType.NONE) {
-            LevelPollution levelPollution = ClientLevelPollutionData.getLevelPollution();
-            if (levelPollution == null) return;
-            event.scaleNearPlaneDistance(1f - (0.8f * (float)levelPollution.get(PollutionType.SMOG) / (float)PollutionType.SMOG.max));
-            event.scaleFarPlaneDistance(1f - (0.5f * (float)levelPollution.get(PollutionType.SMOG) / (float)PollutionType.SMOG.max));
+            Minecraft mc = Minecraft.getInstance();
+            float smog = (float)PollutionHelper.getPollution(mc.level, mc.player.blockPosition(), PollutionType.SMOG);
+            event.scaleNearPlaneDistance(1f - (0.8f * smog / (float)PollutionType.SMOG.max));
+            event.scaleFarPlaneDistance(1f - (0.5f * smog / (float)PollutionType.SMOG.max));
             event.setCanceled(true);
         };
     };
@@ -75,10 +94,11 @@ public class DestroyClientEvents {
     public static void colorFog(ComputeFogColor event) {
         if (!DestroyClientEvents.smogEnabled()) return;
         if (event.getCamera().getFluidInCamera() == FogType.NONE) {
-            LevelPollution levelPollution = ClientLevelPollutionData.getLevelPollution();
-            if (levelPollution == null) return;
+            Minecraft mc = Minecraft.getInstance();
+            float smog = (float)PollutionHelper.getPollution(mc.level, mc.player.blockPosition(), PollutionType.SMOG);
             Color existing = new Color(event.getRed(), event.getGreen(), event.getBlue(), 1f);
-            Color color = Color.mixColors(existing, BROWN, 0.8f * (float)levelPollution.get(PollutionType.SMOG) / (float)PollutionType.SMOG.max);
+            DestroyClient.FOG_HANDLER.setTargetColor(Color.mixColors(existing, BROWN, 0.8f * smog / (float)PollutionType.SMOG.max));
+            Color color = DestroyClient.FOG_HANDLER.getColor(AnimationTickHolder.getPartialTicks());
             event.setRed(color.getRedAsFloat());
             event.setGreen(color.getGreenAsFloat());
             event.setBlue(color.getBlueAsFloat());
@@ -114,7 +134,7 @@ public class DestroyClientEvents {
 
         if (rowIdx != 0 && menu != null) {
             boolean onLeft = offsetX < 0;
-            String target = (onLeft ? ((MenuRowsAccessor)menu).getLeftButtons() : ((MenuRowsAccessor)menu).getLeftButtons()).get(rowIdx - 1);
+            String target =  I18n.get((onLeft ? ((MenuRowsAccessor)menu).getLeftButtons() : ((MenuRowsAccessor)menu).getRightButtons()).get(rowIdx - 1));
 
             int offsetX_ = offsetX;
             MutableObject<GuiEventListener> toAdd = new MutableObject<>(null);
@@ -131,5 +151,54 @@ public class DestroyClientEvents {
                 );
             if (toAdd.getValue() != null) event.addListener(toAdd.getValue());
         };
+    };
+
+    @SubscribeEvent
+    public static void onItemTooltip(ItemTooltipEvent event) {
+        ItemStack stack = event.getItemStack();
+        Item item = stack.getItem();
+
+        // Add a bit of pedantry to TNT
+        if (item.equals(Items.TNT)) event.getToolTip().add(DestroyLang.translate("tooltip.tnt").style(ChatFormatting.GRAY).component());
+        
+        // Remove the "Dyed" annotation if needed
+        if (
+            item instanceof DyeableCustomExplosiveMixBlockItem
+            && stack.hasTag()
+            && stack.getTag().contains("display", Tag.TAG_COMPOUND)
+            && stack.getOrCreateTagElement("display").contains("color", Tag.TAG_ANY_NUMERIC)
+        )
+            event.getToolTip().remove(2);
+
+        // Inform of fireproof items
+        if (FireproofingHelper.isFireproof(stack))
+            event.getToolTip().add(DestroyLang.translate("tooltip.fireproof").style(ChatFormatting.RED).component());
+    };
+
+    @SubscribeEvent
+    public static void onGatherTooltips(RenderTooltipEvent.GatherComponents event) {
+        Minecraft mc = Minecraft.getInstance();
+        ExplosiveProperties properties = null;
+        if (event.getItemStack().getItem() instanceof ICustomExplosiveMixItem mixItem) {
+            properties = mixItem.getExplosiveInventory(event.getItemStack()).getExplosiveProperties().withConditions(mixItem.getApplicableExplosionConditions());
+        } else if (mc.screen instanceof CustomExplosiveScreen) {
+            properties = ExplosiveProperties.ITEM_EXPLOSIVE_PROPERTIES.get(event.getItemStack().getItem());
+        };
+        if (properties != null) event.getTooltipElements().add(Either.right(new ExplosivePropertiesTooltip(properties)));
+    };
+
+    @SubscribeEvent
+    public static void onOpenContainerScreen(ScreenEvent.Init.Post event) {
+        DestroyClient.EXTENDED_INVENTORY_HANDLER.onOpenContainerScreen(event);
+    };
+
+    @SubscribeEvent
+    public static void onRenderScreen(ScreenEvent.Render.Pre event) {
+        DestroyClient.EXTENDED_INVENTORY_HANDLER.renderScreen(event);
+    };
+
+    @SubscribeEvent
+    public static void onCloseScreen(ScreenEvent.Closing event) {
+        DestroyClient.EXTENDED_INVENTORY_HANDLER.onCloseScreen(event);
     };
 };

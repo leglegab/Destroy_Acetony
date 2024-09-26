@@ -2,10 +2,11 @@ package com.petrolpark.destroy.block;
 
 import javax.annotation.Nullable;
 
+import com.petrolpark.block.entity.behaviour.AbstractRememberPlacerBehaviour;
 import com.petrolpark.destroy.block.entity.DestroyBlockEntityTypes;
 import com.petrolpark.destroy.block.entity.VatControllerBlockEntity;
-import com.petrolpark.destroy.block.entity.behaviour.DestroyAdvancementBehaviour;
 import com.petrolpark.destroy.client.gui.screen.VatScreen;
+import com.petrolpark.destroy.item.IMixtureStorageItem;
 import com.simibubi.create.AllSoundEvents;
 import com.simibubi.create.foundation.block.IBE;
 import com.simibubi.create.foundation.gui.ScreenOpener;
@@ -30,9 +31,10 @@ import net.minecraft.world.level.block.state.StateDefinition.Builder;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fml.DistExecutor;
 
-public class VatControllerBlock extends HorizontalDirectionalBlock implements IBE<VatControllerBlockEntity> {
+public class VatControllerBlock extends HorizontalDirectionalBlock implements IBE<VatControllerBlockEntity>, ISpecialMixtureContainerBlock {
 
     public VatControllerBlock(Properties properties) {
         super(properties);
@@ -60,7 +62,7 @@ public class VatControllerBlock extends HorizontalDirectionalBlock implements IB
                 boolean success = be.tryMakeVat();
                 SoundEvent sound = success ? AllSoundEvents.CONFIRM.getMainEvent() : AllSoundEvents.DENY.getMainEvent();
                 level.playSound(null, pos.getX(), pos.getY(), pos.getZ(), sound, SoundSource.BLOCKS, 1f, 1f);
-                if (success) DestroyAdvancementBehaviour.setPlacedBy(level, pos, player);
+                if (success) AbstractRememberPlacerBehaviour.setPlacedBy(level, pos, player);
             }
             return InteractionResult.SUCCESS;
         });
@@ -75,7 +77,7 @@ public class VatControllerBlock extends HorizontalDirectionalBlock implements IB
 
     @Override
     public void setPlacedBy(Level level, BlockPos pos, BlockState state, @Nullable LivingEntity placer, ItemStack stack) {
-        DestroyAdvancementBehaviour.setPlacedBy(level, pos, placer);
+        AbstractRememberPlacerBehaviour.setPlacedBy(level, pos, placer);
         super.setPlacedBy(level, pos, state, placer, stack);
     };
 
@@ -101,6 +103,11 @@ public class VatControllerBlock extends HorizontalDirectionalBlock implements IB
     @Override
     public BlockEntityType<? extends VatControllerBlockEntity> getBlockEntityType() {
         return DestroyBlockEntityTypes.VAT_CONTROLLER.get();
+    }
+
+    @Override
+    public IFluidHandler getTankForMixtureStorageItems(IMixtureStorageItem item, Level level, BlockPos pos, BlockState state, Direction face, Player player, InteractionHand hand, ItemStack stack, boolean filling) {
+        return item.selectVatTank(level, pos, state, face, player, hand, stack, filling, getBlockEntity(level, pos));
     };
     
 };

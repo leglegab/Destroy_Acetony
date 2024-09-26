@@ -1,0 +1,17 @@
+{
+    "type": "minecraft:crafting_shaped",
+    "pattern": [
+      "# #",
+      " # ",
+      "# #"
+    ],
+    "key": {
+      "#": {
+        "item": "destroy:polyurethane"
+      }
+    },
+    "result": {
+      "item": "minecraft:sponge",
+      "count": 4
+    }
+  }

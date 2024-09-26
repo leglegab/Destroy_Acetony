@@ -2,7 +2,7 @@ package com.petrolpark.destroy.block.entity.behaviour;
 
 import javax.annotation.Nullable;
 
-import com.petrolpark.destroy.advancement.DestroyAdvancements;
+import com.petrolpark.destroy.advancement.DestroyAdvancementTrigger;
 import com.petrolpark.destroy.effect.DestroyMobEffects;
 import com.simibubi.create.foundation.blockEntity.SmartBlockEntity;
 import com.simibubi.create.foundation.blockEntity.behaviour.BehaviourType;
@@ -52,7 +52,7 @@ public class SentimentalBehaviour extends BlockEntityBehaviour {
             // For Villagers
             if (owner instanceof Villager villager && player != null) {
                 villager.gossips.add(villager.getUUID(), GossipType.MINOR_NEGATIVE, 20); // Decrease the reputation of the Player that did this
-                if (villager.isBaby()) DestroyAdvancements.JUMP_ON_SAND_CASTLE.award(owner.level(), player);
+                if (villager.isBaby()) DestroyAdvancementTrigger.JUMP_ON_SAND_CASTLE.award(owner.level(), player);
             };
         };
     };

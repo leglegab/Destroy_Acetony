@@ -5,7 +5,7 @@
     ],
     "key": {
       "R": {
-        "item": "destroy:polystyrene_butadiene"
+        "tag": "destroy:plastics/rubber"
       }
     },
     "result": {

@@ -1,6 +1,7 @@
 {
 	"credit": "Made with Blockbench",
 	"parent": "minecraft:block/block",
+	"render_type": "cutout",
 	"textures": {
 		"0": "destroy:block/keypunch",
 		"1": "create:block/brass_casing",
@@ -35,8 +36,8 @@
 			}
 		},
 		{
-			"from": [2, -3, 2],
-			"to": [14, 0, 14],
+			"from": [3, -3, 3],
+			"to": [13, 0, 13],
 			"faces": {
 				"north": {"uv": [8, 0, 10.5, 0.75], "texture": "#0"},
 				"east": {"uv": [8, 0, 10.5, 0.75], "texture": "#0"},
@@ -108,6 +109,5 @@
 			"rotation": [30, 225, 0],
 			"scale": [0.625, 0.625, 0.625]
 		}
-	},
-	"render_type": "cutout"
+	}
 }

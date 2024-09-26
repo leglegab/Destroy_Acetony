@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.function.Consumer;
 
+import com.petrolpark.destroy.MoveToPetrolparkLibrary;
 import com.simibubi.create.foundation.item.TooltipHelper;
 import com.simibubi.create.foundation.item.TooltipHelper.Palette;
 
@@ -20,6 +21,7 @@ import net.minecraft.world.effect.MobEffectUtil;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraftforge.client.extensions.common.IClientMobEffectExtensions;
 
+@MoveToPetrolparkLibrary
 public class DestroyMobEffect extends MobEffect {
     
     public DestroyMobEffect(MobEffectCategory mobEffectCategory, int color) {

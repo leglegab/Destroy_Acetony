@@ -1,6 +1,12 @@
 {
     "parent": "minecraft:item/generated",
     "textures": {
-      "layer0": "destroy:item/circuit_mask/border"
+      "layer0": "destroy:item/circuit_mask_border"
+    },
+    "display": {
+      "destroy:belt": {
+        "rotation": [0, 180, 0],
+        "scale": [1.98, 1.98, 1.98]
+      }
     }
   }

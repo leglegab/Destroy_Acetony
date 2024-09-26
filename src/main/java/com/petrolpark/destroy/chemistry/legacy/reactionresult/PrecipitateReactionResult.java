@@ -1,0 +1,42 @@
+package com.petrolpark.destroy.chemistry.legacy.reactionresult;
+
+import java.util.function.BiFunction;
+import java.util.function.Supplier;
+
+import com.petrolpark.destroy.block.entity.VatControllerBlockEntity;
+import com.petrolpark.destroy.chemistry.legacy.LegacyReaction;
+import com.petrolpark.destroy.chemistry.legacy.ReactionResult;
+import com.simibubi.create.content.processing.basin.BasinBlockEntity;
+
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
+import net.minecraftforge.items.ItemHandlerHelper;
+
+public class PrecipitateReactionResult extends ReactionResult {
+    
+    private final Supplier<ItemStack> precipitate;
+
+    public static BiFunction<Float, LegacyReaction, ReactionResult> of(Supplier<ItemStack> precipitate) {
+        return (m, r) -> new PrecipitateReactionResult(m, r, precipitate);
+    };
+
+    public PrecipitateReactionResult(float moles, LegacyReaction reaction, Supplier<ItemStack> precipitate) {
+        super(moles, reaction);
+        this.precipitate = precipitate;
+    };
+
+    public ItemStack getPrecipitate() {
+        return precipitate.get();
+    };
+
+    @Override
+    public void onBasinReaction(Level level, BasinBlockEntity basin) {
+        // Do nothing, this is handled in ReactionInBasinRecipe
+    };
+
+    @Override
+    public void onVatReaction(Level level, VatControllerBlockEntity vatController) {
+        ItemHandlerHelper.insertItemStacked(vatController.inventory, precipitate.get(), false);
+    };
+
+};

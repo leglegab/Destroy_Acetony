@@ -2,12 +2,16 @@ package com.petrolpark.destroy.item;
 
 import java.util.Optional;
 import java.util.UUID;
+import java.util.function.Consumer;
 
 import com.petrolpark.destroy.block.DestroyBlocks;
+import com.petrolpark.destroy.block.IPickUpPutDownBlock;
 import com.petrolpark.destroy.block.RedstoneProgrammerBlock;
 import com.petrolpark.destroy.client.gui.menu.RedstoneProgrammerMenu;
+import com.petrolpark.destroy.item.renderer.RedstoneProgrammerItemRenderer;
 import com.petrolpark.destroy.util.RedstoneProgram;
 import com.petrolpark.destroy.util.RedstoneProgrammerItemHandler;
+import com.simibubi.create.foundation.item.render.SimpleCustomRenderer;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
@@ -24,9 +28,13 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.client.extensions.common.IClientItemExtensions;
 import net.minecraftforge.network.NetworkHooks;
 
 public class RedstoneProgrammerBlockItem extends BlockItem {
@@ -39,20 +47,32 @@ public class RedstoneProgrammerBlockItem extends BlockItem {
     @Override
     public InteractionResult onItemUseFirst(ItemStack stack, UseOnContext context) {
         Player player = context.getPlayer();
-        Level level = context.getLevel();
         if (player.isShiftKeyDown()) return super.onItemUseFirst(stack, context);
-        getProgram(stack, level, player).ifPresent(program -> {
-            if (!level.isClientSide() && player instanceof ServerPlayer serverPlayer) {
-                NetworkHooks.openScreen(serverPlayer, new ItemStackRedstoneProgramMenuOpener(program), program::write);
-            };
-        });
+        openScreen(stack, context.getLevel(), player);
         return InteractionResult.SUCCESS;
     };
 
     @Override
+    public InteractionResult place(BlockPlaceContext context) {
+        return IPickUpPutDownBlock.removeItemFromInventory(context, super.place(context));
+    };
+
+    @Override
     public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand usedHand) {
-        
+        ItemStack stack = player.getItemInHand(usedHand);
+        openScreen(stack, level, player);
         return new InteractionResultHolder<>(InteractionResult.SUCCESS, player.getItemInHand(usedHand));
+    };
+
+    public static void openScreen(ItemStack stack, Level level, Player player) {
+        getProgram(stack, level, player).ifPresent(program -> {
+            if (!level.isClientSide() && player instanceof ServerPlayer serverPlayer) {
+                NetworkHooks.openScreen(serverPlayer, new ItemStackRedstoneProgramMenuOpener(program), buffer -> {
+                    program.write(buffer);
+                    buffer.writeBoolean(false); // The menu expects to read whether the program is powered or not; when in Item form, the programmer is never powered
+                });
+            };
+        });
     };
 
     @Override
@@ -60,7 +80,7 @@ public class RedstoneProgrammerBlockItem extends BlockItem {
         super.inventoryTick(stack, level, entity, slotId, isSelected);
         if (entity instanceof LivingEntity player) {
             getProgram(stack, level, player).ifPresent(program -> {
-                program.load(); // This is a set so we're safe to repeatedly load
+                if (!level.isClientSide()) program.load(); // This is a set so we're safe to repeatedly load
                 program.tick();
                 setProgram(stack, program);
             });
@@ -104,10 +124,14 @@ public class RedstoneProgrammerBlockItem extends BlockItem {
             uuid = UUID.randomUUID();
             tag.putUUID("UUID", uuid);
         };
-        ItemStackRedstoneProgram program = RedstoneProgrammerItemHandler.programs.get(level).computeIfAbsent(uuid, u -> {
-            if (!tag.contains("Program")) return new ItemStackRedstoneProgram(player);
-            return RedstoneProgram.read(() -> new ItemStackRedstoneProgram(player), item.getOrCreateTag().getCompound("Program"));
-        });
+
+        ItemStackRedstoneProgram newProgram;
+        if (!tag.contains("Program")) newProgram = new ItemStackRedstoneProgram(player);
+        else newProgram = RedstoneProgram.read(() -> new ItemStackRedstoneProgram(player), item.getOrCreateTag().getCompound("Program"));
+
+        if (level.isClientSide()) return Optional.of(newProgram); // For client-sided Redstone Programmers, create a new one every time its needed
+
+        ItemStackRedstoneProgram program = RedstoneProgrammerItemHandler.programs.get(level).computeIfAbsent(uuid, u -> newProgram);
         return Optional.of(program);
     };
 
@@ -120,6 +144,11 @@ public class RedstoneProgrammerBlockItem extends BlockItem {
             super();
             this.player = player;
             ttl = RedstoneProgrammerItemHandler.TIMEOUT;
+        };
+
+        @Override
+        public void load() {
+            if (player != null && player.getOnPos() != null) super.load();
         };
 
         @Override
@@ -163,5 +192,11 @@ public class RedstoneProgrammerBlockItem extends BlockItem {
         };
 
     };
+
+    @Override
+    @OnlyIn(Dist.CLIENT)
+	public void initializeClient(Consumer<IClientItemExtensions> consumer) {
+		consumer.accept(SimpleCustomRenderer.create(this, new RedstoneProgrammerItemRenderer()));
+	};
     
 };

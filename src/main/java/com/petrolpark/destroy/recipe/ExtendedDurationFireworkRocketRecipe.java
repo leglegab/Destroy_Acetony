@@ -2,6 +2,7 @@ package com.petrolpark.destroy.recipe;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Supplier;
 
 import com.petrolpark.destroy.Destroy;
 import com.petrolpark.destroy.item.DestroyItems;
@@ -30,8 +31,8 @@ public class ExtendedDurationFireworkRocketRecipe extends CustomRecipe {
     public static final RecipeSerializer<ExtendedDurationFireworkRocketRecipe> DURATION_4_FIREWORK_ROCKET = new SimpleCraftingRecipeSerializer<>((rl, c) -> new ExtendedDurationFireworkRocketRecipe(rl, c, false));
     public static final RecipeSerializer<ExtendedDurationFireworkRocketRecipe> DURATION_5_FIREWORK_ROCKET = new SimpleCraftingRecipeSerializer<>((rl, c) -> new ExtendedDurationFireworkRocketRecipe(rl, c, true));
     
-    private static final Ingredient CARD_INGREDIENT = Ingredient.of(DestroyItems.CARD_STOCK.get());
-    private static final Ingredient STAR_INGREDIENT = Ingredient.of(Items.FIREWORK_STAR);
+    private static final Supplier<Ingredient> CARD_INGREDIENT = () -> Ingredient.of(DestroyItems.CARD_STOCK.get());
+    private static final Supplier<Ingredient> STAR_INGREDIENT = () -> Ingredient.of(Items.FIREWORK_STAR);
     private final Ingredient EXPLOSIVE_INGREDIENT;
 
     private final boolean secondaryExplosive;
@@ -43,7 +44,7 @@ public class ExtendedDurationFireworkRocketRecipe extends CustomRecipe {
     };
 
     public static final Ingredient explosiveIngredient(boolean secondaryExplosive) {
-        return Ingredient.of(secondaryExplosive ? DestroyItemTags.SECONDARY_EXPLOSIVE.tag : DestroyItemTags.PRIMARY_EXPLOSIVE.tag);
+        return Ingredient.of(secondaryExplosive ? DestroyItemTags.SECONDARY_EXPLOSIVES.tag : DestroyItemTags.PRIMARY_EXPLOSIVES.tag);
     };
 
     @Override
@@ -52,13 +53,13 @@ public class ExtendedDurationFireworkRocketRecipe extends CustomRecipe {
         boolean hasExplosive = false;
         for(int slot = 0; slot < inv.getContainerSize(); slot++) {
             ItemStack stack = inv.getItem(slot);
-            if (CARD_INGREDIENT.test(stack)) {
+            if (CARD_INGREDIENT.get().test(stack)) {
                 if (hasCardStock) return false;
                 hasCardStock = true;
             } else if (EXPLOSIVE_INGREDIENT.test(stack)) {
                 if (hasExplosive) return false;
                 hasExplosive = true;
-            } else if (!STAR_INGREDIENT.test(stack) && !stack.isEmpty()) {
+            } else if (!STAR_INGREDIENT.get().test(stack) && !stack.isEmpty()) {
                 return false;
             };
             if (hasExplosive && hasCardStock) return true;
@@ -74,7 +75,7 @@ public class ExtendedDurationFireworkRocketRecipe extends CustomRecipe {
 
         for(int slot = 0; slot < inv.getContainerSize(); slot++) {
             ItemStack stack = inv.getItem(slot);
-            if (STAR_INGREDIENT.test(stack)) {
+            if (STAR_INGREDIENT.get().test(stack)) {
                 CompoundTag explosionTag = stack.getTagElement("Explosion");
                 if (explosionTag != null) {
                     explosionsTag.add(explosionTag);
@@ -104,7 +105,7 @@ public class ExtendedDurationFireworkRocketRecipe extends CustomRecipe {
         List<CraftingRecipe> recipes = new ArrayList<>(2);
         for (boolean secondary : Iterate.trueAndFalse) {
             ItemStack fireworkStack = new ItemStack(Items.FIREWORK_ROCKET, 10);
-            NonNullList<Ingredient> inputs = NonNullList.of(Ingredient.EMPTY, CARD_INGREDIENT, explosiveIngredient(secondary));
+            NonNullList<Ingredient> inputs = NonNullList.of(Ingredient.EMPTY, CARD_INGREDIENT.get(), explosiveIngredient(secondary));
             int duration = (secondary ? 5 : 4);
             fireworkStack.getOrCreateTagElement("Fireworks").putByte("Flight", (byte)duration);
             recipes.add(new ShapelessRecipe(Destroy.asResource("duration_"+duration+"_firework_crafting"), "destroy.firework.duration_" + duration, CraftingBookCategory.MISC, fireworkStack, inputs));

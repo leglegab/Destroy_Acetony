@@ -2,13 +2,14 @@
     "type": "create:crushing",
     "ingredients": [
       {
-        "item": "minecraft:amethyst_shard"
+        "tag": "forge:gems/amethyst"
       }
     ],
     "results": [
       {
         "item": "destroy:silica",
-        "chance": 0.2
+        "count": 6,
+        "chance": 0.75
       }
     ],
     "processingTime": 100

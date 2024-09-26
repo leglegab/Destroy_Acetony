@@ -1,18 +1,16 @@
 package com.petrolpark.destroy.recipe;
 
 import java.util.Optional;
-import java.util.Set;
 import java.util.function.Supplier;
 
 import org.jetbrains.annotations.Nullable;
 
-import com.google.common.collect.ImmutableSet;
 import com.petrolpark.destroy.Destroy;
+import com.petrolpark.recipe.advancedprocessing.AdvancedProcessingRecipeSerializer;
+import com.simibubi.create.AllRecipeTypes;
 import com.simibubi.create.content.processing.recipe.ProcessingRecipeBuilder;
-import com.simibubi.create.content.processing.recipe.ProcessingRecipeSerializer;
 import com.simibubi.create.foundation.recipe.IRecipeTypeInfo;
 import com.simibubi.create.foundation.utility.Lang;
-import com.simibubi.create.foundation.utility.RegisteredObjects;
 
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
@@ -27,27 +25,43 @@ import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
 
 public enum DestroyRecipeTypes implements IRecipeTypeInfo {
+    // Processing recipes
     AGING(AgingRecipe::new),
-    CHARGING(ChargingRecipe::new),
+    ARC_FURNACE(ArcFurnaceRecipe::new),
     CENTRIFUGATION(CentrifugationRecipe::new),
+    CHARGING(ChargingRecipe::new),
+    CIRCUIT_DEPLOYING(CircuitDeployerApplicationRecipe::new, AllRecipeTypes.DEPLOYING::getType),
+    DISC_ELECTROPLATING(DiscElectroplatingRecipe::new),
     DISTILLATION(DistillationRecipe::new),
     ELECTROLYSIS(ElectrolysisRecipe::new),
+    ELEMENT_TANK_FILLING(ElementTankFillingRecipe::new),
     EXTRUSION(ExtrusionRecipe::new),
+    FLAME_RETARDANT_APPLICATION(FlameRetardantApplicationRecipe::new),
+    GLASSBLOWING(GlassblowingRecipe::new),
+    MIXTURE_CONVERSION(MixtureConversionRecipe::new),
     MUTATION(MutationRecipe::new),
     OBLITERATION(ObliterationRecipe::new),
     REACTION(ReactionRecipe::new),
+    SIEVING(SievingRecipe::new),
+    TAPPING(TappingRecipe::new),
+    CIRCUIT_SEQUENCED_ASSEMBLY(CircuitSequencedAssemblyRecipe.Serializer::new, AllRecipeTypes.SEQUENCED_ASSEMBLY::getType),
 
-    DURATION_4_FIREWORK_ROCKET_CRAFTING(() -> ExtendedDurationFireworkRocketRecipe.DURATION_4_FIREWORK_ROCKET, () -> RecipeType.CRAFTING, false),
-    DURATION_5_FIREWORK_ROCKET_CRAFTING(() -> ExtendedDurationFireworkRocketRecipe.DURATION_5_FIREWORK_ROCKET, () -> RecipeType.CRAFTING, false),
-
-    BADGE_DUPLICATION(() -> BadgeDuplicationRecipe.BADGE_DUPLICATION, () -> RecipeType.CRAFTING, false);
-
+    // Advanced Crafting Table recipes
+    CIRCUIT_BOARD_MANUAL_CRAFTING(ManualCircuitBoardRecipe.Serializer::new, () -> RecipeType.CRAFTING),
+    DURATION_4_FIREWORK_ROCKET_CRAFTING(() -> ExtendedDurationFireworkRocketRecipe.DURATION_4_FIREWORK_ROCKET, () -> RecipeType.CRAFTING),
+    DURATION_5_FIREWORK_ROCKET_CRAFTING(() -> ExtendedDurationFireworkRocketRecipe.DURATION_5_FIREWORK_ROCKET, () -> RecipeType.CRAFTING),
+    FILL_CUSTOM_EXPLOSIVE_MIX_ITEM(() -> FillCustomExplosiveMixItemRecipe.SERIALIZER, () -> RecipeType.CRAFTING);
+    
     // This is alllllll copied from Create source code
     private final ResourceLocation id;
     private final RegistryObject<RecipeSerializer<?>> serializerObject;
     @Nullable
     private final RegistryObject<RecipeType<?>> typeObject;
     private final Supplier<RecipeType<?>> type;
+
+    DestroyRecipeTypes(Supplier<RecipeSerializer<?>> serializerSupplier, Supplier<RecipeType<?>> typeSupplier) {
+        this(serializerSupplier, typeSupplier, false);
+    };
 
     DestroyRecipeTypes(Supplier<RecipeSerializer<?>> serializerSupplier, Supplier<RecipeType<?>> typeSupplier, boolean registerType) {
         String name = Lang.asId(name());
@@ -59,29 +73,23 @@ public enum DestroyRecipeTypes implements IRecipeTypeInfo {
         } else {
             typeObject = null;
             type = typeSupplier;
-        }
+        };
     };
 
     DestroyRecipeTypes(Supplier<RecipeSerializer<?>> serializerSupplier) {
         String name = Lang.asId(name());
         id = Destroy.asResource(name);
         serializerObject = Registers.SERIALIZER_REGISTER.register(name, serializerSupplier);
-        typeObject = Registers.TYPE_REGISTER.register(name, () -> simpleType(id));
+        typeObject = Registers.TYPE_REGISTER.register(name, () -> RecipeType.simple(id));
         type = typeObject;
     };
 
     DestroyRecipeTypes(ProcessingRecipeBuilder.ProcessingRecipeFactory<?> processingFactory) {
-        this(() -> new ProcessingRecipeSerializer<>(processingFactory));
+        this(() -> new AdvancedProcessingRecipeSerializer<>(processingFactory));
     };
 
-    public static <T extends Recipe<?>> RecipeType<T> simpleType(ResourceLocation id) {
-        String stringId = id.toString();
-        return new RecipeType<T>() {
-            @Override
-            public String toString() {
-                return stringId;
-            }
-        };
+    DestroyRecipeTypes(ProcessingRecipeBuilder.ProcessingRecipeFactory<?> processingFactory, Supplier<RecipeType<?>> typeSupplier) {
+        this(() -> new AdvancedProcessingRecipeSerializer<>(processingFactory), typeSupplier);
     };
 
     public static void register(IEventBus modEventBus) {
@@ -106,21 +114,13 @@ public enum DestroyRecipeTypes implements IRecipeTypeInfo {
         return (T) type.get();
     };
 
+    public boolean is(Recipe<?> recipe) {
+        return recipe.getType() == this.getType();
+    };
+
     public <C extends Container, T extends Recipe<C>> Optional<T> find(C inv, Level world) {
         return world.getRecipeManager()
             .getRecipeFor(getType(), inv, world);
-    };
-
-    public static final Set<ResourceLocation> RECIPE_DENY_SET =
-        ImmutableSet.of(new ResourceLocation("occultism", "spirit_trade"), new ResourceLocation("occultism", "ritual"));
-
-    public static boolean shouldIgnoreInAutomation(Recipe<?> recipe) {
-        RecipeSerializer<?> serializer = recipe.getSerializer();
-        if (serializer != null && RECIPE_DENY_SET.contains(RegisteredObjects.getKeyOrThrow(serializer)))
-            return true;
-        return recipe.getId()
-            .getPath()
-            .endsWith("_manual_only");
     };
 
     private static class Registers {

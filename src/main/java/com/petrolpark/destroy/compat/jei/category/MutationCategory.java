@@ -4,7 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.petrolpark.destroy.client.gui.DestroyGuiTextures;
+import com.petrolpark.client.rendering.PetrolparkGuiTexture;
+import com.petrolpark.compat.jei.category.PetrolparkRecipeCategory;
 import com.petrolpark.destroy.compat.jei.animation.GUIBlockRenderer;
 import com.petrolpark.destroy.item.DestroyItems;
 import com.petrolpark.destroy.recipe.MutationRecipe;
@@ -24,7 +25,7 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 
-public class MutationCategory extends DestroyRecipeCategory<MutationRecipe> {
+public class MutationCategory extends PetrolparkRecipeCategory<MutationRecipe> {
 
     public static final List<MutationRecipe> RECIPES = new ArrayList<>();
 
@@ -89,7 +90,7 @@ public class MutationCategory extends DestroyRecipeCategory<MutationRecipe> {
         AllGuiTextures.JEI_SHADOW.render(graphics, RIGHT_BLOCK_X - 11, BOTTOM_BLOCK_Y - 2);
 
         // Arrow
-        DestroyGuiTextures.JEI_SHORT_RIGHT_ARROW.render(graphics, 52, 60);
+        PetrolparkGuiTexture.JEI_SHORT_RIGHT_ARROW.render(graphics, 52, 60);
 
         // Left pillar of Blocks
         stack.pushPose();

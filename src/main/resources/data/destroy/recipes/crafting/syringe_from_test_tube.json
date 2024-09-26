@@ -9,7 +9,7 @@
         "item": "destroy:test_tube"
       },
       "T": {
-        "item": "destroy:polytetrafluoroethene"
+        "tag": "destroy:plastics/inert"
       }
     },
     "result": {

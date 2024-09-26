@@ -1,0 +1,26 @@
+{
+    "parent": "destroy:hydrogen_peroxide",
+    "criteria": {
+      "make": {
+        "conditions": {},
+        "trigger": "destroy:hydrazine"
+      }
+    },
+    "display": {
+      "description": {
+        "color": "#DBA213",
+        "translate": "advancement.destroy.hydrazine.description"
+      },
+      "icon": {
+        "item": "destroy:measuring_cylinder"
+      },
+      "title": {
+        "translate": "advancement.destroy.hydrazine"
+      }
+    },
+    "requirements": [
+      [
+        "make"
+      ]
+    ]
+  }

@@ -1,5 +1,6 @@
 package com.petrolpark.destroy.item;
 
+import com.petrolpark.destroy.config.DestroySubstancesConfigs;
 import com.petrolpark.destroy.effect.DestroyMobEffects;
 
 import net.minecraft.world.effect.MobEffectInstance;
@@ -20,7 +21,7 @@ public class BabyBlueSyringeItem extends SyringeItem {
 
     @Override
     public void onInject(ItemStack itemStack, Level level, LivingEntity target) {
-        target.addEffect(new MobEffectInstance(DestroyMobEffects.BABY_BLUE_HIGH.get(), duration, amplifier));
+        if (DestroySubstancesConfigs.babyBlueEnabled()) target.addEffect(new MobEffectInstance(DestroyMobEffects.BABY_BLUE_HIGH.get(), duration, amplifier));
     };
     
 }

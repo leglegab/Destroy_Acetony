@@ -4,8 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.google.gson.JsonObject;
-import com.petrolpark.destroy.chemistry.Mixture;
-import com.petrolpark.destroy.chemistry.index.DestroyMolecules;
+import com.petrolpark.destroy.chemistry.legacy.LegacyMixture;
+import com.petrolpark.destroy.chemistry.legacy.index.DestroyMolecules;
 import com.petrolpark.destroy.util.DestroyLang;
 import com.simibubi.create.foundation.item.TooltipHelper;
 import com.simibubi.create.foundation.item.TooltipHelper.Palette;
@@ -21,7 +21,7 @@ public class RefrigerantDummyFluidIngredient extends MoleculeTagFluidIngredient 
     };
 
     @Override
-    protected boolean testMixture(Mixture mixture) {
+    protected boolean testMixture(LegacyMixture mixture) {
         return false; // This Ingredient should never be used in a Recipe
     };
 

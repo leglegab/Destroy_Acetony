@@ -1,4 +1,11 @@
 {
+    "conditions": [
+      {
+        "type": "petrolpark:config_boolean",
+        "mod": "destroy",
+        "value": "enableAlcohol"
+      }
+    ],
     "parent": "destroy:aging_barrel",
     "criteria": {
       "drunk": {
@@ -16,7 +23,7 @@
         "translate": "advancement.destroy.drunk.description"
       },
       "icon": {
-        "item": "destroy:once_distilled_moonshine_bottle"
+        "item": "destroy:undistilled_moonshine_bottle"
       },
       "title": {
         "translate": "advancement.destroy.drunk"

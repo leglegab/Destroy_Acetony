@@ -25,6 +25,9 @@ import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemp
 @Mixin(Contraption.class)
 public class ContraptionMixin {
     
+    /**
+     * Ensure directional Item Stacks on belts have the right orientation when a Contraption is converted back into blocks.
+     */
     @Inject(
         method = "Lcom/simibubi/create/content/contraptions/Contraption;addBlocksToWorld(Lnet/minecraft/world/level/Level;Lcom/simibubi/create/content/contraptions/StructureTransform;)V",
         at = @At(

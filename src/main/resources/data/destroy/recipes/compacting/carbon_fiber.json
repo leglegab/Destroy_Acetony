@@ -1,0 +1,14 @@
+{
+    "type": "create:compacting",
+    "ingredients": [
+      {
+        "item": "destroy:polyacrylonitrile"
+      }
+    ],
+    "results": [
+      {
+        "item": "destroy:carbon_fiber"
+      }
+    ],
+    "heatRequirement": "superheated"
+  }

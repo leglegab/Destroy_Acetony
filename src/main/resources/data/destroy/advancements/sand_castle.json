@@ -1,5 +1,5 @@
 {
-    "parent": "destroy:plastic",
+    "parent": "destroy:addition_polymer",
     "criteria": {
       "jump": {
         "conditions": {},

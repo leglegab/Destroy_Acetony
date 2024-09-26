@@ -16,6 +16,7 @@ public class BabyBlueAddictionCommand {
     
     public BabyBlueAddictionCommand(CommandDispatcher<CommandSourceStack> dispatcher) {
         dispatcher.register(Commands.literal("babyblueaddiction")
+            .requires(cs -> cs.hasPermission(2))
             .then(Commands.literal("query").then(Commands.argument("targets", EntityArgument.player()).executes(context -> {
                 return queryBabyBlueAddiction(context.getSource(), EntityArgument.getPlayer(context, "targets"));
             })))

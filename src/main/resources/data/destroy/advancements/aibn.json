@@ -1,0 +1,27 @@
+{
+    "parent": "destroy:hydrazine",
+    "criteria": {
+      "make": {
+        "conditions": {},
+        "trigger": "destroy:aibn"
+      }
+    },
+    "display": {
+      "description": {
+        "color": "#DBA213",
+        "translate": "advancement.destroy.aibn.description"
+      },
+      "icon": {
+        "item": "minecraft:chain"
+      },
+      "title": {
+        "translate": "advancement.destroy.aibn"
+      },
+      "frame": "goal"
+    },
+    "requirements": [
+      [
+        "make"
+      ]
+    ]
+  }

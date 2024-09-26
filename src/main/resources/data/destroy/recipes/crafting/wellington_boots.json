@@ -6,7 +6,7 @@
     ],
     "key": {
       "P": {
-        "item": "destroy:polystyrene_butadiene"
+        "tag": "destroy:plastics/rubber"
       },
       "B": {
         "tag": "forge:dyes/black"

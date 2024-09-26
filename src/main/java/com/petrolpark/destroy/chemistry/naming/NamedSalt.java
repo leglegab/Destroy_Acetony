@@ -1,6 +1,6 @@
 package com.petrolpark.destroy.chemistry.naming;
 
-import com.petrolpark.destroy.chemistry.Molecule;
+import com.petrolpark.destroy.chemistry.legacy.LegacySpecies;
 import com.petrolpark.destroy.util.DestroyLang;
 
 import net.minecraft.client.resources.language.I18n;
@@ -11,10 +11,10 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 @OnlyIn(Dist.CLIENT)
 public class NamedSalt implements INameableProduct {
 
-    public final Molecule cation;
-    public final Molecule anion;
+    public final LegacySpecies cation;
+    public final LegacySpecies anion;
 
-    public NamedSalt(Molecule cation, Molecule anion) {
+    public NamedSalt(LegacySpecies cation, LegacySpecies anion) {
         this.cation = cation;
         this.anion = anion;
     };

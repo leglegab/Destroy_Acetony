@@ -47,7 +47,7 @@ import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraftforge.network.NetworkHooks;
 
-public class RedstoneProgrammerBlock extends HorizontalDirectionalBlock implements IBE<RedstoneProgrammerBlockEntity>, IWrenchable, ProperWaterloggedBlock {
+public class RedstoneProgrammerBlock extends HorizontalDirectionalBlock implements IBE<RedstoneProgrammerBlockEntity>, IWrenchable, ProperWaterloggedBlock, IPickUpPutDownBlock {
 
     public static final BooleanProperty POWERED = BlockStateProperties.POWERED;
 
@@ -63,7 +63,10 @@ public class RedstoneProgrammerBlock extends HorizontalDirectionalBlock implemen
     @Override
     public InteractionResult use(BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
         if (!level.isClientSide() && player instanceof ServerPlayer serverPlayer) {
-            withBlockEntityDo(level, pos, be -> NetworkHooks.openScreen(serverPlayer, be.programmer, be.programmer.program::write));
+            withBlockEntityDo(level, pos, be -> NetworkHooks.openScreen(serverPlayer, be.programmer, buffer -> {
+                be.programmer.program.write(buffer);
+                buffer.writeBoolean(be.programmer.program.hasPower());
+            }));
             return InteractionResult.SUCCESS;
         };
         return InteractionResult.PASS;

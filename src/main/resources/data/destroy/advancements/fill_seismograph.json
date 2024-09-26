@@ -1,0 +1,27 @@
+{
+    "parent": "destroy:seismometer",
+    "criteria": {
+      "fill": {
+        "conditions": {},
+        "trigger": "destroy:fill_seismograph"
+      }
+    },
+    "display": {
+      "description": {
+        "color": "#DBA213",
+        "translate": "advancement.destroy.fill_seismograph.description"
+      },
+      "icon": {
+        "item": "destroy:seismograph"
+      },
+      "title": {
+        "translate": "advancement.destroy.fill_seismograph"
+      },
+      "frame": "goal"
+    },
+    "requirements": [
+      [
+        "fill"
+      ]
+    ]
+  }

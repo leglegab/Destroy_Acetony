@@ -1,0 +1,26 @@
+{
+    "parent": "destroy:mechanical_sieve",
+    "criteria": {
+      "make": {
+        "conditions": {},
+        "trigger": "destroy:andrussow_process"
+      }
+    },
+    "display": {
+      "description": {
+        "color": "#DBA213",
+        "translate": "advancement.destroy.andrussow_process.description"
+      },
+      "icon": {
+        "item": "minecraft:blue_dye"
+      },
+      "title": {
+        "translate": "advancement.destroy.andrussow_process"
+      }
+    },
+    "requirements": [
+      [
+        "make"
+      ]
+    ]
+  }

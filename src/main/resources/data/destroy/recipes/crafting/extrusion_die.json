@@ -13,7 +13,7 @@
         "item": "destroy:nanodiamonds"
       },
       "F": {
-        "item": "create:filter"
+        "item": "destroy:mesh"
       }
     },
     "result": {

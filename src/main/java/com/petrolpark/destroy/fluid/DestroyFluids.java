@@ -4,7 +4,9 @@ import static com.petrolpark.destroy.Destroy.REGISTRATE;
 
 import com.petrolpark.destroy.Destroy;
 import com.petrolpark.destroy.fluid.MixtureFluid.MixtureFluidType;
+import com.petrolpark.destroy.util.DestroyTags.DestroyFluidTags;
 import com.simibubi.create.AllTags;
+import com.simibubi.create.Create;
 import com.simibubi.create.content.fluids.VirtualFluid;
 import com.simibubi.create.foundation.data.CreateRegistrate;
 import com.tterrag.registrate.builders.FluidBuilder;
@@ -17,6 +19,7 @@ import net.minecraftforge.fluids.FluidStack;
 
 public class DestroyFluids {
 
+    public static final double AIR_MOLAR_DENSITY = 42.0352380152d;
     public static FluidStack air(int amount, float temperature) {
         return MixtureFluid.of(amount, MixtureFluid.airMixture(temperature), "fluid.destroy.air");
     };
@@ -26,40 +29,74 @@ public class DestroyFluids {
         new ResourceLocation("destroy", "fluid/mixture_flow"),
         MixtureFluidType::new,
         MixtureFluid::new
-    )
-        .lang("Mixture")
-        .register();
-        
+        ).register();
+
+    public static final FluidEntry<MixtureFluid> GAS_MIXTURE = REGISTRATE.virtualFluid("gas", // For display purposes only
+        new ResourceLocation("destroy", "fluid/gas"),
+        new ResourceLocation("destroy", "fluid/gas"),
+        MixtureFluidType::new,
+        MixtureFluid::new
+        ).register();
+
+    public static final FluidEntry<MoltenStainlessSteelFluid> MOLTEN_STAINLESS_STEEL = REGISTRATE.virtualFluid("molten_stainless_steel",
+        Destroy.asResource("block/molten_stainless_steel"),
+        Destroy.asResource("block/molten_stainless_steel"),
+        CreateRegistrate::defaultFluidType,
+        MoltenStainlessSteelFluid::new
+        ).register();
+
+    public static final FluidEntry<MoltenBorosilicateGlassFluid> MOLTEN_BOROSILICATE_GLASS = REGISTRATE.virtualFluid("molten_borosilicate_glass",
+        Destroy.asResource("block/molten_borosilicate_glass"),
+        Destroy.asResource("block/molten_borosilicate_glass"),
+        CreateRegistrate::defaultFluidType,
+        MoltenBorosilicateGlassFluid::new
+        ).register();
 
     public static final FluidEntry<VirtualFluid>
     
     URINE = virtualFluid("urine")
+        .tag(AllTags.forgeFluidTag("urine"))
         .register(),
-    CHORUS_WINE = REGISTRATE.virtualFluid("chorus_wine", new ResourceLocation("destroy", "fluid/swirling"), new ResourceLocation("destroy", "fluid/swirling"), (properties, stillTexture, flowingTexture) -> new ColoredFluidType(properties, stillTexture, flowingTexture, 0x808000c0), VirtualFluid::new)
+    APPLE_JUICE = coloredWaterFluid("apple_juice", 0xC0F2DB46)
+        .tag(AllTags.forgeFluidTag("apple_juice"))
+        .register(),
+    CHORUS_WINE = coloredSwirlingFluid("chorus_wine", 0x808000C0)
         .register(),
     CREAM = virtualFluid("cream")
         .register(),
     CRUDE_OIL = virtualFluid("crude_oil")
-        .tag(AllTags.forgeFluidTag("crude_oil"))
+        .tag(AllTags.forgeFluidTag("crude_oil"), DestroyFluidTags.AMPLIFIES_SMOG.tag)
         .bucket()
         .tag(AllTags.forgeItemTag("buckets/crude_oil"))
         .build()
         .register(),
     MOLTEN_CINNABAR = virtualFluid("molten_cinnabar")
-        .register(),
+        .properties(p -> p
+            .lightLevel(10)
+        ).register(),
     NAPALM_SUNDAE = virtualFluid("napalm_sundae")
+        .tag(DestroyFluidTags.AMPLIFIES_SMOG.tag)
         .register(),
-    ONCE_DISTILLED_MOONSHINE = coloredWaterFluid("once_distilled_moonshine", 0xE0684F31)
+    PERFUME = coloredSwirlingFluid("perfume", 0x80ffcff7)
         .register(),
-    PERFUME = REGISTRATE.virtualFluid("perfume", new ResourceLocation("destroy", "fluid/swirling"), new ResourceLocation("destroy", "fluid/swirling"), (properties, stillTexture, flowingTexture) -> new ColoredFluidType(properties, stillTexture, flowingTexture, 0x80ffcff7), VirtualFluid::new)
+    SKIMMED_MILK = coloredWaterFluid("skimmed_milk", 0xFF000000)
         .register(),
-    SKIMMED_MILK = coloredWaterFluid("skimmed_milk", 0xE0FFFFFF)
-        .register(),
-    THRICE_DISTILLED_MOONSHINE = coloredWaterFluid("thrice_distilled_moonshine", 0xC0A18666)
-        .register(),
-    TWICE_DISTILLED_MOONSHINE = coloredWaterFluid("twice_distilled_moonshine", 0xD08C6B46)
+    MOONSHINE = coloredWaterFluid("moonshine", 0xC0A18666)
         .register(),
     UNDISTILLED_MOONSHINE = coloredWaterFluid("undistilled_moonshine", 0xF053330D)
+        .register(),
+    
+    // Potions
+
+    LONG_POTION = coloredPotionFluid("long_potion", 0xffff0000)
+        .register(),
+    STRONG_POTION = coloredPotionFluid("strong_potion", 0xffffff00)
+        .register(),
+    SPLASH_POTION = coloredPotionFluid("splash_potion", 0xffd00000)
+        .register(),
+    LINGERING_POTION = coloredPotionFluid("lingering_potion", 0xffd000d0)
+        .register(),
+    CORRUPTING_POTION = coloredPotionFluid("corrupting_potion", 0xff00d000)
         .register();
 
     private static FluidBuilder<VirtualFluid, CreateRegistrate> virtualFluid(String name) {
@@ -67,11 +104,23 @@ public class DestroyFluids {
     };
 
     private static FluidBuilder<VirtualFluid, CreateRegistrate> coloredWaterFluid(String name, int color) {
-        return REGISTRATE.virtualFluid(name, (properties, stillTexture, flowingTexture) -> new ColoredFluidType(properties, new ResourceLocation("minecraft", "block/water_still"), new ResourceLocation("minecraft", "block/water_flow"), color), VirtualFluid::new);
+        return coloredFluid(name, color, new ResourceLocation("minecraft", "block/water_still"), new ResourceLocation("minecraft", "block/water_flow"));
+    };
+
+    private static FluidBuilder<VirtualFluid, CreateRegistrate> coloredSwirlingFluid(String name, int color) {
+        return coloredFluid(name, color, Destroy.asResource("fluid/swirling"), Destroy.asResource("fluid/swirling"));
+    };
+
+    private static FluidBuilder<VirtualFluid, CreateRegistrate> coloredPotionFluid(String name, int color) {
+        return coloredFluid(name, color, Create.asResource("fluid/potion_still"), Create.asResource("fluid/potion_flow"));
+    };
+
+    private static FluidBuilder<VirtualFluid, CreateRegistrate> coloredFluid(String name, int color, ResourceLocation stillTexture, ResourceLocation flowingTexture) {
+        return REGISTRATE.virtualFluid(name, stillTexture, flowingTexture, (properties, st, ft) -> new ColoredFluidType(properties, st, ft, color), VirtualFluid::new);
     };
 
     public static boolean isMixture(FluidStack stack) {
-        return !stack.isEmpty() && isMixture(stack.getFluid()) && stack.getOrCreateTag().contains("Mixture", Tag.TAG_COMPOUND);
+        return stack != null && !stack.isEmpty() && isMixture(stack.getFluid()) && stack.getOrCreateTag().contains("Mixture", Tag.TAG_COMPOUND);
     };
 
     public static boolean isMixture(Fluid fluid) {

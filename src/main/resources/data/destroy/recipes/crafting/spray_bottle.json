@@ -7,7 +7,7 @@
     ],
     "key": {
       "P": {
-        "item": "destroy:polyethene"
+        "tag": "destroy:plastics/rigid"
       }
     },
     "result": {

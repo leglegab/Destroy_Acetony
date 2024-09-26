@@ -1,0 +1,20 @@
+{
+    "type": "create:compacting",
+    "ingredients": [
+      {
+        "item": "destroy:borosilicate_glass_fiber"
+      },
+      {
+        "tag": "destroy:plastics"
+      },
+      {
+        "tag": "destroy:plastics"
+      }
+    ],
+    "results": [
+      {
+        "item": "destroy:fiberglass_block"
+      }
+    ],
+    "heatRequirement": "heated"
+  }

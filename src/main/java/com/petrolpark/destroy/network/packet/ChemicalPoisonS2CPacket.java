@@ -3,7 +3,7 @@ package com.petrolpark.destroy.network.packet;
 import java.util.function.Supplier;
 
 import com.petrolpark.destroy.capability.entity.EntityChemicalPoison;
-import com.petrolpark.destroy.chemistry.Molecule;
+import com.petrolpark.destroy.chemistry.legacy.LegacySpecies;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.FriendlyByteBuf;
@@ -13,9 +13,9 @@ import net.minecraftforge.network.NetworkEvent;
 
 public class ChemicalPoisonS2CPacket extends S2CPacket {
     
-    private final Molecule molecule;
+    private final LegacySpecies molecule;
     
-    public ChemicalPoisonS2CPacket(Molecule molecule) {
+    public ChemicalPoisonS2CPacket(LegacySpecies molecule) {
         this.molecule = molecule;
     };
 
@@ -24,7 +24,7 @@ public class ChemicalPoisonS2CPacket extends S2CPacket {
         if (moleculeID == "NO_MOLECULE") {
             molecule = null;
         } else {
-            molecule = Molecule.getMolecule(moleculeID);
+            molecule = LegacySpecies.getMolecule(moleculeID);
         };
 
     };

@@ -2,7 +2,7 @@
     "type": "destroy:distillation",
     "ingredients": [
         {
-            "fluid": "destroy:thrice_distilled_moonshine",
+            "fluid": "destroy:moonshine",
             "amount": 400
         }
     ],

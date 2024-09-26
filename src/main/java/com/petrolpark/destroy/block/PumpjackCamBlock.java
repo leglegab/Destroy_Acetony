@@ -17,7 +17,6 @@ import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.DirectionalBlock;
 import net.minecraft.world.level.block.RenderShape;
 import net.minecraft.world.level.block.entity.BlockEntityType;
@@ -86,9 +85,7 @@ public class PumpjackCamBlock extends AbstractShaftBlock implements IPumpjackStr
 
     @Override
 	public void tick(BlockState state, ServerLevel level, BlockPos pos, RandomSource random) {
-		if (!IPumpjackStructuralBlock.stillValid(level, pos, state)) {
-			level.setBlockAndUpdate(pos, Blocks.AIR.defaultBlockState());
-		};
+		IPumpjackStructuralBlock.tick(state, level, pos, random);
 	};
 
     @Override

@@ -3,7 +3,6 @@
 	"texture_size": [32, 32],
 	"textures": {
 		"0": "destroy:block/aging_barrel",
-		"1": "destroy:block/aging_barrel_balloon",
 		"particle": "destroy:block/aging_barrel"
 	},
 	"elements": [
@@ -74,8 +73,8 @@
 		},
 		{
 			"name": "lid",
-			"from": [0, 14, 14.05],
-			"to": [16, 30, 16.05],
+			"from": [0.05, 14, 14.05],
+			"to": [15.95, 30, 16.05],
 			"faces": {
 				"north": {"uv": [0, 8, 8, 16], "texture": "#0"},
 				"east": {"uv": [0, 0, 8, 1], "rotation": 270, "texture": "#0"},
@@ -83,19 +82,6 @@
 				"west": {"uv": [0, 0, 8, 1], "rotation": 90, "texture": "#0"},
 				"up": {"uv": [0, 0, 8, 1], "rotation": 180, "texture": "#0"},
 				"down": {"uv": [0, 0, 8, 1], "texture": "#0"}
-			}
-		},
-		{
-			"name": "balloon",
-			"from": [7, 21, 16.05],
-			"to": [9, 23, 18.05],
-			"faces": {
-				"north": {"uv": [14, 6, 15, 7], "texture": "#1"},
-				"east": {"uv": [14, 6, 15, 7], "texture": "#1"},
-				"south": {"uv": [14, 6, 15, 7], "texture": "#1"},
-				"west": {"uv": [14, 6, 15, 7], "texture": "#1"},
-				"up": {"uv": [14, 6, 15, 7], "texture": "#1"},
-				"down": {"uv": [14, 6, 15, 7], "texture": "#1"}
 			}
 		}
 	]

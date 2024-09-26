@@ -1,0 +1,26 @@
+{
+    "parent": "destroy:ethylanthraquinone",
+    "criteria": {
+      "make": {
+        "conditions": {},
+        "trigger": "destroy:hydrogen_peroxide"
+      }
+    },
+    "display": {
+      "description": {
+        "color": "#DBA213",
+        "translate": "advancement.destroy.hydrogen_peroxide.description"
+      },
+      "icon": {
+        "item": "destroy:beaker"
+      },
+      "title": {
+        "translate": "advancement.destroy.hydrogen_peroxide"
+      }
+    },
+    "requirements": [
+      [
+        "make"
+      ]
+    ]
+  }

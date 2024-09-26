@@ -1,0 +1,9 @@
+{
+    "asset_name": "lead",
+    "description": {
+      "color": "#716d7f",
+      "translate": "destroy.trim_material.lead"
+    },
+    "ingredient": "destroy:lead_ingot",
+    "item_model_index": -1.0
+  }

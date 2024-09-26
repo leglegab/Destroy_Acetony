@@ -3,14 +3,19 @@ package com.petrolpark.destroy.block;
 import javax.annotation.Nullable;
 
 import com.petrolpark.destroy.block.entity.DestroyBlockEntityTypes;
+import com.petrolpark.destroy.block.entity.VatControllerBlockEntity;
 import com.petrolpark.destroy.block.entity.VatSideBlockEntity;
 import com.petrolpark.destroy.block.entity.VatSideBlockEntity.DisplayType;
+import com.petrolpark.destroy.client.gui.screen.RedstoneMonitorVatSideScreen;
+import com.petrolpark.destroy.item.IMixtureStorageItem;
+import com.simibubi.create.AllItems;
 import com.simibubi.create.content.decoration.copycat.CopycatBlock;
 import com.simibubi.create.content.decoration.copycat.CopycatBlockEntity;
 import com.simibubi.create.content.schematics.requirement.ISpecialBlockItemRequirement;
 import com.simibubi.create.content.schematics.requirement.ItemRequirement;
 import com.simibubi.create.foundation.block.IBE;
 import com.simibubi.create.foundation.blockEntity.SmartBlockEntityTicker;
+import com.simibubi.create.foundation.gui.ScreenOpener;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -32,8 +37,15 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
+import net.minecraft.world.phys.shapes.CollisionContext;
+import net.minecraft.world.phys.shapes.Shapes;
+import net.minecraft.world.phys.shapes.VoxelShape;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.fluids.capability.IFluidHandler;
+import net.minecraftforge.fml.DistExecutor;
 
-public class VatSideBlock extends CopycatBlock implements ISpecialBlockItemRequirement {
+public class VatSideBlock extends CopycatBlock implements ISpecialBlockItemRequirement, ISpecialMixtureContainerBlock {
 
     public VatSideBlock(Properties properties) {
         super(properties);
@@ -47,23 +59,40 @@ public class VatSideBlock extends CopycatBlock implements ISpecialBlockItemRequi
 
     @Override
     public InteractionResult use(BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
-        return InteractionResult.PASS;
+        if (AllItems.WRENCH.isIn(player.getItemInHand(hand)) || IMixtureStorageItem.isHolding(player, hand)) return InteractionResult.PASS;
+        return onBlockEntityUse(level, pos, be -> {
+            if (!(be instanceof VatSideBlockEntity vbe)) return InteractionResult.PASS;
+            if (vbe.getDisplayType().quantityObserved.isPresent()) {
+                DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> openScreen(vbe));
+                return InteractionResult.SUCCESS;
+            };
+            return InteractionResult.PASS;
+        });
+    };
+
+    @OnlyIn(Dist.CLIENT)
+    public void openScreen(VatSideBlockEntity vbe) {
+        ScreenOpener.open(new RedstoneMonitorVatSideScreen(vbe));
     };
 
     @Override
     public InteractionResult onWrenched(BlockState state, UseOnContext context) {
         return onBlockEntityUse(context.getLevel(), context.getClickedPos(), be -> {
             if (!(be instanceof VatSideBlockEntity vatSide)) return InteractionResult.PASS;
+            boolean blocked = !be.getLevel().getBlockState(be.getBlockPos().relative(context.getClickedFace())).isAir();
             switch (vatSide.getDisplayType()) {
                 case PIPE: {
                     return InteractionResult.PASS;
                 } case NORMAL: {
-                    vatSide.setDisplayType(vatSide.direction == Direction.UP ? DisplayType.OPEN_VENT : DisplayType.THERMOMETER);
+                    vatSide.setDisplayType(vatSide.direction == Direction.UP ? DisplayType.OPEN_VENT : (blocked ? DisplayType.THERMOMETER_BLOCKED : DisplayType.THERMOMETER));
                     return InteractionResult.SUCCESS;
                 } case THERMOMETER: {
                     vatSide.setDisplayType(DisplayType.BAROMETER);
                     return InteractionResult.SUCCESS;
-                } case BAROMETER: case OPEN_VENT: case CLOSED_VENT: {
+                } case THERMOMETER_BLOCKED: {
+                    vatSide.setDisplayType(DisplayType.BAROMETER_BLOCKED);
+                    return InteractionResult.SUCCESS;
+                } case BAROMETER: case BAROMETER_BLOCKED: case OPEN_VENT: case CLOSED_VENT: {
                     vatSide.setDisplayType(DisplayType.NORMAL);
                     return InteractionResult.SUCCESS;
                 } default:
@@ -71,6 +100,16 @@ public class VatSideBlock extends CopycatBlock implements ISpecialBlockItemRequi
             }
         });
     };
+
+    @Override
+    public int getDirectSignal(BlockState state, BlockGetter level, BlockPos pos, Direction direction) {
+        return getBlockEntityOptional(level, pos).map(be -> be instanceof VatSideBlockEntity vatSide && vatSide.direction == direction ? vatSide.redstoneMonitor.getStrength() : 0).orElse(0);
+    };
+
+    @Override
+	public int getSignal(BlockState state, BlockGetter level, BlockPos pos, Direction side) {
+		return getBlockEntityOptional(level, pos).map(be -> be instanceof VatSideBlockEntity vatSide ? vatSide.redstoneMonitor.getStrength() : 0).orElse(0);
+	};
 
     @Override
     public InteractionResult onSneakWrenched(BlockState state, UseOnContext context) {
@@ -81,7 +120,7 @@ public class VatSideBlock extends CopycatBlock implements ISpecialBlockItemRequi
     public BlockState updateShape(BlockState state, Direction facing, BlockState facingState, LevelAccessor level, BlockPos currentPos, BlockPos facingPos) {
         withBlockEntityDo(level, currentPos, be -> {
             if (!(be instanceof VatSideBlockEntity vatSide)) return;
-            vatSide.updateRedstone();
+            vatSide.updateRedstoneInput();
             if (facing != vatSide.direction) return;
             vatSide.updateDisplayType(facingPos);
             vatSide.setPowerFromAdjacentBlock(facingPos);   
@@ -104,7 +143,7 @@ public class VatSideBlock extends CopycatBlock implements ISpecialBlockItemRequi
     public void neighborChanged(BlockState state, Level level, BlockPos pos, Block block, BlockPos fromPos, boolean isMoving) {
         withBlockEntityDo(level, pos, be -> {
             if (!(be instanceof VatSideBlockEntity vatSide)) return;
-            vatSide.updateRedstone();
+            vatSide.updateRedstoneInput();
         });
     };
 
@@ -168,13 +207,27 @@ public class VatSideBlock extends CopycatBlock implements ISpecialBlockItemRequi
     };
 
     @Override
+    public VoxelShape getVisualShape(BlockState pState, BlockGetter pLevel, BlockPos pPos, CollisionContext pContext) {
+        return Shapes.empty();
+    };
+
+    @Override
     public BlockEntityType<? extends CopycatBlockEntity> getBlockEntityType() {
         return DestroyBlockEntityTypes.VAT_SIDE.get();
-    }
+    };
 
     @Override
     public ItemRequirement getRequiredItems(BlockState state, BlockEntity blockEntity) {
         return ItemRequirement.NONE;
+    }
+
+    @Override
+    public IFluidHandler getTankForMixtureStorageItems(IMixtureStorageItem item, Level level, BlockPos pos, BlockState state, Direction face, Player player, InteractionHand hand, ItemStack stack, boolean filling) {
+        if (getBlockEntity(level, pos) instanceof VatSideBlockEntity vatSide) {
+            VatControllerBlockEntity vatController = vatSide.getController();
+            if (vatController != null) return item.selectVatTank(level, pos, state, face, player, hand, stack, filling, vatController);
+        };
+        return null;
     };
     
 };

@@ -1,0 +1,16 @@
+{
+    "type": "minecraft:crafting_shaped",
+    "pattern": [
+      " P ",
+      " P ",
+      "PPP"
+    ],
+    "key": {
+      "P": {
+        "item": "destroy:borosilicate_glass"
+      }
+    },
+    "result": {
+      "item": "destroy:measuring_cylinder"
+    }
+  }

@@ -1,0 +1,27 @@
+{
+    "parent": "destroy:novel_compound",
+    "criteria": {
+      "make": {
+        "conditions": {},
+        "trigger": "destroy:propanol"
+      }
+    },
+    "display": {
+      "description": {
+        "color": "#DBA213",
+        "translate": "advancement.destroy.propanol.description"
+      },
+      "icon": {
+        "item": "destroy:round_bottomed_flask"
+      },
+      "title": {
+        "translate": "advancement.destroy.propanol"
+      },
+      "frame": "goal"
+    },
+    "requirements": [
+      [
+        "make"
+      ]
+    ]
+  }

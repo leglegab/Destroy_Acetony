@@ -10,7 +10,7 @@
         "item": "minecraft:glass_pane"
       },
       "T": {
-        "item": "destroy:polytetrafluoroethene"
+        "tag": "destroy:plastics/inert"
       }
     },
     "result": {

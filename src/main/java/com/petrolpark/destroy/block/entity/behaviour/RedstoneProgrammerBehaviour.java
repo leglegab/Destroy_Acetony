@@ -20,7 +20,6 @@ import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
 
@@ -34,11 +33,7 @@ public class RedstoneProgrammerBehaviour extends BlockEntityBehaviour implements
     public RedstoneProgrammerBehaviour(SmartBlockEntity be, BooleanSupplier powerChecker) {
         super(be);
         this.powerChecker = powerChecker;
-        this.program = new BehaviourRedstoneProgram();
-        program.addBlankChannel(Couple.create(
-            Frequency.of(new ItemStack(Items.DIAMOND)),
-            Frequency.of(new ItemStack(Items.DIAMOND))
-        ));
+        program = new BehaviourRedstoneProgram();
     };
 
     @Override
@@ -106,6 +101,17 @@ public class RedstoneProgrammerBehaviour extends BlockEntityBehaviour implements
         public LevelAccessor getWorld() {
             return RedstoneProgrammerBehaviour.super.getWorld();
         };
+
+        @Override
+        public void whenChanged() {
+            blockEntity.notifyUpdate();
+            program.load();
+        };
+
+        @Override
+        public void tick() {
+            super.tick();
+        };
         
     };
 
@@ -121,11 +127,16 @@ public class RedstoneProgrammerBehaviour extends BlockEntityBehaviour implements
 
     @Override
     public boolean writeToClipboard(CompoundTag tag, Direction side) {
-        return false;
+        tag.put("RedstoneProgram", program.write());
+        return true;
     };
 
     @Override
     public boolean readFromClipboard(CompoundTag tag, Player player, Direction side, boolean simulate) {
+        if (tag.contains("RedstoneProgram")) {
+            setProgram(tag.getCompound("RedstoneProgram"));
+            return true;
+        };
         if (!tag.contains("First") || !tag.contains("Last")) return false;
         Couple<Frequency> frequencies = Couple.create(Frequency.of(ItemStack.of(tag.getCompound("First"))), Frequency.of(ItemStack.of(tag.getCompound("Last"))));
         if (program.getChannels().stream().anyMatch(channel -> channel.networkKey.equals(frequencies))) return false;

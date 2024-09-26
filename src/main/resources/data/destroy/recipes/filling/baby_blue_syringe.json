@@ -1,5 +1,12 @@
 {
     "type": "create:filling",
+    "conditions": [
+      {
+        "type": "petrolpark:config_boolean",
+        "mod": "destroy",
+        "value": "enableBabyBlue"
+      }
+    ],
     "ingredients": [
       {
         "item": "destroy:syringe"

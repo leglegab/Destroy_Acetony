@@ -1,0 +1,10 @@
+{
+    "pools": {
+        "entries": [
+            {
+                "type": "minecraft:item",
+                "name": "destroy:gold_laboratory_goggles"
+            }
+        ]
+    }
+}

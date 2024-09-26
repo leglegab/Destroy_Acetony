@@ -6,7 +6,7 @@
       },
       {
         "mixtureFluidWithMolecule": "destroy:mixture",
-        "molecule": "destroy:sodium_ion",
+        "molecule": "destroy:picric_acid",
         "concentration": 7.7,
         "amount": 200
       }

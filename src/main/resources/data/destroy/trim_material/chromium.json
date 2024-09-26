@@ -1,0 +1,9 @@
+{
+    "asset_name": "chromium",
+    "description": {
+      "color": "#c7c7c7",
+      "translate": "destroy.trim_material.chromium"
+    },
+    "ingredient": "destroy:chromium_ingot",
+    "item_model_index": -1.0
+  }

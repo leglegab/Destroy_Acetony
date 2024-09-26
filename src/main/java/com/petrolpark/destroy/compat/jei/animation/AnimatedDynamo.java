@@ -3,6 +3,7 @@ package com.petrolpark.destroy.compat.jei.animation;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
 import com.petrolpark.destroy.block.DestroyBlocks;
+import com.petrolpark.destroy.block.DynamoBlock;
 import com.petrolpark.destroy.block.model.DestroyPartials;
 import com.simibubi.create.AllBlocks;
 import com.simibubi.create.compat.jei.category.animations.AnimatedKinetics;
@@ -11,10 +12,12 @@ import net.minecraft.client.gui.GuiGraphics;
 
 public class AnimatedDynamo extends AnimatedKinetics {
 
-	private boolean basin;
+	private final boolean basin;
+	private final boolean arcFurnace;
 
-	public AnimatedDynamo(boolean basin) {
+	public AnimatedDynamo(boolean basin, boolean arcFurnace) {
 		this.basin = basin;
+		this.arcFurnace = arcFurnace;
 	};
 
    	@Override
@@ -26,14 +29,19 @@ public class AnimatedDynamo extends AnimatedKinetics {
 		matrixStack.mulPose(Axis.YP.rotationDegrees(22.5f));
 		int scale = 23;
 
-		blockElement(DestroyPartials.DYNAMO_COG)
+		blockElement(arcFurnace ? DestroyPartials.ARC_FURNACE_SHAFT : DestroyPartials.DYNAMO_SHAFT)
 			.rotateBlock(0, getCurrentAngle() * 2, 0)
 			.atLocal(0, 0, 0)
 			.scale(scale)
 			.render(graphics);
 
-		blockElement(DestroyBlocks.DYNAMO.getDefaultState())
+		blockElement(DestroyBlocks.DYNAMO.getDefaultState().setValue(DynamoBlock.ARC_FURNACE, arcFurnace))
 			.atLocal(0, 0, 0)
+			.scale(scale)
+			.render(graphics);
+
+		if (arcFurnace) blockElement(DestroyBlocks.ARC_FURNACE_LID.getDefaultState())
+			.atLocal(0d, 0.825d, 0d)
 			.scale(scale)
 			.render(graphics);
 

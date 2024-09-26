@@ -1,0 +1,7 @@
+{
+    "parent": "destroy:block/periodic_table/base",
+    "textures": {
+      "side": "destroy:block/lead_block",
+      "front": "destroy:block/periodic_table/lead"
+    }
+  }

@@ -1,10 +1,13 @@
 package com.petrolpark.destroy.block.renderer;
 
+import com.google.common.collect.ImmutableList;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.petrolpark.destroy.block.RedstoneProgrammerBlock;
 import com.petrolpark.destroy.block.entity.RedstoneProgrammerBlockEntity;
 import com.petrolpark.destroy.block.model.DestroyPartials;
+import com.petrolpark.destroy.util.RedstoneProgram;
+import com.petrolpark.destroy.util.RedstoneProgram.Channel;
 import com.simibubi.create.foundation.blockEntity.renderer.SafeBlockEntityRenderer;
 import com.simibubi.create.foundation.render.CachedBufferer;
 import com.simibubi.create.foundation.render.SuperByteBuffer;
@@ -24,7 +27,8 @@ public class RedstoneProgrammerRenderer extends SafeBlockEntityRenderer<Redstone
     @Override
     protected void renderSafe(RedstoneProgrammerBlockEntity be, float partialTicks, PoseStack ms, MultiBufferSource bufferSource, int light, int overlay) {
         Direction direction = be.getBlockState().getValue(RedstoneProgrammerBlock.FACING);
-        VertexConsumer vc = bufferSource.getBuffer(RenderType.solid());
+        RedstoneProgram program = be.programmer.program;
+        VertexConsumer vc = bufferSource.getBuffer(RenderType.cutout());
         SuperByteBuffer cylinder = CachedBufferer.partial(DestroyPartials.REDSTONE_PROGRAMMER_CYLINDER, be.getBlockState())
             .centre()
             .rotateY(AngleHelper.horizontalAngle(direction))
@@ -34,7 +38,7 @@ public class RedstoneProgrammerRenderer extends SafeBlockEntityRenderer<Redstone
             .rotateY(AngleHelper.horizontalAngle(direction))
             .unCentre();
 
-        float rotation = be.programmer.program.paused ? 0f : AnimationTickHolder.getRenderTime();
+        float rotation = program.paused ? 0f : AnimationTickHolder.getRenderTime();
 
         cylinder
             .translate(0, 6 / 16d, 10 / 16d)
@@ -48,6 +52,18 @@ public class RedstoneProgrammerRenderer extends SafeBlockEntityRenderer<Redstone
 
         cylinder.renderInto(ms, vc);
         needle.renderInto(ms, vc);
+
+        ImmutableList<Channel> channels = program.getChannels();
+        for (int i = 0; i < 6; i++) {
+            if (i >= channels.size()) continue;
+            boolean powered = !program.paused && program.getChannels().get(i).getTransmittedStrength() != 0;
+            CachedBufferer.partial(powered ? DestroyPartials.REDSTONE_PROGRAMMER_TRANSMITTER_POWERED : DestroyPartials.REDSTONE_PROGRAMMER_TRANSMITTER, be.getBlockState())
+                .centre()
+                .rotateY(AngleHelper.horizontalAngle(direction))
+                .translate(i % 2 == 0 ? 0f : 15 / 16f, 1 / 16f, (3 + 4.5F * (i / 2)) / 16f)
+                .unCentre()
+                .renderInto(ms, vc);
+        };
     };
     
 };

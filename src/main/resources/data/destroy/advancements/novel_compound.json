@@ -1,0 +1,41 @@
+{
+    "parent": "destroy:distillation",
+    "criteria": {
+      "synthesize": {
+        "conditions": {
+            "player": {
+                "type_specific": {
+                    "type": "player",
+                    "stats": [
+                        {
+                            "type": "minecraft:custom",
+                            "stat": "destroy:novel_compounds_synthesized",
+                            "value": {
+                              "min": 1
+                            }
+                        }
+                    ]
+                }
+            }
+        },
+        "trigger": "minecraft:location"
+      }
+    },
+    "display": {
+      "description": {
+        "color": "#DBA213",
+        "translate": "advancement.destroy.novel_compound.description"
+      },
+      "icon": {
+        "item": "destroy:test_tube"
+      },
+      "title": {
+        "translate": "advancement.destroy.novel_compound"
+      }
+    },
+    "requirements": [
+      [
+        "synthesize"
+      ]
+    ]
+  }

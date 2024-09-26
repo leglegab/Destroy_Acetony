@@ -1,23 +1,20 @@
 package com.petrolpark.destroy.item;
 
-import com.petrolpark.destroy.util.InebriationHelper;
+import com.petrolpark.destroy.config.DestroyAllConfigs;
+import com.petrolpark.destroy.config.DestroySubstancesConfigs;
+import com.petrolpark.destroy.effect.DestroyMobEffects;
 
 import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.sounds.SoundEvent;
-import net.minecraft.sounds.SoundEvents;
 import net.minecraft.stats.Stats;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
-import net.minecraft.world.item.UseAnim;
 import net.minecraft.world.level.Level;
 
-public class AlcoholicDrinkItem extends Item {
+public class AlcoholicDrinkItem extends DrinkItem {
 
-    private static final int DRINK_DURATION = 40;
     private int strength;
 
     /**
@@ -29,6 +26,7 @@ public class AlcoholicDrinkItem extends Item {
         this.strength = strength;
     };
 
+    @Override
     public ItemStack finishUsingItem(ItemStack stack, Level level, LivingEntity entityLiving) {
         super.finishUsingItem(stack, level, entityLiving);
 
@@ -37,8 +35,9 @@ public class AlcoholicDrinkItem extends Item {
             serverplayer.awardStat(Stats.ITEM_USED.get(this));
         };
    
-         if (!level.isClientSide) {
-            InebriationHelper.increaseInebriation(entityLiving, getStrength());
+        if (!level.isClientSide) {
+            if (DestroySubstancesConfigs.alcoholEnabled()) DestroyMobEffects.increaseEffectLevel(entityLiving, DestroyMobEffects.INEBRIATION.get(), strength, DestroyAllConfigs.SERVER.substances.inebriationDuration.get());
+            DestroyMobEffects.increaseEffectLevel(entityLiving, DestroyMobEffects.FULL_BLADDER.get(), strength, DestroyAllConfigs.SERVER.substances.inebriationDuration.get());
         };
    
         if (stack.isEmpty()) {
@@ -61,20 +60,4 @@ public class AlcoholicDrinkItem extends Item {
     public int getStrength() {
         return this.strength;
     };
-
-    public int getUseDuration(ItemStack stack) {
-        return DRINK_DURATION;
-    };
-    
-    public UseAnim getUseAnimation(ItemStack stack) {
-        return UseAnim.DRINK;
-    }
-
-    public SoundEvent getEatingSound() {
-        return getDrinkingSound();
-    };
-
-    public SoundEvent getDrinkingSound() {
-        return SoundEvents.GENERIC_DRINK;
-    };
-}
+};

@@ -1,0 +1,9 @@
+{
+    "asset_name": "pure_gold",
+    "description": {
+      "color": "#fdba4c",
+      "translate": "destroy.trim_material.pure_gold"
+    },
+    "ingredient": "destroy:pure_gold_ingot",
+    "item_model_index": -1.0
+  }

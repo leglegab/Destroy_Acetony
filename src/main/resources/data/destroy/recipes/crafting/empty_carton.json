@@ -1,0 +1,17 @@
+{
+    "type": "minecraft:crafting_shaped",
+    "pattern": [
+      "C C",
+      "C C",
+      "CCC"
+    ],
+    "key": {
+      "C": {
+        "item": "destroy:card_stock"
+      }
+    },
+    "result": {
+      "item": "destroy:empty_carton",
+      "count": 8
+    }
+  }

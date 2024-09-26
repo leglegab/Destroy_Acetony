@@ -1,4 +1,11 @@
 {
+    "conditions": [
+      {
+        "type": "petrolpark:config_boolean",
+        "mod": "destroy",
+        "value": "enableAlcohol"
+      }
+    ],
     "parent": "destroy:hangover",
     "criteria": {
       "cure": {

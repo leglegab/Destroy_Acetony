@@ -29,7 +29,7 @@ public class PumpjackRenderer extends SafeBlockEntityRenderer<PumpjackBlockEntit
         //if (Backend.canUseInstancing(pumpjack.getLevel())) return; Can't use instancing because it can't render cutout for some reason
 
         Float angle = pumpjack.getTargetAngle();
-		if (angle == null) return;
+		if (angle == null) angle = 0f;
 
         BlockState blockState = pumpjack.getBlockState();
         Direction facing = PumpjackBlock.getFacing(blockState);

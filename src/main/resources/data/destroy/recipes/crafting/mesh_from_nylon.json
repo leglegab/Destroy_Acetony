@@ -1,0 +1,17 @@
+{
+    "type": "minecraft:crafting_shaped",
+    "pattern": [
+      " S ",
+      "S S",
+      " S "
+    ],
+    "key": {
+      "S": {
+        "item": "destroy:nylon"
+      }
+    },
+    "result": {
+      "item": "destroy:mesh",
+      "count": 4
+    }
+  }

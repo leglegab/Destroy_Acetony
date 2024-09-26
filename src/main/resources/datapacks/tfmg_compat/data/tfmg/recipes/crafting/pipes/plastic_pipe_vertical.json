@@ -1,0 +1,23 @@
+{
+    "type": "minecraft:crafting_shaped",
+    "conditions": [
+        {
+            "type": "forge:mod_loaded",
+            "modid": "tfmg"
+        }
+    ],
+    "pattern": [
+      "R R",
+      "R R",
+      "R R"
+    ],
+    "key": {
+      "R": {
+        "tag": "destroy:plastics/rigid"
+      }
+    },
+    "result": {
+      "item": "tfmg:plastic_pipe",
+      "count": 8
+    }
+  }

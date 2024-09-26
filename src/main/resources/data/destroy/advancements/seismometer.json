@@ -1,5 +1,5 @@
 {
-    "parent": "destroy:root",
+    "parent": "destroy:touch_powder",
     "criteria": {
       "use": {
         "conditions": {},

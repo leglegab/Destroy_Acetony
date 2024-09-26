@@ -1,0 +1,26 @@
+{
+    "parent": "destroy:circuit_board",
+    "criteria": {
+      "use": {
+        "conditions": {},
+        "trigger": "destroy:colorimeter"
+      }
+    },
+    "display": {
+      "description": {
+        "color": "#DBA213",
+        "translate": "advancement.destroy.colorimeter.description"
+      },
+      "icon": {
+        "item": "destroy:colorimeter"
+      },
+      "title": {
+        "translate": "advancement.destroy.colorimeter"
+      }
+    },
+    "requirements": [
+      [
+        "use"
+      ]
+    ]
+  }

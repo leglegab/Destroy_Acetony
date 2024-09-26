@@ -1,0 +1,12 @@
+{
+    "type": "minecraft:crafting_shapeless",
+    "ingredients": [
+      {
+        "tag": "forge:storage_blocks/carbon_fiber"
+      }
+    ],
+    "result": {
+      "item": "destroy:carbon_fiber",
+      "count": 9
+    }
+  }

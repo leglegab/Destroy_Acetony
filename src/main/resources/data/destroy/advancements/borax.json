@@ -1,0 +1,32 @@
+{
+    "parent": "destroy:distillation",
+    "criteria": {
+      "hold": {
+        "trigger": "minecraft:inventory_changed",
+        "conditions": {
+            "items": [
+                {
+                    "tag": "forge:raw_materials/borax"
+                }
+            ]
+        }
+      }
+    },
+    "display": {
+      "description": {
+        "color": "#DBA213",
+        "translate": "advancement.destroy.borax.description"
+      },
+      "icon": {
+        "item": "destroy:borax"
+      },
+      "title": {
+        "translate": "advancement.destroy.borax"
+      }
+    },
+    "requirements": [
+      [
+        "hold"
+      ]
+    ]
+  }

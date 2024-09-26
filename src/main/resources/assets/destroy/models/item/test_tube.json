@@ -1,16 +1,6 @@
 {
     "parent": "minecraft:item/generated",
     "textures": {
-      "layer0": "destroy:item/test_tube_overlay",
-      "layer1": "destroy:item/test_tube"
-    },
-    "overrides": [
-      {
-        "predicate": {
-          "empty": 1.0
-        },
-        "model": "destroy:item/test_tube_empty"
-      }
-    ],
-    "render_type": "translucent"
+      "layer0": "destroy:item/test_tube"
+    }
   }

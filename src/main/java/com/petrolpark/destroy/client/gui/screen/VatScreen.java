@@ -1,20 +1,20 @@
 package com.petrolpark.destroy.client.gui.screen;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import com.ibm.icu.text.DecimalFormat;
 import com.jozufozu.flywheel.util.transform.TransformStack;
 import com.mojang.blaze3d.platform.InputConstants;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.petrolpark.destroy.block.DestroyBlocks;
 import com.petrolpark.destroy.block.VatControllerBlock;
 import com.petrolpark.destroy.block.entity.VatControllerBlockEntity;
-import com.petrolpark.destroy.block.entity.behaviour.fluidTankBehaviour.VatFluidTankBehaviour.VatTankSegment.VatFluidTank;
-import com.petrolpark.destroy.chemistry.ClientMixture;
-import com.petrolpark.destroy.chemistry.Molecule;
-import com.petrolpark.destroy.chemistry.ReadOnlyMixture;
+import com.petrolpark.destroy.chemistry.api.util.Constants;
+import com.petrolpark.destroy.chemistry.legacy.ClientMixture;
+import com.petrolpark.destroy.chemistry.legacy.LegacySpecies;
+import com.petrolpark.destroy.chemistry.legacy.ReadOnlyMixture;
 import com.petrolpark.destroy.client.gui.DestroyGuiTextures;
 import com.petrolpark.destroy.client.gui.DestroyIcons;
 import com.petrolpark.destroy.client.gui.MoleculeRenderer;
@@ -63,8 +63,8 @@ public class VatScreen extends AbstractSimiScreen {
 
     private DestroyGuiTextures background;
 
-    private Molecule selectedMolecule;
-    private List<Pair<Molecule, Float>> orderedMolecules;
+    private LegacySpecies selectedMolecule;
+    private List<Pair<LegacySpecies, Float>> orderedMolecules;
 
     private View selectedView;
 
@@ -171,27 +171,26 @@ public class VatScreen extends AbstractSimiScreen {
     protected void updateMoleculeList() {
         ReadOnlyMixture mixture = new ReadOnlyMixture();
         int amount = 0;
-        VatFluidTank tank = null;
+        FluidStack fluid = null;
         switch (selectedView) {
             case BOTH: {
                 mixture = blockEntity.getCombinedReadOnlyMixture();
                 amount = blockEntity.getVatOptional().map(Vat::getCapacity).orElse(0);
                 break;
             } case GAS: {
-                tank = blockEntity.getGasTank();
+                fluid = blockEntity.getGasTankContents();
             } case LIQUID: {
-                if (selectedView == View.LIQUID) tank = blockEntity.getLiquidTank();
+                if (selectedView == View.LIQUID) fluid = blockEntity.getLiquidTankContents();
             } default: {
-                if (tank != null) {
-                    amount = tank.getFluidAmount();
-                    FluidStack stack = tank.getFluid();
-                    if (DestroyFluids.isMixture(stack)) mixture = ReadOnlyMixture.readNBT(ClientMixture::new, stack.getOrCreateChildTag("Mixture"));
+                if (fluid != null) {
+                    amount = fluid.getAmount();
+                    if (DestroyFluids.isMixture(fluid)) mixture = ReadOnlyMixture.readNBT(ClientMixture::new, fluid.getOrCreateChildTag("Mixture"));
                 };
             };
         };
 
         orderedMolecules = new ArrayList<>(mixture.getContents(false).size());
-        for (Molecule molecule : mixture.getContents(false)) {
+        for (LegacySpecies molecule : mixture.getContents(false)) {
             String search = filter.getValue().toUpperCase();
             if (
                 filter == null || filter.getValue().isEmpty()
@@ -199,7 +198,7 @@ public class VatScreen extends AbstractSimiScreen {
                 || molecule.getName(true).getString().toUpperCase().indexOf(search) > -1 // Check IUPAC name against filter
                 || molecule.getSerlializedMolecularFormula(false).toUpperCase().indexOf(search) > -1 // Check formula against filter
             ) {
-                orderedMolecules.add(Pair.of(molecule, mixture.getConcentrationOf(molecule) * amount / 1000f));
+                orderedMolecules.add(Pair.of(molecule, mixture.getConcentrationOf(molecule) * amount / Constants.MILLIBUCKETS_PER_LITER));
             };
         };
         Collections.sort(orderedMolecules, (p1, p2) -> Float.compare(p2.getSecond(), p1.getSecond()));
@@ -265,7 +264,7 @@ public class VatScreen extends AbstractSimiScreen {
                 int yPos = guiTop + ((i + 1) * CARD_HEIGHT) - (int)moleculeScroll.getChaseTarget() - 14;
                 Rect2i clickArea = new Rect2i(moleculeScrollArea.getX() + 15, yPos, 97, 28);
                 if (clickArea.contains((int)mouseX, (int)mouseY)) {
-                    Molecule molecule = orderedMolecules.get(i).getFirst();
+                    LegacySpecies molecule = orderedMolecules.get(i).getFirst();
                     if (selectedMolecule != null && selectedMolecule.getFullID().equals(molecule.getFullID())) {
                         selectedMolecule = null;
                     } else {
@@ -303,7 +302,7 @@ public class VatScreen extends AbstractSimiScreen {
         background.render(graphics, guiLeft, guiTop);
 
         // Title
-        graphics.drawString(font, title, guiLeft + 21, guiTop + 4, 0x54214F, false);
+        graphics.drawString(font, title, guiLeft + 21, guiTop + 4, 0x828c97, false);
 
         UIRenderHelper.swapAndBlitColor(minecraft.getMainRenderTarget(), UIRenderHelper.framebuffer);
         
@@ -311,13 +310,13 @@ public class VatScreen extends AbstractSimiScreen {
         GuiHelper.startStencil(graphics, moleculeScrollArea.getX(), moleculeScrollArea.getY(), moleculeScrollArea.getWidth(), moleculeScrollArea.getHeight());
         ms.pushPose();
         ms.translate(guiLeft + 25, guiTop + 20 + scrollOffset, 0);
-        for (Pair<Molecule, Float> pair : orderedMolecules) {
+        for (Pair<LegacySpecies, Float> pair : orderedMolecules) {
             ms.pushPose();
-            Molecule molecule = pair.getFirst();
+            LegacySpecies molecule = pair.getFirst();
             boolean selected = selectedMolecule != null && molecule.getFullID().equals(selectedMolecule.getFullID());
             (selected ? DestroyGuiTextures.VAT_CARD_SELECTED : DestroyGuiTextures.VAT_CARD_UNSELECTED).render(graphics, selected ? -1 : 0, selected ? -1 : 0);
             graphics.drawString(font, DestroyLang.shorten(molecule.getName(iupac).getString(), font, 92), 4, 4, 0xFFFFFF);
-            graphics.drawString(font, DestroyLang.translate("tooltip.vat.menu.moles", df.format(pair.getSecond())).component(), 4, 17, 0xFFFFFF);
+            graphics.drawString(font, DestroyLang.quantity(pair.getSecond(), true, df).component(), 4, 17, 0xFFFFFF);
             ms.popPose();
             ms.translate(0, CARD_HEIGHT, 0);
         };

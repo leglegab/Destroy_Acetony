@@ -1,0 +1,22 @@
+{
+    "type": "minecraft:crafting_shapeless",
+    "ingredients": [
+      {
+        "item": "destroy:polyethene"
+      },
+      {
+        "item": "minecraft:sugar"
+      },
+      [
+        {
+          "item": "minecraft:apple"
+        },
+        {
+          "item": "minecraft:sweet_berries"
+        }
+      ]
+    ],
+    "result": {
+      "item": "destroy:chewing_gum"
+    }
+  }

@@ -27,30 +27,17 @@ public class DestroyTrades {
 
         INNKEEPER_NOVICE_TRADES.addAll(List.of(
             (trader, rand) -> new MerchantOffer(
-                new ItemStack(Items.EMERALD, 2),
-                ItemStack.EMPTY,
-                new ItemStack(DestroyItems.UNDISTILLED_MOONSHINE_BOTTLE.get(), 1),
-                16,
-                1,
-                0.05f
-            ), (trader, rand) -> new MerchantOffer(
-                new ItemStack(Items.EMERALD, 4),
-                ItemStack.EMPTY,
-                new ItemStack(DestroyItems.ONCE_DISTILLED_MOONSHINE_BOTTLE.get(), 1),
-                16,
-                1,
-                0.05f
-            ), (trader, rand) -> new MerchantOffer(
                 new ItemStack(Items.GLASS_BOTTLE, 1),
                 ItemStack.EMPTY,
                 PotionUtils.setPotion(new ItemStack(Items.POTION, 1), Potions.WATER),
                 24,
                 2,
                 0.05f
-            ), (trader, rand) -> new MerchantOffer(
-                new ItemStack(Items.WHEAT, 20),
-                ItemStack.EMPTY,
+            ), 
+            (trader, rand) -> new MerchantOffer(
                 new ItemStack(Items.EMERALD, 1),
+                ItemStack.EMPTY,
+                new ItemStack(DestroyItems.APPLE_JUICE_CARTON.get(), 1),
                 16,
                 2,
                 0.05f
@@ -59,11 +46,11 @@ public class DestroyTrades {
 
         INNKEEPER_APPRENTICE_TRADES.addAll(List.of(
             (trader, rand) -> new MerchantOffer(
-                new ItemStack(Items.GLASS_BOTTLE, 12),
+                new ItemStack(Items.EMERALD, 2),
                 ItemStack.EMPTY,
-                new ItemStack(Items.EMERALD, 1),
+                new ItemStack(DestroyItems.UNDISTILLED_MOONSHINE_BOTTLE.get(), 1),
                 16,
-                10,
+                1,
                 0.05f
             ), (trader, rand) -> new MerchantOffer(
                 new ItemStack(Items.EMERALD, 10),
@@ -79,14 +66,7 @@ public class DestroyTrades {
             (trader, rand) -> new MerchantOffer(
                 new ItemStack(Items.EMERALD, 6),
                 ItemStack.EMPTY,
-                new ItemStack(DestroyItems.TWICE_DISTILLED_MOONSHINE_BOTTLE.get(), 1),
-                16,
-                10,
-                0.05f
-            ), (trader, rand) -> new MerchantOffer(
-                new ItemStack(Items.EMERALD, 8),
-                ItemStack.EMPTY,
-                new ItemStack(DestroyItems.THRICE_DISTILLED_MOONSHINE_BOTTLE.get(), 1),
+                new ItemStack(DestroyItems.MOONSHINE_BOTTLE.get(), 1),
                 16,
                 10,
                 0.05f

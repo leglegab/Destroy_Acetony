@@ -5,11 +5,14 @@ import org.lwjgl.opengl.GL30;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
+import com.simibubi.create.foundation.gui.element.ScreenElement;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 
 public class GuiHelper {
+
+	public static ScreenElement NOTHING = (guiGraphics, x, y) -> {};
 
     /**
      * Copied from the {@link com.simibubi.create.content.trains.schedule.ScheduleScreen#startStencil Create source code}.

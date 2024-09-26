@@ -13,7 +13,7 @@ public class ObliterationExplosion extends SmartExplosion {
     };
 
     @Override
-    public boolean shouldDoSpecialDrops() {
+    public boolean shouldDoObliterationDrops() {
         return true;
     };
     

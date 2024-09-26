@@ -3,8 +3,8 @@ package com.petrolpark.destroy.block.entity.behaviour;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.petrolpark.destroy.chemistry.Reaction;
-import com.petrolpark.destroy.chemistry.ReactionResult;
+import com.petrolpark.destroy.chemistry.legacy.LegacyReaction;
+import com.petrolpark.destroy.chemistry.legacy.ReactionResult;
 import com.petrolpark.destroy.util.PollutionHelper;
 import com.simibubi.create.content.kinetics.mixer.MechanicalMixerBlockEntity;
 import com.simibubi.create.content.processing.basin.BasinBlockEntity;
@@ -88,7 +88,7 @@ public class ExtendedBasinBehaviour extends BlockEntityBehaviour {
         ListTag results = nbt.getList("Results", Tag.TAG_COMPOUND);
         results.forEach(tag -> {
             CompoundTag resultTag = (CompoundTag) tag;
-            ReactionResult result = Reaction.get(resultTag.getString("Result")).getResult();
+            ReactionResult result = LegacyReaction.get(resultTag.getString("Result")).getResult();
             int number = resultTag.getInt("Count");
             if (result == null) return;
             reactionResults.put(result, number);
@@ -101,9 +101,9 @@ public class ExtendedBasinBehaviour extends BlockEntityBehaviour {
 	public void write(CompoundTag nbt, boolean clientPacket) {
         nbt.putBoolean("TooFullToReact", tooFullToReact);
 
-        nbt.put("Results", NBTHelper.writeCompoundList(reactionResults.entrySet(), entry -> {
+        nbt.put("Results", NBTHelper.writeCompoundList(reactionResults.entrySet().stream().filter(entry -> entry.getKey().getReaction().isPresent()).toList(), entry -> {
             CompoundTag resultTag = new CompoundTag();
-            resultTag.putString("Result", entry.getKey().getReaction().getFullId());
+            resultTag.putString("Result", entry.getKey().getReaction().get().getFullId());
             resultTag.putInt("Count", entry.getValue());
             return resultTag;
         }));

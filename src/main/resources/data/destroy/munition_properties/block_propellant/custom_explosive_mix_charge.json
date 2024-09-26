@@ -1,0 +1,36 @@
+{
+    "strength": 3,
+    "added_stress": 1.5,
+    "added_recoil": 2,
+    "added_spread": 1,
+    "energy": {
+        "strength": 0.3,
+        "added_stress": 0,
+        "added_recoil": 0.1,
+        "added_spread": 0
+    },
+    "oxygen_balance": {
+        "strength": 0.1,
+        "added_stress": 0,
+        "added_recoil": 0,
+        "added_spread": 0
+    },
+    "temperature": {
+        "strength": 0,
+        "added_stress": 0.1,
+        "added_recoil": 0,
+        "added_spread": 0
+    },
+    "brisance": {
+        "strength": 0,
+        "added_stress": 0,
+        "added_recoil": 0,
+        "added_spread": 0.1
+    },
+    "sensitivity": {
+        "strength": 0,
+        "added_stress": 0,
+        "added_recoil": 0,
+        "added_spread": 0
+    }
+}

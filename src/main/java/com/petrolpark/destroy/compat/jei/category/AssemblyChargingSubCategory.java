@@ -9,11 +9,11 @@ import net.minecraft.client.gui.GuiGraphics;
 
 public class AssemblyChargingSubCategory extends SequencedAssemblySubCategory {
 
-    AnimatedDynamo dynamo;
+    private final AnimatedDynamo dynamo;
 
     public AssemblyChargingSubCategory() {
         super(25);
-        dynamo = new AnimatedDynamo(false);
+        dynamo = new AnimatedDynamo(false, false);
     };
 
     @Override

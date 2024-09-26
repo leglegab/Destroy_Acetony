@@ -1,0 +1,26 @@
+{
+    "parent": "destroy:hyperaccumulate",
+    "criteria": {
+      "use": {
+        "conditions": {},
+        "trigger": "destroy:mechanical_sieve"
+      }
+    },
+    "display": {
+      "description": {
+        "color": "#DBA213",
+        "translate": "advancement.destroy.mechanical_sieve.description"
+      },
+      "icon": {
+        "item": "destroy:mechanical_sieve"
+      },
+      "title": {
+        "translate": "advancement.destroy.mechanical_sieve"
+      }
+    },
+    "requirements": [
+      [
+        "use"
+      ]
+    ]
+  }

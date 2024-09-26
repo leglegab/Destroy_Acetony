@@ -1,5 +1,5 @@
 {
-    "parent": "destroy:plastic",
+    "parent": "destroy:hydrazine",
     "criteria": {
       "detonate": {
         "conditions": {},
@@ -12,7 +12,7 @@
         "translate": "advancement.destroy.explosive.description"
       },
       "icon": {
-        "item": "destroy:anfo_block"
+        "item": "destroy:custom_explosive_mix"
       },
       "hidden": true,
       "title": {

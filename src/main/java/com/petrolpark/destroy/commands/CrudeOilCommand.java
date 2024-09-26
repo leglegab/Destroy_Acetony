@@ -17,6 +17,7 @@ public class CrudeOilCommand {
   
     public CrudeOilCommand(CommandDispatcher<CommandSourceStack> dispatcher) {
         dispatcher.register(Commands.literal("crudeoil")
+            .requires(cs -> cs.hasPermission(2))
             .then(Commands.argument("position", BlockPosArgument.blockPos())
                 .executes(CrudeOilCommand::generateCrudeOil)
             )
