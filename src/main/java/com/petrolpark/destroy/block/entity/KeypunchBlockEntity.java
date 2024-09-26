@@ -86,10 +86,11 @@ public class KeypunchBlockEntity extends KineticBlockEntity implements ICircuitP
         int pattern = CircuitPatternItem.getPattern(stack);
 
         int positionToPunch = getActualPosition();
-        if (stack.getOrCreateTag().contains("Flipped")) positionToPunch = CircuitPatternItem.flipped[positionToPunch];
         for (int i = 0; i < input.getRotation().ordinal(); i++) {
-            positionToPunch = CircuitPatternItem.rotated90[positionToPunch];
+            positionToPunch = CircuitPatternItem.rotated90Anticlockwise[positionToPunch];
         };
+        if (stack.getOrCreateTag().contains("Flipped")) positionToPunch = CircuitPatternItem.flipped[positionToPunch];
+        
 
         if (CircuitPatternItem.isPunched(pattern, positionToPunch)) return false;
 

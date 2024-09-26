@@ -33,7 +33,7 @@ public class DestroyReactions {
         .build(),
 
     ACETYLENE_TRIMERIZATION = builder()
-        .id("actylene_trimerization")
+        .id("acetylene_trimerization")
         .addReactant(DestroyMolecules.ACETYLENE, 3)
         .addSimpleItemTagCatalyst(AllTags.forgeItemTag("dusts/nickel"), 5f)
         .addProduct(DestroyMolecules.BENZENE)

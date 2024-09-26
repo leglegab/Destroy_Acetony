@@ -22,6 +22,11 @@ public class CircuitPatternItem extends Item implements IDirectionalOnBelt {
      */
     public static final int[] rotated90 = new int[]{3, 7, 11, 15, 2, 6, 10, 14, 1, 5, 9, 13, 0, 4, 8, 12};
     /**
+     * The index if the pattern is rotated 90 degrees anticlockwise
+     */
+    public static final int[] rotated90Anticlockwise = new int[]{12, 8, 4, 0, 13, 9, 5, 1, 14, 10, 6, 2, 15, 11, 7, 3};
+
+    /**
      * The index if the pattern is flipped over the north-south axis
      */
     public static final int[] flipped = new int[]{3, 2, 1, 0, 7, 6, 5, 4, 11, 10, 9, 8, 15, 14, 13, 12};

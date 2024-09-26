@@ -149,7 +149,9 @@ public class LegacyMixture extends ReadOnlyMixture {
             ListTag results = compound.getList("Results", Tag.TAG_COMPOUND);
             results.forEach(tag -> {
                 CompoundTag resultTag = (CompoundTag) tag;
-                ReactionResult result = LegacyReaction.get(resultTag.getString("Result")).getResult();
+                LegacyReaction reaction = LegacyReaction.get(resultTag.getString("Result"));
+                if (reaction == null) return;
+                ReactionResult result = reaction.getResult();
                 if (result == null) return;
                 mixture.reactionResults.put(result, resultTag.getFloat("MolesPerBucket"));
             });
