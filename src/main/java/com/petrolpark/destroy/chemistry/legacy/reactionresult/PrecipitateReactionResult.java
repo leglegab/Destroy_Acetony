@@ -1,5 +1,7 @@
 package com.petrolpark.destroy.chemistry.legacy.reactionresult;
 
+import java.util.Collection;
+import java.util.Collections;
 import java.util.function.BiFunction;
 import java.util.function.Supplier;
 
@@ -37,6 +39,11 @@ public class PrecipitateReactionResult extends ReactionResult {
     @Override
     public void onVatReaction(Level level, VatControllerBlockEntity vatController) {
         ItemHandlerHelper.insertItemStacked(vatController.inventory, precipitate.get(), false);
+    };
+
+    @Override
+    public Collection<PrecipitateReactionResult> getPrecipitatesForJEI() {
+        return Collections.singleton(this);
     };
 
 };

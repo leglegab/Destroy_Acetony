@@ -741,10 +741,11 @@ public class LegacyReaction {
                 .id(reaction.id + ".reverse")
                 .dontIncludeInJei();
 
-            if (hasForcedEnthalpyChange && hasForcedActivationEnergy) { // If we've set the enthalpy change and activation energy for this Reaction, the values for the reverse are set in stone
-                reverseBuilder
-                    .activationEnergy(reaction.activationEnergy - reaction.enthalpyChange)
-                    .enthalpyChange(-reaction.enthalpyChange);
+            if (hasForcedEnthalpyChange) {
+                reverseBuilder.enthalpyChange(-reaction.enthalpyChange);
+                if (hasForcedActivationEnergy) { // If we've set the enthalpy change and activation energy for this Reaction, the values for the reverse are set in stone
+                    reverseBuilder.activationEnergy(reaction.activationEnergy - reaction.enthalpyChange);
+                };
             };
 
             if (reaction.needsUV()) reverseBuilder.requireUV();
@@ -753,15 +754,20 @@ public class LegacyReaction {
 
             reverseReactionModifier.accept(reverseBuilder); // Allow the user to manipulate the reverse Reaction
 
-            if ( // Check thermodynamics are correct
-                reaction.activationEnergy - reaction.enthalpyChange != reverseBuilder.reaction.activationEnergy
-                || reaction.enthalpyChange != -reverseBuilder.reaction.enthalpyChange
-            ) { // Try to correct them if not
-                if (!reverseBuilder.hasForcedActivationEnergy) {
-                    reverseBuilder.activationEnergy(reaction.activationEnergy - reaction.enthalpyChange);
-                } else if (!hasForcedEnthalpyChange) {
+            // Check thermodynamics are correct
+
+            if (reaction.enthalpyChange != -reverseBuilder.reaction.enthalpyChange) { // Attempt to correct enthalpy changes
+                if (!hasForcedEnthalpyChange) {
                     enthalpyChange(reaction.activationEnergy - reverseBuilder.reaction.activationEnergy);
                     reverseBuilder.enthalpyChange(-reaction.enthalpyChange);
+                } else {
+                    throw e("The enthalpy change of a reverse reaction must be the negative of the forward");
+                };
+            };
+
+            if ( reaction.activationEnergy - reaction.enthalpyChange != reverseBuilder.reaction.activationEnergy) { // Attempt to correct activation energies
+                if (!reverseBuilder.hasForcedActivationEnergy) {
+                    reverseBuilder.activationEnergy(reaction.activationEnergy - reaction.enthalpyChange);
                 } else if (!hasForcedActivationEnergy) {
                     activationEnergy(reverseBuilder.reaction.activationEnergy + reaction.enthalpyChange);
                 } else {

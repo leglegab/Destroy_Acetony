@@ -497,6 +497,11 @@ public final class DestroyMolecules {
         .tag(Tags.SMELLY)
         .tag(Tags.SMOG)
         .build(),
+
+    ETHOXIDE = builder()
+        .id("ethoxide")
+        .structure(LegacyMolecularStructure.deserialize("destroy:linear:CCO^-1"))
+        .build(),
     
     FLUORIDE = builder()
         .id("fluoride")

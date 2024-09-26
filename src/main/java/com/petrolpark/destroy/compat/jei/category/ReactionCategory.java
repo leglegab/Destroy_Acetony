@@ -2,6 +2,7 @@ package com.petrolpark.destroy.compat.jei.category;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -14,8 +15,6 @@ import com.petrolpark.destroy.Destroy;
 import com.petrolpark.destroy.chemistry.legacy.IItemReactant;
 import com.petrolpark.destroy.chemistry.legacy.LegacySpecies;
 import com.petrolpark.destroy.chemistry.legacy.LegacyReaction;
-import com.petrolpark.destroy.chemistry.legacy.ReactionResult;
-import com.petrolpark.destroy.chemistry.legacy.reactionresult.CombinedReactionResult;
 import com.petrolpark.destroy.chemistry.legacy.reactionresult.PrecipitateReactionResult;
 import com.petrolpark.destroy.client.gui.stackedtextbox.AbstractStackedTextBox;
 import com.petrolpark.destroy.client.gui.stackedtextbox.AbstractStackedTextBox.LinesAndActivationAreas;
@@ -128,7 +127,7 @@ public class ReactionCategory<T extends ReactionRecipe> extends HoverableTextCat
             if (i >= 6) continue;
             if (!itemReactant.isCatalyst()) {
                 Vector2i pos = getReactantRenderPosition(i, numberOfReactants);
-                builder.addSlot(RecipeIngredientRole.INPUT, pos.x, pos.y)
+                builder.addSlot(reaction.displayAsReversible() ? RecipeIngredientRole.CATALYST : RecipeIngredientRole.INPUT, pos.x, pos.y)
                     .addItemStacks(itemReactant.getDisplayedItemStacks())
                     .addRichTooltipCallback(ReactionTooltipHelper.itemReactantTooltip(reaction, itemReactant))
                     .setBackground(getRenderedSlot(), -1, -1);
@@ -136,16 +135,7 @@ public class ReactionCategory<T extends ReactionRecipe> extends HoverableTextCat
             };
         };
 
-        List<PrecipitateReactionResult> precipitates = new ArrayList<>();
-        if (reaction.hasResult()) {
-            if (reaction.getResult() instanceof PrecipitateReactionResult precipitate) {
-                precipitates.add(precipitate);
-            } else if (reaction.getResult() instanceof CombinedReactionResult combinedResults) {
-                for (ReactionResult combinedResult : combinedResults.getChildren()) {
-                    if (combinedResult instanceof PrecipitateReactionResult precipitate) precipitates.add(precipitate);
-                };
-            };
-        };
+        Collection<PrecipitateReactionResult> precipitates = reaction.hasResult() ? reaction.getResult().getPrecipitatesForJEI() : Collections.emptyList();
 
         int j = 0;
 
@@ -174,7 +164,7 @@ public class ReactionCategory<T extends ReactionRecipe> extends HoverableTextCat
 
         for (PrecipitateReactionResult precipitate : precipitates) {
             if (j >= 6) continue;
-            builder.addSlot(RecipeIngredientRole.OUTPUT, productsXOffset + (19 * (j % l)), productYOffset+ (j / l) * 19)
+            builder.addSlot(reaction.displayAsReversible() ? RecipeIngredientRole.CATALYST : RecipeIngredientRole.OUTPUT, productsXOffset + (19 * (j % l)), productYOffset+ (j / l) * 19)
                 .addItemStack(precipitate.getPrecipitate())
                 .addRichTooltipCallback(ReactionTooltipHelper.precipitateTooltip(reaction, precipitate))
                 .setBackground(getRenderedSlot(), -1, -1);

@@ -148,6 +148,15 @@ public class DestroyReactions {
         .reversible()
         .build(),
 
+    BROWN_SCHLESINGER_PROCESS = builder()
+        .id("brown_schlesinger_process")
+        .addReactant(DestroyMolecules.TRIMETHYL_BORATE)
+        .addSimpleItemReactant(DestroyItems.SODIUM_HYDRIDE::get, 2.4f)
+        .addProduct(DestroyMolecules.BOROHYDRIDE)
+        .addProduct(DestroyMolecules.ETHOXIDE, 3)
+        .addProduct(DestroyMolecules.SODIUM_ION, 4)
+        .build(),
+        
     BUTADIENE_CARBONYLATION = builder()
         .id("butadiene_carbonylation")
         .addReactant(DestroyMolecules.BUTADIENE)
@@ -604,7 +613,7 @@ public class DestroyReactions {
     LIME_SLAKING = builder()
         .id("lime_slaking")
         .addReactant(DestroyMolecules.WATER)
-        .addSimpleItemTagReactant(AllTags.forgeItemTag("dusts/quicklime"), 2f)
+        .addSimpleItemTagReactant(AllTags.forgeItemTag("dusts/lime"), 2f)
         .addProduct(DestroyMolecules.CALCIUM_ION)
         .addProduct(DestroyMolecules.HYDROXIDE, 2)
         .build(),
@@ -815,6 +824,13 @@ public class DestroyReactions {
         .activationEnergy(1f)
         .build(),
 
+    SODIUM_HYDRIDE_FORMATION = builder()
+        .id("sodium_hydride_formation")
+        .addReactant(DestroyMolecules.SODIUM_METAL, 2)
+        .addReactant(DestroyMolecules.HYDROGEN)
+        .withResult(10f, PrecipitateReactionResult.of(DestroyItems.SODIUM_HYDRIDE::asStack))
+        .build(),
+
     SODIUM_OXIDE_DISSOLUTION = builder()
         .id("sodium_oxide_dissolution")
         .addReactant(DestroyMolecules.WATER)
@@ -830,6 +846,7 @@ public class DestroyReactions {
         .addSimpleItemTagCatalyst(AllTags.forgeItemTag("dusts/nickel"), 1f)
         .addProduct(DestroyMolecules.CARBON_MONOXIDE)
         .addProduct(DestroyMolecules.HYDROGEN, 3)
+        .reversible()
         .build(),
 
     STYRENE_BUTADIENE_COPOLYMERIZATION = builder()

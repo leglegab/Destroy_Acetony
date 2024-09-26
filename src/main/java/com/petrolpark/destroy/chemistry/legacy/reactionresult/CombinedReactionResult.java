@@ -1,6 +1,7 @@
 package com.petrolpark.destroy.chemistry.legacy.reactionresult;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.function.BiFunction;
 
@@ -41,6 +42,11 @@ public class CombinedReactionResult extends ReactionResult {
         for (ReactionResult childResult : childResults) {
             childResult.onVatReaction(level, vatController);
         };
+    };
+
+    @Override
+    public Collection<PrecipitateReactionResult> getPrecipitatesForJEI() {
+        return childResults.stream().flatMap(r -> r.getPrecipitatesForJEI().stream()).toList();
     };
     
 };

@@ -73,7 +73,7 @@ public class DestroyCreativeModeTabs {
 				s("food"),
 				i(DestroyItems.NAPALM_SUNDAE), i(DestroyItems.THERMITE_BROWNIE), i(DestroyItems.BOMB_BON), i(DestroyItems.EMPTY_BOMB_BON),
 				i(DestroyItems.BUTTER), i(DestroyItems.MASHED_POTATO), i(DestroyBlocks.MASHED_POTATO_BLOCK), i(DestroyItems.RAW_FRIES), i(DestroyBlocks.RAW_FRIES_BLOCK), i(DestroyItems.FRIES), i(DestroyItems.BANGERS_AND_MASH), i(DestroyItems.CHEWING_GUM), i(DestroyItems.EMPTY_CARTON), i(DestroyItems.APPLE_JUICE_CARTON), i(DestroyItems.MILK_CARTON),
-				c(DestroyItems.MOONSHINE_BOTTLE, DestroySubstancesConfigs::alcoholEnabled), c(DestroyItems.MOONSHINE_BOTTLE, DestroySubstancesConfigs::alcoholEnabled), i(DestroyItems.CHORUS_WINE_BOTTLE),
+				c(DestroyItems.UNDISTILLED_MOONSHINE_BOTTLE, DestroySubstancesConfigs::alcoholEnabled), c(DestroyItems.MOONSHINE_BOTTLE, DestroySubstancesConfigs::alcoholEnabled), i(DestroyItems.CHORUS_WINE_BOTTLE),
 				
 				s("beetroots"),
 				n(), i(DestroyItems.HEFTY_BEETROOT), i(DestroyItems.COAL_INFUSED_BEETROOT), i(DestroyItems.COPPER_INFUSED_BEETROOT), i(DestroyItems.DIAMOND_INFUSED_BEETROOT), i(DestroyItems.EMERALD_INFUSED_BEETROOT), i(DestroyItems.FLUORITE_INFUSED_BEETROOT), i(DestroyItems.GOLD_INFUSED_BEETROOT), i(DestroyItems.IRON_INFUSED_BEETROOT), i(DestroyItems.LAPIS_INFUSED_BEETROOT),

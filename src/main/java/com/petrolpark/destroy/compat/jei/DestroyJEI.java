@@ -40,6 +40,7 @@ import com.petrolpark.destroy.compat.jei.category.VatMaterialCategory;
 import com.petrolpark.destroy.compat.jei.category.VatMaterialCategory.VatMaterialRecipe;
 import com.petrolpark.destroy.compat.jei.recipemanager.ChemicalSpeciesRecipeManagerPlugin;
 import com.petrolpark.destroy.compat.jei.recipemanager.FireproofingRecipeManagerPlugin;
+import com.petrolpark.destroy.compat.jei.recipemanager.ItemReverseReactionRecipeManagerPlugin;
 import com.petrolpark.destroy.compat.tfmg.SharedDistillationRecipes;
 import com.petrolpark.destroy.config.DestroyAllConfigs;
 import com.petrolpark.destroy.effect.potion.PotionSeparationRecipes;
@@ -359,6 +360,7 @@ public class DestroyJEI implements IModPlugin {
     public void registerAdvanced(IAdvancedRegistration registration) {
         registration.addRecipeManagerPlugin(new ChemicalSpeciesRecipeManagerPlugin(registration.getJeiHelpers()));
         registration.addRecipeManagerPlugin(new FireproofingRecipeManagerPlugin());
+        registration.addRecipeManagerPlugin(new ItemReverseReactionRecipeManagerPlugin());
     };
 
     @Override

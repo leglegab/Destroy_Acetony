@@ -1,8 +1,11 @@
 package com.petrolpark.destroy.chemistry.legacy;
 
+import java.util.Collection;
+import java.util.Collections;
 import java.util.Optional;
 
 import com.petrolpark.destroy.block.entity.VatControllerBlockEntity;
+import com.petrolpark.destroy.chemistry.legacy.reactionresult.PrecipitateReactionResult;
 import com.simibubi.create.content.processing.basin.BasinBlockEntity;
 
 import net.minecraft.world.level.Level;
@@ -56,4 +59,8 @@ public abstract class ReactionResult {
      * @param mixture The Mixture at the time when this Reaction Result occurs
      */
     public abstract void onVatReaction(Level level, VatControllerBlockEntity vatController);
+
+    public Collection<PrecipitateReactionResult> getPrecipitatesForJEI() {
+        return Collections.emptySet();
+    };
 };
