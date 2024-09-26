@@ -7,7 +7,7 @@
     ],
     "key": {
       "P": {
-        "tag": "destroy:plastic/rigid"
+        "tag": "destroy:plastics/rigid"
       },
       "B": {
         "tag": "forge:dyes/blue"

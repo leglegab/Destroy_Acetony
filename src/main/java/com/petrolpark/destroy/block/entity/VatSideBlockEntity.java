@@ -136,7 +136,7 @@ public class VatSideBlockEntity extends CopycatBlockEntity implements IHaveLabGo
     };
 
     protected void refreshFluidCapability() {
-        if (fluidCapability.isPresent()) return;
+        if (fluidCapability.isPresent() || getController() == null) return;
         fluidCapability = LazyOptional.of(() -> {
             // Allow inserting into this side tank (which is then mixed into the main tank)
             LazyOptional<? extends IFluidHandler> inputCap = inputBehaviour.getCapability();
@@ -263,7 +263,7 @@ public class VatSideBlockEntity extends CopycatBlockEntity implements IHaveLabGo
     @Override
     public <T> @NotNull LazyOptional<T> getCapability(@NotNull Capability<T> cap, @Nullable Direction side) {
         if (side != direction) return LazyOptional.empty();
-        if (isFluidHandlerCap(cap) && (displayType == DisplayType.NORMAL || displayType == DisplayType.PIPE)) {
+        if (isFluidHandlerCap(cap) && (displayType == DisplayType.NORMAL || displayType == DisplayType.PIPE) && fluidCapability.isPresent()) {
             return fluidCapability.cast();
         };
         if (isItemHandlerCap(cap)) {

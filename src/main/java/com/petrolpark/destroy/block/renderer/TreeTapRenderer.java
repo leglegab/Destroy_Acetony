@@ -26,7 +26,7 @@ public class TreeTapRenderer extends KineticBlockEntityRenderer<TreeTapBlockEnti
 	protected void renderSafe(TreeTapBlockEntity be, float partialTicks, PoseStack ms, MultiBufferSource buffer, int light, int overlay) {
 		super.renderSafe(be, partialTicks, ms, buffer, light, overlay);
 
-		if (Backend.canUseInstancing(be.getLevel())) return;
+		//if (Backend.canUseInstancing(be.getLevel())) return;
 
         BlockState state = be.getBlockState();
         Direction facing = state.getValue(TreeTapBlock.HORIZONTAL_FACING);

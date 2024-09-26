@@ -16,7 +16,7 @@
         "item": "supplementaries:altimeter"
       },
       "P": {
-        "tag": "destroy:plastic/rigid"
+        "tag": "destroy:plastics/rigid"
       },
       "V": {
         "item": "supplementaries:wind_vane"

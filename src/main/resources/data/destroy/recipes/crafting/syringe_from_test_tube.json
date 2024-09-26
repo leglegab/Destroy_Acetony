@@ -9,7 +9,7 @@
         "item": "destroy:test_tube"
       },
       "T": {
-        "tag": "destroy:plastic/inert"
+        "tag": "destroy:plastics/inert"
       }
     },
     "result": {

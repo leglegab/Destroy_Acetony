@@ -17,8 +17,7 @@ public class GhostIngredientHandlerMixin {
         at = @At(
             value = "INVOKE",
             target = "Lnet/minecraft/world/inventory/Slot;isActive()Z"
-        ),
-        remap = false
+        )
     )
     public boolean checkSlot(Slot slot) {
         Minecraft mc = Minecraft.getInstance();

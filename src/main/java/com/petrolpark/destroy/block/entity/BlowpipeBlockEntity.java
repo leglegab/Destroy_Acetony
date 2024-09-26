@@ -15,8 +15,10 @@ import com.simibubi.create.foundation.blockEntity.behaviour.BlockEntityBehaviour
 import com.simibubi.create.foundation.recipe.RecipeFinder;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
@@ -113,7 +115,9 @@ public class BlowpipeBlockEntity extends SmartBlockEntity {
             progress = progressLastTick = 0;
             advancementBehaviour.awardDestroyAdvancement(DestroyAdvancementTrigger.BLOWPIPE);
             send = true;
-            //TODO spawn item
+            Direction facing = getBlockState().getValue(BlowpipeBlock.FACING);
+            Vec3 itemPos = Vec3.atCenterOf(getBlockPos().relative(facing)).subtract(Vec3.atLowerCornerOf(facing.getNormal()).scale(0.5f));
+            getLevel().addFreshEntity(new ItemEntity(getLevel(), itemPos.x(), itemPos.y(), itemPos.z(), getRecipe().getRollableResultsAsItemStacks().get(0)));
         };
 
         if (send) notifyUpdate();

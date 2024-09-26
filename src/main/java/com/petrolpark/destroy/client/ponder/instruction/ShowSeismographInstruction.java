@@ -155,7 +155,7 @@ public class ShowSeismographInstruction extends FadeInOutInstruction {
             PonderUI.renderSpeechBox(graphics, 0, 0, 96, 96, false, direction, true);
             ms.pushPose();
             ms.scale(1.5f, 1.5f, 1.5f);
-            SeismographItemRenderer.renderSeismograph(ms, graphics.bufferSource(), 0, null, null, seismograph, mc, (t, x, y) -> t.render(graphics, (int)x, (int)y));
+            SeismographItemRenderer.renderSeismograph(ms, graphics.bufferSource(), 0, null, null, seismograph, mc, (t, x, y) -> t.render(graphics, (int)x, (int)y), false);
             ms.translate(0f, 0f, 100f);
             for (Outline outline : outlines) {
                 outline.texture.render(graphics, outline.x, outline.y, outline.color.getColorObject().setAlpha(1f).scaleAlpha(outline.fade.getValue(partialTicks)));

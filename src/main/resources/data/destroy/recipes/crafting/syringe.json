@@ -10,7 +10,7 @@
         "item": "minecraft:glass_pane"
       },
       "T": {
-        "tag": "destroy:plastic/inert"
+        "tag": "destroy:plastics/inert"
       }
     },
     "result": {

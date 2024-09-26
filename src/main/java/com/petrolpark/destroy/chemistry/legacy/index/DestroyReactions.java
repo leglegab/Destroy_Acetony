@@ -552,6 +552,14 @@ public class DestroyReactions {
         .addProduct(DestroyMolecules.IRON_III, 2)
         .build(),
 
+    ISOPRENE_POLYMERIZATION = builder()
+        .id("isoprene_polymerization")
+        .addReactant(DestroyMolecules.ISOPRENE)
+        .withResult(3f, PrecipitateReactionResult.of(DestroyItems.POLYISOPRENE::asStack))
+        .preexponentialFactor(10f)
+        .activationEnergy(10f)
+        .build(),
+
     // IRON_III_REDUCTION = builder()
     //     .id("iron_iii_reduction")
     //     .addReactant(DestroyMolecules.IRON_III)

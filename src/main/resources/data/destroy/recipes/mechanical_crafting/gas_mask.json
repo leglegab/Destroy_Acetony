@@ -8,10 +8,10 @@
     ],
     "key": {
       "N": {
-        "tag": "destroy:plastic/textile"
+        "tag": "destroy:plastics/textile"
       },
       "P": {
-        "tag": "destroy:plastic/inert"
+        "tag": "destroy:plastics/inert"
       },
       "Y": {
         "tag": "forge:dyes/yellow"

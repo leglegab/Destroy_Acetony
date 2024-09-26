@@ -2,7 +2,7 @@
     "type": "create:mixing",
     "ingredients": [
       {
-        "tag": "destroy:plastic/porous"
+        "tag": "destroy:plastics/porous"
       },
       {
         "fluidTag": "forge:crude_oil",

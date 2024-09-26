@@ -19,7 +19,7 @@
         "tag": "forge:raw_materials/iron"
       },
       "B": {
-        "tag": "forge:raw_materials/coal"
+        "tag": "minecraft:coals"
       }
     },
     "result": {

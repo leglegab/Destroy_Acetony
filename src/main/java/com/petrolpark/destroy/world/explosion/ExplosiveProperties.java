@@ -185,7 +185,7 @@ public class ExplosiveProperties extends EnumMap<ExplosiveProperties.ExplosivePr
         };
 
         public String getDescriptionTranslationKey() {
-            return "destroy.explosive_property."+Lang.asId(name())+"description";
+            return "destroy.explosive_property."+Lang.asId(name())+".description";
         };
 
         @Override

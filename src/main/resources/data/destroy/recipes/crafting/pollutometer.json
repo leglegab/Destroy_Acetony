@@ -10,7 +10,7 @@
         "item": "minecraft:string"
       },
       "P": {
-        "tag": "destroy:plastic/rigid"
+        "tag": "destroy:plastics/rigid"
       },
       "S": {
         "item": "destroy:silica"

@@ -2,6 +2,7 @@ package com.petrolpark.destroy.item.renderer;
 
 import com.jozufozu.flywheel.util.AnimationTickHolder;
 import com.jozufozu.flywheel.util.transform.TransformStack;
+import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
 import com.petrolpark.destroy.client.gui.DestroyGuiTextures;
@@ -78,7 +79,7 @@ public class SeismographItemRenderer extends CustomRenderedItemModelRenderer {
         ms.translate(handRotation * 0.125f, -0.125f, 0f);
         if (!mc.player.isInvisible()) {
             ms.pushPose();
-            ms.mulPose(Axis.ZP.rotationDegrees(handRotation * 10f));
+            ms.mulPose(Axis.ZP.rotationDegrees(10f));
             itemRenderer.renderPlayerArm(ms, buffer, light, equippedProgress, swingProgress, hand);
             ms.popPose();
         };
@@ -106,7 +107,7 @@ public class SeismographItemRenderer extends CustomRenderedItemModelRenderer {
         Seismograph seismograph = SeismographItem.readSeismograph(stack);
 
         // Render as normal
-        renderSeismograph(ms, buffer, light, mapId, mapData, seismograph, mc, (t, x, y) -> t.render(ms, x, y));
+        renderSeismograph(ms, buffer, light, mapId, mapData, seismograph, mc, (t, x, y) -> t.render(ms, x, y), true);
 
         ms.popPose();
     };
@@ -118,22 +119,20 @@ public class SeismographItemRenderer extends CustomRenderedItemModelRenderer {
         public void render(DestroyGuiTextures texture, float x, float y);
     };
     
-    public static void renderSeismograph(PoseStack ms, MultiBufferSource buffer, int light, Integer mapId, MapItemSavedData mapData, Seismograph seismograph, Minecraft mc, SeismographGuiTextureRenderer renderer) {
+    public static void renderSeismograph(PoseStack ms, MultiBufferSource buffer, int light, Integer mapId, MapItemSavedData mapData, Seismograph seismograph, Minecraft mc, SeismographGuiTextureRenderer renderer, boolean invertZ) {
         ms.pushPose(); 
+
+        float zm = invertZ ? -2f : 1f;
+
+        RenderSystem.enableDepthTest();
+        RenderSystem.enableCull();
 
         // Background
         renderer.render(DestroyGuiTextures.SEISMOGRAPH_BACKGROUND, 0f, 0f);
-
-        // Map colors
-        ms.pushPose();
-        ms.translate(13f, 13f, 0f);
-        ms.scale(47 / 128f, 47 / 128f, 1f);
-        if (mapId != null && mapData != null) mc.gameRenderer.getMapRenderer().render(ms, buffer, mapId, mapData, false, light);
-        ms.popPose();
     
         // Marks
         ms.pushPose();
-        ms.translate(13f, 13f, -0.02f);
+        ms.translate(13f, 13f, 0.02f * zm);
         for (int x = 0; x < 8; x++) {
             for (int z = 0; z < 8; z++) {
                 Mark mark = seismograph.getMark(x, z);
@@ -144,7 +143,7 @@ public class SeismographItemRenderer extends CustomRenderedItemModelRenderer {
 
         // Rows
         ms.pushPose();;
-        ms.translate(8f, 13f, -0.03f);
+        ms.translate(8f, 13f, 0.03f * zm);
         for (int z = 0; z < 8; z++) {
             ms.pushPose();
             ms.translate(0f, z * 6f, 0f);
@@ -165,7 +164,7 @@ public class SeismographItemRenderer extends CustomRenderedItemModelRenderer {
 
         // Columns
         ms.pushPose();;
-        ms.translate(18f, 8f, -0.03f);
+        ms.translate(18f, 8f, 0.03f * zm);
         TransformStack.cast(ms)
             .rotateZ(90d);
         for (int x = 0; x < 8; x++) {
@@ -186,8 +185,19 @@ public class SeismographItemRenderer extends CustomRenderedItemModelRenderer {
         };
         ms.popPose();
 
+        // Map colors
+        ms.pushPose();
+        ms.translate(13f, 13f,  0f);
+        ms.scale(47 / 128f, 47 / 128f, 1f);
+        ms.translate(0f, 0f, 0.01f * zm);
+        if (mapId != null && mapData != null) mc.gameRenderer.getMapRenderer().render(ms, buffer, mapId, mapData, false, light);
+        ms.popPose();
+
         // Overlay
+        ms.pushPose();
+        ms.translate(0f, 0f, 0.04f * zm);
         renderer.render(DestroyGuiTextures.SEISMOGRAPH_OVERLAY, 0f, 0f);
+        ms.popPose();
         ms.popPose();
     };
 
