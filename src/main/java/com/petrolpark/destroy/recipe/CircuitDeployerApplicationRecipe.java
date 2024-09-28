@@ -19,9 +19,11 @@ import com.simibubi.create.content.processing.recipe.ProcessingRecipeBuilder.Pro
 import com.simibubi.create.content.processing.sequenced.SequencedAssemblyItem;
 
 import net.minecraft.core.NonNullList;
+import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraftforge.common.crafting.IIngredientSerializer;
 import net.minecraftforge.items.wrapper.RecipeWrapper;
 
 
@@ -33,10 +35,11 @@ public class CircuitDeployerApplicationRecipe extends DeployerApplicationRecipe 
 
     private int recipeId = 0;
 
-    protected static class MaskIngredient extends Ingredient {
+    protected static class ExampleMaskIngredient extends Ingredient {
+        public static final Serializer SERIALIZER = new Serializer();
         private final Ingredient parent;
 
-        public MaskIngredient(Ingredient parent) {
+        public ExampleMaskIngredient(Ingredient parent) {
             super(Stream.of());
             this.parent = parent;
         };
@@ -55,6 +58,29 @@ public class CircuitDeployerApplicationRecipe extends DeployerApplicationRecipe 
                 return stack;
             }).toArray(i -> new ItemStack[i]);
         };
+
+        @Override
+        public IIngredientSerializer<? extends Ingredient> getSerializer() {
+            return SERIALIZER;
+        };
+
+        public static class Serializer implements IIngredientSerializer<ExampleMaskIngredient> {
+
+            @Override
+            public ExampleMaskIngredient parse(FriendlyByteBuf buffer) {
+                return new ExampleMaskIngredient(Ingredient.fromNetwork(buffer));
+            };
+
+            @Override
+            public ExampleMaskIngredient parse(JsonObject json) {
+                return new ExampleMaskIngredient(Ingredient.fromJson(json));
+            };
+
+            @Override
+            public void write(FriendlyByteBuf buffer, ExampleMaskIngredient ingredient) {
+                ingredient.parent.toNetwork(buffer);
+            };
+        };
     };
 
     public CircuitDeployerApplicationRecipe(ProcessingRecipeParams params) {
@@ -69,13 +95,13 @@ public class CircuitDeployerApplicationRecipe extends DeployerApplicationRecipe 
     @Override
     public NonNullList<Ingredient> getIngredients() {
         NonNullList<Ingredient> exampleIngredients = NonNullList.of(Ingredient.EMPTY, ingredients.toArray(new Ingredient[ingredients.size()]));
-        exampleIngredients.set(1, new MaskIngredient(ingredients.get(1)));
+        exampleIngredients.set(1, new ExampleMaskIngredient(ingredients.get(1)));
         return exampleIngredients;
     };
 
     @Override
     public Ingredient getRequiredHeldItem() {
-        return new MaskIngredient(ingredients.get(1));
+        return new ExampleMaskIngredient(ingredients.get(1));
     };
 
     @Override
