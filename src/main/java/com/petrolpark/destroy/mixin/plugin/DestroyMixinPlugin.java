@@ -35,6 +35,9 @@ public class DestroyMixinPlugin implements IMixinConfigPlugin {
         // TFMG mixins
         onlyLoadIfModPresent("AdvancedDistillationCategoryMixin", "tfmg", "jei");
         onlyLoadIfModPresent("DistillationOutputBlockEntityMixin", "tfmg");
+
+        // Embeddium mixins
+        onlyLoadIfModPresent("WorldSliceMixin", "embeddium");
     };
 
     @Override

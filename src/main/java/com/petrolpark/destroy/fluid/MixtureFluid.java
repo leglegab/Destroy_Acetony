@@ -26,8 +26,8 @@ public class MixtureFluid extends VirtualFluid {
     public static LegacyMixture airMixture(float temperature) {
         if (temperature <= 0f || Float.isNaN(temperature)) throw new IllegalStateException("Temperature cannot be negative or 0.");
         LegacyMixture air = new LegacyMixture();
-        air.addMolecule(DestroyMolecules.NITROGEN, 32.80f * 279f / temperature);
-        air.addMolecule(DestroyMolecules.OXYGEN, 8.83f * 279f / temperature);
+        air.addMolecule(DestroyMolecules.NITROGEN, 0.03280f * 279f / temperature);
+        air.addMolecule(DestroyMolecules.OXYGEN, 0.00883f * 279f / temperature);
         air.setTemperature(temperature);
         return air;
     };

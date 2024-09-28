@@ -102,7 +102,7 @@ public class CircuitPatternItemRenderer extends CustomRenderedItemModelRenderer 
 
     @SubscribeEvent
     public static void onRegisterReloadListeners(RegisterClientReloadListenersEvent event) {
-        //event.registerReloadListener(RELOAD_LISTENER);
+        event.registerReloadListener(RELOAD_LISTENER);
     };
 
     protected static class ReloadListener implements ResourceManagerReloadListener {
