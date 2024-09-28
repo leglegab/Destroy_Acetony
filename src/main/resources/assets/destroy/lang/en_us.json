@@ -518,6 +518,11 @@
     "destroy.chemical.water": "Water",
     "destroy.chemical.zinc": "Zinc (II)",
     "destroy.chemical.zirconium": "Zirconium",
+    "destroy.chemical.alkyne": "Alkyne",
+    "destroy.chemical.borohydride": "Borohydride",
+    "destroy.chemical.argon": "Argon",
+    "destroy.chemical.creatine": "Creatine",
+    "destroy.chemical.trimethyl_borate": "Trimethyl Borate",
 
     "destroy.chemistry.acid": "Acids are species which can donate hydrogen ions ({protons, destroy:proton}) to other species. They react with {bases, destroy:base}.",
     "destroy.chemistry.addition": "An addition reaction is one in which a group is added to a {molecule, destroy:molecule}.",

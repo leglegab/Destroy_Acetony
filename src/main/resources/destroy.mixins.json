@@ -75,6 +75,7 @@
     "client": [
         "compat.jei.GhostIngredientHandlerMixin",
         "compat.jei.JeiProcessingRecipeMixin",
+        "compat.embeddium.WorldSliceMixin",
         "BeltRendererMixin",
         "ClientLevelMixin",
         "CreativeModeInventoryScreenMixin",
