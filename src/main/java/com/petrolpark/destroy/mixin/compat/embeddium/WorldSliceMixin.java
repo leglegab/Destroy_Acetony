@@ -1,7 +1,6 @@
 package com.petrolpark.destroy.mixin.compat.embeddium;
 
 import me.jellysquid.mods.sodium.client.world.WorldSlice;
-import net.minecraft.client.color.block.BlockTintCache;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.ColorResolver;
