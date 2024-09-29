@@ -43,7 +43,7 @@ public abstract class MixingCategoryMixin extends BasinCategory {
         remap = false
     )
     private void inDraw(BasinRecipe recipe, IRecipeSlotsView iRecipeSlotsView, GuiGraphics graphics, double mouseX, double mouseY, CallbackInfo ci) {
-        if (recipe.getRequiredHeat().name() == "COOLED") {
+        if (recipe.getRequiredHeat().name().equals("COOLED")) {
             cooler.withColdness(ColdnessLevel.FROSTING)
                 .draw(graphics, 177 / 2 + 3, 55); // I have replaced the dynamic access getBackground() with just a constant hopefully that shouldn't matter too much
             newMixer.draw(graphics, 177 / 2 + 3, 34); // We also need to render the Press here seeing as that gets cancelled

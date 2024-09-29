@@ -15,6 +15,8 @@ import net.minecraft.network.chat.Component;
 
 public class RefrigerantDummyFluidIngredient extends MoleculeTagFluidIngredient {
 
+    public static final Type TYPE = new Type();
+
     public RefrigerantDummyFluidIngredient() {
         super(DestroyMolecules.Tags.REFRIGERANT, 0.9f, 1.1f);
         amountRequired = 1000;

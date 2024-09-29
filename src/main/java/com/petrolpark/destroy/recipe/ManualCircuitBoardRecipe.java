@@ -195,7 +195,10 @@ public class ManualCircuitBoardRecipe extends ManualOnlyShapedRecipe {
             int i = 0;
             writeEachIngredient: for (Ingredient ingredient : recipe.getIngredients()) {
                 for (int position : recipe.maskPositions) {
-                    if (position == i) continue writeEachIngredient;
+                    if (position == i) {
+                        i++;
+                        continue writeEachIngredient;
+                    }
                 };
                 ingredient.toNetwork(buffer);
                 i++;
