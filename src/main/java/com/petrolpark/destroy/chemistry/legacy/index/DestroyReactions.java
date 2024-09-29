@@ -380,6 +380,16 @@ public class DestroyReactions {
         .withResult(10f, PrecipitateReactionResult.of(DestroyItems.CREATINE::asStack))
         .build(),
 
+    DIBORANE_HYDROLYSIS = builder()
+        .id("diborane_hydrolysis")
+        .addReactant(DestroyMolecules.DIBORANE)
+        .addReactant(DestroyMolecules.WATER, 6, 1)
+        .addProduct(DestroyMolecules.BORIC_ACID, 2)
+        .addProduct(DestroyMolecules.HYDROGEN, 6)
+        .activationEnergy(1f) // Fast
+        .enthalpyChange(-466f)
+        .build(),
+
     DINITROTOLUENE_NITRATION = builder()
         .id("dinitrotoluene_nitration")
         .addReactant(DestroyMolecules.DINITROTOLUENE)
@@ -829,6 +839,15 @@ public class DestroyReactions {
         .addReactant(DestroyMolecules.SODIUM_METAL, 2)
         .addReactant(DestroyMolecules.HYDROGEN)
         .withResult(10f, PrecipitateReactionResult.of(DestroyItems.SODIUM_HYDRIDE::asStack))
+        .build(),
+
+    SODIUM_HYDRIDE_HYDROLYSIS = builder()
+        .id("sodium_hydride_hydrolysis")
+        .addReactant(DestroyMolecules.WATER)
+        .addSimpleItemReactant(DestroyItems.SODIUM_HYDRIDE::get, 10.1f)
+        .addProduct(DestroyMolecules.SODIUM_ION)
+        .addProduct(DestroyMolecules.HYDROXIDE)
+        .addProduct(DestroyMolecules.HYDROGEN)
         .build(),
 
     SODIUM_OXIDE_DISSOLUTION = builder()
