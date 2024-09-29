@@ -54,7 +54,7 @@
         "generic": "destroy.chemical.oxide.salt"
     },
     "destroy:potassium_ion": {
-        "generic": "destroy.chemical.potassium.salt"
+        "generic": "destroy.chemical.potassium.salt",
         "specifics": {
             "destroy:nitrate": "destroy.chemical.saltpeter"
         }
