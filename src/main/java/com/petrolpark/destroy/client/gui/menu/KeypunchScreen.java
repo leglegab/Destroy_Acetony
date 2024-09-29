@@ -124,7 +124,7 @@ public class KeypunchScreen extends AbstractSimiScreen {
 	};
 
     public void syncName() {
-        if (nameBox.getValue() != keypunch.name){
+        if (!nameBox.getValue().equals(keypunch.name)){
             keypunch.name = nameBox.getValue();
             DestroyMessages.sendToServer(new NameKeypunchC2SPacket(keypunch.getBlockPos(), nameBox.getValue()));
         };

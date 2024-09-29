@@ -41,7 +41,7 @@ public interface IVatHeaterBlock {
                 return DestroyAllConfigs.SERVER.blocks.blazeBurnerHeatingPower.getF();
             } else if (heatLevel == HeatLevel.SEETHING) {
                 return DestroyAllConfigs.SERVER.blocks.blazeBurnerSuperHeatingPower.getF();
-            } else if (heatLevel.name() == "FROSTING") {
+            } else if (heatLevel.name().equals("FROSTING")) {
                 return DestroyAllConfigs.SERVER.blocks.coolerHeatingPower.getF();
             };
         };

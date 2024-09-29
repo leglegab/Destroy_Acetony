@@ -42,12 +42,12 @@ public class PureSpeciesFluidIngredient extends MixtureFluidIngredient<PureSpeci
 
     @Override
     protected void readInternal(FriendlyByteBuf buffer) {
-        buffer.writeUtf(species.getFullID());
+        species = LegacySpecies.getMolecule(buffer.readUtf());
     };
 
     @Override
     protected void writeInternal(FriendlyByteBuf buffer) {
-        species = LegacySpecies.getMolecule(buffer.readUtf());
+        buffer.writeUtf(species.getFullID());
     };
 
     @Override

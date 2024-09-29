@@ -27,7 +27,7 @@ public class SoundEntryBuilderMixin {
     )
     public void inBuild(CallbackInfoReturnable<SoundEntry> cir, SoundEntry entry) {
         ResourceLocation id = entry.getId();
-        if (id != null && id.getNamespace() != Create.ID) {
+        if (id != null && !id.getNamespace().equals(Create.ID)) {
             cir.setReturnValue(entry);
             cir.cancel();
         };

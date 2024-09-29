@@ -178,7 +178,7 @@ public class LegacySpecies implements INameableProduct {
         } else if (idComponents.length == 2) {
             return MOLECULES.get(id);
         };
-        if (!id.matches("NO_MOLECULE")) Destroy.LOGGER.warn("Could not find Molecule '"+id+"'."); // The 'NO_MOLECULE' is just to stop false warnings due to the Chemical Poison mob effect
+        if (!id.equals("NO_MOLECULE")) Destroy.LOGGER.warn("Could not find Molecule '"+id+"'."); // The 'NO_MOLECULE' is just to stop false warnings due to the Chemical Poison mob effect
         return null;
     };
 
@@ -338,7 +338,7 @@ public class LegacySpecies implements INameableProduct {
      * @see LegacySpecies What a novel Molecule is
      */
     public boolean isNovel() {
-        return this.nameSpace == "novel";
+        return this.nameSpace.equals("novel");
     };
 
     /**
@@ -744,7 +744,7 @@ public class LegacySpecies implements INameableProduct {
 
             if (molecule.getAtoms().size() >= 100) throw e("Molecule has too many Atoms");
 
-            if (molecule.nameSpace == "novel") {
+            if (molecule.nameSpace.equals("novel")) {
                 LegacySpecies equivalentMolecule = molecule.getEquivalent();
                 if (equivalentMolecule != molecule) {
                     return equivalentMolecule;
@@ -776,7 +776,7 @@ public class LegacySpecies implements INameableProduct {
             molecule.refreshFunctionalGroups();
             molecule.structure.updateSideChainStructures();
 
-            if (molecule.nameSpace != "novel") {
+            if (!molecule.nameSpace.equals("novel")) {
                 if (molecule.id == null) {
                     throw e("Molecule's ID has not been declared.");
                 } else {
