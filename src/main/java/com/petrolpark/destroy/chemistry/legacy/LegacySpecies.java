@@ -178,7 +178,7 @@ public class LegacySpecies implements INameableProduct {
         } else if (idComponents.length == 2) {
             return MOLECULES.get(id);
         };
-        if (!id.matches("NO_MOLECULE")) Destroy.LOGGER.warn("Could not find Molecule '"+id+"'."); // The 'NO_MOLECULE' is just to stop false warnings due to the Chemical Poison mob effect
+        if (!id.equals("NO_MOLECULE")) Destroy.LOGGER.warn("Could not find Molecule '"+id+"'."); // The 'NO_MOLECULE' is just to stop false warnings due to the Chemical Poison mob effect
         return null;
     };
 
