@@ -21,7 +21,7 @@ public abstract class BlazeBurnerBlockEntityMixin {
         cancellable = true
     )
     public void inApplyCreativeFuel(CallbackInfo ci, HeatLevel next) {
-        if (next.name() == "FROSTING") {
+        if (next.name().equals("FROSTING")) {
             ci.cancel();
             invokeSetBlockHeat(HeatLevel.SMOULDERING);
         };

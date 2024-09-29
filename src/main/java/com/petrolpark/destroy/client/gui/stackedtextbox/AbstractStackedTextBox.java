@@ -103,7 +103,7 @@ public abstract class AbstractStackedTextBox extends ElementWidget {
         };
 
         // Add the final section
-        if (currentSection != "") {
+        if (!currentSection.equals("")) {
             components.add(new StackedTextBoxComponent.Plain(String.valueOf(currentSection)));
         };
 

@@ -338,7 +338,7 @@ public class LegacySpecies implements INameableProduct {
      * @see LegacySpecies What a novel Molecule is
      */
     public boolean isNovel() {
-        return this.nameSpace == "novel";
+        return this.nameSpace.equals("novel");
     };
 
     /**
@@ -744,7 +744,7 @@ public class LegacySpecies implements INameableProduct {
 
             if (molecule.getAtoms().size() >= 100) throw e("Molecule has too many Atoms");
 
-            if (molecule.nameSpace == "novel") {
+            if (molecule.nameSpace.equals("novel")) {
                 LegacySpecies equivalentMolecule = molecule.getEquivalent();
                 if (equivalentMolecule != molecule) {
                     return equivalentMolecule;
@@ -776,7 +776,7 @@ public class LegacySpecies implements INameableProduct {
             molecule.refreshFunctionalGroups();
             molecule.structure.updateSideChainStructures();
 
-            if (molecule.nameSpace != "novel") {
+            if (!molecule.nameSpace.equals("novel")) {
                 if (molecule.id == null) {
                     throw e("Molecule's ID has not been declared.");
                 } else {
