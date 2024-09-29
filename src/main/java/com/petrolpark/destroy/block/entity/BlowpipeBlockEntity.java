@@ -36,6 +36,7 @@ public class BlowpipeBlockEntity extends SmartBlockEntity {
     private static final Object recipeCacheKey = new Object();
 
     public FluidTank tank;
+    public int luminosity;
 
     protected DestroyAdvancementBehaviour advancementBehaviour;
 
@@ -47,13 +48,26 @@ public class BlowpipeBlockEntity extends SmartBlockEntity {
     public BlowpipeBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState state) {
         super(type, pos, state);
         recipe = null;
-        tank = new FluidTank(TANK_CAPACITY);
+        tank = new FluidTank(TANK_CAPACITY) {
+            @Override
+            protected void onContentsChanged() {
+                onFluidStackChanged();
+            };
+        };
     };
 
     @Override
     public void addBehaviours(List<BlockEntityBehaviour> behaviours) {
         behaviours.add(new GlassblowingBehaviour());
         advancementBehaviour = new DestroyAdvancementBehaviour(this, DestroyAdvancementTrigger.BLOWPIPE);
+    };
+
+    public void onFluidStackChanged() {
+        int newLuminosity = tank.getFluid().getFluid().getFluidType().getLightLevel();
+        if (newLuminosity != luminosity && getLevel().isClientSide()) {
+            luminosity = newLuminosity;
+            sendData();
+        };
     };
 
     public FluidStack getFluid() {
@@ -70,6 +84,13 @@ public class BlowpipeBlockEntity extends SmartBlockEntity {
     protected void read(CompoundTag tag, boolean clientPacket) {
         super.read(tag, clientPacket);
         readBlowing(tag);
+        int oldLuminosity = luminosity;
+        luminosity = tag.getInt("Luminosity");
+        if (oldLuminosity != luminosity) {
+            level.getChunkSource()
+				.getLightEngine()
+				.checkBlock(getBlockPos());
+        };
     };
 
     public void readBlowing(CompoundTag tag) {
@@ -91,6 +112,7 @@ public class BlowpipeBlockEntity extends SmartBlockEntity {
     protected void write(CompoundTag tag, boolean clientPacket) {
         super.write(tag, clientPacket);
         writeBlowing(tag, false);
+        tag.putInt("Luminosity", luminosity);
     };
 
     public void writeBlowing(CompoundTag tag, boolean forItem) {

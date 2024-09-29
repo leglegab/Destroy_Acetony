@@ -23,6 +23,7 @@ import com.petrolpark.destroy.util.DestroyLang;
 import com.petrolpark.destroy.util.DistillationTower;
 import com.petrolpark.destroy.util.DestroyLang.TemperatureUnit;
 import com.simibubi.create.content.redstone.displayLink.DisplayLinkContext;
+import com.simibubi.create.content.redstone.thresholdSwitch.ThresholdSwitchObservable;
 import com.simibubi.create.foundation.blockEntity.SmartBlockEntity;
 import com.simibubi.create.foundation.blockEntity.behaviour.BlockEntityBehaviour;
 import com.simibubi.create.foundation.blockEntity.behaviour.fluid.SmartFluidTankBehaviour;
@@ -48,7 +49,7 @@ import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler.FluidAction;
 
-public class BubbleCapBlockEntity extends SmartBlockEntity implements IHaveLabGoggleInformation, IDirectionalOutputFluidBlockEntity {
+public class BubbleCapBlockEntity extends SmartBlockEntity implements IHaveLabGoggleInformation, IDirectionalOutputFluidBlockEntity, ThresholdSwitchObservable {
 
     private static final DecimalFormat df = new DecimalFormat();
     static {
@@ -226,6 +227,11 @@ public class BubbleCapBlockEntity extends SmartBlockEntity implements IHaveLabGo
         if (getTank().isEmpty()) return 0;
         FluidStack fluidStack = getTank().getFluid();
         return fluidStack.getRawFluid().getFluidType().getLightLevel(fluidStack);
+    };
+
+    @Override
+    public float getPercent() {
+        return 100f * (float)getTank().getFluidAmount() / (float)getTank().getCapacity();
     };
 
     /**

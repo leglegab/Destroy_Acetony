@@ -85,6 +85,11 @@ public class BlowpipeBlock extends DirectionalBlock implements IBE<BlowpipeBlock
     };
 
     @Override
+    public int getLightEmission(BlockState state, BlockGetter level, BlockPos pos) {
+        return level.getBlockEntity(pos, DestroyBlockEntityTypes.BLOWPIPE.get()).map(b -> b.luminosity).orElse(super.getLightEmission(state, level, pos));
+    };
+
+    @Override
     public List<ItemStack> getDrops(BlockState state, LootParams.Builder params) {
         BlockEntity be = params.getOptionalParameter(LootContextParams.BLOCK_ENTITY);
         return Collections.singletonList(getItemStack(be));

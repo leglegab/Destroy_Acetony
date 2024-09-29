@@ -637,7 +637,7 @@ public class VatControllerBlockEntity extends SmartBlockEntity implements IHaveL
         if (getGasTank().isEmpty()) {
             return getLiquidTank().getFluidAmount() == getLiquidTank().getCapacity() ? 0f : AIR_PRESSURE; // Return 0 for a vacuum, and normal air pressure for a full Vat
         };
-        return LegacyReaction.GAS_CONSTANT * getTemperature() * ReadOnlyMixture.readNBT(ReadOnlyMixture::new, getGasTank().getFluid().getOrCreateChildTag("Mixture")).getTotalConcentration() - AIR_PRESSURE;
+        return LegacyReaction.GAS_CONSTANT * 1000f * getTemperature() * ReadOnlyMixture.readNBT(ReadOnlyMixture::new, getGasTank().getFluid().getOrCreateChildTag("Mixture")).getTotalConcentration() - AIR_PRESSURE;
     };
 
     /**
