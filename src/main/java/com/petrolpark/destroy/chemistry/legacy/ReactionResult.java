@@ -60,7 +60,7 @@ public abstract class ReactionResult {
      */
     public abstract void onVatReaction(Level level, VatControllerBlockEntity vatController);
 
-    public Collection<PrecipitateReactionResult> getPrecipitatesForJEI() {
+    public Collection<PrecipitateReactionResult> getAllPrecipitates() {
         return Collections.emptySet();
     };
 };

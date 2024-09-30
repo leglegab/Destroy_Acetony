@@ -42,7 +42,7 @@ public class PrecipitateReactionResult extends ReactionResult {
     };
 
     @Override
-    public Collection<PrecipitateReactionResult> getPrecipitatesForJEI() {
+    public Collection<PrecipitateReactionResult> getAllPrecipitates() {
         return Collections.singleton(this);
     };
 

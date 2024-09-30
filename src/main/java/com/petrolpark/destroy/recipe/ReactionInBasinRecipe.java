@@ -10,6 +10,7 @@ import javax.annotation.Nullable;
 import com.petrolpark.destroy.Destroy;
 import com.petrolpark.destroy.block.entity.behaviour.ExtendedBasinBehaviour;
 import com.petrolpark.destroy.capability.Pollution;
+import com.petrolpark.destroy.chemistry.api.util.Constants;
 import com.petrolpark.destroy.chemistry.legacy.LegacyMixture;
 import com.petrolpark.destroy.chemistry.legacy.ReactionResult;
 import com.petrolpark.destroy.chemistry.legacy.LegacyMixture.Phases;
@@ -17,6 +18,7 @@ import com.petrolpark.destroy.chemistry.legacy.reactionresult.CombinedReactionRe
 import com.petrolpark.destroy.chemistry.legacy.reactionresult.PrecipitateReactionResult;
 import com.petrolpark.destroy.fluid.DestroyFluids;
 import com.petrolpark.destroy.fluid.MixtureFluid;
+import com.petrolpark.destroy.util.ItemHelper;
 import com.petrolpark.destroy.util.vat.IVatHeaterBlock;
 import com.simibubi.create.content.processing.basin.BasinBlockEntity;
 import com.simibubi.create.content.processing.basin.BasinRecipe;
@@ -87,7 +89,7 @@ public class ReactionInBasinRecipe extends BasinRecipe {
 
             int amount = fluidStack.getAmount();
             totalAmount += amount;
-            mixtures.put(mixture, (double)amount);
+            mixtures.put(mixture, (double)amount / Constants.MILLIBUCKETS_PER_LITER);
         };
 
         if (!containsMixtures) canReact = false; // Don't react without Mixtures, even if there are fluids which could be converted into Mixtures 
@@ -136,7 +138,7 @@ public class ReactionInBasinRecipe extends BasinRecipe {
 
             Map<ReactionResult, Integer> reactionResults = new HashMap<>();
 
-            gatherReactionResults(result.reactionresults(), reactionResults, builder); // Gather all 
+            gatherReactionResults(result.reactionResults(), reactionResults, builder); // Gather all 
 
             ExtendedBasinBehaviour behaviour = basin.getBehaviour(ExtendedBasinBehaviour.TYPE);
             behaviour.setReactionResults(reactionResults); // Schedule the Reaction Results to occur once the Mixing has finished
@@ -162,7 +164,8 @@ public class ReactionInBasinRecipe extends BasinRecipe {
                 };
                 gatherReactionResults(childMap, resultsToEnact, builder);
             } else if (reactionresult instanceof PrecipitateReactionResult precipitationResult) {
-                builder.output(precipitationResult.getPrecipitate());
+                ItemStack precipitate = precipitationResult.getPrecipitate();
+                ItemHelper.withCount(precipitate, resultsOfReaction.get(reactionresult) * precipitate.getCount()).forEach(builder::output);
             } else { // Don't deal with precipitations in the normal way
                 resultsToEnact.put(reactionresult, resultsOfReaction.get(reactionresult));
             };
@@ -177,9 +180,9 @@ public class ReactionInBasinRecipe extends BasinRecipe {
     /**
      * The outcome of {@link com.petrolpark.destroy.chemistry.legacy.LegacyReaction reacting} a {@link com.petrolpark.destroy.chemistry.legacy.LegacyReaction Mixture} in a Basin.
      * @param ticks The number of ticks it took for the Mixture to reach equilibrium
-     * @param reactionresults The {@link com.petrolpark.destroy.chemistry.legacy.ReactionResult results} of Reacting this Mixture
+     * @param reactionResults The {@link com.petrolpark.destroy.chemistry.legacy.ReactionResult results} of Reacting this Mixture
      * @param amount The amount (in mB) of resultant Mixture
      */
-    public static record ReactionInBasinResult(int ticks, Map<ReactionResult, Integer> reactionresults, int amount) {};
+    public static record ReactionInBasinResult(int ticks, Map<ReactionResult, Integer> reactionResults, int amount) {};
     
 };

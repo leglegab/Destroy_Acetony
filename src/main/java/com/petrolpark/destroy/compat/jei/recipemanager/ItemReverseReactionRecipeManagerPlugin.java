@@ -52,7 +52,7 @@ public class ItemReverseReactionRecipeManagerPlugin implements IRecipeManagerPlu
                 if (reaction.getItemReactants().stream().anyMatch(ir -> ((ir.isCatalyst() && searchCatalysts) || (!ir.isCatalyst() && searchInputs)) && ir.isItemValid(stack))) return true;
                 
                 // Check for precipitates
-                if (searchOutputs && reaction.hasResult()) reaction.getResult().getPrecipitatesForJEI().stream().anyMatch(p -> ItemStack.matches(p.getPrecipitate(), stack));
+                if (searchOutputs && reaction.hasResult()) reaction.getResult().getAllPrecipitates().stream().anyMatch(p -> ItemStack.matches(p.getPrecipitate(), stack));
 
                 return false;
             // Unchecked conversion (but actually it is checked)

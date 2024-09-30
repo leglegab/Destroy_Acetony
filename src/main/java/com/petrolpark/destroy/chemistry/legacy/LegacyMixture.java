@@ -568,28 +568,28 @@ public class LegacyMixture extends ReadOnlyMixture {
     @Deprecated
     public int recalculateVolume(int initialVolume) {
         if (contents.isEmpty()) return 0;
-        double initialVolumeInBuckets = (double)initialVolume / 1000d;
-        double newVolumeInBuckets = 0d;
+        double initialVolumeInLiters = (double)initialVolume / Constants.MILLIBUCKETS_PER_LITER;
+        double newVolumeInLiters = 0d;
 
         // Molecules
         Map<LegacySpecies, Double> molesOfMolecules = new HashMap<>();
         for (Entry<LegacySpecies, Float> entry : contents.entrySet()) {
             LegacySpecies molecule = entry.getKey();
-            double molesOfMolecule = entry.getValue() * initialVolumeInBuckets;
+            double molesOfMolecule = entry.getValue() * initialVolumeInLiters;
             molesOfMolecules.put(molecule, molesOfMolecule);
-            newVolumeInBuckets += molesOfMolecule / molecule.getPureConcentration();
+            newVolumeInLiters += molesOfMolecule / molecule.getPureConcentration();
         };
         for (Entry<LegacySpecies, Double> entry : molesOfMolecules.entrySet()) {
-            contents.replace(entry.getKey(), (float)(entry.getValue() / newVolumeInBuckets));
+            contents.replace(entry.getKey(), (float)(entry.getValue() / newVolumeInLiters));
         };
 
         // Results
         Map<ReactionResult, Float> resultsCopy = new HashMap<>(reactionResults);
         for (Entry<ReactionResult, Float> entry : resultsCopy.entrySet()) {
-            reactionResults.replace(entry.getKey(), (float)(entry.getValue() * initialVolumeInBuckets / newVolumeInBuckets));
+            reactionResults.replace(entry.getKey(), (float)(entry.getValue() * initialVolumeInLiters / newVolumeInLiters));
         };
 
-        return (int)((newVolumeInBuckets * 1000));
+        return (int)((newVolumeInLiters * Constants.MILLIBUCKETS_PER_LITER));
     };
 
     /**
@@ -718,7 +718,7 @@ public class LegacyMixture extends ReadOnlyMixture {
      * {@link LegacyMixture#reactForTick React} this Mixture until it reaches {@link LegacyMixture#equilibrium equilibrium}. This is mutative.
      * @return A {@link com.petrolpark.destroy.recipe.ReactionInBasinRecipe.ReactionInBasinResult ReactionInBasinResult} containing
      * the number of ticks it took to reach equilibrium, the {@link ReactionResult Reaction Results} and the new volume of Mixture.
-     * @param volume (in mB) of this Reaction
+     * @param volume (in liters) of this Reaction
      * @param availableStacks Item Stacks available for reacting. This List and its contents will be modified.
      * @param heatingPower The power being supplied to this Basin by the {@link com.petrolpark.destroy.util.vat.IVatHeaterBlock heater} below it.
      * @param outsideTemperature The {@link com.petrolpark.destroy.capability.Pollution#getLocalTemperature temperature} outside the Basin.
@@ -743,7 +743,7 @@ public class LegacyMixture extends ReadOnlyMixture {
 
         int amount = recalculateVolume(volume);
 
-        return new ReactionInBasinResult(ticks, getCompletedResults(volumeInLiters), amount);
+        return new ReactionInBasinResult(ticks, getCompletedResults(amount), amount);
     };
 
     /**
@@ -762,12 +762,12 @@ public class LegacyMixture extends ReadOnlyMixture {
                 continue;
             };
 
-            float molesPerBucketOfReaction = reactionResults.get(result);
-            int numberOfResult = (int) (volumeInLiters * molesPerBucketOfReaction / result.getRequiredMoles());
+            float molesPerLiterOfReaction = reactionResults.get(result);
+            int numberOfResult = (int) (volumeInLiters * molesPerLiterOfReaction / result.getRequiredMoles());
             if (numberOfResult == 0) continue;
 
             // Decrease the amount of Reaction that has happened
-            reactionResults.replace(result, molesPerBucketOfReaction - numberOfResult * result.getRequiredMoles() / (float)volumeInLiters);
+            reactionResults.replace(result, molesPerLiterOfReaction - numberOfResult * result.getRequiredMoles() / (float)volumeInLiters);
 
             results.put(result, numberOfResult);
         };

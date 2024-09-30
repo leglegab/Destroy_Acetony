@@ -45,8 +45,8 @@ public class CombinedReactionResult extends ReactionResult {
     };
 
     @Override
-    public Collection<PrecipitateReactionResult> getPrecipitatesForJEI() {
-        return childResults.stream().flatMap(r -> r.getPrecipitatesForJEI().stream()).toList();
+    public Collection<PrecipitateReactionResult> getAllPrecipitates() {
+        return childResults.stream().flatMap(r -> r.getAllPrecipitates().stream()).toList();
     };
     
 };

@@ -135,7 +135,7 @@ public class ReactionCategory<T extends ReactionRecipe> extends HoverableTextCat
             };
         };
 
-        Collection<PrecipitateReactionResult> precipitates = reaction.hasResult() ? reaction.getResult().getPrecipitatesForJEI() : Collections.emptyList();
+        Collection<PrecipitateReactionResult> precipitates = reaction.hasResult() ? reaction.getResult().getAllPrecipitates() : Collections.emptyList();
 
         int j = 0;
 

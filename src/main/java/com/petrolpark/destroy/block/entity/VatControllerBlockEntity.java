@@ -193,7 +193,7 @@ public class VatControllerBlockEntity extends SmartBlockEntity implements IHaveL
             boolean shouldUpdateFluidMixture = false;
             Vat vat = getVatOptional().get();
             if (tankBehaviour.isEmpty()) return;
-            double fluidAmount = getCapacity() / Constants.MILLIBUCKETS_PER_LITER; // Converts getFluidAmount() in mB to Buckets
+            double fluidAmount = getCapacity() / Constants.MILLIBUCKETS_PER_LITER; // Converts getFluidAmount() in mB to liters
 
             int cyclesPerTick = getSimulationLevel();
 
