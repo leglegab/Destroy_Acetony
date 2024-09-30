@@ -87,7 +87,7 @@ public class ReactionInBasinRecipe extends BasinRecipe {
 
             int amount = fluidStack.getAmount();
             totalAmount += amount;
-            mixtures.put(mixture, (double)amount / 1000d);
+            mixtures.put(mixture, (double)amount);
         };
 
         if (!containsMixtures) canReact = false; // Don't react without Mixtures, even if there are fluids which could be converted into Mixtures 
