@@ -525,9 +525,9 @@ public class RedstoneProgrammerScreen extends AbstractSimiContainerScreen<Redsto
         ms.popPose();
 
         // Aforementioned tooltips for adding/removing bars
-        if (renderedTooltip.equals("remove")) {
+        if ("remove".equals(renderedTooltip)) {
             graphics.renderTooltip(font, List.of(DestroyLang.translate("tooltip.redstone_programmer.remove_bar").component(), DestroyLang.translate("tooltip.redstone_programmer.remove_bar.hint").component()), Optional.empty(), mouseX, mouseY);
-        } else if (renderedTooltip.equals("add")) {
+        } else if ("add".equals(renderedTooltip)) {
             graphics.renderTooltip(font, List.of(DestroyLang.translate("tooltip.redstone_programmer.add_bar").component(), DestroyLang.translate("tooltip.redstone_programmer.add_bar.hint").component()), Optional.empty(), mouseX, mouseY);
         };
     };

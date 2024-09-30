@@ -315,7 +315,7 @@ public class DistillationTower {
         float roomTemperature = Pollution.getLocalTemperature(level, pos);
         float temperature = roomTemperature;
         HeatLevel heatLevel = BasinBlockEntity.getHeatLevelOf(level.getBlockState(pos.below()));
-        if (heatLevel.name().equals("FROSTING")) temperature = 273f;
+        if ("FROSTING".equals(heatLevel.name())) temperature = 273f;
         switch (heatLevel) {
             case FADING:
                 temperature = 350f;

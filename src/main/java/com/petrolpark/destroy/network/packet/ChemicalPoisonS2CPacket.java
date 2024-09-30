@@ -21,7 +21,7 @@ public class ChemicalPoisonS2CPacket extends S2CPacket {
 
     public ChemicalPoisonS2CPacket(FriendlyByteBuf buffer) {
         String moleculeID = buffer.readUtf();
-        if (moleculeID.equals("NO_MOLECULE")) {
+        if ("NO_MOLECULE".equals(moleculeID)) {
             molecule = null;
         } else {
             molecule = LegacySpecies.getMolecule(moleculeID);
