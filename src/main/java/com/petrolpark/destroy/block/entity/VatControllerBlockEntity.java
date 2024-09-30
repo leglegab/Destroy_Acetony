@@ -791,10 +791,10 @@ public class VatControllerBlockEntity extends SmartBlockEntity implements IHaveL
             if (vatControllerGetter.get() == null || vatControllerGetter.get().getGasTankContents().isEmpty()) return FluidStack.EMPTY;
             LegacyMixture mixture = LegacyMixture.readNBT(vatControllerGetter.get().getGasTankContents().getOrCreateChildTag("Mixture"));
             double scaleFactor = mixture.getTotalConcentration() / molarDensity;
-            FluidStack lostFluid = drainGasTank((int)(0.5d + scaleFactor * amount), action); // Round up
+            FluidStack lostFluid = drainGasTank((int)Math.ceil(scaleFactor * amount), action); // Round up
             mixture.scale((float)scaleFactor);
             double drainedAmount = (double)lostFluid.getAmount() / scaleFactor;
-            FluidStack stack = MixtureFluid.of((int)(drainedAmount + 0.5d), mixture);
+            FluidStack stack = MixtureFluid.of((int)Math.ceil(drainedAmount), mixture);
             return stack;
         };
 
