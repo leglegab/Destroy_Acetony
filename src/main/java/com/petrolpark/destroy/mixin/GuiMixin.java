@@ -35,7 +35,7 @@ public abstract class GuiMixin {
         cancellable = true
     )
     private void inRenderHeart(GuiGraphics guiGraphics, Gui.HeartType heartType, int x, int y, int yOffset, boolean renderHighlight, boolean halfHeart, CallbackInfo ci) {
-        if (heartType.name().equals("CHEMICAL_POISON")) {
+        if ("CHEMICAL_POISON".equals(heartType.name())) {
             guiGraphics.blit(DESTROY_GUI_ICONS_LOCATION, x, y, heartType.getX(halfHeart, renderHighlight), yOffset, 9, 9);
             ci.cancel();
         };

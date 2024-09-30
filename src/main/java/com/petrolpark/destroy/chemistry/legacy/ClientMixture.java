@@ -38,7 +38,7 @@ public class ClientMixture extends ReadOnlyMixture {
 
         try {
 
-            if (!translationKey.equals("")) {
+            if (translationKey != null && !translationKey.isEmpty()) {
                 name = Component.translatable(translationKey);
                 return;
             };

@@ -28,7 +28,7 @@ public class HeatConditionRenderer {
 
     public static void drawHeatConditionName(Font font, GuiGraphics graphics, int x, int y, HeatCondition requiredHeat) {
         MutableComponent name = Component.empty();
-        if (requiredHeat.name().equals("COOLED")) { // Scuffed but okay keep your opinions to yourself
+        if ("COOLED".equals(requiredHeat.name())) { // Scuffed but okay keep your opinions to yourself
             name = DestroyLang.translate(requiredHeat.getTranslationKey()).component();
         } else {
             name = Lang.translate(requiredHeat.getTranslationKey()).component();
@@ -45,7 +45,7 @@ public class HeatConditionRenderer {
             blazeTreatStacks.add(new ItemStack(item));
         });
         
-        if (requiredHeat.name().equals("COOLED")) {
+        if ("COOLED".equals(requiredHeat.name())) {
             builder
                 .addSlot(RecipeIngredientRole.CATALYST, x, y)
                 .addItemStack(DestroyBlocks.COOLER.asStack());
