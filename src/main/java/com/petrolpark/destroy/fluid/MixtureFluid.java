@@ -17,6 +17,8 @@ import net.minecraft.world.level.BlockAndTintGetter;
 import net.minecraft.world.level.material.FluidState;
 import net.minecraftforge.fluids.FluidStack;
 
+import static com.petrolpark.destroy.chemistry.legacy.LegacyReaction.GAS_CONSTANT;
+
 public class MixtureFluid extends VirtualFluid {
 
     public MixtureFluid(Properties properties) {
@@ -26,8 +28,8 @@ public class MixtureFluid extends VirtualFluid {
     public static LegacyMixture airMixture(float temperature) {
         if (temperature <= 0f || Float.isNaN(temperature)) throw new IllegalStateException("Temperature cannot be negative or 0.");
         LegacyMixture air = new LegacyMixture();
-        air.addMolecule(DestroyMolecules.NITROGEN, 0.03280f * 279f / temperature);
-        air.addMolecule(DestroyMolecules.OXYGEN, 0.00883f * 279f / temperature);
+        air.addMolecule(DestroyMolecules.NITROGEN,  101000f / 1000f / GAS_CONSTANT / temperature * 0.78084f);
+        air.addMolecule(DestroyMolecules.OXYGEN,    101000f / 1000f / GAS_CONSTANT / temperature * 0.21916f);
         air.setTemperature(temperature);
         return air;
     };
@@ -58,7 +60,7 @@ public class MixtureFluid extends VirtualFluid {
     public static FluidStack of(int amount, ReadOnlyMixture mixture, @Nullable String translationKey) {
         if (amount == 0) return FluidStack.EMPTY;
         FluidStack fluidStack = new FluidStack(DestroyFluids.MIXTURE.getSource(), amount);
-        mixture.setTranslationKey(translationKey);
+        if (translationKey != null) mixture.setTranslationKey(translationKey);
         addMixtureToFluidStack(fluidStack, mixture);
         return fluidStack;
     };

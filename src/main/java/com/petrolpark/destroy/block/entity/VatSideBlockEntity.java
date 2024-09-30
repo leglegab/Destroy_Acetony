@@ -121,8 +121,8 @@ public class VatSideBlockEntity extends CopycatBlockEntity implements IHaveLabGo
             .whenFluidUpdates(this::tryInsertFluidInVat)
             .forbidExtraction();
         behaviours.add(inputBehaviour);
-        fluidCapability = LazyOptional.empty(); // Temporarily set this to an empty optional
-        refreshFluidCapability();
+        //fluidCapability = LazyOptional.empty(); // Temporarily set this to an empty optional
+        //refreshFluidCapability(); // getController() is null so this doesn't work here
 
         redstoneMonitor = new RedstoneQuantityMonitorBehaviour(this);
         behaviours.add(redstoneMonitor);
@@ -237,7 +237,7 @@ public class VatSideBlockEntity extends CopycatBlockEntity implements IHaveLabGo
         displayType = DisplayType.values()[tag.getInt("DisplayType")];
         oldPower = tag.getFloat("OldHeatingPower");
         oldUV = tag.getFloat("OldUVPower");
-        if (tag.contains("InitializationTicks", Tag.TAG_INT)) initializationTicks = tag.getInt("InitializationTicks");
+        if (tag.contains("InitializationTicks", Tag.TAG_INT)) initializationTicks = tag.getInt("InitializationTicks"); else initializationTicks = 0;
         if (clientPacket) {
             spoutingTicks = tag.getInt("SpoutingTicks");
             spoutingFluid = FluidStack.loadFluidStackFromNBT(tag.getCompound("SpoutingFluid"));
@@ -263,7 +263,8 @@ public class VatSideBlockEntity extends CopycatBlockEntity implements IHaveLabGo
     @Override
     public <T> @NotNull LazyOptional<T> getCapability(@NotNull Capability<T> cap, @Nullable Direction side) {
         if (side != direction) return LazyOptional.empty();
-        if (isFluidHandlerCap(cap) && (displayType == DisplayType.NORMAL || displayType == DisplayType.PIPE) && fluidCapability.isPresent()) {
+        if (isFluidHandlerCap(cap) && (displayType == DisplayType.NORMAL || displayType == DisplayType.PIPE)) {
+            refreshFluidCapability();
             return fluidCapability.cast();
         };
         if (isItemHandlerCap(cap)) {
