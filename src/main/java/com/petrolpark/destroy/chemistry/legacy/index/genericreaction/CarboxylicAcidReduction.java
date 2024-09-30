@@ -8,8 +8,8 @@ import com.petrolpark.destroy.chemistry.legacy.ReadOnlyMixture;
 import com.petrolpark.destroy.chemistry.legacy.genericreaction.GenericReactant;
 import com.petrolpark.destroy.chemistry.legacy.genericreaction.SingleGroupGenericReaction;
 import com.petrolpark.destroy.chemistry.legacy.index.DestroyGroupTypes;
+import com.petrolpark.destroy.chemistry.legacy.index.DestroyMolecules;
 import com.petrolpark.destroy.chemistry.legacy.index.group.CarboxylicAcidGroup;
-import com.petrolpark.destroy.item.DestroyItems;
 
 public class CarboxylicAcidReduction extends SingleGroupGenericReaction<CarboxylicAcidGroup> {
 
@@ -19,9 +19,10 @@ public class CarboxylicAcidReduction extends SingleGroupGenericReaction<Carboxyl
 
     @Override
     public boolean isPossibleIn(ReadOnlyMixture mixture) {
-        return true; // TODO check for actual oxidant once Magic Reductant is removed
+        return mixture.getConcentrationOf(DestroyMolecules.BOROHYDRIDE) > 0f;
     };
 
+    //TODO replace with some borane nonsense
     @Override
     public LegacyReaction generateReaction(GenericReactant<CarboxylicAcidGroup> reactant) {
         CarboxylicAcidGroup acid = reactant.getGroup();
@@ -32,9 +33,10 @@ public class CarboxylicAcidReduction extends SingleGroupGenericReaction<Carboxyl
             .addAtom(LegacyElement.HYDROGEN);
 
         return reactionBuilder()
-            .addReactant(reactant.getMolecule())
-            .addSimpleItemCatalyst(DestroyItems.MAGIC_REDUCTANT::get, 1f)
-            .addProduct(moleculeBuilder().structure(structure).build())
+            .addReactant(reactant.getMolecule(), 4, 1)
+            .addReactant(DestroyMolecules.BOROHYDRIDE)
+            .addProduct(moleculeBuilder().structure(structure).build(), 4)
+            .addProduct(DestroyMolecules.TETRAHYDROXYBORATE)
             .activationEnergy(25f)
             .build();
     };

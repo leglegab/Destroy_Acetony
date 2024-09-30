@@ -4,16 +4,17 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import com.petrolpark.destroy.chemistry.legacy.GroupFinder;
 import com.petrolpark.destroy.chemistry.legacy.LegacyAtom;
 import com.petrolpark.destroy.chemistry.legacy.LegacyBond;
+import com.petrolpark.destroy.chemistry.legacy.LegacyBond.BondType;
 import com.petrolpark.destroy.chemistry.legacy.LegacyElement;
 import com.petrolpark.destroy.chemistry.legacy.LegacyFunctionalGroup;
-import com.petrolpark.destroy.chemistry.legacy.GroupFinder;
-import com.petrolpark.destroy.chemistry.legacy.LegacyBond.BondType;
 import com.petrolpark.destroy.chemistry.legacy.index.group.AcidAnhydrideGroup;
 import com.petrolpark.destroy.chemistry.legacy.index.group.AcylChlorideGroup;
 import com.petrolpark.destroy.chemistry.legacy.index.group.AlcoholGroup;
 import com.petrolpark.destroy.chemistry.legacy.index.group.AlkeneGroup;
+import com.petrolpark.destroy.chemistry.legacy.index.group.AlkoxideGroup;
 import com.petrolpark.destroy.chemistry.legacy.index.group.AlkyneGroup;
 import com.petrolpark.destroy.chemistry.legacy.index.group.BoraneGroup;
 import com.petrolpark.destroy.chemistry.legacy.index.group.BorateEsterGroup;
@@ -106,6 +107,8 @@ public class DestroyGroupFinder extends GroupFinder {
                     for (LegacyAtom oxygen : singleBondOxygens) { // Alcohols
                         if (bondedAtomsOfElementTo(structure, oxygen, LegacyElement.HYDROGEN).size() == 1) {
                             groups.add(new AlcoholGroup(carbon, oxygen, bondedAtomsOfElementTo(structure, oxygen, LegacyElement.HYDROGEN).get(0), carbons.size()));
+                        } else if (oxygen.formalCharge == -1d) {
+                            groups.add(new AlkoxideGroup(carbon, oxygen));
                         };
                         List<LegacyAtom> borateBorons = bondedAtomsOfElementTo(structure, oxygen, LegacyElement.BORON);
                         if (borateBorons.size() == 1) groups.add(new BorateEsterGroup(carbon, oxygen, borateBorons.get(0)));

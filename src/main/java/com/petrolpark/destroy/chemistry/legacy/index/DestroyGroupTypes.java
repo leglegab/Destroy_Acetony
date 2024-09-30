@@ -4,6 +4,7 @@ import com.petrolpark.destroy.chemistry.legacy.LegacyFunctionalGroupType;
 import com.petrolpark.destroy.chemistry.legacy.index.group.AcidAnhydrideGroup;
 import com.petrolpark.destroy.chemistry.legacy.index.group.AcylChlorideGroup;
 import com.petrolpark.destroy.chemistry.legacy.index.group.AlcoholGroup;
+import com.petrolpark.destroy.chemistry.legacy.index.group.AlkoxideGroup;
 import com.petrolpark.destroy.chemistry.legacy.index.group.BoraneGroup;
 import com.petrolpark.destroy.chemistry.legacy.index.group.BorateEsterGroup;
 import com.petrolpark.destroy.chemistry.legacy.index.group.BoricAcidGroup;
@@ -26,6 +27,7 @@ public class DestroyGroupTypes {
     public static final LegacyFunctionalGroupType<AcylChlorideGroup> ACYL_CHLORIDE = new LegacyFunctionalGroupType<>(() -> DestroyMolecules.GENERIC_ACYL_CHLORIDE);
     public static final LegacyFunctionalGroupType<AlcoholGroup> ALCOHOL = new LegacyFunctionalGroupType<>(() -> DestroyMolecules.GENERIC_ALCOHOL);
     public static final LegacyFunctionalGroupType<SaturatedCarbonGroup> ALKENE = new LegacyFunctionalGroupType<>(() -> DestroyMolecules.GENERIC_ALKENE);
+    public static final LegacyFunctionalGroupType<AlkoxideGroup> ALKOXIDE = new LegacyFunctionalGroupType<>(() -> DestroyMolecules.GENERIC_ALKOXIDE);
     public static final LegacyFunctionalGroupType<SaturatedCarbonGroup> ALKYNE = new LegacyFunctionalGroupType<>(() -> DestroyMolecules.GENERIC_ALKYNE);
     public static final LegacyFunctionalGroupType<BoraneGroup> BORANE = new LegacyFunctionalGroupType<>(() -> DestroyMolecules.GENERIC_BORANE);
     public static final LegacyFunctionalGroupType<BorateEsterGroup> BORATE_ESTER = new LegacyFunctionalGroupType<>(() -> DestroyMolecules.GENERIC_BORATE_ESTER);

@@ -6,14 +6,13 @@ import com.petrolpark.destroy.chemistry.legacy.index.genericreaction.AcylChlorid
 import com.petrolpark.destroy.chemistry.legacy.index.genericreaction.AlcoholDehydration;
 import com.petrolpark.destroy.chemistry.legacy.index.genericreaction.AlcoholOxidation;
 import com.petrolpark.destroy.chemistry.legacy.index.genericreaction.AldehydeOxidation;
+import com.petrolpark.destroy.chemistry.legacy.index.genericreaction.AlkoxideProtonation;
 import com.petrolpark.destroy.chemistry.legacy.index.genericreaction.AmideHydrolysis;
 import com.petrolpark.destroy.chemistry.legacy.index.genericreaction.AminePhosgenation;
 import com.petrolpark.destroy.chemistry.legacy.index.genericreaction.BoraneOxidation;
 import com.petrolpark.destroy.chemistry.legacy.index.genericreaction.BorateEsterHydrolysis;
 import com.petrolpark.destroy.chemistry.legacy.index.genericreaction.BorateEsterification;
-import com.petrolpark.destroy.chemistry.legacy.index.genericreaction.CarbonylReduction;
 import com.petrolpark.destroy.chemistry.legacy.index.genericreaction.CarboxylicAcidEsterification;
-import com.petrolpark.destroy.chemistry.legacy.index.genericreaction.CarboxylicAcidReduction;
 import com.petrolpark.destroy.chemistry.legacy.index.genericreaction.CyanamideAddition;
 import com.petrolpark.destroy.chemistry.legacy.index.genericreaction.CyanideNucleophilicAddition;
 import com.petrolpark.destroy.chemistry.legacy.index.genericreaction.ElectrophilicChlorination;
@@ -52,6 +51,7 @@ public class DestroyGenericReactions {
     public static final SaturatedCarbonHydrogenation ALKENE_HYDROGENATION = new SaturatedCarbonHydrogenation(false);
     public static final ElectrophilicHydroiodination ALKENE_HYDROIODINATION = new ElectrophilicHydroiodination(false);
     public static final ElectrophilicIodination ALKENE_IODINATION = new ElectrophilicIodination(false);
+    public static final AlkoxideProtonation ALKOXIDE_PROTONATION = new AlkoxideProtonation();
     public static final ElectrophilicChlorination ALKYNE_CHLORINATION = new ElectrophilicChlorination(true);
     public static final ElectrophilicChlorohydrination ALKYNE_CHLOROHYDRINATION = new ElectrophilicChlorohydrination(true);
     public static final SaturatedCarbonHydrolysis ALKYNE_HYDROLYSIS = new SaturatedCarbonHydrolysis(true);
@@ -66,8 +66,8 @@ public class DestroyGenericReactions {
     public static final BoraneOxidation BORANE_OXIDATION = new BoraneOxidation();
     public static final BorateEsterHydrolysis BORATE_ESTER_HYDROLYSIS = new BorateEsterHydrolysis();
     public static final BorateEsterification BORATE_ESTERIFICATION = new BorateEsterification();
-    public static final CarbonylReduction CARBONYL_REDUCTION = new CarbonylReduction();
-    public static final CarboxylicAcidReduction CARBOXYLIC_ACID_REDUCTION = new CarboxylicAcidReduction();
+    //public static final BorohydrideCarbonylReduction BOROHYDRIDE_CARBONYL_REDUCTION = new BorohydrideCarbonylReduction();
+    //public static final CarboxylicAcidReduction CARBOXYLIC_ACID_REDUCTION = new CarboxylicAcidReduction();
     public static final CyanamideAddition CYANAMIDE_ADDITION = new CyanamideAddition();
     public static final CarboxylicAcidEsterification CARBOXYLIC_ACID_ESTERIFICATION = new CarboxylicAcidEsterification();
     public static final CyanideNucleophilicAddition CYANIDE_NUCLEOPHILIC_ADDITION = new CyanideNucleophilicAddition();

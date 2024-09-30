@@ -133,7 +133,7 @@ public class ExtendedInventory extends Inventory {
         return getExtraInventoryStartSlotIndex() + hotbarIndex - getSelectionSize();
     };
 
-    protected int getSelectedHotbarIndex() {
+    public int getSelectedHotbarIndex() {
         if (isHotbarSlot(selected)) return selected;
         return selected - getExtraInventoryStartSlotIndex() + getSelectionSize();
     };

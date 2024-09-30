@@ -85,6 +85,7 @@
         "GuiMixin",
         "HeartTypeMixin",
         "LevelRendererMixin",
+        "MinecraftMixin",
         "MultiPlayerGameModeMixin",
         "PonderWorldMixin",
         "RecipeBookComponentMixin"

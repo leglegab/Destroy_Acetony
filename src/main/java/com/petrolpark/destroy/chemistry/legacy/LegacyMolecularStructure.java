@@ -182,6 +182,13 @@ public class LegacyMolecularStructure implements Cloneable {
     };
 
     /**
+     * A -BH2 group
+     */
+    public static LegacyMolecularStructure borane() {
+        return LegacyMolecularStructure.atom(LegacyElement.BORON).addAtom(LegacyElement.HYDROGEN).addAtom(LegacyElement.HYDROGEN);
+    };
+
+    /**
      * Adds a singly-{@link LegacyBond bonded} {@link LegacyAtom} of an {@link LegacyElement} onto the {@link LegacyMolecularStructure#currentAtom current Atom}, staying on the current Atom.
      * @param element The Element of the Atom to be added
      * @return This Formula

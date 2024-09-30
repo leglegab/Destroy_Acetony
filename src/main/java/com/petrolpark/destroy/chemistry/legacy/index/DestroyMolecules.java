@@ -536,6 +536,13 @@ public final class DestroyMolecules {
         .translationKey("alkene")
         .build(),
 
+    GENERIC_ALKOXIDE = builder()
+        .id("generic_alkoxide")
+        .structure(LegacyMolecularStructure.deserialize("destroy:linear:RC(R)(R)O^-1"))
+        .hypothetical()
+        .translationKey("alkoxide")
+        .build(),
+
     GENERIC_ALKYNE = builder()
         .id("generic_alkyne")
         .structure(LegacyMolecularStructure.deserialize("destroy:linear:RC#CR"))
