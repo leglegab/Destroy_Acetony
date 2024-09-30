@@ -300,6 +300,7 @@ public class DynamoBlockEntity extends BasinOperatingBlockEntity implements Char
 
     @Override
     protected <C extends Container> boolean matchBasinRecipe(Recipe<C> recipe) {
+        if (recipe == null) return false;
         if ((recipe.getType() == DestroyRecipeTypes.ELECTROLYSIS.getType()) == getBlockState().getValue(DynamoBlock.ARC_FURNACE)) return false;
         return super.matchBasinRecipe(recipe);
     };

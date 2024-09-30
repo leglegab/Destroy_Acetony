@@ -8,7 +8,7 @@
         "tag": "destroy:plastics/rigid"
       },
       "T": {
-        "item": "destroy:plastics/transparent"
+        "tag": "destroy:plastics/transparent"
       }
     },
     "result": {
