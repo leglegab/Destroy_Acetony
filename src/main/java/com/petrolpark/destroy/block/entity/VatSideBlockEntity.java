@@ -413,8 +413,9 @@ public class VatSideBlockEntity extends CopycatBlockEntity implements IHaveLabGo
 
         // If the observer has been switched, create new bounds
         redstoneMonitor.quantityObserved = displayType.quantityObserved.map(f -> {
-            if (getController() == null) return () -> 0f;
-            return () -> f.apply(getController());
+            VatControllerBlockEntity vc = getController();
+            if (vc == null) return () -> 0f;
+            return () -> f.apply(vc);
         });
         if (oldDisplayType.quantityObserved != this.displayType.quantityObserved) {
             if (this.displayType.showsPressure) {
