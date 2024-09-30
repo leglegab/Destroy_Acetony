@@ -428,8 +428,8 @@ public class LegacyMixture extends ReadOnlyMixture {
 
                 if (energyDensity > energyRequiredToFullyBoil) { // If there is leftover energy once the Molecule has been boiled
                     states.put(molecule, 1f); // Convert the Molecule fully to gas
-                    temperature += 0.01f; // Increase the temperature slightly so the new next higher Molecule isn't the one we just finished boiling
-                    updateNextBoilingPoints();
+                    //temperature += 0.01f; // Increase the temperature slightly so the new next higher Molecule isn't the one we just finished boiling
+                    updateNextBoilingPoints(true);
                     boiling = false; // If we're just increasing the temperature, then all Molecule are either fully gaseous or liquid
                     heat(energyDensity - energyRequiredToFullyBoil); // Continue heating
                 } else { // If there is no leftover energy and the Molecule is still boiling
@@ -456,8 +456,8 @@ public class LegacyMixture extends ReadOnlyMixture {
 
                 if (energyDensity < -energyReleasedWhenFullyCondensed) { // If there is more energy that needs to be released than the condensation can supply
                     states.put(molecule, 0f); // Convert the Molecule fully to liquid
-                    temperature -= 0.01f; // Decrease the temperature slightly so the new next lower Molecule isn't the one we just finished condensing
-                    updateNextBoilingPoints();
+                    //temperature -= 0.01f; // Decrease the temperature slightly so the new next lower Molecule isn't the one we just finished condensing
+                    updateNextBoilingPoints(true);
                     boiling = false; // If we're just increasing the temperature, then all Molecule are either fully gaseous or liquid
                     heat(energyDensity + energyReleasedWhenFullyCondensed); // Continue cooling
                 } else {
@@ -791,15 +791,16 @@ public class LegacyMixture extends ReadOnlyMixture {
     /**
      * Set the Molecules which will be next to condense or boil if the temperature of this Mixture changes.
      */
-    protected void updateNextBoilingPoints() {
+    protected void updateNextBoilingPoints() { updateNextBoilingPoints(false); }
+    protected void updateNextBoilingPoints(boolean ignoreCurrentTemperature) {
         nextHigherBoilingPoint = Pair.of(Float.MAX_VALUE, null);
         nextLowerBoilingPoint = Pair.of(0f, null);
         for (LegacySpecies molecule : contents.keySet()) {
             float bp = molecule.getBoilingPoint();
-            if (bp <= temperature) {
+            if (bp < temperature || (bp == temperature && !ignoreCurrentTemperature)) {
                 if (bp > nextLowerBoilingPoint.getFirst()) nextLowerBoilingPoint = Pair.of(bp, molecule);
             }
-            if (bp >= temperature) { // If the boiling point is higher than the current temperture.
+            if (bp > temperature || (bp == temperature && !ignoreCurrentTemperature)) { // If the boiling point is higher than the current temperture.
                 if (bp < nextHigherBoilingPoint.getFirst()) nextHigherBoilingPoint = Pair.of(bp, molecule);
             };
         };
