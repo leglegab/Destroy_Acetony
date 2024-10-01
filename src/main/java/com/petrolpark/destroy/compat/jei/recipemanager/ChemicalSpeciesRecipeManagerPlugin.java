@@ -128,7 +128,7 @@ public class ChemicalSpeciesRecipeManagerPlugin implements IRecipeManagerPlugin 
 
                     // Add Reaction Recipes
                     else if (recipeCategory instanceof ReactionCategory) molecule.getProductReactions().forEach(reaction -> {
-                        Optional.ofNullable((T)(ReactionCategory.RECIPES.get(reaction))).ifPresent(recipes::add);
+                        Optional.ofNullable((T)(ReactionCategory.RECIPES.get(reaction.getReactionDisplayedInJEI()))).ifPresent(recipes::add);
                     }); // This is an unchecked conversion but I think it's fine
                 
                     // Add non-Reaction Recipes

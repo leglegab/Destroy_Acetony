@@ -628,7 +628,7 @@ public class VatControllerBlockEntity extends SmartBlockEntity implements IHaveL
     };
 
     /**
-     * Get the pressure above room pressure of the gas in this Vat.
+     * Get the pressure above room pressure of the gas in this Vat (in Pa).
      */
     @SuppressWarnings("null")
     public float getPressure() {

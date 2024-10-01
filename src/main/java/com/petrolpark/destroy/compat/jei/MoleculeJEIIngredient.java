@@ -7,8 +7,10 @@ import javax.annotation.Nullable;
 import com.petrolpark.destroy.Destroy;
 import com.petrolpark.destroy.chemistry.legacy.LegacyMixture;
 import com.petrolpark.destroy.chemistry.legacy.LegacySpecies;
+import com.petrolpark.destroy.chemistry.legacy.ReadOnlyMixture;
 import com.petrolpark.destroy.chemistry.legacy.index.DestroyMolecules;
 import com.petrolpark.destroy.config.DestroyAllConfigs;
+import com.petrolpark.destroy.fluid.DestroyFluids;
 import com.petrolpark.destroy.fluid.MixtureFluid;
 import com.petrolpark.destroy.item.DestroyItems;
 import com.petrolpark.destroy.item.MoleculeDisplayItem;
@@ -89,7 +91,14 @@ public class MoleculeJEIIngredient {
         @Override
         public ItemStack getCheatItemStack(LegacySpecies ingredient) {
             if (ingredient.isHypothetical() || ingredient == DestroyMolecules.PROTON) return illegalFish;
-            return DestroyItems.TEST_TUBE.get().of(MixtureFluid.of(TestTubeItem.CAPACITY, LegacyMixture.pure(ingredient), ""));
+            ReadOnlyMixture mixture;
+            if (ingredient.getBoilingPoint() > 273f) { // Liquids at RTP 
+                mixture = LegacyMixture.pure(ingredient);
+            } else { // Gases at RTP
+                mixture = new ReadOnlyMixture();
+                mixture.addMolecule(ingredient, (float)DestroyFluids.AIR_MOLAR_DENSITY);
+            };
+            return DestroyItems.TEST_TUBE.get().of(MixtureFluid.of(TestTubeItem.CAPACITY, mixture, ""));
         };
     };
 

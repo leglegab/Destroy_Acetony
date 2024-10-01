@@ -240,6 +240,12 @@ public class ChemistryScenes {
             .pointAt(util.vector.topOf(pump1));
         scene.world.propagatePipeChange(pump1);
         scene.idle(120);
+
+        scene.overlay.showText(100)
+            .text("This text is defined in a language file.")
+            .colored(PonderPalette.RED)
+            .pointAt(util.vector.topOf(5, 4, 5));
+        scene.idle(120);
         
         scene.world.showSection(invalidPipe, Direction.DOWN);
         scene.idle(10);

@@ -1018,6 +1018,7 @@ public class DestroyCommonEvents {
             if (event.getRegistryKey().equals(ForgeRegistries.Keys.RECIPE_SERIALIZERS)) {
                 // Ingredient types
                 CraftingHelper.register(Destroy.asResource("circuit_pattern_item"), CircuitPatternIngredient.SERIALIZER);
+                CraftingHelper.register(Destroy.asResource("example_circuit_mask"), CircuitDeployerApplicationRecipe.ExampleMaskIngredient.SERIALIZER); // Should never actually appear in a JSON recipe
             };
         };
 

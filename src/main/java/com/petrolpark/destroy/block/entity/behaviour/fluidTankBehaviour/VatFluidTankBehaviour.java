@@ -174,17 +174,16 @@ public class VatFluidTankBehaviour extends GeniusFluidTankBehaviour {
 
         @Override
 		public int fill(FluidStack resource, FluidAction action) {
-            if (liquidFull) return 0;
             if (!DestroyFluids.isMixture(resource)) return 0;
 
             boolean simulate = action == FluidAction.SIMULATE;
 
             Phases phases = LegacyMixture.readNBT(resource.getOrCreateChildTag("Mixture")).separatePhases(resource.getAmount());
-            double amountScale = 1f;
+            double amountScale = 1d;
  
-            if (phases.liquidVolume() > getLiquidHandler().getSpace()) {
+            if (phases.liquidVolume() > getLiquidHandler().getSpace() - 1) {
                 if (!simulate) liquidFull = true;
-                amountScale = (phases.liquidVolume() - getLiquidHandler().getSpace()) / phases.liquidVolume();
+                amountScale = ((double)getLiquidHandler().getSpace() - 1d) / (double)phases.liquidVolume();
             };
 
             // Add liquid - as this is a child of Genius Fluid Tank the mixing-in of the Mixture to the existing Mixture Fluid is already handled
@@ -195,7 +194,7 @@ public class VatFluidTankBehaviour extends GeniusFluidTankBehaviour {
 
                 Map<LegacyMixture, Double> mixtures = new HashMap<>(2);
                 double combinedVolume = 0d;
-                int freeSpace = vatCapacity - getLiquidHandler().getFluidAmount();
+                int freeSpace = vatCapacity - getLiquidHandler().getFluidAmount() + 1;
 
                 if (!getGasHandler().isEmpty()) {
                     FluidStack existingGas = getGasHandler().getFluid();

@@ -19,7 +19,7 @@ import net.minecraftforge.fluids.FluidStack;
 
 public class DestroyFluids {
 
-    public static final double AIR_MOLAR_DENSITY = 42.0352380152d;
+    public static final double AIR_MOLAR_DENSITY = 0.0420352380152d; // In moles/liter
     public static FluidStack air(int amount, float temperature) {
         return MixtureFluid.of(amount, MixtureFluid.airMixture(temperature), "fluid.destroy.air");
     };

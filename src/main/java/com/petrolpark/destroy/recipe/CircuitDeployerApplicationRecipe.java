@@ -35,7 +35,7 @@ public class CircuitDeployerApplicationRecipe extends DeployerApplicationRecipe 
 
     private int recipeId = 0;
 
-    protected static class ExampleMaskIngredient extends Ingredient {
+    public static class ExampleMaskIngredient extends Ingredient {
         public static final Serializer SERIALIZER = new Serializer();
         private final Ingredient parent;
 
